@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "doing_it_wrong: WP_Abilities_Registry::unregister: Ability \"guide/add\" not found.\n",
+ "return": "array (\n  0 => 'guide/add',\n  1 => false,\n  2 => NULL,\n)",
+ "error": null
+}

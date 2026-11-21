@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WP_Ability',\n  1 => 'guide/add',\n  2 => 'tools',\n)",
+ "error": null
+}

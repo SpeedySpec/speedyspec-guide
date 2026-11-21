@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "doing_it_wrong: WP_Abilities_Registry::get_registered: Ability \"guide/none\" not found.\n",
+ "return": "array (\n  0 => 'Add one',\n  1 => NULL,\n)",
+ "error": null
+}

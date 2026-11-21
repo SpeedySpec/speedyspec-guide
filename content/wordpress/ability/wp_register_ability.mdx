@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_register_ability"
+---
+
+## Behaviour
+
+Registers an ability with the abilities registry. It must be called on `wp_abilities_api_init`; otherwise it refuses with a notice and returns `null`. It returns the new `WP_Ability`, or `null` when the registry refuses it. <Ev source="wp:wp-includes/abilities-api.php#L364-L385" hash="7f725566ac410b6d25f1fcc4adedd23692b1af8cde2beeea4e8b35423d31fa20"/>
+
+## Override
+
+`wp_register_ability_args` filters the properties; `ability_class` picks a subclass of `WP_Ability`.

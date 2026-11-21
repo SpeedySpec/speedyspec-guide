@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "doing_it_wrong: wp_register_ability_category: Ability categories must be registered on the wp_abilities_api_categories_init action. The ability category early was not registered.\ndoing_it_wrong: WP_Ability_Categories_Registry::register: Ability category slug must contain only lowercase alphanumeric characters and dashes.\ndoing_it_wrong: WP_Ability_Categories_Registry::register: Ability category \"tools\" is already registered.\ndoing_it_wrong: WP_Ability_Categories_Registry::register: The ability category properties must contain a `label` string.\n",
+ "return": "array (\n  0 => 'tools',\n)",
+ "error": null
+}

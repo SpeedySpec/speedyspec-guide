@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_register_ability_category"
+---
+
+## Behaviour
+
+Registers an ability category, which abilities must name. It must be called on `wp_abilities_api_categories_init`; otherwise it refuses with a notice. Returns the new `WP_Ability_Category`, or `null`. <Ev source="wp:wp-includes/abilities-api.php#L749-L770" hash="f2fe18833279d87fb1805946e6f64128de3c896f9fb5a7cc9dc0896e713ed0c7"/>
+
+## Override
+
+`wp_register_ability_category_args` filters the properties.

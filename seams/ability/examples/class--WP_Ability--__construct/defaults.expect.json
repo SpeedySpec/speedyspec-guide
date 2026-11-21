@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'annotations' => \n    array (\n      'readonly' => NULL,\n      'destructive' => NULL,\n      'idempotent' => NULL,\n    ),\n    'show_in_rest' => false,\n    'public' => false,\n  ),\n  1 => \n  array (\n  ),\n  2 => \n  array (\n  ),\n  3 => \n  array (\n  ),\n  4 => false,\n  5 => 'fallback',\n  6 => 'D.',\n)",
+ "error": null
+}

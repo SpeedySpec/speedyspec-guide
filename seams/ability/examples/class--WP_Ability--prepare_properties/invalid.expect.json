@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "The ability properties must contain a valid `execute_callback` function.\nThe ability properties must provide a valid `permission_callback` function or a non-empty `required_capabilities` list.\nThe ability properties should provide a valid `required_capabilities` list of non-empty strings.\nThe ability properties must provide a valid `permission_callback` function.\nThe ability properties should provide a valid `input_schema` definition.\nThe ability meta should provide a valid `public` boolean.\n",
+ "return": "NULL",
+ "error": null
+}

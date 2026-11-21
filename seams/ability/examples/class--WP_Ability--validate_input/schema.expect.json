@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'Ability \"guide/add\" has invalid input. Reason: input[n] is not of type integer.',\n  2 => true,\n  3 => 'ability_missing_input_schema',\n  4 => 'ability_invalid_input',\n)",
+ "error": null
+}

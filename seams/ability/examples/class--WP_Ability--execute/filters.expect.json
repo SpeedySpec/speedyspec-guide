@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'ability_callback_exception',\n  1 => 'Ability \"guide/throw\" callback threw an exception: boom',\n  2 => 'answered',\n)",
+ "error": null
+}

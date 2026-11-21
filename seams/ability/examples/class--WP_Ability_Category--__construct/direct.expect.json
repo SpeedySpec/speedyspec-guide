@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "doing_it_wrong: WP_Ability_Category::__construct: Property \"color\" is not a valid property for ability category \"tools\". Please check the WP_Ability_Category class for allowed properties.\nThe ability category slug cannot be empty.\nThe ability category properties should provide a valid `meta` array.\n",
+ "return": "array (\n  0 => 'tools',\n  1 => \n  array (\n  ),\n)",
+ "error": null
+}

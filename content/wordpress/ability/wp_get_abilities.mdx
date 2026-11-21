@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_abilities"
+---
+
+## Behaviour
+
+The registered abilities, by name, matching the given `category`, `namespace` (a name prefix), `meta` values, and, with `has_required_capabilities`, those whose capabilities the current user has. `item_include_callback` decides each one and `result_callback` changes the result. <Ev source="wp:wp-includes/abilities-api.php#L584-L669" hash="39fa8aaefc0f2b5548588ee65b047e96afe07e05e4851e7d5661740647a6a1d0"/>
+
+## Override
+
+`wp_get_abilities_item_include` decides each ability, and `wp_get_abilities_result` filters the result.

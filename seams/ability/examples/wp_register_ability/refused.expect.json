@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "doing_it_wrong: WP_Abilities_Registry::register: Ability name must be a string containing a namespace prefix, i.e. \"my-plugin/my-ability\". It can only contain lowercase alphanumeric characters, dashes and the forward slash.\ndoing_it_wrong: WP_Abilities_Registry::register: Ability category \"nope\" is not registered. Please register the ability category before assigning it to ability \"guide/x\".\ndoing_it_wrong: WP_Abilities_Registry::register: The ability properties must contain a `description` string.\n",
+ "return": "array (\n)",
+ "error": null
+}

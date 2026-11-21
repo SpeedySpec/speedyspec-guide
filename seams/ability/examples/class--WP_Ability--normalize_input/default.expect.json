@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'tags' => \n    array (\n    ),\n  ),\n  1 => 'Ability \"guide/def\" has invalid input. Reason: input[tags][0] is not of type string.',\n  2 => 'ability_invalid_input',\n)",
+ "error": null
+}

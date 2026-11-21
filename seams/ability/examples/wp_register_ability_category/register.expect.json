@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'tools',\n  1 => 'Tools',\n  2 => 'Small tools.',\n  3 => \n  array (\n    'by' => 'filter',\n  ),\n)",
+ "error": null
+}

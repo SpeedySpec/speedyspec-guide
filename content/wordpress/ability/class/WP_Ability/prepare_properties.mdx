@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Ability::prepare_properties"
+---
+
+Checks and defaults the properties. `label`, `description` and `category` must be strings. For `WP_Ability` itself, `execute_callback` must be callable, and there must be a callable `permission_callback` or a non-empty `required_capabilities` list. Schemas and meta must be arrays, and meta's `show_in_rest` and `public` booleans. Otherwise it throws an `InvalidArgumentException`. The defaults are no capabilities, annotations `readonly`, `destructive` and `idempotent` `null`, and `show_in_rest` (following `public`) and `public` `false`. <Ev source="wp:wp-includes/abilities-api/class-wp-ability.php#L305-L417" hash="55f74d4e73a84bd3da8d10f58ed9b743ada39a720925d70b1616ab565abfe032"/>
