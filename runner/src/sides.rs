@@ -54,24 +54,24 @@ fn runtime_areas() -> Vec<Rc<dyn NativeArea>> {
     ]
 }
 
-/// Prepares a fresh request for one example: on the WordPress side, WordPress's files, as the compat recorder loads
-/// them; on the runtime side, nothing, because the port is native.
+/// Prepares a fresh request for one example: its time limit, and on the WordPress side, WordPress's files, as the
+/// compat recorder loads them (the runtime side loads nothing: its port is native).
 pub fn prepare(
     php: &Php,
     side: Side,
     manifest: &Manifest,
     example: &ManifestExample,
 ) -> Result<(), String> {
-    if side == Side::Runtime || example.load.is_empty() {
-        return Ok(());
-    }
-    let abspath = format!("{}/", manifest.wordpress_dir.display());
-    let mut code = format!(
-        "define('ABSPATH', {}); define('WPINC', 'wp-includes');",
-        quote(&abspath)
-    );
-    for file in &example.load {
-        code.push_str(&format!(" require ABSPATH . {};", quote(file)));
+    let mut code = format!("set_time_limit({});", manifest.timeout_seconds);
+    if side == Side::WordPress && !example.load.is_empty() {
+        let abspath = format!("{}/", manifest.wordpress_dir.display());
+        code.push_str(&format!(
+            " define('ABSPATH', {}); define('WPINC', 'wp-includes');",
+            quote(&abspath)
+        ));
+        for file in &example.load {
+            code.push_str(&format!(" require ABSPATH . {};", quote(file)));
+        }
     }
     php.eval("speedyspec://guide/setup", &code)
         .map(|_| ())

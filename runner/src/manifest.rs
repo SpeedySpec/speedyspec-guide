@@ -10,6 +10,13 @@ pub struct Manifest {
     /// The extracted WordPress release (WordPress side).
     pub wordpress_dir: PathBuf,
     pub examples: Vec<ManifestExample>,
+    /// The most an example may run, in seconds of CPU time, before PHP stops it (`set_time_limit`).
+    #[serde(default = "default_timeout")]
+    pub timeout_seconds: u64,
+}
+
+fn default_timeout() -> u64 {
+    10
 }
 
 #[derive(Debug, Deserialize)]

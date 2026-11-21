@@ -141,7 +141,21 @@ fn run_one(
             Err(e) => failed(format!("fatal: the driver's output: {e}")),
         },
         Ok(other) => failed(format!("fatal: the driver returned {other:?}")),
-        Err(e) => failed(format!("fatal: {e}")),
+        Err(e) => {
+            // The request is still open: what the example printed before the fatal error is still buffered.
+            let output = match php.eval("speedyspec://guide/output", "return function_exists('speedyspec_guide_output') ? speedyspec_guide_output() : '';") {
+                Ok(Value::Str(text)) => text,
+                _ => String::new(),
+            };
+            let path = example.file.display().to_string();
+            RunResult {
+                output,
+                ..failed(format!(
+                    "fatal: {}",
+                    e.to_string().replace(&path, "<example>")
+                ))
+            }
+        }
     }
 }
 

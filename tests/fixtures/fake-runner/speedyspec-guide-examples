@@ -6,6 +6,7 @@ if (process.env.FAKE_RUNNER_LOG) {
   const manifest = args[0] === 'run' ? JSON.parse(fs.readFileSync(args[4], 'utf8')) : null;
   fs.appendFileSync(process.env.FAKE_RUNNER_LOG, `${JSON.stringify({ args, manifest })}\n`);
 }
+if (process.env.FAKE_RUNNER_SLEEP) Bun.sleepSync(Number(process.env.FAKE_RUNNER_SLEEP));
 if (process.env.FAKE_RUNNER_FAIL) {
   console.error('the runner broke');
   process.exit(1);

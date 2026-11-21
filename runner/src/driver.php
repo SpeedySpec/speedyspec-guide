@@ -3,6 +3,7 @@
  * (`var_export`) and what it threw.
  */
 function speedyspec_guide_example( string $file ): string {
+	$GLOBALS['speedyspec_guide_level'] = ob_get_level();
 	ob_start();
 	$return = null;
 	$error  = null;
@@ -14,13 +15,25 @@ function speedyspec_guide_example( string $file ): string {
 	} catch ( \Throwable $e ) {
 		$error = get_class( $e ) . ': ' . $e->getMessage();
 	}
-	$output = ob_get_clean();
 	return json_encode(
 		array(
-			'output' => false === $output ? '' : $output,
+			'output' => speedyspec_guide_output(),
 			'return' => $return,
 			'error'  => $error,
 		),
 		JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR
 	);
+}
+
+/**
+ * Everything printed since the example started, including buffers the example opened and left open; closes them.
+ * Also called by the runner after a fatal error, before the request ends.
+ */
+function speedyspec_guide_output(): string {
+	$base   = $GLOBALS['speedyspec_guide_level'] ?? 0;
+	$output = '';
+	while ( ob_get_level() > $base ) {
+		$output = (string) ob_get_clean() . $output;
+	}
+	return $output;
 }

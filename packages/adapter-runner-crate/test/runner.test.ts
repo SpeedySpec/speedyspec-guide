@@ -29,3 +29,13 @@ describe('RunnerCrate', () => {
     delete process.env.FAKE_RUNNER_FAIL;
   });
 });
+
+describe('a runner that hangs', () => {
+  test('is killed after the timeout, and the call rejects saying so', async () => {
+    process.env.FAKE_RUNNER_SLEEP = '5000';
+    const started = Date.now();
+    await expect(new RunnerCrate(fake, 300).reflect('baseline')).rejects.toThrow('timed out after 300 ms');
+    delete process.env.FAKE_RUNNER_SLEEP;
+    expect(Date.now() - started).toBeLessThan(3000);
+  });
+});

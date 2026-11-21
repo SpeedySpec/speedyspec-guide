@@ -9,7 +9,11 @@ fn fixtures() -> PathBuf {
 
 /// Runs the given examples (file names in tests/fixtures/examples) on one side and returns the result entries.
 fn run(side: &str, examples: &[(&str, &[&str])]) -> Vec<Value> {
-    let manifest = json!({
+    run_with(side, examples, None)
+}
+
+fn run_with(side: &str, examples: &[(&str, &[&str])], timeout: Option<u64>) -> Vec<Value> {
+    let mut manifest = json!({
         "wordpressDir": fixtures().join("wordpress"),
         "examples": examples.iter().map(|(file, load)| json!({
             "id": file,
@@ -17,6 +21,9 @@ fn run(side: &str, examples: &[(&str, &[&str])]) -> Vec<Value> {
             "load": load,
         })).collect::<Vec<_>>(),
     });
+    if let Some(seconds) = timeout {
+        manifest["timeoutSeconds"] = json!(seconds);
+    }
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("manifest.json");
     std::fs::write(&path, manifest.to_string()).unwrap();
@@ -123,4 +130,49 @@ fn speedyspec_hook_callbacks_do_not_outlive_their_request() {
             r[1]
         );
     }
+}
+
+#[test]
+fn an_example_that_never_ends_times_out() {
+    let r = run_with(
+        "wordpress",
+        &[("loop.php", &[]), ("returns.php", &[])],
+        Some(1),
+    );
+    assert!(
+        r[0]["error"]
+            .as_str()
+            .unwrap()
+            .contains("Maximum execution time"),
+        "{}",
+        r[0]
+    );
+    assert_eq!(r[1]["return"], "20");
+}
+
+#[test]
+fn a_fatal_error_names_the_example_not_its_path() {
+    let r = one("wordpress", "memory.php", &[]);
+    let error = r["error"].as_str().unwrap();
+    assert!(
+        error.starts_with("fatal: ") && error.contains("Allowed memory size"),
+        "{error}"
+    );
+    assert!(!error.contains(fixtures().to_str().unwrap()), "{error}");
+    assert!(error.contains("<example>"), "{error}");
+}
+
+#[test]
+fn a_fatal_error_keeps_the_output_so_far() {
+    let r = run("wordpress", &[("exits.php", &[]), ("returns.php", &[])]);
+    assert_eq!(r[0]["output"], "bye", "{}", r[0]);
+    assert_eq!(r[1]["output"], "");
+}
+
+#[test]
+fn output_in_a_buffer_the_example_opened_is_kept() {
+    assert_eq!(
+        one("wordpress", "nested-buffer.php", &[])["output"],
+        "inner"
+    );
 }
