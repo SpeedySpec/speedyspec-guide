@@ -35,6 +35,39 @@ describe('buildEvidenceIndex', () => {
   });
 });
 
+describe('a scenario step that hooks a name', () => {
+  const hooks = [
+    { id: 'filter:pre_option_{$option}', name: 'pre_option_{$option}' },
+    { id: 'filter:{$hook_name}', name: '{$hook_name}' },
+    { id: 'action:init', name: 'init' },
+    { id: 'filter:pre_{$field}', name: 'pre_{$field}' },
+    { id: 'action:{$old}_{$new}', name: '{$old}_{$new}' },
+    { id: 'action:update_option', name: 'update_option' },
+  ];
+  const hooked = {
+    scenarios: [
+      { name: 'pre_option', steps: [{ call: 'add_filter', args: ['pre_option_blogname', {}] }] },
+      { name: 'on_init', steps: [{ call: 'add_action', args: ['init', {}] }, { call: 'has_filter', args: [5] }] },
+      { name: 'on_update', steps: [{ call: 'add_action', args: ['update_option', {}] }] },
+    ],
+    breaks: [],
+  };
+  const index = buildEvidenceIndex('options', hooked, hooks);
+  test('counts_toward_the_hooks_page_its_name_matches', () => {
+    expect(index['filter:pre_option_{$option}']?.scenarios).toEqual(['pre_option']);
+    expect(index['function:add_filter']?.scenarios).toEqual(['pre_option']);
+    expect(index['action:init']?.scenarios).toEqual(['on_init']);
+  });
+  test('only_the_most_specific_hook_counts', () => {
+    expect(index['filter:pre_{$field}']).toBeUndefined();
+    expect(index['action:{$old}_{$new}']).toBeUndefined();
+    expect(index['action:update_option']?.scenarios).toEqual(['on_update']);
+  });
+  test('a_name_that_is_only_a_placeholder_matches_nothing', () => {
+    expect(index['filter:{$hook_name}']).toBeUndefined();
+  });
+});
+
 describe('CitesItsScenario', () => {
   const seams: Seam[] = [{ id: 'hooks', name: 'Hooks', job: 'j', ported: true, files: [], symbols: [], exclude: [], roles: {}, edges: [], wordpress: [] }];
   const assignment: Assignment = { seamOf: { 'function:add_filter': 'hooks', 'class:WP_Hook': 'hooks', 'method:WP_Hook::apply_filters': 'hooks' }, unassigned: [], conflicts: [] };
@@ -49,6 +82,23 @@ describe('CitesItsScenario', () => {
   test('a matching scenario or break passes', async () => {
     expect(await CitesItsScenario.check(ctx('function:add_filter', { kind: 'scenario', area: 'hooks', name: 'globals' }))).toEqual([]);
     expect(await CitesItsScenario.check(ctx('class:WP_Hook', { kind: 'break', area: 'hooks', scenario: 'hook_object' }))).toEqual([]);
+  });
+  test('a_wordpress_page_citing_an_unrelated_scenario_fails', async () => {
+    const wp = { page: 'wordpress/hooks/add_filter.mdx', section: 'wordpress', seam: 'hooks', symbol: 'function:add_filter' } as ContentPage;
+    const c = { seams, assignment, pages: [wp], citations: [{ ...wp, citation: { kind: 'scenario', area: 'hooks', name: 'hook_object' } }], evidenceIndex: { hooks: buildEvidenceIndex('hooks', catalogue) } } as unknown as ValidationContext;
+    expect((await CitesItsScenario.check(c)).map((x) => x.where)).toEqual(['wordpress/hooks/add_filter.mdx']);
+  });
+  test('a_wordpress_page_citing_only_source_passes', async () => {
+    const wp = { page: 'wordpress/hooks/add_filter.mdx', section: 'wordpress', seam: 'hooks', symbol: 'function:add_filter' } as ContentPage;
+    const c = { seams, assignment, pages: [wp], citations: [{ ...wp, citation: { kind: 'source', base: 'wp', file: 'wp-includes/plugin.php', from: 1, to: 2 } }], evidenceIndex: { hooks: buildEvidenceIndex('hooks', catalogue) } } as unknown as ValidationContext;
+    expect(await CitesItsScenario.check(c)).toEqual([]);
+  });
+  test('a_wordpress_page_of_an_unported_seam_is_checked_against_its_area', async () => {
+    const options: Seam = { ...seams[0]!, id: 'options', ported: false };
+    const wp = { page: 'wordpress/options/get_option.mdx', section: 'wordpress', seam: 'options', symbol: 'function:get_option' } as ContentPage;
+    const idx = buildEvidenceIndex('options', { scenarios: [{ name: 'reads', steps: [{ call: 'get_option' }] }, { name: 'other', steps: [{ call: 'add_option' }] }], breaks: [] });
+    const c = { seams: [options], assignment, pages: [wp], citations: [{ ...wp, citation: { kind: 'scenario', area: 'options', name: 'other' } }], evidenceIndex: { options: idx } } as unknown as ValidationContext;
+    expect((await CitesItsScenario.check(c)).map((x) => x.message)).toEqual(['cites no scenario that exercises function:get_option; candidates: reads']);
   });
   test("a class page may cite one of its methods' scenarios", async () => {
     const onlyMethod = { ...catalogue, scenarios: [{ name: 'method_only', steps: [{ call: '$h->apply_filters' }] }], breaks: [] };

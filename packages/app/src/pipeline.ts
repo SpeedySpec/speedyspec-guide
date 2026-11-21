@@ -116,8 +116,8 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
       await store.write('coverage', computeCoverage(await need<Assignment>(store, 'assignment'), await deps.seams.all(), await deps.content.pages()));
       break;
     case 'evidence':
-      await store.write('evidence-index', await evidenceIndexes(deps));
-      await store.write('compat', { wordpress: await compatVersion(deps) });
+      await store.write('evidence-index', await evidenceIndexes(deps, store));
+      await store.write('compat', { areas: await compatAreas(deps) });
       break;
     case 'validate': {
       const failures = await runRules(ALL_RULES, {
@@ -133,7 +133,7 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
         examples: await store.read<ExamplesFile>('examples'),
         declaredExamples: (await deps.examples.all()).examples.map((e) => ({ id: e.id, sides: e.sides })),
         // Offline, the released versions are those recorded in the committed speedyspec-history.json.
-        evidenceIndex: await evidenceIndexes(deps),
+        evidenceIndex: await evidenceIndexes(deps, store),
         runtimeIds: (await store.read<GuideSymbol[]>('inventory-runtime'))?.map((s) => s.id) ?? null,
         crossSeam: (await store.read<{ crossSeam: ValidationContext['crossSeam'] }>('graph'))?.crossSeam ?? [],
         runtimeTags: opts.offline
@@ -147,23 +147,25 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
   return { ok: true, failures: [] };
 }
 
-/** The evidence index of every ported seam that has a compat area of its name. */
-/** The release the ported seams' compat scenarios were recorded against: the first one that says. */
-async function compatVersion(deps: PipelineDeps): Promise<string | null> {
+/** The release each seam's compat area was recorded against, for every seam that has a compat area of its name. */
+async function compatAreas(deps: PipelineDeps): Promise<Record<string, string>> {
   const evidence = await deps.evidence();
-  for (const seam of (await deps.seams.all()).filter((s) => s.ported)) {
+  const out: Record<string, string> = {};
+  for (const seam of await deps.seams.all()) {
     const v = await evidence.compatVersion(seam.id);
-    if (v) return v;
+    if (v) out[seam.id] = v;
   }
-  return null;
+  return out;
 }
 
-async function evidenceIndexes(deps: PipelineDeps): Promise<Record<string, EvidenceIndex>> {
+/** The evidence index of every seam that has a compat area of its name, ported or not. */
+async function evidenceIndexes(deps: PipelineDeps, store: GeneratedStore): Promise<Record<string, EvidenceIndex>> {
   const evidence = await deps.evidence();
+  const hooks = ((await store.read<Inventory>('inventory-wp'))?.symbols ?? []).filter((s) => s.kind === 'filter' || s.kind === 'action').map((s) => ({ id: s.id, name: s.name }));
   const out: Record<string, EvidenceIndex> = {};
-  for (const seam of (await deps.seams.all()).filter((s) => s.ported)) {
+  for (const seam of await deps.seams.all()) {
     const c = await evidence.catalogue(seam.id);
-    if (c) out[seam.id] = buildEvidenceIndex(seam.id, c);
+    if (c) out[seam.id] = buildEvidenceIndex(seam.id, c, hooks);
   }
   return out;
 }

@@ -136,17 +136,19 @@ export const CitesItsScenario: Rule = {
   async check(ctx) {
     const f: Failure[] = [];
     for (const page of ctx.pages) {
-      if (page.section !== 'speedyspec' || !page.symbol) continue;
+      if (!page.symbol) continue;
       const seam = ctx.seams.find((s) => s.id === page.seam);
-      const index = seam?.ported ? ctx.evidenceIndex[seam.id] : undefined;
+      // SpeedySpec pages: a ported seam's must cite its scenarios. WordPress pages: only one that cites scenarios at all.
+      const index = seam && (page.section === 'wordpress' || seam.ported) ? ctx.evidenceIndex[seam.id] : undefined;
       if (!index) continue;
+      const cited = ctx.citations.filter((c) => c.page === page.page).map((c) => c.citation);
+      if (page.section === 'wordpress' && !cited.some((c) => c.kind === 'scenario' || c.kind === 'break')) continue;
       const id = page.symbol;
       const relevant = Object.entries(index).filter(([sym]) => sym === id || (id.startsWith('class:') && sym.startsWith(`method:${id.slice('class:'.length)}::`)));
       // A symbol no scenario exercises (SpeedySpec's own API) is verified by tests instead.
       if (relevant.length === 0) continue;
       const scenarios = new Set(relevant.flatMap(([, e]) => e.scenarios));
       const breaks = new Set(relevant.flatMap(([, e]) => e.breaks.map((b) => b.scenario)));
-      const cited = ctx.citations.filter((c) => c.page === page.page).map((c) => c.citation);
       const ok = cited.some((c) => (c.kind === 'scenario' && scenarios.has(c.name)) || (c.kind === 'break' && breaks.has(c.scenario)));
       if (!ok) f.push({ rule: this.id, where: page.page, message: `cites no scenario that exercises ${id}; candidates: ${[...scenarios].sort().slice(0, 3).join(', ')}` });
     }

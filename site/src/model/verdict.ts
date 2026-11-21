@@ -1,5 +1,5 @@
 import type { Verdict } from '@speedyspec-guide/domain';
-import type { GuideData } from './data.ts';
+import { compatWordPress, type GuideData } from './data.ts';
 
 export type SpeedySpecVerdict = Verdict | 'not-in-speedyspec' | 'unknown';
 
@@ -48,7 +48,7 @@ export function wordpressProvenance(id: string, d: GuideData): {
     tier,
     wordpress: d.inventory.version || 'unknown',
     ...(d.sources?.wordpress.commit ? { commit: d.sources.wordpress.commit } : {}),
-    compat: d.compatWordPress,
+    compat: compatWordPress(d.assignment.seamOf[id], d),
     released: history !== undefined,
     ...(history?.since ? { since: history.since } : {}),
     ...(history?.removed ? { removed: history.removed } : {}),

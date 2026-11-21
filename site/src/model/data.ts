@@ -44,8 +44,8 @@ export interface GuideData {
   runtimeSeamOf: Record<string, string>;
   graph: Graph;
   cycles: Cycles;
-  /** The WordPress release speedyspec-server's compat scenarios were recorded against (generated/compat.json). */
-  compatWordPress: string | null;
+  /** The WordPress release each seam's compat area was recorded against (generated/compat.json). */
+  compatAreas: Record<string, string>;
   wordpressHistory: HistoryFile | null;
   speedyspecHistory: RuntimeHistoryFile | null;
   crates: CratesFile;
@@ -109,7 +109,7 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
     runtimeSeamOf,
     graph: await json<Graph>('graph', { nodes: [], edges: [], crossSeam: [] }),
     cycles: await json<Cycles>('cycles', { symbol: [], seam: [], components: [] }),
-    compatWordPress: (await json<{ wordpress: string } | null>('compat', null))?.wordpress ?? null,
+    compatAreas: (await json<{ areas?: Record<string, string> } | null>('compat', null))?.areas ?? {},
     wordpressHistory: await json<HistoryFile | null>('wordpress-history', null),
     speedyspecHistory: await json<RuntimeHistoryFile | null>('speedyspec-history', null),
     crates: await json<CratesFile>('crates', { crates: [] }),
@@ -147,4 +147,9 @@ export function frontmatter(text: string): Record<string, unknown> {
   const m = /^---\r?\n([\s\S]*?)\r?\n?---/.exec(text);
   if (!m) return {};
   return (parse(m[1] ?? '') as Record<string, unknown> | null) ?? {};
+}
+
+/** The WordPress release a seam's compat scenarios were recorded against, or null when it has no compat area. */
+export function compatWordPress(seamId: string | undefined, d: Pick<GuideData, 'compatAreas'>): string | null {
+  return seamId === undefined ? null : (d.compatAreas[seamId] ?? null);
 }

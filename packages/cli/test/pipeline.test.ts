@@ -24,6 +24,11 @@ describe('bun run guide all --offline', () => {
     }
     const graph = JSON.parse(readFileSync(join(work, 'generated', 'graph.json'), 'utf8'));
     expect(graph.crossSeam).toContainEqual(expect.objectContaining({ from: 'function:update_option', to: 'function:apply_filters', fromSeam: 'options', toSeam: 'hooks' }));
+    // An unported seam with a compat area of its name gets an evidence index and its compat release.
+    const compat = JSON.parse(readFileSync(join(work, 'generated', 'compat.json'), 'utf8'));
+    expect(compat).toEqual({ areas: { hooks: '7.1.5', options: '7.1.5' } });
+    const index = JSON.parse(readFileSync(join(work, 'generated', 'evidence-index.json'), 'utf8'));
+    expect(index.options['function:update_option'].scenarios).toEqual(['get_with_pre_option']);
     const validation = JSON.parse(readFileSync(join(work, 'generated', 'validation.json'), 'utf8'));
     expect(validation).toEqual([expect.objectContaining({ rule: 'CitationExists', where: 'wordpress/hooks/add_filter.mdx' })]);
     expect(out).toContain('CitationExists wordpress/hooks/add_filter.mdx: scenario hooks/does_not_exist does not exist');

@@ -1,0 +1,3 @@
+{ "area": "options", "scenarios": [
+  { "name": "get_with_pre_option", "steps": [ { "call": "add_filter", "args": ["pre_option_blogname", { "callback": "return_arg", "label": "rec" }] }, { "call": "update_option", "args": ["blogname", "x"] } ] }
+] }

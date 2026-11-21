@@ -29,6 +29,11 @@ describe('wording', () => {
     expect(provenanceText(symbolView('class:WP_Hook', 'wordpress', d), 'wordpress')).toBe('Generated from WordPress 7.2-RC1 (trunk ce78d2d) · Since 2.0.0');
   });
 
+  test("a_verified_page_names_its_own_seam's_compat_release", () => {
+    const c = { ...d, compatAreas: { hooks: '7.0.0', options: '7.1.5' } };
+    expect(provenanceText(symbolView('function:add_filter', 'wordpress', c), 'wordpress')).toBe('Verified against WordPress 7.0.0 · Since 0.71');
+  });
+
   test("a SpeedySpec page's provenance says when SpeedySpec added it and whether it is native", () => {
     expect(provenanceText(symbolView('function:add_filter', 'speedyspec', d), 'speedyspec')).toBe('Added in SpeedySpec unreleased · Native (Rust)');
     expect(provenanceText(symbolView('function:get_option', 'speedyspec', d), 'speedyspec')).toBe('Not in SpeedySpec yet');
