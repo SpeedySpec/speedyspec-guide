@@ -28,6 +28,8 @@ export interface ValidationContext {
   runtimeTags: string[];
   /** Per ported seam (the compat area of the same name), which scenarios and breaks exercise which symbol. */
   evidenceIndex: Record<string, EvidenceIndex>;
+  /** Every id the runtime declares (Reflection), or null when the runner has not run. */
+  runtimeIds: string[] | null;
 }
 
 /** One validation rule. Specification. */

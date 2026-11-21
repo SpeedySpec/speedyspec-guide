@@ -47,6 +47,7 @@ async function ctx(pages: Record<string, string>, over: Partial<ValidationContex
     declaredExamples: [],
     runtimeTags: [],
     evidenceIndex: {},
+    runtimeIds: null,
     ...over,
   };
 }
@@ -150,5 +151,18 @@ describe('examples', () => {
   test('a SpeedySpec version with no runtime tag', async () => {
     const r = await rulesOf(await ctx({ 'speedyspec/hooks/a.mdx': '<Changed version="1.2.0"/> <Ev scenario="add_filter_returns_true"/>' }, { runtimeTags: ['1.0.0'] }));
     expect(r).toEqual(['VersionHasTag']);
+  });
+});
+
+describe('SeamSymbolsExist', () => {
+  test('a seam listing an id neither WordPress nor the runtime has is a failure', async () => {
+    const seams: Seam[] = [{ ...hooks, symbols: ['global:wp_filter', 'class:SpeedySpec\\WpHooks\\HookStorage', 'global:wp_fitler'] }];
+    const inv: Inventory = { ...inventory, symbols: [{ id: 'global:wp_filter', kind: 'global', name: 'wp_filter', file: 'p.php', line: 1 }] };
+    const f = await runRules(ALL_RULES, await ctx({}, { seams, inventory: inv, runtimeIds: ['class:SpeedySpec\\WpHooks\\HookStorage'] }));
+    expect(f).toEqual([{ rule: 'SeamSymbolsExist', where: 'seams/hooks/seam.yaml', message: 'lists global:wp_fitler, which neither WordPress nor the runtime has' }]);
+  });
+  test('without the runtime inventory, only ids that look like WordPress are checked', async () => {
+    const seams: Seam[] = [{ ...hooks, symbols: ['class:SpeedySpec\\WpHooks\\HookStorage'] }];
+    expect(await rulesOf(await ctx({}, { seams, runtimeIds: null }))).toEqual([]);
   });
 });

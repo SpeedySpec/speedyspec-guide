@@ -14,5 +14,6 @@ const one = async (theme: 'default' | 'dark') => {
 };
 const light = await one('default');
 const dark = await one('dark');
-process.stdout.write(JSON.stringify({ light, dark }));
+// Wait for the whole pair to be written before exiting: a large SVG is more than one pipe buffer.
+await Bun.write(Bun.stdout, JSON.stringify({ light, dark }));
 process.exit(0);

@@ -27,12 +27,17 @@ describe('CompatFilesEvidence', () => {
     // Harness-style tests name their checks in strings: check("name", …).
     expect(await ev.testExists('speedyspec-wp-hooks-php::wordpress::php_hook_store_binding_takes_every_registration')).toBe(true);
     expect(await ev.testExists('speedyspec-wp-hooks-php::wordpress::not_a_check')).toBe(false);
+    // Only a check's name counts, not any string in the file.
+    expect(await ev.testExists('speedyspec-wp-hooks-php::wordpress::kept')).toBe(false);
   });
   test('source lines', async () => {
     expect(await ev.sourceLines('wp', 'wp-includes/plugin.php', 2, 3)).toBe('function add_filter( $hook_name, $callback ) {\n\treturn true;');
     expect(await ev.sourceLines('wp', 'wp-includes/plugin.php', 9, 10)).toBeNull();
     expect(await ev.sourceLines('ss', 'nope.php', 1, 1)).toBeNull();
     expect(await ev.sourceLines('wp', '../outside.php', 1, 1)).toBeNull();
+    // SpeedySpec's own server code (crates/, compat/) is read from the server checkout; other ss: paths from the fork.
+    expect(await ev.sourceLines('ss', 'crates/speedyspec-wp-hooks-php/src/hooks.php', 3, 3)).toBe("    $GLOBALS['wp_current_filter'] = array();");
+    expect(await ev.sourceLines('ss', 'compat/hooks/breaks.json', 1, 1)).toBe('{ "breaks": [');
   });
 });
 

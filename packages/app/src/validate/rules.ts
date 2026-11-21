@@ -139,3 +139,21 @@ export const CitesItsScenario: Rule = {
     return f;
   },
 };
+
+export const SeamSymbolsExist: Rule = {
+  id: 'SeamSymbolsExist',
+  async check(ctx) {
+    const wordpress = new Set(ctx.inventory.symbols.map((s) => s.id));
+    const runtime = ctx.runtimeIds ? new Set(ctx.runtimeIds) : null;
+    const f: Failure[] = [];
+    for (const seam of ctx.seams) {
+      for (const id of seam.symbols) {
+        if (wordpress.has(id)) continue;
+        // Without the runtime's inventory, SpeedySpec's own ids can't be checked.
+        if (runtime === null ? id.slice(id.indexOf(':') + 1).startsWith('SpeedySpec\\') : runtime.has(id)) continue;
+        f.push({ rule: this.id, where: `seams/${seam.id}/seam.yaml`, message: `lists ${id}, which neither WordPress nor the runtime has` });
+      }
+    }
+    return f;
+  },
+};

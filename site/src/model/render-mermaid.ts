@@ -28,5 +28,9 @@ async function render(code: string, id: string): Promise<{ light: string; dark: 
   const timer = setTimeout(() => proc.kill('SIGKILL'), LIMIT_MS);
   const [out, err, exit] = await Promise.all([new Response(proc.stdout).text(), new Response(proc.stderr).text(), proc.exited]).finally(() => clearTimeout(timer));
   if (exit !== 0) throw new Error(`rendering a diagram failed (exit ${exit}): ${err.trim() || 'killed after the time limit'}\n${code}`);
-  return JSON.parse(out) as { light: string; dark: string };
+  try {
+    return JSON.parse(out) as { light: string; dark: string };
+  } catch (e) {
+    throw new Error(`rendering a diagram gave unreadable output (${(e as Error).message}, ${out.length} bytes)\n${code}`);
+  }
 }

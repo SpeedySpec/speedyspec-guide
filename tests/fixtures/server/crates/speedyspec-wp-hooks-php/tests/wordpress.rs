@@ -8,3 +8,7 @@ fn main() {
         (),
     );
 }
+
+fn other() {
+    let _name = "kept";
+}

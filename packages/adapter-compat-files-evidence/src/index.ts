@@ -33,11 +33,13 @@ export class CompatFilesEvidence implements EvidenceSource {
     if (!existsSync(file)) return false;
     const name = fn.replace(/\W/g, '');
     const text = await Bun.file(file).text();
-    return new RegExp(`\\bfn\\s+${name}\\s*\\(`).test(text) || text.includes(`"${name}"`);
+    return new RegExp(`\\bfn\\s+${name}\\s*\\(`).test(text) || new RegExp(`\\bcheck\\(\\s*"${name}"`).test(text);
   }
 
   async sourceLines(base: 'wp' | 'ss', file: string, from: number, to: number): Promise<string | null> {
-    const root = resolve(base === 'wp' ? this.wordpressDir : this.forkDir);
+    // SpeedySpec's server code (crates/, compat/) is in the server checkout; the rest of ss: is the packages/ fork.
+    const server = base === 'ss' && (file.startsWith('crates/') || file.startsWith('compat/'));
+    const root = resolve(base === 'wp' ? this.wordpressDir : server ? this.serverDir : this.forkDir);
     const full = resolve(root, file);
     if (relative(root, full).startsWith('..') || !existsSync(full)) return null;
     const lines = (await Bun.file(full).text()).split('\n');
