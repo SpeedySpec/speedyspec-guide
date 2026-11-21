@@ -1,0 +1,31 @@
+---
+import type { SeamView } from '../model/views.ts';
+import { roleLabel } from '../model/wording.ts';
+
+interface Props {
+  seam: SeamView;
+  section: 'wordpress' | 'speedyspec';
+  current?: string;
+}
+const { seam, section, current } = Astro.props;
+---
+<nav class="rail" aria-label={`${seam.name} seam`}>
+  <a class="rail-seam" href={`/${section}/${seam.id}/`}><b>{seam.name}</b> · seam</a>
+  {seam.roles.map((r) => (
+    <>
+      <div class="rail-role">{roleLabel(r.role)}</div>
+      {r.members.map((m) => (
+        <>
+          <a class:list={['rail-member', { circular: m.circular }]} href={m.href} aria-current={m.id === current ? 'page' : undefined}>
+            {m.name}{m.circular && <span class="cycle-mark" aria-hidden="true">↻</span>}{m.circular && <span class="visually-hidden"> (circular)</span>}
+          </a>
+          {m.methods && m.methods.length > 0 && (
+            <div class="rail-methods">
+              {m.methods.map((x) => <a class="rail-member" href={x.href} aria-current={x.id === current ? 'page' : undefined}>::{x.name}</a>)}
+            </div>
+          )}
+        </>
+      ))}
+    </>
+  ))}
+</nav>

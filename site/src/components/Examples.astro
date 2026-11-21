@@ -1,0 +1,28 @@
+---
+import type { ExampleView } from '../model/views.ts';
+
+interface Props {
+  examples: ExampleView[];
+}
+const { examples } = Astro.props;
+const sideName = { wordpress: 'WordPress', runtime: 'SpeedySpec' } as const;
+---
+<section class="examples">
+  <h2>Examples</h2>
+  {examples.length === 0 && <p class="muted">No examples yet.</p>}
+  {examples.map((e) => (
+    <article class="example" id={`example-${e.name}`}>
+      <div class="example-head">
+        <h3>{e.title}</h3>
+        <span class="ran">
+          {e.sides.map((s) => (
+            <span class:list={['ran-side', `ran-${s.status}`]}>
+              {s.status === 'passed' ? '✓' : s.status === 'failed' ? '✗' : '–'} {sideName[s.side]}{s.status === 'not-run' ? ': not run' : ''}{s.detail ? `: ${s.detail}` : ''}
+            </span>
+          ))}
+        </span>
+      </div>
+      <pre><code class="language-php">{e.code}</code></pre>
+    </article>
+  ))}
+</section>

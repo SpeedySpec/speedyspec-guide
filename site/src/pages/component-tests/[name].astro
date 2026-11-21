@@ -1,0 +1,37 @@
+---
+// Renders each component from the guide's data, for the component tests. Built only with GUIDE_COMPONENT_TESTS=1.
+import Diagram from '../../components/Diagram.astro';
+import Examples from '../../components/Examples.astro';
+import Head from '../../components/Head.astro';
+import OnSpeedySpec from '../../components/OnSpeedySpec.astro';
+import RelationshipPanel from '../../components/RelationshipPanel.astro';
+import SeamRail from '../../components/SeamRail.astro';
+import VerdictPill from '../../components/VerdictPill.astro';
+import Base from '../../layouts/Base.astro';
+import { loadGuideData } from '../../model/data.ts';
+import { seamDiagram } from '../../model/mermaid.ts';
+import type { SpeedySpecVerdict } from '../../model/verdict.ts';
+import { seamView, symbolView } from '../../model/views.ts';
+
+export function getStaticPaths() {
+  if (process.env.GUIDE_COMPONENT_TESTS !== '1') return [];
+  return ['rail', 'head', 'panel', 'pills', 'examples', 'diagram', 'on-speedyspec'].map((name) => ({ params: { name } }));
+}
+
+const { name } = Astro.params;
+const d = await loadGuideData();
+const seam = seamView('hooks', 'wordpress', d);
+const addFilter = symbolView('function:add_filter', 'wordpress', d);
+const verdicts: SpeedySpecVerdict[] = ['works-as-wordpress', 'works-with-differences', 'breaks', 'new-in-speedyspec', 'same-code', 'modified', 'removed', 'unknown'];
+---
+<Base title={`Component: ${name}`}>
+  <main class="page" id="component">
+    {name === 'rail' && <SeamRail seam={seam} section="wordpress" current="function:apply_filters" />}
+    {name === 'head' && <Head view={addFilter} section="wordpress" />}
+    {name === 'panel' && <RelationshipPanel edges={addFilter.edges} callsInto={addFilter.callsInto} />}
+    {name === 'pills' && verdicts.map((v) => <VerdictPill verdict={v} />)}
+    {name === 'examples' && <Examples examples={addFilter.examples} />}
+    {name === 'diagram' && <Diagram code={seamDiagram(seam, d)} label="The Hooks seam" />}
+    {name === 'on-speedyspec' && <OnSpeedySpec verdict={addFilter.verdict} href="/speedyspec/hooks/add_filter/" />}
+  </main>
+</Base>

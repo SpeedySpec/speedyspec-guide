@@ -1,0 +1,27 @@
+---
+import type { Section, SymbolView } from '../model/views.ts';
+
+interface Props {
+  view: SymbolView;
+  section: Section;
+}
+const { view, section } = Astro.props;
+const w = view.provenance.wordpress;
+const s = view.provenance.speedyspec;
+---
+<section class="history">
+  <h2>History</h2>
+  <ul>
+    {section === 'wordpress' ? (
+      <>
+        <li>{w.since ? `WordPress ${w.since}: added` : 'WordPress: when it was added is not known yet'}</li>
+        {w.removed && <li>WordPress {w.removed}: removed</li>}
+      </>
+    ) : (
+      <>
+        <li>SpeedySpec {s.added}: added</li>
+        {s.removed && <li>SpeedySpec {s.removed}: removed</li>}
+      </>
+    )}
+  </ul>
+</section>

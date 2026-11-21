@@ -1,0 +1,8 @@
+---
+interface Props {
+  version: string;
+  base?: 'wp' | 'ss';
+}
+const { version, base = 'ss' } = Astro.props;
+---
+<p class="change"><b>Changed in {base === 'wp' ? 'WordPress' : 'SpeedySpec'} {version}:</b> <slot /></p>

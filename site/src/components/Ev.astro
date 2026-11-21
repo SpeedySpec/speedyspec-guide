@@ -1,0 +1,11 @@
+---
+import { citationText, parseCitation } from '@speedyspec-guide/domain';
+import { loadGuideData } from '../model/data.ts';
+import { evidenceLink } from '../model/wording.ts';
+
+const attrs = Object.fromEntries(Object.entries(Astro.props).map(([k, v]) => [k, String(v)]));
+const citation = parseCitation(attrs);
+const href = evidenceLink(citation, (await loadGuideData()).sources);
+const text = citationText(citation);
+---
+{href ? <a class="ev" href={href}>{text}</a> : <span class="ev">{text}</span>}

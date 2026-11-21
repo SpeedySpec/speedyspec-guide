@@ -1,0 +1,15 @@
+---
+import type { SymbolView } from '../model/views.ts';
+import VerdictPill from './VerdictPill.astro';
+
+interface Props {
+  verdict: SymbolView['verdict'];
+  href: string;
+}
+const { verdict, href } = Astro.props;
+---
+<aside class="on-speedyspec">
+  <div class="on-head"><b>On SpeedySpec</b> <VerdictPill verdict={verdict.verdict} /></div>
+  {verdict.differences.length > 0 && <ul>{verdict.differences.map((x) => <li>{x.summary}</li>)}</ul>}
+  <a href={href}>The SpeedySpec page →</a>
+</aside>

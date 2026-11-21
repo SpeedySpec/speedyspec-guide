@@ -1,0 +1,18 @@
+---
+import type { SymbolView } from '../model/views.ts';
+
+interface Props {
+  fires: SymbolView['fires'];
+}
+const { fires } = Astro.props;
+---
+{fires.length > 0 && (
+  <section class="fires">
+    <h2>Fires</h2>
+    <ul>
+      {fires.map((f) => (
+        <li><a class="mono" href={f.href}>{f.name}</a>{f.dynamic && <span class="muted"> (name built at run time)</span>}</li>
+      ))}
+    </ul>
+  </section>
+)}

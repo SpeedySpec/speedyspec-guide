@@ -1,0 +1,10 @@
+---
+import type { SpeedySpecVerdict } from '../model/verdict.ts';
+import { verdictLabel, verdictTone } from '../model/wording.ts';
+
+interface Props {
+  verdict: SpeedySpecVerdict;
+}
+const { verdict } = Astro.props;
+---
+<span class:list={['pill', `tone-${verdictTone(verdict)}`]}>{verdictLabel(verdict)}</span>

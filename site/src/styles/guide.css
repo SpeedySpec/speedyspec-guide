@@ -58,3 +58,55 @@ h1, h2, h3 { line-height: 1.25; }
 .topbar .brand { font-weight: 600; color: var(--text); }
 .topbar .search { margin-left: auto; }
 .page { max-width: var(--column); margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
+
+.muted { color: var(--muted); }
+.reference { display: grid; grid-template-columns: var(--rail) minmax(0, var(--column)); gap: 2rem; max-width: calc(var(--rail) + var(--column) + 4rem); margin: 0 auto; padding: 1.25rem; }
+.content { min-width: 0; }
+@media (max-width: 52rem) { .reference { grid-template-columns: 1fr; } .rail { border-right: 0; border-bottom: 1px solid var(--line); } }
+
+.rail { border-right: 1px solid var(--line); padding-right: 0.75rem; font-size: 0.8125rem; position: sticky; top: 0; align-self: start; max-height: 100vh; overflow: auto; }
+.rail-seam { display: block; color: var(--muted); margin-bottom: 0.5rem; }
+.rail-seam b { color: var(--text); }
+.rail-role { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0.9rem 0 0.2rem; }
+.rail-member { display: block; font-family: var(--mono); padding: 0.1rem 0.4rem; border-radius: 4px; color: var(--text); }
+.rail-member[aria-current='page'] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.rail-member.circular { background: var(--bad-soft); color: var(--bad); }
+.rail-methods { padding-left: 0.6rem; }
+.cycle-mark { margin-left: 0.3rem; }
+
+.head h1 { font-size: 1.5rem; margin: 0.1rem 0 0.4rem; }
+.crumbs { font-size: 0.8125rem; color: var(--muted); }
+.provenance { font-size: 0.8125rem; display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.pill { display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 0.05rem 0.55rem; border-radius: 999px; white-space: nowrap; }
+.tone-ok { background: var(--ok-soft); color: var(--ok); }
+.tone-warn { background: var(--warn-soft); color: var(--warn); }
+.tone-bad { background: var(--bad-soft); color: var(--bad); }
+.tone-new { background: var(--new-soft); color: var(--new); }
+.tone-muted { background: var(--surface-2); color: var(--muted); }
+
+.panel { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; margin: 1rem 0; padding: 0.75rem 0.9rem; border: 1px solid var(--line); border-radius: 8px; }
+.panel dt { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.panel dd { margin: 0.15rem 0 0; display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.chip { font-family: var(--mono); font-size: 0.75rem; border: 1px solid var(--line); border-radius: 6px; padding: 0.1rem 0.45rem; color: var(--text); background: var(--surface); }
+.chip.circular, tr.circular td:first-child { background: var(--bad-soft); color: var(--bad); border-color: var(--bad); }
+.chip-note { font-family: var(--font); font-size: 0.6875rem; font-weight: 600; }
+.signature { background: var(--surface-2); color: var(--text); }
+
+.examples h3 { font-size: 0.9375rem; margin: 1.1rem 0 0.3rem; }
+.example-head { display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; }
+.ran { margin-left: auto; display: flex; gap: 0.6rem; font-size: 0.75rem; }
+.ran-passed { color: var(--ok); }
+.ran-failed { color: var(--bad); }
+.ran-not-run { color: var(--muted); }
+.example pre { margin-top: 0.2rem; }
+
+.content h2 { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 1.75rem 0 0.5rem; }
+.ev { font-size: 0.6875rem; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 0.35rem; margin-left: 0.3rem; white-space: nowrap; }
+.change { font-size: 0.875rem; }
+.on-speedyspec { border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 6px; padding: 0.6rem 0.9rem; margin: 1.5rem 0; font-size: 0.875rem; }
+.on-head { display: flex; gap: 0.5rem; align-items: center; }
+.diagram { margin: 1rem 0; }
+.diagram img { max-width: 100%; height: auto; }
+.compat { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.compat th, .compat td { text-align: left; padding: 0.35rem 0.5rem; border-top: 1px solid var(--line); }
+.compat th { font-size: 0.75rem; color: var(--muted); font-weight: 600; }

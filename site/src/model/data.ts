@@ -9,6 +9,7 @@ import type { Assignment, Example, ForkVerdict, GuideSymbol, Inventory, Seam } f
 import { existsSync } from 'node:fs';
 import { join, sep } from 'node:path';
 import { parse } from 'yaml';
+import type { Sources } from './wording.ts';
 
 /** `generated/crates.json`: the server's crates and their dependencies on each other. */
 export interface CratesFile {
@@ -49,6 +50,8 @@ export interface GuideData {
   examples: { files: ExampleFile[]; results: ExamplesFile | null };
   seams: Seam[];
   content: ContentEntry[];
+  /** sources.json: what the evidence links point at. */
+  sources: Sources | null;
 }
 
 const root = join(import.meta.dir, '..', '..', '..');
@@ -58,6 +61,7 @@ export function guideDirs(env: Record<string, string | undefined> = process.env)
     data: env.GUIDE_DATA_DIR ?? join(root, 'generated'),
     seams: env.GUIDE_SEAMS_DIR ?? join(root, 'seams'),
     content: env.GUIDE_CONTENT_DIR ?? join(root, 'content'),
+    sources: env.GUIDE_SOURCES ?? join(root, 'sources.json'),
   };
 }
 
@@ -92,6 +96,7 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
     examples: { files: examples, results: await json<ExamplesFile | null>('examples', null) },
     seams,
     content: await readContent(dirs.content),
+    sources: (await Bun.file(dirs.sources).exists()) ? ((await Bun.file(dirs.sources).json()) as Sources) : null,
   };
 }
 

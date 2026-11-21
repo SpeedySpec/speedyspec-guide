@@ -1,0 +1,7 @@
+---
+interface Props {
+  signature?: string;
+}
+const { signature } = Astro.props;
+---
+{signature && <pre class="signature"><code>{signature}</code></pre>}

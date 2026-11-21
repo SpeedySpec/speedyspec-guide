@@ -1,0 +1,22 @@
+---
+import type { SpeedySpecVerdict } from '../model/verdict.ts';
+import type { MemberView } from '../model/views.ts';
+import VerdictPill from './VerdictPill.astro';
+
+interface Props {
+  rows: { member: MemberView; verdict: SpeedySpecVerdict; note?: string; href: string }[];
+}
+const { rows } = Astro.props;
+---
+<table class="compat">
+  <thead><tr><th>Symbol</th><th>On SpeedySpec</th><th>Note</th></tr></thead>
+  <tbody>
+    {rows.map((r) => (
+      <tr class:list={{ circular: r.member.circular }}>
+        <td><a class="mono" href={r.href}>{r.member.name}</a>{r.member.circular && <span class="chip-note"> circular</span>}</td>
+        <td><VerdictPill verdict={r.verdict} /></td>
+        <td class="muted">{r.note ?? ''}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>

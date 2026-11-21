@@ -1,0 +1,17 @@
+---
+import type { Section, SymbolView } from '../model/views.ts';
+import { provenanceText, roleLabel } from '../model/wording.ts';
+import VerdictPill from './VerdictPill.astro';
+
+interface Props {
+  view: SymbolView;
+  section: Section;
+}
+const { view, section } = Astro.props;
+const title = view.kind === 'function' || view.kind === 'method' ? `${view.name}()` : view.kind === 'global' ? `$${view.name}` : view.name;
+---
+<header class="head">
+  <div class="crumbs"><a href={`/${section}/${view.seam.id}/`}>{view.seam.name}</a> › {roleLabel(view.role)}</div>
+  <h1 class="mono" data-pagefind-meta="name" data-pagefind-weight="10">{title}</h1>
+  <div class="provenance"><VerdictPill verdict={view.verdict.verdict} /> <span class="muted">{provenanceText(view, section)}</span></div>
+</header>

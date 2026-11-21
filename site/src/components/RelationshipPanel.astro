@@ -1,0 +1,26 @@
+---
+import type { SymbolView } from '../model/views.ts';
+
+interface Props {
+  edges: SymbolView['edges'];
+  callsInto: SymbolView['callsInto'];
+}
+const { edges, callsInto } = Astro.props;
+const groups = new Map<string, SymbolView['edges'][number]['to'][]>();
+for (const e of edges) groups.set(e.label, [...(groups.get(e.label) ?? []), e.to]);
+for (const c of callsInto) groups.set(`calls into ${c.seam}`, c.symbols);
+---
+{groups.size > 0 && (
+  <dl class="panel">
+    {[...groups].map(([label, links]) => (
+      <div class="panel-group">
+        <dt>{label}</dt>
+        <dd>
+          {links.map((l) => (
+            <a class:list={['chip', { circular: l.circular }]} href={l.href}>{l.name}{l.circular && <span class="chip-note"> circular</span>}</a>
+          ))}
+        </dd>
+      </div>
+    ))}
+  </dl>
+)}
