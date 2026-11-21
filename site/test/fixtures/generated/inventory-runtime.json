@@ -1,0 +1,18 @@
+[
+ {
+  "id": "function:add_filter",
+  "kind": "function",
+  "name": "add_filter",
+  "file": "native",
+  "line": 0,
+  "signature": "add_filter($hook_name, $callback, $priority = 10, $accepted_args = 1)"
+ },
+ {
+  "id": "class:SpeedySpec\\Hooks\\Hook",
+  "kind": "class",
+  "name": "SpeedySpec\\Hooks\\Hook",
+  "file": "native",
+  "line": 0,
+  "signature": "final class SpeedySpec\\Hooks\\Hook"
+ }
+]

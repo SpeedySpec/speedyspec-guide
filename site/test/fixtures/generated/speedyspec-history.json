@@ -1,0 +1,11 @@
+{
+ "versions": [],
+ "symbols": {
+  "function:add_filter": {
+   "since": "unreleased"
+  },
+  "class:SpeedySpec\\Hooks\\Hook": {
+   "since": "unreleased"
+  }
+ }
+}

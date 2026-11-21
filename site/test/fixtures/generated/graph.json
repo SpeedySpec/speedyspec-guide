@@ -1,0 +1,130 @@
+{
+ "nodes": [
+  "function:add_filter",
+  "function:apply_filters",
+  "class:WP_Hook",
+  "method:WP_Hook::add_filter",
+  "method:WP_Hook::apply_filters",
+  "global:wp_filter",
+  "filter:the_content",
+  "function:get_option",
+  "filter:pre_option_{$option}",
+  "function:unassigned_thing"
+ ],
+ "edges": [
+  {
+   "from": "function:add_filter",
+   "to": "global:wp_filter",
+   "kind": "writes",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/plugin.php",
+    "from": 124,
+    "to": 124
+   }
+  },
+  {
+   "from": "function:add_filter",
+   "to": "class:WP_Hook",
+   "kind": "calls",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/plugin.php",
+    "from": 127,
+    "to": 127
+   }
+  },
+  {
+   "from": "function:apply_filters",
+   "to": "global:wp_filter",
+   "kind": "reads",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/plugin.php",
+    "from": 206,
+    "to": 206
+   }
+  },
+  {
+   "from": "function:add_filter",
+   "to": "function:get_option",
+   "kind": "calls",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/plugin.php",
+    "from": 125,
+    "to": 125
+   }
+  },
+  {
+   "from": "function:get_option",
+   "to": "function:add_filter",
+   "kind": "calls",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/option.php",
+    "from": 90,
+    "to": 90
+   }
+  },
+  {
+   "from": "function:get_option",
+   "to": "filter:pre_option_{$option}",
+   "kind": "fires",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/option.php",
+    "from": 120,
+    "to": 120
+   }
+  },
+  {
+   "from": "function:add_filter",
+   "to": "filter:the_content",
+   "kind": "fires",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/plugin.php",
+    "from": 126,
+    "to": 126
+   }
+  }
+ ],
+ "crossSeam": [
+  {
+   "from": "function:add_filter",
+   "to": "function:get_option",
+   "fromSeam": "hooks",
+   "toSeam": "options",
+   "kind": "calls",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/plugin.php",
+    "from": 125,
+    "to": 125
+   }
+  },
+  {
+   "from": "function:get_option",
+   "to": "function:add_filter",
+   "fromSeam": "options",
+   "toSeam": "hooks",
+   "kind": "calls",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/option.php",
+    "from": 90,
+    "to": 90
+   }
+  }
+ ]
+}

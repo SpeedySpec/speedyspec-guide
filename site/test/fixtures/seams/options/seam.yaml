@@ -1,0 +1,6 @@
+name: Options
+job: Stores and reads site settings.
+ported: false
+files: [wp-includes/option.php]
+dependencies:
+  function:add_filter: php

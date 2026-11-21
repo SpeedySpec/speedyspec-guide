@@ -1,0 +1,11 @@
+---
+symbol: function:add_filter
+verdict: works-with-differences
+differences:
+  - summary: Replacing $wp_filter wholesale is not seen.
+    break: wp_filter_replace_wholesale
+---
+
+## Override
+
+Swap the hook store adapter.

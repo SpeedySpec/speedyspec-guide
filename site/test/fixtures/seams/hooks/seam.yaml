@@ -1,0 +1,14 @@
+name: Hooks
+job: Lets code register callbacks on named filters and actions, and runs them in priority order.
+ported: true
+files: [wp-includes/plugin.php, wp-includes/class-wp-hook.php]
+symbols: [global:wp_filter]
+wordpress: [wp-includes/plugin.php]
+packages: [wp-plugin]
+crates: [speedyspec-wp-hooks, speedyspec-wp-hooks-php]
+roles:
+  register: [function:add_filter]
+  run: [function:apply_filters]
+  classes-and-state: [class:WP_Hook, global:wp_filter]
+edges:
+  - { from: function:apply_filters, to: function:add_filter, kind: undone-by, at: { scenario: add_filter_returns_true } }

@@ -1,8 +1,12 @@
 import type { SeamRepository } from '@speedyspec-guide/contracts';
-import { type Edge, type EdgeKind, parseCitation, type Seam } from '@speedyspec-guide/domain';
+import { type DependencyState, type Edge, type EdgeKind, parseCitation, type Seam } from '@speedyspec-guide/domain';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
+
+/** Fixed routes under /speedyspec/, so never seam ids. */
+const RESERVED = ['porting', 'architecture', 'runtime'];
+const STATES = ['php', 'port', 'rust'];
 
 const EDGE_KINDS: EdgeKind[] = ['calls', 'reads', 'writes', 'fires', 'runs', 'matches', 'alias', 'undone-by'];
 
@@ -15,6 +19,8 @@ export class SeamFiles implements SeamRepository {
       .filter((d) => d.isDirectory() && existsSync(join(this.dir, d.name, 'seam.yaml')))
       .map((d) => d.name)
       .sort();
+    const reserved = ids.find((id) => RESERVED.includes(id));
+    if (reserved) throw new Error(`seams/${reserved}: ${reserved} is reserved for a route; name the seam otherwise`);
     return Promise.all(ids.map((id) => this.read(id)));
   }
 
@@ -45,6 +51,13 @@ export class SeamFiles implements SeamRepository {
       if (e.at !== undefined) edge.at = parseCitation(Object.fromEntries(Object.entries(e.at as object).map(([k, v]) => [k, String(v)])));
       return edge;
     });
+    function dependencies(): Record<string, DependencyState> {
+      const v = (data!.dependencies ?? {}) as Record<string, unknown>;
+      for (const [target, state] of Object.entries(v)) {
+        if (!STATES.includes(String(state))) throw new Error(`${where}: dependency ${target} must be php, port or rust`);
+      }
+      return v as Record<string, DependencyState>;
+    }
     return {
       id,
       name: text('name'),
@@ -55,6 +68,9 @@ export class SeamFiles implements SeamRepository {
       exclude: list('exclude'),
       roles: roles as Record<string, string[]>,
       wordpress: list('wordpress'),
+      packages: list('packages'),
+      crates: list('crates'),
+      dependencies: dependencies(),
       edges,
     };
   }

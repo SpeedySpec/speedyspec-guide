@@ -1,0 +1,3 @@
+{ "symbol": [{ "path": ["function:add_filter", "function:get_option", "function:add_filter"], "possible": false }],
+  "seam": [["hooks", "options", "hooks"]],
+  "components": [["function:add_filter", "function:get_option"]] }

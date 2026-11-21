@@ -1,0 +1,5 @@
+{ "seamOf": {
+  "function:add_filter": "hooks", "function:apply_filters": "hooks", "class:WP_Hook": "hooks",
+  "method:WP_Hook::add_filter": "hooks", "method:WP_Hook::apply_filters": "hooks", "global:wp_filter": "hooks",
+  "filter:the_content": "hooks", "function:get_option": "options", "filter:pre_option_{$option}": "options"
+}, "unassigned": ["function:unassigned_thing"], "conflicts": [] }

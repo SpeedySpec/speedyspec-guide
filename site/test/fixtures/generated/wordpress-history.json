@@ -1,0 +1,1 @@
+{ "tags": ["0.71", "2.0.0", "7.1.5"], "symbols": { "function:add_filter": { "since": "0.71" }, "function:apply_filters": { "since": "0.71" }, "class:WP_Hook": { "since": "2.0.0" }, "function:get_option": { "since": "0.71" } } }

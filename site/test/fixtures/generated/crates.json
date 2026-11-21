@@ -1,0 +1,1 @@
+{ "crates": [ { "name": "speedyspec-wp-hooks", "dependencies": [] }, { "name": "speedyspec-wp-hooks-php", "dependencies": ["speedyspec-wp-hooks", "speedyspec-php"] }, { "name": "speedyspec-php", "dependencies": [] } ] }
