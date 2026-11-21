@@ -2,6 +2,6 @@ name: "Options"
 job: "Reads, adds, updates and deletes options, site options and transients."
 ported: false
 packages: [wp-option]
-forkPackages: [wp-option]
-files: []
+files:
+  - 'wp-includes/option.php'
 wordpress: []

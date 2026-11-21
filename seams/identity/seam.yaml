@@ -2,6 +2,14 @@ name: "Users and roles"
 job: "Creates, queries and authenticates users, and checks roles and capabilities."
 ported: false
 packages: [wp-identity]
-forkPackages: [wp-identity]
-files: []
+files:
+  - 'wp-includes/capabilities.php'
+  - 'wp-includes/class-wp-role.php'
+  - 'wp-includes/class-wp-roles.php'
+  - 'wp-includes/class-wp-session-tokens.php'
+  - 'wp-includes/class-wp-user-meta-session-tokens.php'
+  - 'wp-includes/class-wp-user-query.php'
+  - 'wp-includes/class-wp-user-request.php'
+  - 'wp-includes/class-wp-user.php'
+  - 'wp-includes/user.php'
 wordpress: []

@@ -2,6 +2,6 @@ name: "Cron"
 job: "Schedules, reschedules and runs events stored in the cron option."
 ported: false
 packages: [wp-cron]
-forkPackages: [wp-cron]
-files: []
+files:
+  - 'wp-includes/cron.php'
 wordpress: []

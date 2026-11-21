@@ -3,5 +3,4 @@ job: "Holds the plugins and themes WordPress ships in wp-content."
 ported: false
 files:
   - wp-content/**
-inFork: false
 wordpress: []

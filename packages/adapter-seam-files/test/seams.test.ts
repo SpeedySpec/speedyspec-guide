@@ -23,12 +23,10 @@ describe('SeamFiles', () => {
     expect(seams[1]).toMatchObject({ ported: true, symbols: ['function:shared'], exclude: [], roles: {}, edges: [], wordpress: [] });
   });
 
-  test('reads forkPackages and inFork, which defaults to true', async () => {
-    const dir = only('a', 'forked');
-    const [a, forked] = await new SeamFiles(dir).all();
+  test('fork_fields_are_refused', async () => {
+    const dir = only('forked');
+    await expect(new SeamFiles(dir).all()).rejects.toThrow("forked/seam.yaml: forkPackages is no longer supported; list the seam's WordPress files");
     rmSync(dir, { recursive: true });
-    expect(a).toMatchObject({ forkPackages: [], inFork: true });
-    expect(forked).toMatchObject({ forkPackages: ['wp-forked'], inFork: false });
   });
 
   test('a dependency state carries its state and citation', async () => {

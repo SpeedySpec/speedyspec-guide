@@ -40,16 +40,6 @@ describe('roles', () => {
   });
 });
 
-describe('the fork', () => {
-  test('outside_the_fork_has_no_fork_verdict', () => {
-    const c = copy((x) => {
-      x.seams.find((s) => s.id === 'options')!.inFork = false;
-      x.fork['function:get_option'] = 'removed';
-    });
-    expect(speedyspecVerdict('function:get_option', c)).toEqual({ verdict: 'unknown', differences: [], source: 'outside-fork' });
-    expect(indexOf(c).hasPage('function:get_option', 'speedyspec')).toBe(false);
-  });
-});
 
 describe('dependencies', () => {
   test('dependencies_group_by_target', () => {
@@ -119,16 +109,6 @@ describe('long dependency lists', () => {
   });
 });
 
-describe('a seam outside the fork', () => {
-  test('its_speedyspec_page_has_no_compatibility_rows', async () => {
-    const { compatGroups } = await import('../src/model/sections.ts');
-    expect(compatGroups('options', d)).not.toBeNull();
-    const c = copy((x) => {
-      x.seams.find((s) => s.id === 'options')!.inFork = false;
-    });
-    expect(compatGroups('options', c)).toBeNull();
-  });
-});
 
 describe('a runtime method of a WordPress class', () => {
   test('is_a_method_on_its_class_page_not_a_page_of_its_own', () => {

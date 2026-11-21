@@ -39,6 +39,9 @@ export class SeamFiles implements SeamRepository {
       if (!Array.isArray(v) || v.some((x) => typeof x !== 'string')) throw new Error(`${where}: "${field}" must be a list of strings`);
       return v as string[];
     };
+    for (const gone of ['forkPackages', 'inFork']) {
+      if (gone in data) throw new Error(`${where}: ${gone} is no longer supported; list the seam's WordPress files`);
+    }
     const roles = (data.roles ?? {}) as Record<string, unknown>;
     for (const [role, members] of Object.entries(roles)) {
       if (!Array.isArray(members) || members.some((x) => typeof x !== 'string')) throw new Error(`${where}: role "${role}" must be a list of ids`);
@@ -75,8 +78,6 @@ export class SeamFiles implements SeamRepository {
       wordpress: list('wordpress'),
       packages: list('packages'),
       crates: list('crates'),
-      forkPackages: list('forkPackages'),
-      inFork: data.inFork !== false,
       dependencies: dependencies(),
       edges,
     };

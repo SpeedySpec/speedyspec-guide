@@ -2,10 +2,35 @@ name: "Themes and templates"
 job: "Loads themes and theme.json, resolves templates, and provides the template tags themes call."
 ported: false
 packages: [wp-theme]
-forkPackages: [wp-theme]
 files:
   - 'wp-includes/robots-template.php'
   - 'wp-includes/template-loader.php'
   - 'wp-includes/theme-compat/**'
   - 'wp-includes/view-transitions.php'
+  - 'wp-includes/author-template.php'
+  - 'wp-includes/bookmark-template.php'
+  - 'wp-includes/category-template.php'
+  - 'wp-includes/class-wp-theme-json-data.php'
+  - 'wp-includes/class-wp-theme-json-resolver.php'
+  - 'wp-includes/class-wp-theme-json-schema.php'
+  - 'wp-includes/class-wp-theme-json.php'
+  - 'wp-includes/class-wp-theme.php'
+  - 'wp-includes/comment-template.php'
+  - 'wp-includes/general-template.php'
+  - 'wp-includes/link-template.php'
+  - 'wp-includes/media-template.php'
+  - 'wp-includes/nav-menu-template.php'
+  - 'wp-includes/post-template.php'
+  - 'wp-includes/post-thumbnail-template.php'
+  - 'wp-includes/template.php'
+  - 'wp-includes/theme-previews.php'
+  - 'wp-includes/theme-templates.php'
+  - 'wp-includes/theme.php'
 wordpress: []
+# Symbols whose file belongs to another seam.
+symbols:
+  - "constant:HEADER_IMAGE"
+  - "constant:HEADER_IMAGE_HEIGHT"
+  - "constant:HEADER_IMAGE_WIDTH"
+  - "constant:HEADER_TEXTCOLOR"
+  - "constant:NO_HEADER_TEXT"

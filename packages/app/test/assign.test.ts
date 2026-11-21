@@ -74,23 +74,8 @@ describe('symbols a seam lists that WordPress does not have', () => {
   });
 });
 
-describe('fork packages and load order', () => {
-  const ss = (id: string, file: string): Inventory => ({ base: 'ss', version: 'x', symbols: [s(id, file)], edges: [], unresolved: [] });
-  const none: Inventory = { base: 'ss', version: 'x', symbols: [], edges: [], unresolved: [] };
+describe('load order', () => {
 
-  test('fork_package_places_a_symbol', () => {
-    const r = assign(inv([s('function:get_option', 'wp-includes/option.php')]), [seam('options', { forkPackages: ['wp-option'] })], ss('function:get_option', 'wp-option/wp-option-legacy/functions/option.php'), []);
-    expect(r.seamOf['function:get_option']).toBe('options');
-  });
-  test('fork_package_wins_over_a_files_glob', () => {
-    const r = assign(inv([s('function:f', 'a/f.php')]), [seam('a', { files: ['a/*.php'] }), seam('b', { forkPackages: ['wp-b'] })], ss('function:f', 'wp-b/f.php'), []);
-    expect(r.seamOf['function:f']).toBe('b');
-    expect(r.conflicts).toEqual([]);
-  });
-  test('fork_package_respects_exclude', () => {
-    const r = assign(inv([s('function:f', 'x/f.php')]), [seam('b', { forkPackages: ['wp-b'], exclude: ['function:f'] })], ss('function:f', 'wp-b/f.php'), []);
-    expect(r.unassigned).toEqual(['function:f']);
-  });
   test('hook_fired_from_two_seams_goes_to_the_first_in_load_order', () => {
     const sm = [seam('A', { files: ['wp-includes/late.php'] }), seam('B', { files: ['wp-includes/early.php'] })];
     const r = assign(
@@ -99,7 +84,6 @@ describe('fork packages and load order', () => {
         { ...fires('function:b', 'filter:x'), at: at('wp-includes/early.php', 900) },
       ]),
       sm,
-      none,
       ['wp-includes/early.php', 'wp-includes/late.php'],
     );
     expect(r.seamOf['filter:x']).toBe('B');
@@ -113,7 +97,6 @@ describe('fork packages and load order', () => {
         { ...fires('function:a', 'filter:x'), at: at('f.php', 5) },
       ]),
       sm,
-      none,
       [],
     );
     expect(r.seamOf['filter:x']).toBe('A');
@@ -124,7 +107,6 @@ describe('fork packages and load order', () => {
     const r = assign(
       inv([s('function:a', 'late.php'), s('function:b', 'early.php'), s('function:c', 'early.php'), s('global:g', 'late.php')], [w('function:a', 'late.php'), w('function:b', 'early.php'), { from: 'function:c', to: 'global:g', kind: 'reads', at: at('early.php', 1) }]),
       sm,
-      none,
       ['early.php', 'late.php'],
     );
     expect(r.seamOf['global:g']).toBe('B');
@@ -132,35 +114,40 @@ describe('fork packages and load order', () => {
 });
 
 describe('the seam of a symbol\'s file', () => {
-  const none: Inventory = { base: 'ss', version: 'x', symbols: [], edges: [], unresolved: [] };
-  const ss = (...pairs: [string, string][]): Inventory => ({ base: 'ss', version: 'x', symbols: pairs.map(([id, f]) => s(id, f)), edges: [], unresolved: [] });
 
-  test('a_symbol_the_fork_lacks_goes_to_the_seam_of_most_of_its_file', () => {
+  test('a_symbol_no_rule_places_goes_to_the_seam_of_most_of_its_file', () => {
     const r = assign(
       inv([s('function:old1', 'wp-includes/c.php'), s('function:old2', 'wp-includes/c.php'), s('function:new', 'wp-includes/c.php')]),
-      [seam('q', { forkPackages: ['wp-q'] })],
-      ss(['function:old1', 'wp-q/c.php'], ['function:old2', 'wp-q/c.php']),
+      [seam('q', { symbols: ['function:old1', 'function:old2'] })],
       [],
     );
     expect(r.seamOf['function:new']).toBe('q');
   });
   test('a_hook_nothing_fires_goes_to_the_seam_of_most_of_its_file', () => {
-    const r = assign(inv([s('function:f', 'wp-includes/d.php'), s('filter:only_registered', 'wp-includes/d.php')]), [seam('q', { forkPackages: ['wp-q'] })], ss(['function:f', 'wp-q/d.php']), []);
+    const r = assign(inv([s('function:f', 'wp-includes/d.php'), s('filter:only_registered', 'wp-includes/d.php')]), [seam('q', { symbols: ['function:f'] })], []);
     expect(r.seamOf['filter:only_registered']).toBe('q');
   });
   test('a_file_fired_hook_goes_to_the_seam_of_most_of_that_file', () => {
-    const r = assign(inv([s('function:f', 'wp-includes/e.php'), s('action:top', 'wp-includes/e.php')], [fires('file:wp-includes/e.php', 'action:top')]), [seam('q', { forkPackages: ['wp-q'] })], ss(['function:f', 'wp-q/e.php']), []);
+    const r = assign(inv([s('function:f', 'wp-includes/e.php'), s('action:top', 'wp-includes/e.php')], [fires('file:wp-includes/e.php', 'action:top')]), [seam('q', { symbols: ['function:f'] })], []);
     expect(r.seamOf['action:top']).toBe('q');
   });
   test('a_file_with_no_placed_symbols_places_nothing', () => {
-    expect(assign(inv([s('function:lone', 'wp-includes/z.php')]), [seam('q', { forkPackages: ['wp-q'] })], none, []).unassigned).toEqual(['function:lone']);
+    expect(assign(inv([s('function:lone', 'wp-includes/z.php')]), [seam('q', { symbols: [] })], []).unassigned).toEqual(['function:lone']);
   });
 });
 
 describe('a hook nothing fires', () => {
   test('a_hook_nothing_fires_in_a_globbed_file_goes_to_that_seam', () => {
-    const none: Inventory = { base: 'ss', version: 'x', symbols: [], edges: [], unresolved: [] };
-    const r = assign(inv([s('filter:registered_only', 'wp-admin/includes/admin-filters.php')]), [seam('admin', { files: ['wp-admin/**'] })], none, []);
+    const r = assign(inv([s('filter:registered_only', 'wp-admin/includes/admin-filters.php')]), [seam('admin', { files: ['wp-admin/**'] })], []);
     expect(r.seamOf['filter:registered_only']).toBe('admin');
+  });
+});
+
+describe('an exact file and a glob', () => {
+  test('an_exact_file_beats_a_glob', () => {
+    const r = assign(inv([s('class:Upgrader', 'wp-admin/includes/class-wp-upgrader.php'), s('function:screen', 'wp-admin/includes/screen.php')]), [seam('admin', { files: ['wp-admin/**'] }), seam('app-upgrader', { files: ['wp-admin/includes/class-wp-upgrader.php'] })], []);
+    expect(r.conflicts).toEqual([]);
+    expect(r.seamOf['class:Upgrader']).toBe('app-upgrader');
+    expect(r.seamOf['function:screen']).toBe('admin');
   });
 });

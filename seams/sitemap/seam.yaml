@@ -2,6 +2,15 @@ name: "Sitemaps"
 job: "Registers sitemap providers and renders the sitemap index and sitemaps."
 ported: false
 packages: [wp-sitemap]
-forkPackages: [wp-sitemap]
-files: []
+files:
+  - 'wp-includes/sitemaps.php'
+  - 'wp-includes/sitemaps/class-wp-sitemaps-index.php'
+  - 'wp-includes/sitemaps/class-wp-sitemaps-provider.php'
+  - 'wp-includes/sitemaps/class-wp-sitemaps-registry.php'
+  - 'wp-includes/sitemaps/class-wp-sitemaps-renderer.php'
+  - 'wp-includes/sitemaps/class-wp-sitemaps-stylesheet.php'
+  - 'wp-includes/sitemaps/class-wp-sitemaps.php'
+  - 'wp-includes/sitemaps/providers/class-wp-sitemaps-posts.php'
+  - 'wp-includes/sitemaps/providers/class-wp-sitemaps-taxonomies.php'
+  - 'wp-includes/sitemaps/providers/class-wp-sitemaps-users.php'
 wordpress: []

@@ -2,7 +2,9 @@ name: "Interactivity API"
 job: "Processes Interactivity API directives in rendered markup and holds its state and configuration."
 ported: false
 packages: [wp-interactivity]
-forkPackages: [wp-interactivity]
 files:
   - 'wp-includes/interactivity-api/class-wp-interactivity-dangerous-html.php'
+  - 'wp-includes/interactivity-api/class-wp-interactivity-api-directives-processor.php'
+  - 'wp-includes/interactivity-api/class-wp-interactivity-api.php'
+  - 'wp-includes/interactivity-api/interactivity-api.php'
 wordpress: []

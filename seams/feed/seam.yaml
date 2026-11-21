@@ -2,8 +2,17 @@ name: "Feeds"
 job: "Fetches and parses remote feeds through SimplePie, and renders the site's own feeds."
 ported: false
 packages: [wp-feed]
-forkPackages: [wp-feed]
 files:
   - 'wp-includes/SimplePie/**'
   - 'wp-includes/feed-*.php'
+  - 'wp-includes/atomlib.php'
+  - 'wp-includes/class-simplepie.php'
+  - 'wp-includes/class-wp-feed-cache-transient.php'
+  - 'wp-includes/class-wp-feed-cache.php'
+  - 'wp-includes/class-wp-oembed-controller.php'
+  - 'wp-includes/class-wp-oembed.php'
+  - 'wp-includes/class-wp-simplepie-file.php'
+  - 'wp-includes/class-wp-simplepie-sanitize-kses.php'
+  - 'wp-includes/feed.php'
+  - 'wp-includes/rss.php'
 wordpress: []

@@ -1,8 +1,8 @@
 /**
  * The guide's build: `bun run guide <stage> [--offline]`, run from the repository root.
- * Stages: extract, fork, assign, graph, history, validate, or all of them in order.
+ * Stages: extract, assign, graph, history, validate, or all of them in order.
  *
- * Inputs come from sources.json and checkouts under .cache/, or from GUIDE_WORDPRESS_GIT, GUIDE_WORDPRESS_DIR, GUIDE_FORK_DIR and
+ * Inputs come from sources.json and checkouts under .cache/, or from GUIDE_WORDPRESS_GIT, GUIDE_WORDPRESS_DIR and
  * GUIDE_SERVER_DIR. Composition root.
  */
 import { CompatFilesEvidence } from '@speedyspec-guide/adapter-compat-files-evidence';
@@ -22,7 +22,6 @@ import { checkout } from './checkout.ts';
 interface Sources {
   wordpress: { repo: string; commit: string; version: string; path: string; tags: string };
   server: { repo: string; commit: string };
-  fork: { repo: string; branch: string; commit: string; path: string };
 }
 
 class GeneratedFiles implements GeneratedStore {
@@ -56,15 +55,6 @@ async function main(argv: string[]): Promise<number> {
   // wordpress-develop, read only), else the bare clone the history stage keeps.
   const wordpressGit = env('GUIDE_WORDPRESS_GIT') ?? join(cache, 'wordpress-tags', 'repository.git');
   const wordpressDir = async () => env('GUIDE_WORDPRESS_DIR') ?? new WordPressCommit(sources.wordpress, cache, wordpressGit).fetch(sources.wordpress.version);
-  const forkDir = async () => {
-    const dir = env('GUIDE_FORK_DIR');
-    if (dir) return dir;
-    try {
-      return join(checkout(cache, 'fork', sources.fork.repo, sources.fork.commit), sources.fork.path);
-    } catch (e) {
-      throw new Error(`${(e as Error).message}\nThe fork commit may not be pushed yet; set GUIDE_FORK_DIR to a local packages/ folder.`);
-    }
-  };
   const serverDir = async () => env('GUIDE_SERVER_DIR') ?? checkout(cache, 'speedyspec-server', sources.server.repo, sources.server.commit);
 
   const seams = new SeamFiles(join(root, 'seams'));
@@ -92,8 +82,7 @@ async function main(argv: string[]): Promise<number> {
     history: new GitTagHistory(sources.wordpress.tags, join(cache, 'wordpress-tags')),
     wordpressDir,
     wordpressFile: async (rel: string) => Bun.file(join(await wordpressDir(), rel)).text(),
-    forkDir,
-    evidence: async () => new CompatFilesEvidence(await serverDir(), await wordpressDir(), await forkDir()),
+    evidence: async () => new CompatFilesEvidence(await serverDir(), await wordpressDir()),
     content: new ContentFiles(join(root, 'content')),
     crates: {
       manifests: async () => {
@@ -104,7 +93,6 @@ async function main(argv: string[]): Promise<number> {
       },
     },
     wordpressVersion: sources.wordpress.version,
-    forkCommit: sources.fork.commit,
     config: { requireAllAssigned: config.requireAllAssigned, requirePortedCoverage: config.requirePortedCoverage === true },
   };
 

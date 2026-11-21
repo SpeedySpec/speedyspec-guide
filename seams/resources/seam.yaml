@@ -2,6 +2,37 @@ name: "Scripts, styles and fonts"
 job: "Registers, enqueues and prints scripts, script modules and styles, generates CSS through the style engine, and manages fonts."
 ported: false
 packages: [wp-resources]
-forkPackages: [wp-resources]
-files: []
+files:
+  - 'wp-includes/class-wp-dependencies.php'
+  - 'wp-includes/class-wp-dependency.php'
+  - 'wp-includes/class-wp-script-modules.php'
+  - 'wp-includes/class-wp-scripts.php'
+  - 'wp-includes/class-wp-styles.php'
+  - 'wp-includes/fonts.php'
+  - 'wp-includes/fonts/class-wp-font-collection.php'
+  - 'wp-includes/fonts/class-wp-font-face-resolver.php'
+  - 'wp-includes/fonts/class-wp-font-face.php'
+  - 'wp-includes/fonts/class-wp-font-library.php'
+  - 'wp-includes/fonts/class-wp-font-utils.php'
+  - 'wp-includes/functions.wp-scripts.php'
+  - 'wp-includes/functions.wp-styles.php'
+  - 'wp-includes/global-styles-and-settings.php'
+  - 'wp-includes/script-loader.php'
+  - 'wp-includes/script-modules.php'
+  - 'wp-includes/style-engine.php'
+  - 'wp-includes/style-engine/class-wp-style-engine-css-declarations.php'
+  - 'wp-includes/style-engine/class-wp-style-engine-css-rule.php'
+  - 'wp-includes/style-engine/class-wp-style-engine-css-rules-store.php'
+  - 'wp-includes/style-engine/class-wp-style-engine-processor.php'
+  - 'wp-includes/style-engine/class-wp-style-engine.php'
 wordpress: []
+# Symbols whose file belongs to another seam.
+symbols:
+  - "constant:SCRIPT_DEBUG"
+  - "function:_print_scripts"
+  - "function:_print_styles"
+  - "function:script_concat_settings"
+  - "function:wp_sanitize_script_attributes"
+  - "global:compress_css"
+  - "global:compress_scripts"
+  - "global:concatenate_scripts"

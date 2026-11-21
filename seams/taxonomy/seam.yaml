@@ -2,6 +2,13 @@ name: "Taxonomies and metadata"
 job: "Registers taxonomies, stores and queries terms, and reads and writes object metadata."
 ported: false
 packages: [wp-taxonomy]
-forkPackages: [wp-taxonomy]
-files: []
+files:
+  - 'wp-includes/category.php'
+  - 'wp-includes/class-wp-metadata-lazyloader.php'
+  - 'wp-includes/class-wp-tax-query.php'
+  - 'wp-includes/class-wp-taxonomy.php'
+  - 'wp-includes/class-wp-term-query.php'
+  - 'wp-includes/class-wp-term.php'
+  - 'wp-includes/meta.php'
+  - 'wp-includes/taxonomy.php'
 wordpress: []

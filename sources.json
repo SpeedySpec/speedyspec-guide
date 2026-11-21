@@ -9,11 +9,5 @@
   "server": {
     "repo": "https://github.com/SpeedySpec/speedyspec-server.git",
     "commit": "8fc498313cd9b6cd381fed1fc68e2e106a86b3b3"
-  },
-  "fork": {
-    "repo": "https://github.com/SpeedySpec/wordpress-develop.git",
-    "branch": "feat/wp-seo-phase-1",
-    "commit": "57eb4a90dec9257f6d4186d76e67ea171271cc83",
-    "path": "packages"
   }
 }

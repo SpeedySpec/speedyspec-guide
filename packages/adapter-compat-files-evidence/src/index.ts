@@ -9,7 +9,7 @@ interface Breaks { breaks: { scenario: string; step?: number; why: string }[] }
 export class CompatFilesEvidence implements EvidenceSource {
   private readonly json = new Map<string, unknown>();
 
-  constructor(private readonly serverDir: string, private readonly wordpressDir: string, private readonly forkDir: string) {}
+  constructor(private readonly serverDir: string, private readonly wordpressDir: string) {}
 
   async scenarioExists(area: string, name: string): Promise<boolean> {
     const c = await this.read<Catalogue>(join('compat', area, 'scenarios.json'));
@@ -37,9 +37,9 @@ export class CompatFilesEvidence implements EvidenceSource {
   }
 
   async sourceLines(base: 'wp' | 'ss', file: string, from: number, to: number): Promise<string | null> {
-    // SpeedySpec's server code (crates/, compat/) is in the server checkout; the rest of ss: is the packages/ fork.
-    const server = base === 'ss' && (file.startsWith('crates/') || file.startsWith('compat/'));
-    const root = resolve(base === 'wp' ? this.wordpressDir : server ? this.serverDir : this.forkDir);
+    // ss: cites speedyspec-server only (crates/, compat/); WordPress's lines are the pinned trunk export.
+    if (base === 'ss' && !(file.startsWith('crates/') || file.startsWith('compat/'))) return null;
+    const root = resolve(base === 'wp' ? this.wordpressDir : this.serverDir);
     const full = resolve(root, file);
     if (relative(root, full).startsWith('..') || !existsSync(full)) return null;
     const lines = (await Bun.file(full).text()).split('\n');

@@ -2,7 +2,6 @@ name: "Blocks"
 job: "Registers block types, parses and renders block markup, applies block supports, and serves block templates and patterns."
 ported: false
 packages: [wp-block]
-forkPackages: [wp-block]
 files:
   - 'wp-includes/blocks/**'
   - 'wp-includes/block-supports/**'
@@ -13,4 +12,32 @@ files:
   - 'wp-includes/icons.php'
   - 'wp-includes/class-wp-icons-registry.php'
   - 'wp-includes/class-wp-icon-collections-registry.php'
+  - 'wp-admin/customize.php'
+  - 'wp-includes/block-bindings.php'
+  - 'wp-includes/block-bindings/pattern-overrides.php'
+  - 'wp-includes/block-bindings/post-data.php'
+  - 'wp-includes/block-bindings/post-meta.php'
+  - 'wp-includes/block-bindings/term-data.php'
+  - 'wp-includes/block-editor.php'
+  - 'wp-includes/block-patterns.php'
+  - 'wp-includes/block-template-utils.php'
+  - 'wp-includes/block-template.php'
+  - 'wp-includes/blocks.php'
+  - 'wp-includes/class-wp-block-bindings-registry.php'
+  - 'wp-includes/class-wp-block-bindings-source.php'
+  - 'wp-includes/class-wp-block-editor-context.php'
+  - 'wp-includes/class-wp-block-list.php'
+  - 'wp-includes/class-wp-block-metadata-registry.php'
+  - 'wp-includes/class-wp-block-pattern-categories-registry.php'
+  - 'wp-includes/class-wp-block-patterns-registry.php'
+  - 'wp-includes/class-wp-block-processor.php'
+  - 'wp-includes/class-wp-block-styles-registry.php'
+  - 'wp-includes/class-wp-block-supports.php'
+  - 'wp-includes/class-wp-block-template.php'
+  - 'wp-includes/class-wp-block-templates-registry.php'
+  - 'wp-includes/class-wp-block-type-registry.php'
+  - 'wp-includes/class-wp-block-type.php'
+  - 'wp-includes/class-wp-block.php'
+  - 'wp-includes/class-wp-classic-to-block-menu-converter.php'
+  - 'wp-includes/class-wp-duotone.php'
 wordpress: []

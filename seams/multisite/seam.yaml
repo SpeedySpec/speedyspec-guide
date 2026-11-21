@@ -2,8 +2,30 @@ name: "Multisite"
 job: "Manages networks and sites, switches between sites, and queries them."
 ported: false
 packages: [wp-multisite]
-forkPackages: [wp-multisite]
 files:
   - 'wp-includes/ms-default-filters.php'
   - 'wp-includes/ms-settings.php'
+  - 'wp-admin/includes/class-wp-ms-sites-list-table.php'
+  - 'wp-admin/includes/class-wp-ms-themes-list-table.php'
+  - 'wp-admin/includes/class-wp-ms-users-list-table.php'
+  - 'wp-admin/includes/network.php'
+  - 'wp-includes/class-wp-network-query.php'
+  - 'wp-includes/class-wp-network.php'
+  - 'wp-includes/class-wp-site-query.php'
+  - 'wp-includes/class-wp-site.php'
+  - 'wp-includes/ms-blogs.php'
+  - 'wp-includes/ms-default-constants.php'
+  - 'wp-includes/ms-deprecated.php'
+  - 'wp-includes/ms-files.php'
+  - 'wp-includes/ms-functions.php'
+  - 'wp-includes/ms-load.php'
+  - 'wp-includes/ms-network.php'
+  - 'wp-includes/ms-site.php'
 wordpress: []
+# Symbols whose file belongs to another seam.
+symbols:
+  - "constant:ADMIN_COOKIE_PATH"
+  - "constant:COOKIEPATH"
+  - "constant:COOKIE_DOMAIN"
+  - "constant:SHORTINIT"
+  - "constant:SITECOOKIEPATH"

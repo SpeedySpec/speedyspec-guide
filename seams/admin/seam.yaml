@@ -3,5 +3,20 @@ job: "Renders and handles the WordPress admin screens and the functions they inc
 ported: false
 files:
   - wp-admin/**
-inFork: false
 wordpress: []
+# Symbols whose file belongs to another seam.
+symbols:
+  - "action:customize_controls_enqueue_scripts"
+  - "action:customize_controls_head"
+  - "action:customize_controls_init"
+  - "action:customize_controls_print_footer_scripts"
+  - "action:customize_controls_print_scripts"
+  - "action:customize_controls_print_styles"
+  - "function:upgrade_700"
+  - "function:wp_get_translation_update_data"
+  - "function:wp_get_translation_update_language"
+  - "function:wp_get_translation_update_name"
+  - "function:wp_get_translation_update_plugin_names"
+  - "function:wp_process_translation_update_selection"
+  - "global:_new_bundled_files"
+  - "global:_old_requests_files"

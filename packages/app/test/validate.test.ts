@@ -235,3 +235,15 @@ describe('runtime members of a runtime class a seam lists', () => {
     expect(f.find((x) => x.rule === 'RuntimeMembersListed')?.message).toContain('method:SpeedySpec\\R::m');
   });
 });
+
+describe('seam files', () => {
+  const wp: Inventory = { ...inventory, symbols: [{ id: 'function:f', kind: 'function', name: 'f', file: 'wp-includes/f.php', line: 1 }] };
+  test('seam_file_missing_from_wordpress_fails', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { inventory: wp, seams: [{ ...hooks, id: 'x', files: ['wp-includes/f.php', 'wp-includes/nope.php'] }] }));
+    expect(f.filter((x) => x.rule === 'SeamFilesExist').map((x) => `${x.where}: ${x.message}`)).toEqual(["seams/x/seam.yaml: lists wp-includes/nope.php, which WordPress doesn't have"]);
+  });
+  test('a_glob_is_not_checked_for_existence', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { inventory: wp, seams: [{ ...hooks, files: ['wp-admin/**', 'wp-includes/*.php'] }] }));
+    expect(f.filter((x) => x.rule === 'SeamFilesExist')).toEqual([]);
+  });
+});

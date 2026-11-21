@@ -2,6 +2,12 @@ name: "Rewrite and canonical URLs"
 job: "Builds rewrite rules, matches request URLs against them, redirects to canonical URLs, and emits speculation rules."
 ported: false
 packages: [wp-route]
-forkPackages: [wp-route]
-files: []
+files:
+  - 'wp-includes/canonical.php'
+  - 'wp-includes/class-wp-matchesmapregex.php'
+  - 'wp-includes/class-wp-rewrite.php'
+  - 'wp-includes/class-wp-speculation-rules.php'
+  - 'wp-includes/class-wp-url-pattern-prefixer.php'
+  - 'wp-includes/rewrite.php'
+  - 'wp-includes/speculative-loading.php'
 wordpress: []

@@ -2,8 +2,15 @@ name: "Internationalization"
 job: "Loads translation files, translates strings, switches locales and holds locale data."
 ported: false
 packages: [wp-i18n]
-forkPackages: [wp-i18n]
 files:
   - 'wp-includes/pomo/**'
   - 'wp-includes/l10n/**'
+  - 'wp-includes/class-wp-locale-switcher.php'
+  - 'wp-includes/class-wp-locale.php'
+  - 'wp-includes/class-wp-textdomain-registry.php'
+  - 'wp-includes/class-wp-token-map.php'
+  - 'wp-includes/compat-utf8.php'
+  - 'wp-includes/compat.php'
+  - 'wp-includes/l10n.php'
+  - 'wp-includes/utf8.php'
 wordpress: []

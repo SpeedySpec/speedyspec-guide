@@ -2,6 +2,21 @@ name: "Support"
 job: "Holds the general functions, loading helpers, pluggable functions, errors and constants the other seams share."
 ported: false
 packages: [wp-support]
-forkPackages: [wp-support]
-files: []
+files:
+  - 'wp-includes/class-wp-ajax-response.php'
+  - 'wp-includes/class-wp-error.php'
+  - 'wp-includes/class-wp-exception.php'
+  - 'wp-includes/class-wp-fatal-error-handler.php'
+  - 'wp-includes/class-wp-list-util.php'
+  - 'wp-includes/default-constants.php'
+  - 'wp-includes/error-protection.php'
+  - 'wp-includes/functions.php'
+  - 'wp-includes/load.php'
+  - 'wp-includes/php-compat/readonly.php'
+  - 'wp-includes/pluggable.php'
+  - 'wp-includes/vars.php'
 wordpress: []
+# Symbols whose file belongs to another seam.
+symbols:
+  - "constant:WP_CONTENT_DIR"
+  - "constant:WP_SANDBOX_SCRAPING"

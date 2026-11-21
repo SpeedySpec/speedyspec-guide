@@ -6,7 +6,6 @@ import { computeCoverage } from './coverage.ts';
 import { buildEvidenceIndex, type EvidenceIndex } from './evidence-index.ts';
 import { readCrates } from './crates.ts';
 import { findCycles } from './cycles.ts';
-import { compareFork } from './fork.ts';
 import { type ExamplesFile, exampleFailures, runExamples, runtimeApi } from './examples.ts';
 import { buildGraph } from './graph.ts';
 import { releasedAt, type RuntimeHistoryFile, updateRuntimeHistory } from './runtime-history.ts';
@@ -14,7 +13,7 @@ import { computeHistory, type HistoryFile } from './history.ts';
 import type { Failure, ValidationContext } from './validate/rule.ts';
 import { ALL_RULES, runRules } from './validate/run.ts';
 
-export const STAGES = ['extract', 'fork', 'assign', 'graph', 'history', 'examples', 'reflect', 'runtime-history', 'crates', 'coverage', 'evidence', 'validate'] as const;
+export const STAGES = ['extract', 'assign', 'graph', 'history', 'examples', 'reflect', 'runtime-history', 'crates', 'coverage', 'evidence', 'validate'] as const;
 export type Stage = (typeof STAGES)[number];
 
 /** What the stages need from outside. The CLI wires the adapters. */
@@ -26,7 +25,6 @@ export interface PipelineDeps {
   wordpressDir(): Promise<string>;
   /** A file of the WordPress release, by its path in the release. */
   wordpressFile(rel: string): Promise<string>;
-  forkDir(): Promise<string>;
   evidence(): Promise<EvidenceSource>;
   content: ContentPages;
   crates: CrateSource;
@@ -41,7 +39,6 @@ export interface PipelineDeps {
   /** The runtime's released versions; none when offline. */
   runtimeTags(offline: boolean): Promise<string[]>;
   wordpressVersion: string;
-  forkCommit: string;
   config: { requireAllAssigned: boolean; requirePortedCoverage?: boolean };
 }
 
@@ -71,16 +68,12 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
   switch (stage) {
     case 'extract': {
       await store.write('inventory-wp', await deps.source.extract(await deps.wordpressDir(), 'wp', deps.wordpressVersion));
-      await store.write('inventory-ss', await deps.source.extract(await deps.forkDir(), 'ss', deps.forkCommit));
       break;
     }
-    case 'fork':
-      await store.write('fork', compareFork(await need<Inventory>(store, 'inventory-wp'), await need<Inventory>(store, 'inventory-ss')));
-      break;
     case 'assign':
       await store.write(
         'assignment',
-        assign(await need<Inventory>(store, 'inventory-wp'), await deps.seams.all(), await need<Inventory>(store, 'inventory-ss'), loadOrder(await deps.wordpressFile('wp-settings.php'))),
+        assign(await need<Inventory>(store, 'inventory-wp'), await deps.seams.all(), loadOrder(await deps.wordpressFile('wp-settings.php'))),
       );
       break;
     case 'graph': {

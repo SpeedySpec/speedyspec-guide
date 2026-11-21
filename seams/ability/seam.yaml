@@ -2,7 +2,12 @@ name: "Abilities"
 job: "Registers abilities and ability categories, and looks them up from their registries."
 ported: false
 packages: [wp-ability]
-forkPackages: [wp-ability]
 files:
   - 'wp-includes/abilities/**'
+  - 'wp-includes/abilities-api.php'
+  - 'wp-includes/abilities-api/class-wp-abilities-registry.php'
+  - 'wp-includes/abilities-api/class-wp-ability-categories-registry.php'
+  - 'wp-includes/abilities-api/class-wp-ability-category.php'
+  - 'wp-includes/abilities-api/class-wp-ability.php'
+  - 'wp-includes/abilities.php'
 wordpress: []

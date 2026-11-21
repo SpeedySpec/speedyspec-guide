@@ -2,6 +2,15 @@ name: "Text diff"
 job: "Compares texts and renders the differences."
 ported: false
 packages: [wp-text-diff]
-forkPackages: [wp-text-diff]
-files: []
+files:
+  - 'wp-includes/Text/Diff.php'
+  - 'wp-includes/Text/Diff/Engine/native.php'
+  - 'wp-includes/Text/Diff/Engine/shell.php'
+  - 'wp-includes/Text/Diff/Engine/string.php'
+  - 'wp-includes/Text/Diff/Engine/xdiff.php'
+  - 'wp-includes/Text/Diff/Renderer.php'
+  - 'wp-includes/Text/Diff/Renderer/inline.php'
+  - 'wp-includes/Text/Exception.php'
+  - 'wp-includes/class-wp-text-diff-renderer-inline.php'
+  - 'wp-includes/class-wp-text-diff-renderer-table.php'
 wordpress: []

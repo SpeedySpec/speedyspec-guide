@@ -2,6 +2,26 @@ name: "Media"
 job: "Stores, sizes and describes attachments, reads media metadata through getID3, and renders galleries and players."
 ported: false
 packages: [wp-media]
-forkPackages: [wp-media]
-files: []
+files:
+  - 'wp-includes/ID3/getid3.lib.php'
+  - 'wp-includes/ID3/getid3.php'
+  - 'wp-includes/ID3/module.audio-video.asf.php'
+  - 'wp-includes/ID3/module.audio-video.flv.php'
+  - 'wp-includes/ID3/module.audio-video.matroska.php'
+  - 'wp-includes/ID3/module.audio-video.quicktime.php'
+  - 'wp-includes/ID3/module.audio-video.riff.php'
+  - 'wp-includes/ID3/module.audio.ac3.php'
+  - 'wp-includes/ID3/module.audio.dts.php'
+  - 'wp-includes/ID3/module.audio.flac.php'
+  - 'wp-includes/ID3/module.audio.mp3.php'
+  - 'wp-includes/ID3/module.audio.ogg.php'
+  - 'wp-includes/ID3/module.tag.apetag.php'
+  - 'wp-includes/ID3/module.tag.id3v1.php'
+  - 'wp-includes/ID3/module.tag.id3v2.php'
+  - 'wp-includes/ID3/module.tag.lyrics3.php'
+  - 'wp-includes/class-avif-info.php'
+  - 'wp-includes/media.php'
 wordpress: []
+# Symbols whose file belongs to another seam.
+symbols:
+  - "constant:GETID3_TEMP_DIR"

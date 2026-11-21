@@ -14,16 +14,16 @@ describe('bun run guide all --offline', () => {
     await Bun.write(join(work, 'guide.config.json'), JSON.stringify({ requireAllAssigned: false, stubFiles: ['noop.php'] }));
     const p = Bun.spawnSync(['bun', join(repo, 'packages', 'cli', 'src', 'main.ts'), 'all', '--offline'], {
       cwd: work,
-      env: { ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_FORK_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server') },
+      env: { ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server') },
     });
     const out = p.stdout.toString() + p.stderr.toString();
-    for (const f of ['inventory-wp', 'inventory-ss', 'fork', 'assignment', 'graph', 'cycles', 'validation']) {
+    for (const f of ['inventory-wp', 'assignment', 'graph', 'cycles', 'validation']) {
+      // No fork stage any more: the guide doesn't read packages/.
+      expect(existsSync(join(work, 'generated', 'fork.json'))).toBe(false);
       expect(existsSync(join(work, 'generated', `${f}.json`))).toBe(true);
     }
     const graph = JSON.parse(readFileSync(join(work, 'generated', 'graph.json'), 'utf8'));
     expect(graph.crossSeam).toContainEqual(expect.objectContaining({ from: 'function:update_option', to: 'function:apply_filters', fromSeam: 'options', toSeam: 'hooks' }));
-    const fork = JSON.parse(readFileSync(join(work, 'generated', 'fork.json'), 'utf8'));
-    expect(fork['function:add_filter']).toBe('same');
     const validation = JSON.parse(readFileSync(join(work, 'generated', 'validation.json'), 'utf8'));
     expect(validation).toEqual([expect.objectContaining({ rule: 'CitationExists', where: 'wordpress/hooks/add_filter.mdx' })]);
     expect(out).toContain('CitationExists wordpress/hooks/add_filter.mdx: scenario hooks/does_not_exist does not exist');
@@ -33,7 +33,7 @@ describe('bun run guide all --offline', () => {
   test('an unknown stage is refused with the list of stages', () => {
     const p = Bun.spawnSync(['bun', join(repo, 'packages', 'cli', 'src', 'main.ts'), 'nope']);
     expect(p.exitCode).toBe(2);
-    expect(p.stderr.toString()).toContain('extract, fork, assign, graph, history, examples, reflect, runtime-history, crates, coverage, evidence, validate, all');
+    expect(p.stderr.toString()).toContain('extract, assign, graph, history, examples, reflect, runtime-history, crates, coverage, evidence, validate, all');
   });
 });
 
@@ -46,7 +46,7 @@ describe('the examples, reflect and runtime-history stages', () => {
     cpSync(join(fixtures, 'examples-seams', 'hooks', 'examples'), join(dir, 'seams', 'hooks', 'examples'), { recursive: true });
     return dir;
   }
-  const env = (extra: Record<string, string> = {}) => ({ ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_FORK_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server'), ...extra });
+  const env = (extra: Record<string, string> = {}) => ({ ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server'), ...extra });
   const guide = (dir: string, args: string[], e: Record<string, string | undefined>) => Bun.spawnSync(['bun', join(repo, 'packages', 'cli', 'src', 'main.ts'), ...args], { cwd: dir, env: e });
 
   test('offline without a runner binary, they are skipped', async () => {
@@ -113,7 +113,7 @@ describe('validating SpeedySpec versions offline', () => {
     await Bun.write(join(dir, 'content', 'speedyspec', 'hooks', 'add_filter.mdx'), '<Changed version="1.0.0"/> <Changed version="1.1.0"/> <Ev scenario="add_filter_returns_true"/>');
     const p = Bun.spawnSync(['bun', join(repo, 'packages', 'cli', 'src', 'main.ts'), 'all', '--offline'], {
       cwd: dir,
-      env: { ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_FORK_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server'), GUIDE_RUNNER: join(dir, 'none') },
+      env: { ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server'), GUIDE_RUNNER: join(dir, 'none') },
     });
     const out = p.stdout.toString();
     expect(out).toContain('VersionHasTag speedyspec/hooks/add_filter.mdx: SpeedySpec 1.1.0');

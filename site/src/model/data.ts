@@ -5,7 +5,10 @@
 import { ExampleFiles } from '@speedyspec-guide/adapter-example-files';
 import { SeamFiles } from '@speedyspec-guide/adapter-seam-files';
 import type { CratesFile, Cycles, ExamplesFile, Graph, HistoryFile, RuntimeHistoryFile } from '@speedyspec-guide/app';
-import type { Assignment, Example, ForkVerdict, GuideSymbol, Inventory, Seam } from '@speedyspec-guide/domain';
+import type { Assignment, Example, GuideSymbol, Inventory, Seam } from '@speedyspec-guide/domain';
+
+/** Left from the packages/ fork comparison until the site drops it (plan 6, Task 3). */
+type ForkVerdict = 'same' | 'modified' | 'removed' | 'added';
 import { existsSync } from 'node:fs';
 import { join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';

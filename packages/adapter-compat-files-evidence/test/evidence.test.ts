@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { CompatFilesEvidence } from '../src/index.ts';
 
 const f = join(import.meta.dir, '..', '..', '..', 'tests', 'fixtures');
-const ev = new CompatFilesEvidence(join(f, 'server'), join(f, 'wordpress'), join(f, 'fork'));
+const ev = new CompatFilesEvidence(join(f, 'server'), join(f, 'wordpress'));
 
 describe('CompatFilesEvidence', () => {
   test('scenarios', async () => {
@@ -35,7 +35,8 @@ describe('CompatFilesEvidence', () => {
     expect(await ev.sourceLines('wp', 'wp-includes/plugin.php', 9, 10)).toBeNull();
     expect(await ev.sourceLines('ss', 'nope.php', 1, 1)).toBeNull();
     expect(await ev.sourceLines('wp', '../outside.php', 1, 1)).toBeNull();
-    // SpeedySpec's own server code (crates/, compat/) is read from the server checkout; other ss: paths from the fork.
+    // ss: cites speedyspec-server only: crates/ and compat/. Anything else (the old packages/ fork) is no citation.
+    expect(await ev.sourceLines('ss', 'wp-option/wp-option-legacy/functions/option.php', 1, 1)).toBeNull();
     expect(await ev.sourceLines('ss', 'crates/speedyspec-wp-hooks-php/src/hooks.php', 3, 3)).toBe("    $GLOBALS['wp_current_filter'] = array();");
     expect(await ev.sourceLines('ss', 'compat/hooks/breaks.json', 1, 1)).toBe('{ "breaks": [');
   });

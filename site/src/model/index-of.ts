@@ -80,7 +80,7 @@ export function indexOf(d: GuideData): GuideIndex {
   const content = new Map<string, ContentEntry>();
   for (const c of d.content) if (c.kind === 'symbol' && c.symbol) content.set(`${c.section}|${c.symbol}`, c);
 
-  const outsideFork = new Set(d.seams.filter((s) => s.inFork === false).map((s) => s.id));
+  const outsideFork = new Set<string>();
   const by = <T extends { from: string; to: string }>(list: T[], key: 'from' | 'to') => {
     const out = new Map<string, T[]>();
     for (const e of list) {

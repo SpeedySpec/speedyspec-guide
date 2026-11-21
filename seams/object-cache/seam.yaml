@@ -2,6 +2,8 @@ name: "Object Cache"
 job: "Stores and fetches values in the object cache by key and group."
 ported: false
 packages: [wp-object-cache]
-forkPackages: [wp-object-cache]
-files: []
+files:
+  - 'wp-includes/cache-compat.php'
+  - 'wp-includes/cache.php'
+  - 'wp-includes/class-wp-object-cache.php'
 wordpress: []

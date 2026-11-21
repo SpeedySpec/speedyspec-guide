@@ -2,6 +2,23 @@ name: "Query"
 job: "Parses requests into queries, queries posts, comments and metadata through wpdb, and holds the post and comment objects."
 ported: false
 packages: [wp-query]
-forkPackages: [wp-query]
-files: []
+files:
+  - 'wp-includes/bookmark.php'
+  - 'wp-includes/class-wp-comment-query.php'
+  - 'wp-includes/class-wp-comment.php'
+  - 'wp-includes/class-wp-date-query.php'
+  - 'wp-includes/class-wp-meta-query.php'
+  - 'wp-includes/class-wp-post-type.php'
+  - 'wp-includes/class-wp-post.php'
+  - 'wp-includes/class-wp-query.php'
+  - 'wp-includes/class-wp.php'
+  - 'wp-includes/class-wpdb.php'
+  - 'wp-includes/comment.php'
+  - 'wp-includes/post-formats.php'
+  - 'wp-includes/post.php'
+  - 'wp-includes/query.php'
+  - 'wp-includes/revision.php'
 wordpress: []
+# Symbols whose file belongs to another seam.
+symbols:
+  - "function:_truncate_post_slug"

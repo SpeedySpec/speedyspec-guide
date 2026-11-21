@@ -195,6 +195,23 @@ export const DependencyStateRecorded: Rule = {
   },
 };
 
+/** A seam's exact file names (no glob characters) name files WordPress has, so a typo or a removed file can't place
+ * nothing in silence. */
+export const SeamFilesExist: Rule = {
+  id: 'SeamFilesExist',
+  async check(ctx) {
+    const files = new Set(ctx.inventory.symbols.map((s) => s.file));
+    const f: Failure[] = [];
+    for (const seam of ctx.seams) {
+      for (const file of seam.files) {
+        if (/[*?[{]/.test(file) || files.has(file)) continue;
+        f.push({ rule: this.id, where: `seams/${seam.id}/seam.yaml`, message: `lists ${file}, which WordPress doesn't have` });
+      }
+    }
+    return f;
+  },
+};
+
 export const SeamSymbolsExist: Rule = {
   id: 'SeamSymbolsExist',
   async check(ctx) {

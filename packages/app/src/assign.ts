@@ -1,15 +1,14 @@
 import type { Assignment, Edge, Inventory, Seam } from '@speedyspec-guide/domain';
 import { loadPositions } from './load-order.ts';
 
-const NO_FORK: Inventory = { base: 'ss', version: '', symbols: [], edges: [], unresolved: [] };
 
 /**
- * Assigns every symbol to one seam: an explicit listing first, then the seam that owns the fork package SpeedySpec
- * keeps it in, then the seam whose files hold it, then a method's class, then a hook's firing seam or a global's writing
- * (else reading) seam. A hook or global used from several seams goes to the seam whose use comes first in WordPress's
- * load order (`order`, from wp-settings.php), and within one file the earlier line.
+ * Assigns every symbol to one seam: an explicit listing first, then the seam whose files hold it, then the seam that
+ * holds most of its file's symbols, then a method's class, then a hook's firing seam or a global's writing (else
+ * reading) seam. A hook or global used from several seams goes to the seam whose use comes first in WordPress's load
+ * order (`order`, from wp-settings.php), and within one file the earlier line.
  */
-export function assign(inv: Inventory, seams: Seam[], fork: Inventory = NO_FORK, order: string[] = []): Assignment {
+export function assign(inv: Inventory, seams: Seam[], order: string[] = []): Assignment {
   const seamOf: Record<string, string> = {};
   const conflicts: Assignment['conflicts'] = [];
   const claimed = new Set<string>();
@@ -25,15 +24,13 @@ export function assign(inv: Inventory, seams: Seam[], fork: Inventory = NO_FORK,
   }
 
   const globs = seams.map((seam) => ({ seam, globs: seam.files.map((f) => new Bun.Glob(f)) }));
-  const byFile = (file: string, id?: string): string[] =>
-    globs.filter(({ seam, globs }) => globs.some((g) => g.match(file)) && !(id && seam.exclude.includes(id))).map(({ seam }) => seam.id);
-
-  const forkFile = new Map(fork.symbols.map((s) => [s.id, s.file]));
-  const byPackage = (id: string): string[] => {
-    const file = forkFile.get(id);
-    if (file === undefined) return [];
-    const pkg = file.split('/')[0]!;
-    return seams.filter((seam) => seam.forkPackages?.includes(pkg) && !seam.exclude.includes(id)).map((seam) => seam.id);
+  // A seam that names the file exactly beats one whose glob matches it.
+  const isGlob = (pattern: string) => /[*?[{]/.test(pattern);
+  const byFile = (file: string, id?: string): string[] => {
+    const allowed = ({ seam }: (typeof globs)[number]) => !(id && seam.exclude.includes(id));
+    const exact = seams.filter((seam) => seam.files.some((f) => !isGlob(f) && f === file) && !(id && seam.exclude.includes(id))).map((seam) => seam.id);
+    if (exact.length > 0) return exact;
+    return globs.filter((g) => allowed(g) && g.globs.some((x) => x.match(file))).map(({ seam }) => seam.id);
   };
 
   const pending = inv.symbols.filter((s) => !claimed.has(s.id));
@@ -42,11 +39,10 @@ export function assign(inv: Inventory, seams: Seam[], fork: Inventory = NO_FORK,
 
   for (const sym of pending) {
     if (sym.kind === 'method' || byUse(sym.kind)) continue;
-    const kept = byPackage(sym.id);
-    place(sym.id, kept.length > 0 ? kept : byFile(sym.file, sym.id));
+    place(sym.id, byFile(sym.file, sym.id));
   }
 
-  // A symbol neither rule places (one WordPress added after the fork's code) goes to the seam that holds most of the
+  // A symbol no file pattern places goes to the seam that holds most of the
   // symbols defined in its file; a file whose symbols no rule placed places nothing.
   const fileSeam = (() => {
     const counts = new Map<string, Map<string, number>>();

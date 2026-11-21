@@ -20,7 +20,6 @@ export function speedyspecVerdict(id: string, d: GuideData): { verdict: SpeedySp
   }
   const seam = d.seams.find((s) => s.id === d.assignment.seamOf[id]);
   const fork = d.fork[id];
-  if (seam && seam.inFork === false && !seam.ported) return { verdict: 'unknown', differences: [], source: 'outside-fork' };
   if (seam && !seam.ported && fork && fork !== 'added') {
     return { verdict: fork === 'same' ? 'same-code' : fork, differences: [], source: 'fork' };
   }
