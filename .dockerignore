@@ -1,0 +1,9 @@
+node_modules
+**/node_modules
+.cache
+.superpowers
+runner/target
+runner/server
+site/dist
+site/.astro
+packages/adapter-php-parser-source/extractor/vendor

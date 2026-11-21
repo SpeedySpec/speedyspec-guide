@@ -64,3 +64,28 @@ Examples live in `seams/<seam>/examples/<symbol>/<name>.php`, each with `<name>.
 `runtime` is allowed only in a ported seam.
 
 First run (2026-11-20): `hooks/add_filter/change-a-value` passes on both sides; the runtime's own API is 181 symbols (including `SpeedySpec\Hooks\Hook`), all unreleased until the first `speedyspec-php-runtime-v*` tag.
+
+## The site
+
+`site/` is the Astro site. It reads `generated/`, `seams/` and `content/` (or `GUIDE_DATA_DIR`, `GUIDE_SEAMS_DIR`,
+`GUIDE_CONTENT_DIR`) and builds static pages:
+
+- `/wordpress/<seam>/…`: the WordPress API by seam;
+- `/speedyspec/<seam>/…`: verdicts, differences, dependencies and cycles, porting and architecture pages, and
+  `/speedyspec/runtime/` for runtime API not yet in a seam;
+- `/coverage/`: how much of each seam is written, and what is in no seam yet.
+
+```bash
+bunx playwright install chromium   # once: Mermaid diagrams are rendered at build time
+bun run site:dev
+bun run site:build                 # astro build, then Pagefind for search
+```
+
+Hand-written pages are MDX: `content/<wordpress|speedyspec>/<seam>/<slug>.mdx` with `symbol:` in the front matter
+(SpeedySpec pages add `verdict:` and `differences:`), and `_seam.mdx`, `_porting.mdx`, `_architecture.mdx` per seam.
+In them, `<Ev …/>` cites evidence and `<Changed version="…">` records a change. Examples render from
+`seams/<seam>/examples/`.
+
+`docker build -f site/Dockerfile .` builds an image serving the site.
+
+First real build (2026-11-20): 61 pages in 4 seconds, 57 of them indexed for search.
