@@ -1,0 +1,4 @@
+{ "breaks": [
+  { "scenario": "wp_filter_replace_wholesale", "why": "Replacing $wp_filter wholesale is not seen." },
+  { "scenario": "wp_filters_read_and_write", "step": 5, "why": "Replacing $wp_filters wholesale is not seen." }
+] }

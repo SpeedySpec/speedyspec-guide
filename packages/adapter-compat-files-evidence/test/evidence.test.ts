@@ -1,0 +1,31 @@
+import { describe, expect, test } from 'bun:test';
+import { join } from 'node:path';
+import { CompatFilesEvidence } from '../src/index.ts';
+
+const f = join(import.meta.dir, '..', '..', '..', 'tests', 'fixtures');
+const ev = new CompatFilesEvidence(join(f, 'server'), join(f, 'wordpress'), join(f, 'fork'));
+
+describe('CompatFilesEvidence', () => {
+  test('scenarios', async () => {
+    expect(await ev.scenarioExists('hooks', 'add_filter_returns_true')).toBe(true);
+    expect(await ev.scenarioExists('hooks', 'nope')).toBe(false);
+    expect(await ev.scenarioExists('options', 'add_filter_returns_true')).toBe(false);
+  });
+  test('breaks, with and without a step', async () => {
+    expect(await ev.breakExists('hooks', 'wp_filters_read_and_write', 5)).toBe(true);
+    expect(await ev.breakExists('hooks', 'wp_filters_read_and_write', 4)).toBe(false);
+    expect(await ev.breakExists('hooks', 'wp_filter_replace_wholesale')).toBe(true);
+    expect(await ev.breakExists('hooks', 'wp_filter_replace_wholesale', 2)).toBe(true);
+  });
+  test('tests, as crate::file::function', async () => {
+    expect(await ev.testExists('speedyspec-wp-hooks-php::wordpress::replays_the_hooks_fixture')).toBe(true);
+    expect(await ev.testExists('speedyspec-wp-hooks-php::wordpress::missing')).toBe(false);
+    expect(await ev.testExists('bad-path')).toBe(false);
+  });
+  test('source lines', async () => {
+    expect(await ev.sourceLines('wp', 'wp-includes/plugin.php', 2, 3)).toBe('function add_filter( $hook_name, $callback ) {\n\treturn true;');
+    expect(await ev.sourceLines('wp', 'wp-includes/plugin.php', 9, 10)).toBeNull();
+    expect(await ev.sourceLines('ss', 'nope.php', 1, 1)).toBeNull();
+    expect(await ev.sourceLines('wp', '../outside.php', 1, 1)).toBeNull();
+  });
+});

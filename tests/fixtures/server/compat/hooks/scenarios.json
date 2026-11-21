@@ -1,0 +1,4 @@
+{ "area": "hooks", "scenarios": [
+  { "name": "add_filter_returns_true", "steps": [ { "call": "add_filter", "args": ["f", { "callback": "append", "kind": "closure", "label": "a" }] } ] },
+  { "name": "wp_filters_read_and_write", "steps": [ { "call": "global:get", "args": ["wp_filters"] } ] }
+] }

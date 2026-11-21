@@ -11,6 +11,12 @@
         "typescript": "^5.9.0",
       },
     },
+    "packages/adapter-compat-files-evidence": {
+      "name": "@speedyspec-guide/adapter-compat-files-evidence",
+      "dependencies": {
+        "@speedyspec-guide/contracts": "workspace:*",
+      },
+    },
     "packages/adapter-git-tag-history": {
       "name": "@speedyspec-guide/adapter-git-tag-history",
       "dependencies": {
@@ -57,6 +63,8 @@
     },
   },
   "packages": {
+    "@speedyspec-guide/adapter-compat-files-evidence": ["@speedyspec-guide/adapter-compat-files-evidence@workspace:packages/adapter-compat-files-evidence"],
+
     "@speedyspec-guide/adapter-git-tag-history": ["@speedyspec-guide/adapter-git-tag-history@workspace:packages/adapter-git-tag-history"],
 
     "@speedyspec-guide/adapter-php-parser-source": ["@speedyspec-guide/adapter-php-parser-source@workspace:packages/adapter-php-parser-source"],

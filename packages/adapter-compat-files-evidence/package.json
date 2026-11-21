@@ -1,0 +1,1 @@
+{ "name": "@speedyspec-guide/adapter-compat-files-evidence", "type": "module", "private": true, "main": "src/index.ts", "dependencies": { "@speedyspec-guide/contracts": "workspace:*" } }
