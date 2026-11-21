@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'fr_FR',\n  2 => true,\n  3 => 'Article',\n  4 => 'Publier',\n  5 => false,\n  6 => '%d \u00e9l\u00e9ments',\n  7 => true,\n  8 => \n  array (\n    'Plural-Forms' => 'nplurals=2; plural=n>1;',\n    'Language' => 'fr_FR',\n  ),\n  9 => 3,\n  10 => false,\n)",
+ "error": null
+}

@@ -22,4 +22,16 @@ wordpress:
   - wp-includes/class-wp-token-map.php
   - wp-includes/formatting.php
   - wp-includes/functions.php
+  # POMO, WordPress's gettext library, and the faster translation files.
+  - wp-includes/pomo/entry.php
+  - wp-includes/pomo/plural-forms.php
+  - wp-includes/pomo/translations.php
+  - wp-includes/pomo/streams.php
+  - wp-includes/pomo/mo.php
+  - wp-includes/pomo/po.php
+  - wp-includes/l10n/class-wp-translation-controller.php
+  - wp-includes/l10n/class-wp-translations.php
+  - wp-includes/l10n/class-wp-translation-file.php
+  - wp-includes/l10n/class-wp-translation-file-mo.php
+  - wp-includes/l10n/class-wp-translation-file-php.php
 setup: ../basic-setup.php

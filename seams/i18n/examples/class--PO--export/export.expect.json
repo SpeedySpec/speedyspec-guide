@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '# Translations for Guide\nmsgid \"\"\nmsgstr \"Language: fr\\\\n\"\n\n#. A post\n#: a.php:1\n#, fuzzy\nmsgctxt \"noun\"\nmsgid \"Post\"\nmsgstr \"Article\"\n\nmsgid \"%d item\"\nmsgid_plural \"%d items\"\nmsgstr[0] \"%d \u00e9l\u00e9ment\"\nmsgstr[1] \"%d \u00e9l\u00e9ments\"',\n  1 => false,\n)",
+ "error": null
+}

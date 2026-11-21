@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Article',\n  1 => 'Publier',\n  2 => 'Page',\n  3 => '%d commentaire',\n  4 => '%d commentaires',\n  5 => 1,\n  6 => 2,\n)",
+ "error": null
+}
