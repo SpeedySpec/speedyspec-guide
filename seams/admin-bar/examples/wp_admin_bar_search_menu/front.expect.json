@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "<form action=\"http://example.org/\" method=\"get\" id=\"adminbarsearch\"><span class=\"ab-icon svg-icon\" aria-hidden=\"true\"><svg>\u2026</svg>\n</span><input class=\"adminbar-input\" name=\"s\" id=\"adminbar-search\" type=\"text\" value=\"\" maxlength=\"150\" /><label for=\"adminbar-search\" class=\"screen-reader-text\">Search</label><input type=\"submit\" class=\"adminbar-button\" value=\"Search\" /></form>\n",
+ "return": "array (\n  0 => 'top-secondary > search',\n)",
+ "error": null
+}

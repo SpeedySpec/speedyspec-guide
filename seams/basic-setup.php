@@ -56,6 +56,18 @@ if (!function_exists('__'))
     {
         return esc_attr($text);
     }
+    function _e($text, $domain = 'default')
+    {
+        echo $text;
+    }
+    function esc_html_e($text, $domain = 'default')
+    {
+        echo esc_html($text);
+    }
+    function esc_attr_e($text, $domain = 'default')
+    {
+        echo esc_attr($text);
+    }
 }
 
 // There is no database: the one option escaping reads, blog_charset, is supplied as an installed site stores it.

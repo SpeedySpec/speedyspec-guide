@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "<span class=\"display-name user-display-name\">Ada</span> | core-admin/people | Ada\n",
+ "return": "array (\n  0 => 'top-secondary > my-account http://example.org/wp-admin/profile.php',\n)",
+ "error": null
+}

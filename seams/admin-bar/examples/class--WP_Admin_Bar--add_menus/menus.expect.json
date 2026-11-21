@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "add_admin_bar_menus\n",
+ "return": "array (\n  0 => 'wp_admin_bar_my_account_menu,wp_admin_bar_sidebar_toggle',\n  10 => 'wp_admin_bar_wp_menu',\n  20 => 'wp_admin_bar_my_sites_menu',\n  30 => 'wp_admin_bar_site_menu',\n  40 => 'wp_admin_bar_edit_site_menu,wp_admin_bar_customize_menu',\n  50 => 'wp_admin_bar_updates_menu',\n  55 => 'wp_admin_bar_command_palette_menu',\n  60 => 'wp_admin_bar_comments_menu',\n  70 => 'wp_admin_bar_new_content_menu',\n  80 => 'wp_admin_bar_edit_menu',\n  200 => 'wp_admin_bar_add_secondary_groups',\n  9991 => 'wp_admin_bar_my_account_item',\n  9992 => 'wp_admin_bar_recovery_mode_menu',\n  9999 => 'wp_admin_bar_search_menu',\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_admin_bar_render"
+---
+
+## Behaviour
+
+Prints the admin bar once a request, when it is showing. It fires `admin_bar_menu` with the bar, so the menus add their nodes, then `wp_before_admin_bar_render`, renders the bar, and fires `wp_after_admin_bar_render`. <Ev source="wp:wp-includes/admin-bar.php#L73-L116" hash="f29ea142da01a9164bb5109ffd73d642c3191ea9f4ed4e9e29a838cf0255c169"/>
+
+## Override
+
+`admin_bar_menu` is where nodes are added or removed.

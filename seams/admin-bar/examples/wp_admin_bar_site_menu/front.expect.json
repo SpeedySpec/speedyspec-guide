@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '> site-name http://example.org/wp-admin/',\n  1 => 'site-name > dashboard http://example.org/wp-admin/',\n  2 => 'site-name > appearance',\n  3 => 'appearance > themes http://example.org/wp-admin/themes.php',\n  4 => 'site-name > plugins http://example.org/wp-admin/plugins.php',\n)",
+ "error": null
+}

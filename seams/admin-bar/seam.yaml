@@ -4,4 +4,66 @@ ported: false
 files:
   - 'wp-includes/admin-bar.php'
   - 'wp-includes/class-wp-admin-bar.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side. There is no database: setup.php answers the
+# options the menus read and logs in a user built in memory.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-error.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/link-template.php
+  - wp-includes/general-template.php
+  - wp-includes/class-wp-role.php
+  - wp-includes/class-wp-roles.php
+  - wp-includes/class-wp-user.php
+  - wp-includes/capabilities.php
+  - wp-includes/user.php
+  - wp-includes/pluggable.php
+  - wp-includes/class-wp-post.php
+  - wp-includes/class-wp-post-type.php
+  - wp-includes/post.php
+  - wp-includes/meta.php
+  - wp-includes/theme.php
+  - wp-includes/functions.wp-scripts.php
+  - wp-includes/class-wp-dependency.php
+  - wp-includes/class-wp-dependencies.php
+  - wp-includes/class-wp-scripts.php
+  - wp-includes/functions.wp-styles.php
+  - wp-includes/class-wp-styles.php
+  - wp-includes/icons.php
+  # wp_get_icon() sizes an icon's SVG with the HTML API.
+  - wp-includes/class-wp-token-map.php
+  - wp-includes/html-api/html5-named-character-references.php
+  - wp-includes/html-api/class-wp-html-attribute-token.php
+  - wp-includes/html-api/class-wp-html-span.php
+  - wp-includes/html-api/class-wp-html-doctype-info.php
+  - wp-includes/html-api/class-wp-html-text-replacement.php
+  - wp-includes/html-api/class-wp-html-decoder.php
+  - wp-includes/html-api/class-wp-html-tag-processor.php
+  - wp-includes/class-wp-icon-collections-registry.php
+  - wp-includes/class-wp-icons-registry.php
+  # get_avatar() works out its loading attributes before it checks show_avatars.
+  - wp-includes/shortcodes.php
+  - wp-includes/media.php
+  - wp-includes/block-template-utils.php
+  - wp-includes/query.php
+  - wp-includes/comment.php
+  - wp-includes/update.php
+  - wp-includes/error-protection.php
+  - wp-includes/class-wp-recovery-mode.php
+  - wp-includes/class-wp-recovery-mode-cookie-service.php
+  - wp-includes/class-wp-recovery-mode-key-service.php
+  - wp-includes/class-wp-recovery-mode-link-service.php
+  - wp-includes/class-wp-recovery-mode-email-service.php
+  - wp-includes/vars.php
+  - wp-includes/class-wp-list-util.php
+  - wp-includes/class-wp-admin-bar.php
+  - wp-includes/admin-bar.php
+setup: setup.php

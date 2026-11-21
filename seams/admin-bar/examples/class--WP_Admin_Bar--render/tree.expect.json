@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'\t\t<div id=\"wpadminbar\" class=\"nojq nojs\">\n\t\t\t\t\t\t\t<a class=\"screen-reader-shortcut\" href=\"#wp-toolbar\" tabindex=\"1\">Skip to toolbar</a>\n\t\t\t\t\t\t<div class=\"quicklinks\" id=\"wp-toolbar\" role=\"navigation\" aria-label=\"Toolbar\">\n\t\t\t\t<ul role=\\'menu\\' id=\\'wp-admin-bar-root-default\\' class=\"ab-top-menu\"><li role=\\'group\\' id=\\'wp-admin-bar-top\\' class=\"menupop\"><a class=\\'ab-item\\' role=\"menuitem\" aria-expanded=\"false\" href=\\'/top\\'>Top</a><div class=\"ab-sub-wrapper\"><ul role=\\'menu\\' id=\\'wp-admin-bar-top-default\\' class=\"ab-submenu\"><li role=\\'group\\' id=\\'wp-admin-bar-child\\'><div class=\"ab-item ab-empty-item\" role=\"menuitem\" target=\\'_blank\\'>Child</div><i>x</i></li></ul></div></li></ul><ul role=\\'menu\\' id=\\'wp-admin-bar-side\\' class=\"mine ab-top-menu\"><li role=\\'group\\' id=\\'wp-admin-bar-other\\'><a class=\\'ab-item\\' role=\"menuitem\" href=\\'/o\\'>Other</a></li></ul>\t\t\t</div>\n\t\t\t\t\t</div>\n\n\t\t'",
+ "error": null
+}
