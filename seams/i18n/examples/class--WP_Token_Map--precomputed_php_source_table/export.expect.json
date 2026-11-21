@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WP_Token_Map::from_precomputed_table(\n\tarray(\n\t\t\"storage_version\" => \"6.6.0-trunk\",\n\t\t\"key_length\" => 2,\n\t\t\"groups\" => \"ab\\\\x00\",\n\t\t\"large_words\" => array(\n\t\t\t// abc[2].\n\t\t\t\"\\\\x01c\\\\x012\",\n\t\t),\n\t\t\"small_words\" => \"ab\\\\x00\",\n\t\t\"small_mappings\" => array(\n\t\t\t\"1\",\n\t\t)\n\t)\n)',\n  1 => \n  array (\n    'ab' => '1',\n    'abc' => '2',\n  ),\n)",
+ "error": null
+}

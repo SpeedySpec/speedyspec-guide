@@ -1,0 +1,11 @@
+---
+symbol: "function:_mb_substr"
+---
+
+## Behaviour
+
+`substr()` by characters when the encoding (or else `blog_charset`) is UTF-8, by bytes otherwise; a negative start or length counts from the end, and `null` gives `''`. An invalid byte counts as one character. <Ev source="wp:wp-includes/compat.php#L294-L339" hash="92a9c98f118dbf43940c88bbf8588683f4e2077c363552f116e5a7874cf6317e"/>
+
+## Override
+
+Not overridable.

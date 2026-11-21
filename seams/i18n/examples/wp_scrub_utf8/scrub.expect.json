@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Pi\ufffda \ufffd ok',\n  1 => 'Pi\ufffda \ufffd ok',\n  2 => 'fine',\n)",
+ "error": null
+}

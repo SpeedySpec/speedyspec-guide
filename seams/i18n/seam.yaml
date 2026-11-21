@@ -12,4 +12,14 @@ files:
   - 'wp-includes/compat.php'
   - 'wp-includes/l10n.php'
   - 'wp-includes/utf8.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/utf8.php
+  - wp-includes/class-wp-token-map.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+setup: ../basic-setup.php
