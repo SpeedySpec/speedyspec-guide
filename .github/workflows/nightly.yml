@@ -1,0 +1,100 @@
+name: Nightly against speedyspec-server main
+
+# Runs the examples against the server's main branch, so a change there that breaks one is seen before the pin moves.
+on:
+  schedule:
+    - cron: "41 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  examples:
+    runs-on: ubuntu-latest
+    env:
+      GUIDE_SERVER_DIR: ${{ github.workspace }}/.cache/speedyspec-server
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read pins
+        id: pins
+        run: |
+          echo "server=$(jq -r .server.commit sources.json)" >> "$GITHUB_OUTPUT"
+          echo "wordpress=$(jq -r .wordpress.sha256 sources.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Check out speedyspec-server at the pin
+        uses: actions/checkout@v4
+        with:
+          repository: SpeedySpec/speedyspec-server
+          ref: main
+          path: .cache/speedyspec-server
+
+      - name: Cache the static PHP
+        id: php
+        uses: actions/cache@v4
+        with:
+          path: .cache/speedyspec-server/.php-build/buildroot
+          key: php-${{ runner.os }}-${{ hashFiles('.cache/speedyspec-server/php-version', '.cache/speedyspec-server/craft.yml', '.cache/speedyspec-server/scripts/build-php.sh') }}
+
+      - name: Build the static PHP
+        if: steps.php.outputs.cache-hit != 'true'
+        working-directory: .cache/speedyspec-server
+        env:
+          SPEEDYSPEC_ALLOW_HOST_INSTALL: "1"
+        run: scripts/build-php.sh
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.99"
+
+      - name: Cache the runner build
+        uses: actions/cache@v4
+        with:
+          path: runner/target
+          key: runner-nightly-${{ runner.os }}-${{ github.run_id }}${{ hashFiles('runner/Cargo.toml', 'runner/src/**') }}
+          restore-keys: runner-nightly-${{ runner.os }}-
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3"
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          tools: composer:v2
+
+      - name: Install
+        run: |
+          bun install --frozen-lockfile
+          composer install --no-interaction --no-progress --working-dir=packages/adapter-php-parser-source/extractor
+
+      - name: Cache WordPress
+        uses: actions/cache@v4
+        with:
+          path: .cache/wordpress-*
+          key: wordpress-${{ steps.pins.outputs.wordpress }}
+
+      - name: Test and build the runner
+        run: |
+          bun run runner:link
+          bun run runner:test
+          bun run runner:build
+
+      - name: Run the examples and list the runtime's API
+        id: run
+        run: |
+          set -o pipefail
+          { bun run guide examples && bun run guide reflect; } 2>&1 | tee run.log
+
+      - name: Open an issue when they fail
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title='Examples fail against speedyspec-server main'
+          if [ -z "$(gh issue list --state open --search "$title in:title" --json number --jq '.[].number')" ]; then
+            { echo 'The nightly run against speedyspec-server main failed.'; echo; echo '```'; tail -n 100 run.log 2>/dev/null || true; echo '```'; echo; echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"; } > body.md
+            gh issue create --title "$title" --body-file body.md
+          fi
