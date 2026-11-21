@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "WP_Sitemaps_Renderer::get_sitemap_stylesheet_url 7.2.0\nWP_Sitemaps_Renderer::get_sitemap_index_stylesheet_url 7.2.0\n",
+ "return": "array (\n  0 => '',\n  1 => '',\n)",
+ "error": null
+}

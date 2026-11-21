@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/?sitemap=posts&sitemap-subtype=post&paged=2',\n  1 => 'http://example.org/wp-sitemap-posts-post-2.xml',\n  2 => 'http://example.org/wp-sitemap-users-1.xml',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'orderby' => 'ID',\n  'order' => 'ASC',\n  'post_type' => 'post',\n  'posts_per_page' => 2000,\n  'post_status' => \n  array (\n    0 => 'publish',\n  ),\n  'no_found_rows' => true,\n  'update_post_term_cache' => false,\n  'update_post_meta_cache' => false,\n  'ignore_sticky_posts' => true,\n  'guide' => 'post',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'loc' => 'http://example.org/?sitemap=posts&sitemap-subtype=post&paged=1',\n    'lastmod' => '2026-01-01',\n  ),\n  1 => \n  array (\n    'loc' => 'http://example.org/?sitemap=posts&sitemap-subtype=post&paged=2',\n    'lastmod' => '2026-01-02',\n  ),\n)",
+ "error": null
+}

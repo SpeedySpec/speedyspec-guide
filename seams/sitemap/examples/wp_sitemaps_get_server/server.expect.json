@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "WP_Sitemaps\n",
+ "return": "array (\n  0 => true,\n  1 => true,\n  2 => \n  array (\n    0 => 'posts',\n    1 => 'taxonomies',\n    2 => 'users',\n  ),\n)",
+ "error": null
+}

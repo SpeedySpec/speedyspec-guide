@@ -12,4 +12,40 @@ files:
   - 'wp-includes/sitemaps/providers/class-wp-sitemaps-posts.php'
   - 'wp-includes/sitemaps/providers/class-wp-sitemaps-taxonomies.php'
   - 'wp-includes/sitemaps/providers/class-wp-sitemaps-users.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side. There is no database: the providers' lists come
+# from their pre_url_list and pre_max_num_pages filters, and setup.php answers the options they read.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-error.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/link-template.php
+  - wp-includes/class-wp.php
+  - wp-includes/class-wp-rewrite.php
+  - wp-includes/rewrite.php
+  - wp-includes/class-wp-post.php
+  - wp-includes/class-wp-post-type.php
+  - wp-includes/post.php
+  - wp-includes/class-wp-term.php
+  - wp-includes/class-wp-taxonomy.php
+  - wp-includes/taxonomy.php
+  - wp-includes/class-wp-list-util.php
+  - wp-includes/query.php
+  - wp-includes/sitemaps.php
+  - wp-includes/sitemaps/class-wp-sitemaps.php
+  - wp-includes/sitemaps/class-wp-sitemaps-registry.php
+  - wp-includes/sitemaps/class-wp-sitemaps-index.php
+  - wp-includes/sitemaps/class-wp-sitemaps-provider.php
+  - wp-includes/sitemaps/class-wp-sitemaps-renderer.php
+  - wp-includes/sitemaps/class-wp-sitemaps-stylesheet.php
+  - wp-includes/sitemaps/providers/class-wp-sitemaps-posts.php
+  - wp-includes/sitemaps/providers/class-wp-sitemaps-taxonomies.php
+  - wp-includes/sitemaps/providers/class-wp-sitemaps-users.php
+setup: setup.php

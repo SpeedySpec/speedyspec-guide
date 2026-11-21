@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/?sitemap=index',\n  1 => 'http://example.org/wp-sitemap.xml',\n)",
+ "error": null
+}
