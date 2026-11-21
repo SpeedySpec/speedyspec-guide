@@ -10,7 +10,7 @@ An option that isn't stored returns `$default_value` (`false` when none is given
 
 A name that is empty once trimmed returns `false`. <Ev scenario="blank_and_odd_names" area="options"/> The renamed `blacklist_keys` and `comment_whitelist` read their new names, `disallowed_keys` and `comment_previously_approved`, and report the old name through `_deprecated_argument()`. <Ev scenario="deprecated_blacklist_keys" area="options"/> <Ev scenario="deprecated_comment_whitelist" area="options"/>
 
-An empty `home` reads as `siteurl`. <Ev scenario="home_falls_back_to_siteurl" area="options"/> `siteurl`, `home`, `category_base` and `tag_base` come back without a trailing slash. <Ev scenario="untrailingslashed_names" area="options"/> On trunk `wp_random_base` does too; WordPress 7.1.5 left it as stored. <Ev source="wp:wp-includes/option.php#L239-L241" hash="5a00413326e716a198c19a36084b2ac036b5a59dc64c79dcd245f0bf667894bb"/>
+An empty `home` reads as `siteurl`. <Ev source="wp:wp-includes/option.php#L234-L237" hash="4f29899f7794bd8aad6e1c863b4f6f1f13b05cda5374a99b6d36d14ba24002e7"/> `siteurl`, `home`, `category_base` and `tag_base` come back without a trailing slash. <Ev scenario="untrailingslashed_names" area="options"/> On trunk `wp_random_base` does too; WordPress 7.1.5 left it as stored. <Ev source="wp:wp-includes/option.php#L239-L241" hash="5a00413326e716a198c19a36084b2ac036b5a59dc64c79dcd245f0bf667894bb"/>
 
 ## Override
 

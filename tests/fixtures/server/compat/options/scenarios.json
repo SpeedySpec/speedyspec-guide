@@ -1,3 +1,3 @@
 { "area": "options", "scenarios": [
-  { "name": "get_with_pre_option", "steps": [ { "call": "add_filter", "args": ["pre_option_blogname", { "callback": "return_arg", "label": "rec" }] }, { "call": "update_option", "args": ["blogname", "x"] } ] }
+  { "name": "get_with_pre_option", "steps": [ { "call": "add_filter", "args": ["pre_option_blogname", { "callback": "return_arg", "label": "rec:pre_option_blogname" }] }, { "call": "add_action", "args": ["updated_option", { "callback": "return_arg", "label": "rec:updated_option" }] }, { "call": "update_option", "args": ["blogname", "x"] } ] }
 ] }

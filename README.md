@@ -70,7 +70,9 @@ side; it sees `GUIDE_MULTISITE`, which an example sets with `"multisite": true` 
 ### Options examples need MySQL
 
 Options' setup reads and writes through `$wpdb`, so its examples need a MySQL database, given as `GUIDE_MYSQL_URL`.
-Each example gets fresh `guide_` tables. Without the variable, `bun run guide examples` stops before running anything.
+Each example gets fresh `guide_` tables: `setup.php` drops and recreates `guide_options`, `guide_sitemeta`,
+`guide_users` and `guide_usermeta`, so give it a database of its own, never one holding a site. Without the variable,
+`bun run guide examples` stops before running anything.
 
 ```bash
 docker run -d --name guide-mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=guide_examples -p 3307:3306 mysql:8.4

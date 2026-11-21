@@ -4,4 +4,4 @@ symbol: "action:update_option"
 
 ## Behaviour
 
-Fired by `update_option()` before the new value is saved, with the name, the old value and the new value. It doesn't fire when the value is unchanged. <Ev scenario="update_option_unchanged" area="options"/> <Ev source="wp:wp-includes/option.php#L943-L943" hash="caf86d54f95ad3151b3149ca8f973426f6da3c938b48840975c7cea4d5712734"/>
+Fired by `update_option()` before the new value is saved, with the name, the old value and the new value. <Ev scenario="autoload_requested_on" area="options"/> It doesn't fire when the value is unchanged. <Ev scenario="update_option_unchanged" area="options"/> <Ev source="wp:wp-includes/option.php#L943-L943" hash="caf86d54f95ad3151b3149ca8f973426f6da3c938b48840975c7cea4d5712734"/>

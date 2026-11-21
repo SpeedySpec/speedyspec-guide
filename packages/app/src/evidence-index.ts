@@ -5,6 +5,8 @@ import { hookPattern } from './hook-pattern.ts';
 export interface Catalogue {
   scenarios: { name: string; steps: { call: string; args?: unknown[] }[] }[];
   breaks: { scenario: string; step?: number; why: string }[];
+  /** The recorders (`rec:<hook name>`) that fired in each scenario, when its results were recorded. */
+  fired?: Record<string, string[]>;
 }
 
 export interface EvidenceIndex {
@@ -36,9 +38,12 @@ const HOOKING = ['add_filter', 'add_action', 'has_filter', 'has_action', 'remove
  * `pre_option_{$option}`, not `pre_{$field}`, and `update_option` matches the literal hook, not `{$old}_{$new}`. A
  * name that is only a placeholder (`{$hook_name}`) matches nothing.
  */
-function hookedBy(step: { call: string; args?: unknown[] }, hooks: { id: string; pattern: RegExp; literal: number }[]): string[] {
+function hookedBy(step: { call: string; args?: unknown[] }, hooks: { id: string; pattern: RegExp; literal: number }[], fired: string[] | null): string[] {
   const name = step.args?.[0];
   if (!HOOKING.includes(step.call) || typeof name !== 'string') return [];
+  // A recorder registered on a hook shows the hook ran only if it fired.
+  const label = (step.args?.[1] as { label?: unknown } | undefined)?.label;
+  if (fired !== null && typeof label === 'string' && label.startsWith('rec:') && !fired.includes(label)) return [];
   const matches = hooks.filter((h) => h.pattern.test(name));
   const best = Math.max(...matches.map((h) => h.literal));
   return matches.filter((h) => h.literal === best).map((h) => h.id);
@@ -46,7 +51,8 @@ function hookedBy(step: { call: string; args?: unknown[] }, hooks: { id: string;
 
 /**
  * The index of one area. `hooks` are the inventory's filters and actions: a step hooking a name also counts for the
- * hook it matches, so a hook's page can cite the scenarios that register on it.
+ * hook it matches, so a hook's page can cite the scenarios that run it. A recorder (`rec:<hook name>`) counts only
+ * when the recorded results show it fired.
  */
 export function buildEvidenceIndex(area: string, catalogue: Catalogue, hooks: { id: string; name: string }[] = []): EvidenceIndex {
   const index: EvidenceIndex = {};
@@ -58,7 +64,8 @@ export function buildEvidenceIndex(area: string, catalogue: Catalogue, hooks: { 
   for (const s of catalogue.scenarios) {
     const ids = s.steps.map((step) => stepSymbol(area, step));
     symbolsOf.set(s.name, ids.map((id) => id ?? ''));
-    for (const id of new Set([...ids, ...s.steps.flatMap((step) => hookedBy(step, patterns))])) {
+    const fired = catalogue.fired === undefined ? null : (catalogue.fired[s.name] ?? []);
+    for (const id of new Set([...ids, ...s.steps.flatMap((step) => hookedBy(step, patterns, fired))])) {
       if (id && !entry(id).scenarios.includes(s.name)) entry(id).scenarios.push(s.name);
     }
   }

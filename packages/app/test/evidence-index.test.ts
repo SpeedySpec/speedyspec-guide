@@ -68,6 +68,23 @@ describe('a scenario step that hooks a name', () => {
   });
 });
 
+describe('a recorder that never fired', () => {
+  const hooks = [{ id: 'action:updated_option', name: 'updated_option' }, { id: 'filter:pre_option_{$option}', name: 'pre_option_{$option}' }];
+  const recorded = {
+    scenarios: [{ name: 'adds', steps: [{ call: 'add_action', args: ['updated_option', { label: 'rec:updated_option' }] }, { call: 'add_filter', args: ['pre_option_fresh', { label: 'rec:pre_option_fresh' }] }, { call: 'update_option' }] }],
+    breaks: [],
+    fired: { adds: ['rec:pre_option_fresh'] },
+  };
+  const index = buildEvidenceIndex('options', recorded, hooks);
+  test('a_scenario_counts_for_a_hook_only_when_its_recorder_fired', () => {
+    expect(index['filter:pre_option_{$option}']?.scenarios).toEqual(['adds']);
+    expect(index['action:updated_option']).toBeUndefined();
+  });
+  test('the_hook_api_call_still_counts_for_its_function', () => {
+    expect(index['function:add_action']?.scenarios).toEqual(['adds']);
+  });
+});
+
 describe('CitesItsScenario', () => {
   const seams: Seam[] = [{ id: 'hooks', name: 'Hooks', job: 'j', ported: true, files: [], symbols: [], exclude: [], roles: {}, edges: [], wordpress: [] }];
   const assignment: Assignment = { seamOf: { 'function:add_filter': 'hooks', 'class:WP_Hook': 'hooks', 'method:WP_Hook::apply_filters': 'hooks' }, unassigned: [], conflicts: [] };

@@ -3,6 +3,8 @@ import { existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 
 interface Catalogue { scenarios: { name: string; steps: { call: string; args?: unknown[] }[] }[] }
+/** A recorded release file: each scenario's steps, with the callbacks each step invoked. */
+interface Recorded { results: Record<string, { invocations?: { fixture?: unknown }[] }[]> }
 interface Breaks { breaks: { scenario: string; step?: number; why: string }[] }
 
 /** Evidence from a speedyspec-server checkout (compat files, tests) and the two code bases (source lines). */
@@ -54,11 +56,29 @@ export class CompatFilesEvidence implements EvidenceSource {
     return typeof v === 'string' ? v : null;
   }
 
-  async catalogue(area: string): Promise<{ scenarios: Catalogue['scenarios']; breaks: Breaks['breaks'] } | null> {
+  async catalogue(area: string): Promise<{ scenarios: Catalogue['scenarios']; breaks: Breaks['breaks']; fired?: Record<string, string[]> } | null> {
     const c = await this.read<Catalogue>(join('compat', area, 'scenarios.json'));
     if (!c) return null;
     const b = await this.read<Breaks>(join('compat', area, 'breaks.json'));
-    return { scenarios: c.scenarios, breaks: b?.breaks ?? [] };
+    const fired = await this.fired(area);
+    return { scenarios: c.scenarios, breaks: b?.breaks ?? [], ...(fired === null ? {} : { fired }) };
+  }
+
+  /** The recorders that fired in each scenario, across every recorded release file of an area; null when none. */
+  private async fired(area: string): Promise<Record<string, string[]> | null> {
+    const dir = join(this.serverDir, 'compat', area);
+    if (!existsSync(dir)) return null;
+    const files = [...new Bun.Glob('wordpress-*.json').scanSync({ cwd: dir })].sort();
+    if (files.length === 0) return null;
+    const out: Record<string, string[]> = {};
+    for (const file of files) {
+      const recorded = await this.read<Recorded>(join('compat', area, file));
+      for (const [scenario, steps] of Object.entries(recorded?.results ?? {})) {
+        const labels = (out[scenario] ??= []);
+        for (const step of steps) for (const i of step.invocations ?? []) if (typeof i.fixture === 'string' && !labels.includes(i.fixture)) labels.push(i.fixture);
+      }
+    }
+    return out;
   }
 
   private async read<T>(path: string): Promise<T | null> {

@@ -1,0 +1,1 @@
+{ "wordpress": "7.1.5", "results": { "get_with_pre_option": [ { "returned": true, "invocations": [] }, { "returned": true, "invocations": [] }, { "returned": true, "invocations": [ { "fixture": "rec:pre_option_blogname", "args": {} } ] } ] } }

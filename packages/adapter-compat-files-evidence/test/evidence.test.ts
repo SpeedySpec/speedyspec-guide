@@ -51,6 +51,16 @@ describe('catalogue', () => {
   });
 });
 
+describe('the recorders that fired', () => {
+  test('each_scenarios_fired_recorders_come_from_every_recorded_release_file', async () => {
+    const c = await ev.catalogue('options');
+    expect(c?.fired).toEqual({ get_with_pre_option: ['rec:pre_option_blogname'], network_only: ['rec:pre_site_option_x'] });
+  });
+  test('an_area_without_recorded_results_has_none', async () => {
+    expect((await ev.catalogue('hooks'))?.fired).toBeUndefined();
+  });
+});
+
 describe('compatVersion', () => {
   test("the WordPress release an area's scenarios were recorded against, or null", async () => {
     expect(await ev.compatVersion('hooks')).toBe('7.1.5');

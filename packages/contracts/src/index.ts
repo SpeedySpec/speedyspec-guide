@@ -26,7 +26,11 @@ export interface EvidenceSource {
   /** The WordPress release an area's compat scenarios were recorded against (compat/<area>/source.json), or null. */
   compatVersion(area: string): Promise<string | null>;
   /** An area's compat scenarios and breaks, or null when it has none. */
-  catalogue(area: string): Promise<{ scenarios: { name: string; steps: { call: string; args?: unknown[] }[] }[]; breaks: { scenario: string; step?: number; why: string }[] } | null>;
+  /**
+   * An area's scenarios and breaks, and, when its results were recorded, the labels of the recorders that fired in
+   * each scenario (`rec:<hook name>`), from every `wordpress-*.json` beside them.
+   */
+  catalogue(area: string): Promise<{ scenarios: { name: string; steps: { call: string; args?: unknown[] }[] }[]; breaks: { scenario: string; step?: number; why: string }[]; fired?: Record<string, string[]> } | null>;
 }
 
 /** Release tags of a code base, and their code. */
