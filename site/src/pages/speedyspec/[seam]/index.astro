@@ -1,13 +1,13 @@
 ---
 import CompatTable from '../../../components/CompatTable.astro';
 import DependencyList from '../../../components/DependencyList.astro';
-import Ev from '../../../components/Ev.astro';
+import SeamCycles from '../../../components/SeamCycles.astro';
 import Prose from '../../../components/Prose.astro';
 import Base from '../../../layouts/Base.astro';
 import { loadGuideData } from '../../../model/data.ts';
-import { dependencies, seamCycles } from '../../../model/sections.ts';
-import { speedyspecVerdict } from '../../../model/verdict.ts';
-import { pageOf, seamView } from '../../../model/views.ts';
+import { compatGroups, dependencies, seamCycles } from '../../../model/sections.ts';
+import { roleLabel } from '../../../model/wording.ts';
+import { seamView } from '../../../model/views.ts';
 
 export async function getStaticPaths() {
   const d = await loadGuideData();
@@ -17,16 +17,9 @@ export async function getStaticPaths() {
 const d = await loadGuideData();
 const view = seamView(Astro.params.seam!, 'speedyspec', d);
 const intro = d.content.find((c) => c.section === 'speedyspec' && c.seam === view.id && c.kind === 'seam');
-const rows = view.roles.flatMap((r) => r.members).map((m) => {
-  const v = speedyspecVerdict(m.id, d);
-  return { member: m, verdict: v.verdict, note: v.differences[0]?.summary, href: m.href ?? pageOf(m.id, 'wordpress', d) };
-});
+const groups = compatGroups(view.id, d);
 const { dependsOn, dependedOnBy } = dependencies(view.id, d);
 const cycles = seamCycles(view.id, d);
-const name = (id: string) => id.slice(id.indexOf(':') + 1);
-const stepAt = (a: string, b: string) => d.graph.edges.find((e) => e.from === a && e.to === b)?.at;
-const evAttrs = (c: NonNullable<ReturnType<typeof stepAt>>) =>
-  c.kind === 'source' ? { source: `${c.base}:${c.file}#L${c.from}${c.to === c.from ? '' : `-L${c.to}`}` } : c.kind === 'scenario' ? { scenario: c.name, area: c.area } : c.kind === 'break' ? { break: c.scenario, area: c.area } : { test: c.path };
 ---
 <Base title={`${view.name} · SpeedySpec API`} section="speedyspec">
   <main class="page" data-pagefind-body>
@@ -37,25 +30,17 @@ const evAttrs = (c: NonNullable<ReturnType<typeof stepAt>>) =>
     <p class="seam-links"><a href={`/speedyspec/porting/${view.id}/`}>Porting guide</a> · <a href={`/speedyspec/architecture/${view.id}/`}>Architecture</a></p>
 
     <h2>Compatibility</h2>
-    <CompatTable rows={rows} />
+    {groups === null && <p class="muted outside-fork">SpeedySpec's packages/ tree doesn't carry this seam's code, so its symbols aren't compared with WordPress. The <a href={`/wordpress/${view.id}/`}>WordPress seam page</a> lists them.</p>}
+    {groups?.map((g) => (
+      <>
+        <h3 id={`role-${g.role}`}>{roleLabel(g.role)}</h3>
+        <CompatTable rows={g.rows} />
+      </>
+    ))}
 
-    <DependencyList title="Depends on" kind="depends-on" groups={dependsOn} data={d} />
-    <DependencyList title="Depended on by" kind="depended-on-by" groups={dependedOnBy} data={d} />
+    <DependencyList title="Depends on" kind="depends-on" groups={dependsOn} data={d} limit={5} allHref={`/speedyspec/${view.id}/depends-on/`} />
+    <DependencyList title="Depended on by" kind="depended-on-by" groups={dependedOnBy} data={d} limit={5} allHref={`/speedyspec/${view.id}/depended-on-by/`} />
 
-    <section class="cycles">
-      <h2>Circular dependencies</h2>
-      {cycles.length === 0 && <p class="muted">None.</p>}
-      {cycles.map((c) => (
-        <div class="cycle">
-          <p class="path circular">{c.path.map(name).join(' → ')} <span class="chip-note">{c.possible ? 'possibly circular' : 'circular'}</span></p>
-          <p class="muted">
-            {c.path.slice(1).map((to, i) => {
-              const at = stepAt(c.path[i]!, to);
-              return at ? <Ev {...evAttrs(at)} /> : null;
-            })}
-          </p>
-        </div>
-      ))}
-    </section>
+    <SeamCycles cycles={cycles} data={d} limit={10} allHref={`/speedyspec/${view.id}/cycles/`} />
   </main>
 </Base>

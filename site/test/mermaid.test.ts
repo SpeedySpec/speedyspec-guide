@@ -103,3 +103,20 @@ describe('diagram limits and cycle arrows', () => {
     expect(text.match(/linkStyle \d+ stroke:#9b1c1c/g)?.length).toBe(2);
   });
 });
+
+describe('a seam many seams depend on', () => {
+  test('collapses_each_other_seams_links_to_one_per_direction_past_the_link_cap', () => {
+    const others = Array.from({ length: 160 }, (_, i) => `s${i}`);
+    const crossSeam = others.flatMap((s, i) => [
+      { from: `function:x${i}`, to: 'function:add_filter', kind: 'calls', fromSeam: s, toSeam: 'hooks' },
+      { from: `function:x${i}`, to: 'function:add_filter', kind: 'calls', fromSeam: s, toSeam: 'hooks' },
+      { from: `function:y${i}`, to: 'function:apply_filters', kind: 'calls', fromSeam: s, toSeam: 'hooks' },
+    ]) as GuideData['graph']['crossSeam'];
+    const c: GuideData = { ...d, graph: { ...d.graph, crossSeam } };
+    const code = seamDiagram(seamView('hooks', 'wordpress', c), c);
+    expect(code).not.toBeNull();
+    // One link from each other seam, to the member it uses most, counting all of its links.
+    const fromS0 = code!.split('\n').filter((l) => /^ {2}n\d+ -->\|"calls 3"\| n\d+$/.test(l));
+    expect(fromS0.length).toBe(160);
+  });
+});

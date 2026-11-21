@@ -31,7 +31,7 @@ const written = new Set(d.content.filter((c) => c.section === 'wordpress' && c.k
     <div class="members">
       {view.roles.map((r) => (
         <section>
-          <h2>{roleLabel(r.role)}</h2>
+          <h2 id={`role-${r.role}`}>{roleLabel(r.role)}</h2>
           <ul>
             {r.members.map((m) => (
               <li class:list={['member', { circular: m.circular }]}>

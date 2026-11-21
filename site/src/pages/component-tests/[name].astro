@@ -11,7 +11,7 @@ import Base from '../../layouts/Base.astro';
 import { loadGuideData } from '../../model/data.ts';
 import { seamDiagram } from '../../model/mermaid.ts';
 import type { SpeedySpecVerdict } from '../../model/verdict.ts';
-import { seamView, symbolView } from '../../model/views.ts';
+import { railView, seamView, symbolView } from '../../model/views.ts';
 
 export function getStaticPaths() {
   if (process.env.GUIDE_COMPONENT_TESTS !== '1') return [];
@@ -26,7 +26,7 @@ const verdicts: SpeedySpecVerdict[] = ['works-as-wordpress', 'works-with-differe
 ---
 <Base title={`Component: ${name}`}>
   <main class="page" id="component">
-    {name === 'rail' && <SeamRail seam={seam} section="wordpress" current="function:apply_filters" />}
+    {name === 'rail' && <SeamRail rail={railView('function:add_filter', 'wordpress', d)} section="wordpress" current="function:add_filter" />}
     {name === 'head' && <Head view={addFilter} section="wordpress" />}
     {name === 'panel' && <RelationshipPanel edges={addFilter.edges} callsInto={addFilter.callsInto} />}
     {name === 'pills' && verdicts.map((v) => <VerdictPill verdict={v} />)}

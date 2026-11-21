@@ -2,6 +2,7 @@
  * Mermaid text for the site's diagrams, generated from the guide's data so a diagram only ever shows what the
  * citations back. Circular dependencies are red and labelled; links through hooks are dashed.
  */
+import { indexOf } from './index-of.ts';
 import type { Seam } from '@speedyspec-guide/domain';
 import type { CratesFile, GuideData } from './data.ts';
 import { seamCycles } from './sections.ts';
@@ -62,7 +63,7 @@ export function seamDiagram(view: SeamView, d: GuideData): string | null {
     else links.push({ from, to, label, dashed, pairs: [pair] });
   };
 
-  for (const e of [...seam.edges, ...d.graph.edges]) {
+  for (const e of [...seam.edges, ...members.flatMap((m) => indexOf(d).edgesFrom(m.id))]) {
     const label = labels[e.kind];
     const a = node.get(e.from);
     const b = node.get(e.to);
@@ -71,8 +72,9 @@ export function seamDiagram(view: SeamView, d: GuideData): string | null {
 
   // Through hooks: a member fires a hook that runs another member. One dashed link per pair, however many hooks.
   const via = new Map<string, { from: string; to: string; hooks: Set<string>; pair: [string, string] }>();
-  for (const fire of d.graph.edges.filter((e) => e.kind === 'fires' && node.has(e.from))) {
-    for (const run of d.graph.edges.filter((e) => e.kind === 'runs' && e.from === fire.to && node.has(e.to))) {
+  const ix = indexOf(d);
+  for (const fire of members.flatMap((m) => ix.edgesFrom(m.id)).filter((e) => e.kind === 'fires')) {
+    for (const run of ix.edgesFrom(fire.to).filter((e) => e.kind === 'runs' && node.has(e.to))) {
       if (fire.from === run.to) continue;
       const key = `${fire.from}|${run.to}`;
       const v = via.get(key) ?? { from: node.get(fire.from)!, to: node.get(run.to)!, hooks: new Set<string>(), pair: [fire.from, run.to] as [string, string] };
@@ -108,7 +110,29 @@ export function seamDiagram(view: SeamView, d: GuideData): string | null {
     c.pairs.push([e.from, e.to]);
     counted.set(key, c);
   }
-  for (const c of counted.values()) links.push({ ...c, label: `${c.kind} ${c.count}` });
+  let outsideLinks = [...counted.values()];
+  if (links.length + outsideLinks.length > MAX_LINKS) {
+    // Too many to draw one per member: one link per other seam, direction and kind, on the member it uses most.
+    const outsideIds = new Set(outside.values());
+    const merged = new Map<string, Link & { count: number; kind: string; perMember: Map<string, number> }>();
+    for (const c of outsideLinks) {
+      const outgoing = outsideIds.has(c.to);
+      const other = outgoing ? c.to : c.from;
+      const member = outgoing ? c.from : c.to;
+      const key = `${other}|${outgoing}|${c.kind}`;
+      const m = merged.get(key) ?? { ...c, pairs: [], count: 0, perMember: new Map<string, number>() };
+      m.count += c.count;
+      m.pairs.push(...c.pairs);
+      m.perMember.set(member, (m.perMember.get(member) ?? 0) + c.count);
+      merged.set(key, m);
+    }
+    outsideLinks = [...merged.values()].map(({ perMember, ...m }) => {
+      const top = [...perMember].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))[0]![0];
+      const outgoing = outsideIds.has(m.to);
+      return outgoing ? { ...m, from: top } : { ...m, to: top };
+    });
+  }
+  for (const c of outsideLinks) links.push({ ...c, label: `${c.kind} ${c.count}` });
 
   if (links.length > MAX_LINKS) return null;
   links.forEach((l) => lines.push(`  ${l.from} ${l.dashed ? '-.->' : '-->'}|${escapeLabel(l.label)}| ${l.to}`));

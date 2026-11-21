@@ -1,0 +1,25 @@
+---
+// Every row of this seam's "Depended on by" list for one other seam.
+import DependencyList from '../../../../components/DependencyList.astro';
+import Base from '../../../../layouts/Base.astro';
+import { loadGuideData } from '../../../../model/data.ts';
+import { dependencies, seamIdByName } from '../../../../model/sections.ts';
+
+export async function getStaticPaths() {
+  const d = await loadGuideData();
+  return d.seams.flatMap((s) => [...dependencies(s.id, d).dependedOnBy.keys()].map((name) => ({ params: { seam: s.id, other: seamIdByName(name, d) } })));
+}
+
+const d = await loadGuideData();
+const seam = d.seams.find((s) => s.id === Astro.params.seam)!;
+const other = d.seams.find((s) => s.id === Astro.params.other);
+const name = other?.name ?? Astro.params.other!;
+const groups = new Map([...dependencies(seam.id, d).dependedOnBy].filter(([n]) => n === name));
+---
+<Base title={`Depended on by: ${name} · ${seam.name} · SpeedySpec API`} section="speedyspec">
+  <main class="page" data-pagefind-body>
+    <div class="crumbs"><a href="/speedyspec/">SpeedySpec API</a> › <a href={`/speedyspec/${seam.id}/`}>{seam.name}</a> › <a href={`/speedyspec/${seam.id}/depended-on-by/`}>Depended on by</a> › {name}</div>
+    <h1>{seam.name}: Depended on by {name}</h1>
+    <DependencyList title="Depended on by" kind="depended-on-by" groups={groups} data={d} />
+  </main>
+</Base>

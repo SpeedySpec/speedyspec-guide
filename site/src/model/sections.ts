@@ -1,7 +1,8 @@
 /** What the section index and seam pages list, and which symbol pages exist. */
 import type { GuideData } from './data.ts';
 import { indexOf } from './index-of.ts';
-import { assertUniqueSlugs } from './slug.ts';
+import { type SpeedySpecVerdict, speedyspecVerdict } from './verdict.ts';
+import { type MemberView, pageOf, seamView } from './views.ts';
 
 /** Every WordPress symbol with its own page in a seam: everything assigned to it except methods. */
 export function pageSymbols(seamId: string, d: GuideData): string[] {
@@ -15,9 +16,16 @@ export function wordpressPaths(d: GuideData): { seam: string; slug: string; id: 
 
 function paths(section: 'wordpress' | 'speedyspec', d: GuideData): { seam: string; slug: string; id: string }[] {
   const ix = indexOf(d);
-  const ids = ix.pageIds(section);
-  assertUniqueSlugs(ids.map((id) => id));
-  return ids.map((id) => ({ seam: ix.seamOf(id)!, slug: ix.slug(id), id }));
+  const out = ix.pageIds(section).map((id) => ({ seam: ix.seamOf(id)!, slug: ix.slug(id), id }));
+  // The paths actually used must differ ignoring case (macOS and Windows file systems ignore it).
+  const seen = new Map<string, string>();
+  for (const p of out) {
+    const key = `${p.seam}/${p.slug}`.toLowerCase();
+    const other = seen.get(key);
+    if (other !== undefined) throw new Error(`${other} and ${p.id} would both be at ${key}`);
+    seen.set(key, p.id);
+  }
+  return out;
 }
 
 /** How many of a seam's page symbols have a hand-written page in a section. */
@@ -36,29 +44,70 @@ export function speedyspecPaths(d: GuideData): { seam: string; slug: string; id:
 const STATE_LABELS = { php: "calls WordPress's PHP", port: 'behind a port', rust: 'answered in Rust' } as const;
 
 export interface DependencyRow {
-  from: string;
-  to: string;
-  kind: string;
+  /** The symbol depended on. */
+  target: string;
+  /** How many edges reach it. */
+  calls: number;
+  /** The symbols on the other side, sorted. */
+  from: string[];
+  kinds: string[];
   state: string;
   circular: boolean;
 }
 
-/** A seam's cross-seam dependencies, grouped by the other seam: what it depends on, and what depends on it. */
+/**
+ * A seam's cross-seam dependencies, grouped by the other seam, one row per symbol depended on: what it depends on
+ * (target in the other seam), and what depends on it (target in this seam, `from` in the other).
+ */
 export function dependencies(seamId: string, d: GuideData): { dependsOn: Map<string, DependencyRow[]>; dependedOnBy: Map<string, DependencyRow[]> } {
+  const ix = indexOf(d);
+  const key = `dependencies|${seamId}`;
+  const hit = ix.memo.get(key) as ReturnType<typeof dependencies> | undefined;
+  if (hit) return hit;
+  const result = computeDependencies(seamId, d);
+  ix.memo.set(key, result);
+  return result;
+}
+
+function computeDependencies(seamId: string, d: GuideData): { dependsOn: Map<string, DependencyRow[]>; dependedOnBy: Map<string, DependencyRow[]> } {
+  const ix = indexOf(d);
   const name = (id: string) => d.seams.find((s) => s.id === id)?.name ?? id;
-  const together = (a: string, b: string) => d.cycles.components.some((c) => c.includes(a) && c.includes(b));
+  const together = (a: string, b: string) => ix.component(a)?.has(b) === true;
   const state = (owner: string, target: string) => {
     const s = d.seams.find((x) => x.id === owner)?.dependencies?.[target];
     return s ? STATE_LABELS[s] : 'not yet recorded';
   };
-  const dependsOn = new Map<string, DependencyRow[]>();
-  const dependedOnBy = new Map<string, DependencyRow[]>();
-  for (const e of d.graph.crossSeam) {
-    const row = (owner: string): DependencyRow => ({ from: e.from, to: e.to, kind: e.kind, state: state(owner, e.to), circular: together(e.from, e.to) });
-    if (e.fromSeam === seamId) dependsOn.set(name(e.toSeam), [...(dependsOn.get(name(e.toSeam)) ?? []), row(seamId)]);
-    if (e.toSeam === seamId) dependedOnBy.set(name(e.fromSeam), [...(dependedOnBy.get(name(e.fromSeam)) ?? []), row(e.fromSeam)]);
-  }
-  return { dependsOn, dependedOnBy };
+  const collect = (outgoing: boolean) => {
+    const rows = new Map<string, Map<string, DependencyRow & { fromSet: Set<string>; kindSet: Set<string> }>>();
+    for (const e of d.graph.crossSeam) {
+      if ((outgoing ? e.fromSeam : e.toSeam) !== seamId) continue;
+      const group = name(outgoing ? e.toSeam : e.fromSeam);
+      const byTarget = rows.get(group) ?? new Map();
+      rows.set(group, byTarget);
+      const row = byTarget.get(e.to) ?? { target: e.to, calls: 0, from: [], kinds: [], state: state(e.fromSeam, e.to), circular: false, fromSet: new Set<string>(), kindSet: new Set<string>() };
+      row.calls++;
+      row.fromSet.add(e.from);
+      row.kindSet.add(e.kind);
+      row.circular ||= together(e.from, e.to);
+      byTarget.set(e.to, row);
+    }
+    const out = new Map<string, DependencyRow[]>();
+    for (const [group, byTarget] of [...rows].sort((a, b) => a[0].localeCompare(b[0]))) {
+      out.set(
+        group,
+        [...byTarget.values()]
+          .map(({ fromSet, kindSet, ...row }) => ({ ...row, from: [...fromSet].sort(), kinds: [...kindSet].sort() }))
+          .sort((a, b) => (a.target < b.target ? -1 : 1)),
+      );
+    }
+    return out;
+  };
+  return { dependsOn: collect(true), dependedOnBy: collect(false) };
+}
+
+/** The `n` rows depended on most (by edge count), then by name: what a seam page shows before linking the full list. */
+export function topRows(rows: DependencyRow[], n: number): DependencyRow[] {
+  return [...rows].sort((a, b) => b.calls - a.calls || (a.target < b.target ? -1 : a.target > b.target ? 1 : 0)).slice(0, n);
 }
 
 /**
@@ -112,4 +161,25 @@ function shortest(start: string, group: Set<string>, next: Map<string, { to: str
     }
   }
   return null;
+}
+
+/**
+ * A SpeedySpec seam page's compatibility rows by role, or null when SpeedySpec's packages/ tree doesn't carry the
+ * seam's code: then nothing is compared and the page says so instead of listing a row per member.
+ */
+export function compatGroups(seamId: string, d: GuideData): { role: string; rows: { member: MemberView; verdict: SpeedySpecVerdict; note?: string; href: string | null }[] }[] | null {
+  if (!indexOf(d).inFork(seamId)) return null;
+  const view = seamView(seamId, 'speedyspec', d);
+  return view.roles.map((r) => ({
+    role: r.role,
+    rows: r.members.map((m) => {
+      const v = speedyspecVerdict(m.id, d);
+      return { member: m, verdict: v.verdict, ...(v.differences[0] ? { note: v.differences[0].summary } : {}), href: m.href ?? pageOf(m.id, 'wordpress', d) };
+    }),
+  }));
+}
+
+/** An other seam's id from the name its dependency group is listed under. */
+export function seamIdByName(name: string, d: GuideData): string {
+  return d.seams.find((s) => s.name === name)?.id ?? name;
 }

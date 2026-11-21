@@ -13,11 +13,13 @@ beforeAll(() => {
 const page = (name: string) => html(dist, `/component-tests/${name}/`);
 
 describe('components', () => {
-  test("the rail marks the current member and nests a class's methods", async () => {
+  test("the rail marks the current member, lists only its role, and links the seam's other roles", async () => {
     const p = await page('rail');
-    expect(p.text('.rail-member[aria-current="page"]')).toEqual(['apply_filters']);
+    expect(p.text('.rail-member[aria-current="page"]')).toEqual(['add_filter↻ (circular)']);
     expect(p.text('.rail-methods .rail-member')).toEqual([]);
     expect(p.text('.rail-member.circular')).toEqual(['add_filter↻ (circular)']);
+    expect(p.text('.rail-role-link')).toEqual(['Run', 'Classes and state', 'Other']);
+    expect(p.attr('.rail-role-link', 'href')).toEqual(['/wordpress/hooks/#role-run', '/wordpress/hooks/#role-classes-and-state', '/wordpress/hooks/#role-other']);
   });
 
   test('the head has the name, the pill and the provenance line', async () => {

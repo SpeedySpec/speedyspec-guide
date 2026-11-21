@@ -1,19 +1,19 @@
 ---
 import SeamRail from '../components/SeamRail.astro';
-import type { SeamView, Section } from '../model/views.ts';
+import type { RailView, Section } from '../model/views.ts';
 import Base from './Base.astro';
 
 interface Props {
   title: string;
-  seam: SeamView;
+  rail: RailView;
   section: Section;
   current?: string;
 }
-const { title, seam, section, current } = Astro.props;
+const { title, rail, section, current } = Astro.props;
 ---
 <Base title={title} section={section}>
   <div class="reference">
-    <SeamRail seam={seam} section={section} current={current} />
+    <SeamRail rail={rail} section={section} current={current} />
     <main class="content" data-pagefind-body>
       <slot />
     </main>

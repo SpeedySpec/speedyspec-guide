@@ -129,32 +129,56 @@ export function seamView(seamId: string, section: Section, d: GuideData): SeamVi
     if (here.length > 0) roles.push({ role, members: here.map((id) => member(id, section, d)) });
   }
   const rest = [...members].filter((id) => !placed.has(id));
-  if (rest.length > 0) {
-    roles.push({ role: 'other', members: rest.map((id) => member(id, section, d)).sort((a, b) => a.name.localeCompare(b.name)) });
+  const byName = (a: MemberView, b: MemberView) => a.name.localeCompare(b.name);
+  if (Object.keys(seam.roles).length === 0) {
+    // A seam that declares no roles is grouped by kind.
+    for (const [role, kinds] of KIND_GROUPS) {
+      const here = rest.filter((id) => kinds.includes(kindOf(id, d)));
+      if (here.length > 0) roles.push({ role, members: here.map((id) => member(id, section, d)).sort(byName) });
+    }
+  } else if (rest.length > 0) {
+    roles.push({ role: 'other', members: rest.map((id) => member(id, section, d)).sort(byName) });
   }
   const view = { id: seam.id, name: seam.name, job: seam.job, ported: seam.ported, roles };
   ix.memo.set(key, view);
   return view;
 }
 
-function link(id: string, from: string, section: Section, d: GuideData): Link {
-  return { id, name: nameOf(id, d), href: pageOf(id, section, d), circular: together(from, id, d) };
+const KIND_GROUPS: [string, string[]][] = [
+  ['functions', ['function']],
+  ['classes', ['class']],
+  ['hooks', ['filter', 'action']],
+  ['globals', ['global']],
+  ['constants', ['constant']],
+];
+
+/** The role a member is listed under in its seam's view. */
+function roleOf(id: string, view: SeamView): string | undefined {
+  return view.roles.find((r) => r.members.some((m) => m.id === id))?.role;
 }
 
-/** Edges by endpoint, built once per data load. */
-function edgesAt(d: GuideData): { from: Map<string, GuideData['graph']['edges']>; to: Map<string, GuideData['graph']['edges']> } {
+export interface RailView {
+  seam: { id: string; name: string };
+  /** Every role of the seam; only the current symbol's role lists its members, the others link to the seam page. */
+  roles: { role: string; href: string; members: MemberView[] | null }[];
+}
+
+/** The rail for one page: bounded by the current role, however large the seam. */
+export function railView(id: string, section: Section, d: GuideData): RailView {
   const ix = indexOf(d);
-  const hit = ix.memo.get('edges') as ReturnType<typeof edgesAt> | undefined;
-  if (hit) return hit;
-  const from = new Map<string, GuideData['graph']['edges']>();
-  const to = new Map<string, GuideData['graph']['edges']>();
-  for (const e of d.graph.edges) {
-    from.set(e.from, [...(from.get(e.from) ?? []), e]);
-    to.set(e.to, [...(to.get(e.to) ?? []), e]);
-  }
-  const out = { from, to };
-  ix.memo.set('edges', out);
-  return out;
+  const seamId = ix.seamOf(id);
+  if (!seamId) throw new Error(`${id} is in no seam`);
+  const view = seamView(seamId, section, d);
+  const owner = id.startsWith('method:') ? `class:${id.slice('method:'.length, id.lastIndexOf('::'))}` : id;
+  const current = roleOf(owner, view);
+  return {
+    seam: { id: view.id, name: view.name },
+    roles: view.roles.map((r) => ({ role: r.role, href: `/${section}/${view.id}/#role-${r.role}`, members: r.role === current ? r.members : null })),
+  };
+}
+
+function link(id: string, from: string, section: Section, d: GuideData): Link {
+  return { id, name: nameOf(id, d), href: pageOf(id, section, d), circular: together(from, id, d) };
 }
 
 /** Everything a symbol's page shows. */
@@ -164,7 +188,7 @@ export function symbolView(id: string, section: Section, d: GuideData): SymbolVi
   if (!seamId) throw new Error(`${id} is in no seam`);
   const seam = d.seams.find((s) => s.id === seamId)!;
   const ownerId = id.startsWith('method:') ? `class:${id.slice('method:'.length, id.lastIndexOf('::'))}` : id;
-  const role = Object.entries(seam.roles).find(([, ids]) => ids.includes(ownerId))?.[0] ?? 'other';
+  const role = roleOf(ownerId, seamView(seamId, section, d)) ?? 'other';
   const sym = section === 'speedyspec' ? (ix.runtimeSymbol(id) ?? ix.symbol(id)) : ix.symbol(id);
 
   const edges: SymbolView['edges'] = [];
@@ -179,14 +203,13 @@ export function symbolView(id: string, section: Section, d: GuideData): SymbolVi
     if (e.from === id) addEdge(e.kind, OUT[e.kind] ?? e.kind, e.to);
     if (e.to === id) addEdge(e.kind, IN[e.kind] ?? e.kind, e.from);
   }
-  const at = edgesAt(d);
+  const at = { from: { get: (k: string) => ix.edgesFrom(k) }, to: { get: (k: string) => ix.edgesTo(k) } };
   const sameSeam = (e: { from: string; to: string }) => ix.seamOf(e.from) === seamId && ix.seamOf(e.to) === seamId;
   for (const e of at.from.get(id) ?? []) if (['reads', 'writes', 'calls', 'runs'].includes(e.kind) && sameSeam(e)) addEdge(e.kind, OUT[e.kind]!, e.to);
   for (const e of at.to.get(id) ?? []) if (['reads', 'writes', 'calls', 'runs'].includes(e.kind) && sameSeam(e)) addEdge(e.kind, IN[e.kind]!, e.from);
 
   const groups = new Map<string, Link[]>();
-  for (const e of d.graph.crossSeam) {
-    if (e.from !== id) continue;
+  for (const e of ix.crossSeamFrom(id)) {
     const name = d.seams.find((s) => s.id === e.toSeam)?.name ?? e.toSeam;
     const list = groups.get(name) ?? [];
     if (!list.some((l) => l.id === e.to)) list.push(link(e.to, id, section, d));

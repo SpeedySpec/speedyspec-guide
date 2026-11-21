@@ -13,13 +13,14 @@ function page(id: string, section: 'wordpress' | 'speedyspec', d: GuideData) {
 }
 
 /** A symbol's verdict on SpeedySpec: its SpeedySpec page's, else (unported seams) the fork comparison's, else unknown. */
-export function speedyspecVerdict(id: string, d: GuideData): { verdict: SpeedySpecVerdict; differences: Difference[]; source: 'page' | 'fork' | 'none' } {
+export function speedyspecVerdict(id: string, d: GuideData): { verdict: SpeedySpecVerdict; differences: Difference[]; source: 'page' | 'fork' | 'outside-fork' | 'none' } {
   const p = page(id, 'speedyspec', d);
   if (p && typeof p.data.verdict === 'string') {
     return { verdict: p.data.verdict as Verdict, differences: (p.data.differences as Difference[] | undefined) ?? [], source: 'page' };
   }
   const seam = d.seams.find((s) => s.id === d.assignment.seamOf[id]);
   const fork = d.fork[id];
+  if (seam && seam.inFork === false && !seam.ported) return { verdict: 'unknown', differences: [], source: 'outside-fork' };
   if (seam && !seam.ported && fork && fork !== 'added') {
     return { verdict: fork === 'same' ? 'same-code' : fork, differences: [], source: 'fork' };
   }

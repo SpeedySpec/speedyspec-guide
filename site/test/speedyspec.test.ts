@@ -27,6 +27,19 @@ describe('the SpeedySpec API section', () => {
     expect(p.attr('.seam-links a', 'href')).toEqual(['/speedyspec/porting/hooks/', '/speedyspec/architecture/hooks/']);
   });
 
+  test("a seam's full dependency and cycle lists have pages of their own, linked from the seam page", async () => {
+    const seam = await html(dist, '/speedyspec/hooks/');
+    expect(seam.attr('.all-link', 'href')).toEqual(['/speedyspec/hooks/depends-on/', '/speedyspec/hooks/depended-on-by/', '/speedyspec/hooks/cycles/']);
+    const out = await html(dist, '/speedyspec/hooks/depends-on/');
+    expect(out.attr('.other-seams a', 'href')).toEqual(['/speedyspec/hooks/depends-on/options/']);
+    const outOptions = await html(dist, '/speedyspec/hooks/depends-on/options/');
+    expect(outOptions.text('.depends-on h3')).toEqual(['Options']);
+    const into = await html(dist, '/speedyspec/hooks/depended-on-by/options/');
+    expect(into.text('.depended-on-by .dep-state')).toEqual(["calls WordPress's PHP"]);
+    const cycles = await html(dist, '/speedyspec/hooks/cycles/');
+    expect(cycles.text('.cycles .path')).toEqual(['add_filter → get_option → add_filter circular']);
+  });
+
   test('a symbol page shows the verdict, its differences with their break, and links back to WordPress', async () => {
     const p = await html(dist, '/speedyspec/hooks/add_filter/');
     expect(p.text('.verdict .pill')).toEqual(['Works with differences']);

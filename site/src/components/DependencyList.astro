@@ -1,7 +1,7 @@
 ---
 import MaybeLink from './MaybeLink.astro';
 import type { GuideData } from '../model/data.ts';
-import type { DependencyRow } from '../model/sections.ts';
+import { type DependencyRow, topRows } from '../model/sections.ts';
 import { pageOf } from '../model/views.ts';
 
 interface Props {
@@ -9,24 +9,39 @@ interface Props {
   kind: 'depends-on' | 'depended-on-by';
   groups: Map<string, DependencyRow[]>;
   data: GuideData;
+  /** Rows shown per other seam; all when not given. */
+  limit?: number;
+  /** The page with every row, linked when rows are limited. */
+  allHref?: string;
 }
-const { title, kind, groups, data } = Astro.props;
+const { title, kind, groups, data, limit, allHref } = Astro.props;
 const name = (id: string) => id.slice(id.indexOf(':') + 1);
+// Callers are listed by name up to this many per row; the rest are counted.
+const SHOWN = 5;
+const total = [...groups.values()].reduce((n, rows) => n + rows.length, 0);
 ---
 <section class={kind}>
   <h2>{title}</h2>
   {groups.size === 0 && <p class="muted">Nothing.</p>}
-  {[...groups].map(([seamName, rows]) => (
-    <>
-      <h3>{seamName}</h3>
-      <ul>
-        {rows.map((r) => (
-          <li class:list={{ circular: r.circular }}>
-            <MaybeLink class="mono" href={pageOf(r.from, 'wordpress', data)}>{name(r.from)}</MaybeLink> {r.kind} <MaybeLink class="mono" href={pageOf(r.to, 'wordpress', data)}>{name(r.to)}</MaybeLink>
-            {' '}<span class="dep-state">{r.state}</span>{r.circular && <span class="chip-note"> circular</span>}
-          </li>
-        ))}
-      </ul>
-    </>
-  ))}
+  {[...groups].map(([seamName, rows]) => {
+    const shown = limit === undefined ? rows : topRows(rows, limit);
+    return (
+      <>
+        <h3>{seamName}</h3>
+        <ul>
+          {shown.map((r) => (
+            <li class:list={{ circular: r.circular }}>
+              <MaybeLink class="mono" href={pageOf(r.target, 'wordpress', data)}>{name(r.target)}</MaybeLink>
+              <span class="muted"> {r.kinds.join(', ')} ×{r.calls}, from </span>
+              {r.from.slice(0, SHOWN).map((f, i) => <>{i > 0 && ', '}<MaybeLink class="mono" href={pageOf(f, 'wordpress', data)}>{name(f)}</MaybeLink></>)}
+              {r.from.length > SHOWN && <span class="muted"> and {r.from.length - SHOWN} more</span>}
+              {' '}<span class="dep-state">{r.state}</span>{r.circular && <span class="chip-note"> circular</span>}
+            </li>
+          ))}
+        </ul>
+        {shown.length < rows.length && <p class="muted">And {rows.length - shown.length} more symbols in {seamName}.</p>}
+      </>
+    );
+  })}
+  {allHref && groups.size > 0 && <p><a class="all-link" href={allHref}>All {total} {total === 1 ? 'row' : 'rows'}</a></p>}
 </section>

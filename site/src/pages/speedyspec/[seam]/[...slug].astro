@@ -11,7 +11,7 @@ import Reference from '../../../layouts/Reference.astro';
 import { loadGuideData } from '../../../model/data.ts';
 import { speedyspecPaths } from '../../../model/sections.ts';
 import { methodAnchor } from '../../../model/slug.ts';
-import { pageOf, symbolView } from '../../../model/views.ts';
+import { pageOf, symbolView, railView } from '../../../model/views.ts';
 import { notDocumentedText } from '../../../model/wording.ts';
 
 export async function getStaticPaths() {
@@ -24,7 +24,7 @@ const d = await loadGuideData();
 const view = symbolView(id, 'speedyspec', d);
 const wordpressPage = pageOf(id, 'wordpress', d);
 ---
-<Reference title={`${view.name} · SpeedySpec`} seam={view.seam} section="speedyspec" current={id}>
+<Reference title={`${view.name} · SpeedySpec`} rail={railView(id, 'speedyspec', d)} section="speedyspec" current={id}>
   <Head view={view} section="speedyspec" />
   <section class="verdict">
     <VerdictPill verdict={view.verdict.verdict} />

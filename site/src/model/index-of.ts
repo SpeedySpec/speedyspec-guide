@@ -23,11 +23,24 @@ export interface GuideIndex {
   hasPage(id: string, section: 'wordpress' | 'speedyspec'): boolean;
   pageIds(section: 'wordpress' | 'speedyspec'): string[];
   slug(id: string): string;
+  /** Graph edges by endpoint. */
+  edgesFrom(id: string): GuideData['graph']['edges'];
+  edgesTo(id: string): GuideData['graph']['edges'];
+  /** Cross-seam edges leaving a symbol. */
+  crossSeamFrom(id: string): GuideData['graph']['crossSeam'];
+  /** False when SpeedySpec's packages/ tree doesn't carry the seam's code. */
+  inFork(seamId: string): boolean;
   /** Memo for views built from this data. */
   memo: Map<string, unknown>;
 }
 
 const cache = new WeakMap<GuideData, GuideIndex>();
+
+function push<K, V>(map: Map<K, V[]>, key: K, value: V): void {
+  const list = map.get(key);
+  if (list) list.push(value);
+  else map.set(key, [value]);
+}
 
 export function indexOf(d: GuideData): GuideIndex {
   const hit = cache.get(d);
@@ -41,15 +54,15 @@ export function indexOf(d: GuideData): GuideIndex {
   const wordpressMembers = new Map<string, string[]>();
   const methods = new Map<string, string[]>();
   for (const [id, seam] of Object.entries(d.assignment.seamOf)) {
-    wordpressMembers.set(seam, [...(wordpressMembers.get(seam) ?? []), id]);
+    push(wordpressMembers, seam, id);
     if (id.startsWith('method:')) {
       const cls = `class:${id.slice('method:'.length, id.lastIndexOf('::'))}`;
-      methods.set(cls, [...(methods.get(cls) ?? []), id]);
+      push(methods, cls, id);
     }
   }
   for (const list of methods.values()) list.sort();
   const runtimeMembers = new Map<string, string[]>();
-  for (const [id, seam] of Object.entries(d.runtimeSeamOf)) runtimeMembers.set(seam, [...(runtimeMembers.get(seam) ?? []), id]);
+  for (const [id, seam] of Object.entries(d.runtimeSeamOf)) push(runtimeMembers, seam, id);
 
   const component = new Map<string, Set<string>>();
   for (const c of d.cycles.components) {
@@ -60,12 +73,28 @@ export function indexOf(d: GuideData): GuideIndex {
   const content = new Map<string, ContentEntry>();
   for (const c of d.content) if (c.kind === 'symbol' && c.symbol) content.set(`${c.section}|${c.symbol}`, c);
 
+  const outsideFork = new Set(d.seams.filter((s) => s.inFork === false).map((s) => s.id));
+  const by = <T extends { from: string; to: string }>(list: T[], key: 'from' | 'to') => {
+    const out = new Map<string, T[]>();
+    for (const e of list) {
+      const k = e[key];
+      const bucket = out.get(k);
+      if (bucket) bucket.push(e);
+      else out.set(k, [e]);
+    }
+    return out;
+  };
+  const edgesFrom = by(d.graph.edges, 'from');
+  const edgesTo = by(d.graph.edges, 'to');
+  const crossFrom = by(d.graph.crossSeam, 'from');
+
   const wordpressPages = new Set<string>();
   const speedyspecPages = new Set<string>();
   for (const [id, seam] of Object.entries(d.assignment.seamOf)) {
     if (id.startsWith('method:') || !seams.has(seam) || !symbols.has(id)) continue;
     wordpressPages.add(id);
-    if (content.has(`speedyspec|${id}`) || d.fork[id] === 'modified' || d.fork[id] === 'removed') speedyspecPages.add(id);
+    const forked = !outsideFork.has(seam) && (d.fork[id] === 'modified' || d.fork[id] === 'removed');
+    if (content.has(`speedyspec|${id}`) || forked) speedyspecPages.add(id);
   }
   for (const [id, seam] of Object.entries(d.runtimeSeamOf)) if (seams.has(seam) && !symbols.has(id)) speedyspecPages.add(id);
 
@@ -83,6 +112,10 @@ export function indexOf(d: GuideData): GuideIndex {
     hasPage: (id, section) => (section === 'wordpress' ? wordpressPages : speedyspecPages).has(id),
     pageIds: (section) => [...(section === 'wordpress' ? wordpressPages : speedyspecPages)].sort(),
     slug: (id) => slugs.get(id) ?? uniqueSlugs([id]).get(id)!,
+    edgesFrom: (id) => edgesFrom.get(id) ?? [],
+    edgesTo: (id) => edgesTo.get(id) ?? [],
+    crossSeamFrom: (id) => crossFrom.get(id) ?? [],
+    inFork: (seamId) => !outsideFork.has(seamId),
     memo: new Map(),
   };
   cache.set(d, index);

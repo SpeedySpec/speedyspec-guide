@@ -1,0 +1,38 @@
+---
+import Ev from './Ev.astro';
+import type { GuideData } from '../model/data.ts';
+import { indexOf } from '../model/index-of.ts';
+
+interface Props {
+  cycles: { path: string[]; possible: boolean }[];
+  data: GuideData;
+  /** Cycles shown; all when not given. */
+  limit?: number;
+  /** The page with every cycle, linked when cycles are limited. */
+  allHref?: string;
+}
+const { cycles, data, limit, allHref } = Astro.props;
+const ix = indexOf(data);
+const name = (id: string) => id.slice(id.indexOf(':') + 1);
+const stepAt = (a: string, b: string) => ix.edgesFrom(a).find((e) => e.to === b)?.at;
+const evAttrs = (c: NonNullable<ReturnType<typeof stepAt>>) =>
+  c.kind === 'source' ? { source: `${c.base}:${c.file}#L${c.from}${c.to === c.from ? '' : `-L${c.to}`}` } : c.kind === 'scenario' ? { scenario: c.name, area: c.area } : c.kind === 'break' ? { break: c.scenario, area: c.area } : c.kind === 'example' ? { example: c.id } : { test: c.path };
+const shown = limit === undefined ? cycles : cycles.slice(0, limit);
+---
+<section class="cycles">
+  <h2>Circular dependencies</h2>
+  {cycles.length === 0 && <p class="muted">None.</p>}
+  {shown.map((c) => (
+    <div class="cycle">
+      <p class="path circular">{c.path.map(name).join(' → ')} <span class="chip-note">{c.possible ? 'possibly circular' : 'circular'}</span></p>
+      <p class="muted">
+        {c.path.slice(1).map((to, i) => {
+          const at = stepAt(c.path[i]!, to);
+          return at ? <Ev {...evAttrs(at)} /> : null;
+        })}
+      </p>
+    </div>
+  ))}
+  {shown.length < cycles.length && <p class="muted">And {cycles.length - shown.length} more.</p>}
+  {allHref && cycles.length > 0 && <p><a class="all-link" href={allHref}>All {cycles.length} {cycles.length === 1 ? 'cycle' : 'cycles'}</a></p>}
+</section>

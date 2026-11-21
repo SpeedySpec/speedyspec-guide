@@ -67,7 +67,8 @@ export function evidenceLink(c: Citation, s: Sources | null): string | null {
 }
 
 /** What a SpeedySpec page without hand-written content says, by where its verdict came from. */
-export function notDocumentedText(source: 'page' | 'fork' | 'none', wordpress: string): string {
+export function notDocumentedText(source: 'page' | 'fork' | 'outside-fork' | 'none', wordpress: string): string {
+  if (source === 'outside-fork') return "Not yet documented. SpeedySpec's packages/ tree doesn't carry this code, so it isn't compared with WordPress.";
   if (source === 'fork') return `Not yet documented. The verdict comes from comparing SpeedySpec's packages/ tree with WordPress ${wordpress}.`;
   if (source === 'none') return 'Not yet documented, and not yet compared with WordPress.';
   return 'Not yet documented.';
