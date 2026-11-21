@@ -31,6 +31,8 @@ export interface PipelineDeps {
   examples: ExampleSource;
   /** Null when the runner binary is not built. */
   runner: ExampleRunner | null;
+  /** The MySQL database examples with a setup file run against (`GUIDE_MYSQL_URL`), or null. */
+  mysqlUrl?: string | null;
   /**
    * The PHP runtime's version at the pinned server, the pinned commit, and the commit the version's tag points to
    * (null when it has no tag, or offline).
@@ -92,7 +94,7 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
       break;
     case 'examples': {
       const seams = await deps.seams.all();
-      const file = await runExamples(deps.examples, deps.runner!, seams, await deps.wordpressDir());
+      const file = await runExamples(deps.examples, deps.runner!, seams, await deps.wordpressDir(), deps.mysqlUrl ?? null);
       await store.write('examples', file);
       const failures = exampleFailures(file, file.declared).map((f) => ({ rule: 'ExampleHasRun', ...f }));
       return { ok: failures.length === 0, failures };

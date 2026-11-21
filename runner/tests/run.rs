@@ -176,3 +176,42 @@ fn output_in_a_buffer_the_example_opened_is_kept() {
         "inner"
     );
 }
+
+/// Runs one example per entry, each with the fixture setup file and the given multisite flag.
+fn run_setup(side: &str, multisite: &[bool]) -> Vec<Value> {
+    let manifest = json!({
+        "wordpressDir": fixtures().join("wordpress"),
+        "examples": multisite.iter().enumerate().map(|(i, m)| json!({
+            "id": format!("setup-{i}"),
+            "file": fixtures().join("examples/setup-check.php"),
+            "setup": fixtures().join("setup/records.php"),
+            "multisite": m,
+        })).collect::<Vec<_>>(),
+    });
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("manifest.json");
+    std::fs::write(&path, manifest.to_string()).unwrap();
+    let out = Command::new(env!("CARGO_BIN_EXE_speedyspec-guide-examples"))
+        .args(["run", "--side", side, "--manifest", path.to_str().unwrap()])
+        .output()
+        .unwrap();
+    assert!(out.status.success(), "runner failed: {}", String::from_utf8_lossy(&out.stderr));
+    serde_json::from_slice(&out.stdout).unwrap()
+}
+
+#[test]
+fn a_setup_file_runs_before_the_example_and_sees_the_multisite_flag() {
+    let r = run_setup("wordpress", &[true, false]);
+    assert_eq!(r[0]["return"], "array (\n  0 => 'multisite',\n  1 => true,\n)", "{}", r[0]);
+    assert_eq!(
+        r[1]["return"], "array (\n  0 => 'single',\n  1 => false,\n)",
+        "multisite leaked into the next request: {}",
+        r[1]
+    );
+}
+
+#[test]
+fn the_runtime_side_runs_no_setup_file() {
+    let r = run_setup("runtime", &[true]);
+    assert_eq!(r[0]["return"], "array (\n  0 => 'no setup',\n  1 => false,\n)", "{}", r[0]);
+}

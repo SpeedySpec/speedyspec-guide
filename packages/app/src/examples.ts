@@ -8,15 +8,28 @@ export interface ExamplesFile {
   declared: { id: string; sides: Side[] }[];
 }
 
-/** Runs every example on each side it declares (one runner call per side) and compares it with what it expects. */
-export async function runExamples(source: ExampleSource, runner: ExampleRunner, seams: Seam[], wordpressDir: string): Promise<ExamplesFile> {
+/**
+ * Runs every example on each side it declares (one runner call per side) and compares it with what it expects. A
+ * seam with a setup file needs a MySQL database (`mysqlUrl`, which the runner reads from its environment as
+ * `GUIDE_MYSQL_URL`): without one this throws before running anything.
+ */
+export async function runExamples(source: ExampleSource, runner: ExampleRunner, seams: Seam[], wordpressDir: string, mysqlUrl: string | null): Promise<ExamplesFile> {
   const { examples, problems } = await source.all();
+  const seamOf = (id: string) => seams.find((s) => s.id === id);
+  if (mysqlUrl === null) {
+    const needing = examples.find((e) => e.sides.includes('wordpress') && seamOf(e.seam)?.setup !== undefined);
+    if (needing) throw new Error(`the ${needing.seam} seam's examples need a MySQL database: set GUIDE_MYSQL_URL (see README)`);
+  }
   const results: ExampleResult[] = [];
   for (const side of SIDES) {
     const here = examples.filter((e) => e.sides.includes(side));
     if (here.length === 0) continue;
-    const load = (seamId: string) => (side === 'wordpress' ? (seams.find((s) => s.id === seamId)?.wordpress ?? []) : []);
-    const runs = await runner.run(side, here.map((e) => ({ id: e.id, file: e.file, load: load(e.seam) })), wordpressDir);
+    const wp = side === 'wordpress';
+    const runs = await runner.run(
+      side,
+      here.map((e) => ({ id: e.id, file: e.file, load: wp ? (seamOf(e.seam)?.wordpress ?? []) : [], setup: wp ? (seamOf(e.seam)?.setup ?? null) : null, multisite: wp && e.multisite })),
+      wordpressDir,
+    );
     for (const run of runs) {
       const example = here.find((e) => e.id === run.id);
       if (example) results.push(compareExample(example.expect, run));

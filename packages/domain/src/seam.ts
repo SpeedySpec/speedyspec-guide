@@ -14,6 +14,8 @@ export interface Seam {
   edges: Edge[];
   /** WordPress files an example of this seam loads first, on the WordPress side (relative to the release). */
   wordpress: string[];
+  /** A PHP file run after `wordpress` and before each example on the WordPress side (absolute), such as a fresh database. */
+  setup?: string;
   /** SpeedySpec crates that implement it. */
   crates?: string[];
   /** The SpeedySpec state of each cross-seam dependency, by target symbol id, with the evidence for it. */

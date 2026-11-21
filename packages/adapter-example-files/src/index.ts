@@ -45,7 +45,7 @@ export class ExampleFiles implements ExampleSource {
 }
 
 /** The sides and expected outcome in an `.expect.json`, or what is wrong with it. */
-function read(text: string, seam: Seam): { sides: Side[]; expect: ExampleOutcome } | string {
+function read(text: string, seam: Seam): { sides: Side[]; multisite: boolean; expect: ExampleOutcome } | string {
   let data: Record<string, unknown>;
   try {
     data = JSON.parse(text);
@@ -60,9 +60,12 @@ function read(text: string, seam: Seam): { sides: Side[]; expect: ExampleOutcome
   for (const side of data.sides) {
     if (!SIDES.includes(side as Side)) return `side "${String(side)}" is not wordpress or runtime`;
   }
+  if (data.multisite !== undefined && typeof data.multisite !== 'boolean') return '"multisite" must be true or false';
+  if (data.multisite === true && (data.sides.length !== 1 || data.sides[0] !== 'wordpress')) return '"multisite" runs on wordpress only: its sides must be ["wordpress"]';
   if (data.sides.includes('runtime') && !seam.ported) return `runs on runtime, but the ${seam.id} seam is not ported`;
   return {
     sides: data.sides as Side[],
+    multisite: data.multisite === true,
     expect: { output: data.output, return: data.return as string | null, error: data.error as string | null },
   };
 }

@@ -79,6 +79,7 @@ async function main(argv: string[]): Promise<number> {
     seams,
     examples: { all: async () => new ExampleFiles(join(root, 'seams'), await seams.all()).all() },
     runner: existsSync(runnerBinary) ? new RunnerCrate(runnerBinary) : null,
+    mysqlUrl: process.env.GUIDE_MYSQL_URL ?? null,
     runtimeVersion,
     runtimeTags,
     history: new GitTagHistory(sources.wordpress.tags, join(cache, 'wordpress-tags')),

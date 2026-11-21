@@ -60,9 +60,19 @@ export interface ExampleSource {
   all(): Promise<{ examples: Example[]; problems: ExampleProblem[] }>;
 }
 
+/** One example as the runner gets it. */
+export interface RunnerExample {
+  id: string;
+  file: string;
+  load: string[];
+  setup: string | null;
+  multisite: boolean;
+}
+
 /** Runs example files on one side, and lists what PHP declares. */
 export interface ExampleRunner {
-  run(side: Side, examples: { id: string; file: string; load: string[] }[], wordpressDir: string): Promise<ExampleRun[]>;
+  /** `setup` (absolute) runs after `load`, with `multisite` as `GUIDE_MULTISITE`, on the WordPress side only. */
+  run(side: Side, examples: RunnerExample[], wordpressDir: string): Promise<ExampleRun[]>;
   reflect(mode: 'baseline' | 'runtime'): Promise<GuideSymbol[]>;
 }
 

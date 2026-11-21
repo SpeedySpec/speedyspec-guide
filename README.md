@@ -64,6 +64,24 @@ Examples live in `seams/<seam>/examples/<symbol>/<name>.php`, each with `<name>.
 `var_export()` of what the file returns (`"1"` when it returns nothing); an `error` ending in `*` matches by prefix.
 `runtime` is allowed only in a ported seam.
 
+A seam's `seam.yaml` may name a `setup` file, run after its `wordpress` files and before each example on the WordPress
+side; it sees `GUIDE_MULTISITE`, which an example sets with `"multisite": true` (WordPress side only).
+
+### Options examples need MySQL
+
+Options' setup reads and writes through `$wpdb`, so its examples need a MySQL database, given as `GUIDE_MYSQL_URL`.
+Each example gets fresh `guide_` tables. Without the variable, `bun run guide examples` stops before running anything.
+
+```bash
+docker run -d --name guide-mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=guide_examples -p 3307:3306 mysql:8.4
+```
+
+```bash
+export GUIDE_MYSQL_URL=mysql://root:password@127.0.0.1:3307/guide_examples
+```
+
+CI runs a MySQL 8.4 service for the examples job and the nightly run.
+
 First run (2026-11-20): `hooks/add_filter/change-a-value` passes on both sides; the runtime's own API is 181 symbols (including `SpeedySpec\Hooks\Hook`), all unreleased until the first `speedyspec-php-runtime-v*` tag.
 
 ## The site

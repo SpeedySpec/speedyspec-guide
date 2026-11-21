@@ -16,7 +16,14 @@ describe('ExampleFiles', () => {
       id: 'hooks/add_filter/a', seam: 'hooks', symbol: 'add_filter', name: 'a',
       file: join(dir, 'hooks/examples/add_filter/a.php'),
       sides: ['wordpress', 'runtime'],
+      multisite: false,
       expect: { output: '', return: '20', error: null },
+    }, {
+      id: 'options/get_option/ms', seam: 'options', symbol: 'get_option', name: 'ms',
+      file: join(dir, 'options/examples/get_option/ms.php'),
+      sides: ['wordpress'],
+      multisite: true,
+      expect: { output: '', return: '1', error: null },
     }]);
   });
 
@@ -28,7 +35,8 @@ describe('ExampleFiles', () => {
     expect(byFile('incomplete.expect.json')).toEqual(['needs "error" (a string, or null)']);
     expect(byFile('elsewhere.expect.json')).toEqual(['side "moon" is not wordpress or runtime']);
     expect(byFile('get_option/b.expect.json')).toEqual(['runs on runtime, but the options seam is not ported']);
-    expect(problems).toHaveLength(5);
+    expect(byFile('multi.expect.json')).toEqual(['"multisite" runs on wordpress only: its sides must be ["wordpress"]']);
+    expect(problems).toHaveLength(6);
   });
 
   test('SeamFiles reads the WordPress files to load, defaulting to none', async () => {

@@ -27,6 +27,13 @@ pub struct ManifestExample {
     /// WordPress files to load first, relative to `wordpress_dir` (WordPress side only).
     #[serde(default)]
     pub load: Vec<String>,
+    /// A PHP file run after `load`, before the example (WordPress side only): the seam's setup, such as a fresh
+    /// database. It sees `GUIDE_MULTISITE`.
+    #[serde(default)]
+    pub setup: Option<PathBuf>,
+    /// Whether the setup makes a multisite install (`GUIDE_MULTISITE`).
+    #[serde(default)]
+    pub multisite: bool,
 }
 
 /// What one example printed, returned (`var_export`) and threw, on one side.

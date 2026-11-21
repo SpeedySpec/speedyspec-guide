@@ -10,12 +10,12 @@ describe('RunnerCrate', () => {
   test('runs a side with a manifest whose examples carry what to load', async () => {
     const log = join(mkdtempSync(join(tmpdir(), 'runner-')), 'log');
     process.env.FAKE_RUNNER_LOG = log;
-    const runs = await new RunnerCrate(fake).run('wordpress', [{ id: 'hooks/add_filter/a', file: '/x/a.php', load: ['wp-includes/plugin.php'] }], '/wp');
+    const runs = await new RunnerCrate(fake).run('wordpress', [{ id: 'hooks/add_filter/a', file: '/x/a.php', load: ['wp-includes/plugin.php'], setup: '/s/setup.php', multisite: true }], '/wp');
     delete process.env.FAKE_RUNNER_LOG;
     expect(runs).toEqual([{ id: 'hooks/add_filter/a', side: 'wordpress', output: '', return: '20', error: null }]);
     const call = JSON.parse(readFileSync(log, 'utf8').trim());
     expect(call.args.slice(0, 3)).toEqual(['run', '--side', 'wordpress']);
-    expect(call.manifest).toEqual({ wordpressDir: '/wp', examples: [{ id: 'hooks/add_filter/a', file: '/x/a.php', load: ['wp-includes/plugin.php'] }] });
+    expect(call.manifest).toEqual({ wordpressDir: '/wp', examples: [{ id: 'hooks/add_filter/a', file: '/x/a.php', load: ['wp-includes/plugin.php'], setup: '/s/setup.php', multisite: true }] });
   });
 
   test('reflects a mode', async () => {

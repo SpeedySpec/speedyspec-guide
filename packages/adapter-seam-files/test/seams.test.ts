@@ -42,6 +42,19 @@ describe('SeamFiles', () => {
     rmSync(dir, { recursive: true });
   });
 
+  test('a_setup_file_is_read_as_an_absolute_path', async () => {
+    const dir = only('setup');
+    const [s] = await new SeamFiles(dir).all();
+    expect(s?.setup).toBe(join(dir, 'setup', 'setup.php'));
+    rmSync(dir, { recursive: true });
+  });
+
+  test('a_missing_setup_file_is_refused', async () => {
+    const dir = only('setup-missing');
+    await expect(new SeamFiles(dir).all()).rejects.toThrow('setup-missing/seam.yaml: setup file missing.php does not exist');
+    rmSync(dir, { recursive: true });
+  });
+
   test('packages_is_refused', async () => {
     const dir = only('packaged');
     await expect(new SeamFiles(dir).all()).rejects.toThrow("packaged/seam.yaml: packages is no longer supported; SpeedySpec doesn't ship the PHP packages/ tree");

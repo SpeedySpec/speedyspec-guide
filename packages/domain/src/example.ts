@@ -18,6 +18,8 @@ export interface Example {
   name: string;
   file: string;
   sides: Side[];
+  /** Whether its seam's setup makes a multisite install (WordPress side only). */
+  multisite: boolean;
   expect: ExampleOutcome;
 }
 

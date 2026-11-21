@@ -1,0 +1,3 @@
+name: "Missing setup"
+job: "Names a setup file that is not there."
+setup: missing.php

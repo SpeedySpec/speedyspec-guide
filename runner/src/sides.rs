@@ -55,7 +55,7 @@ fn runtime_areas() -> Vec<Rc<dyn NativeArea>> {
 }
 
 /// Prepares a fresh request for one example: its time limit, and on the WordPress side, WordPress's files, as the
-/// compat recorder loads them (the runtime side loads nothing: its port is native).
+/// compat recorder loads them, then the seam's setup file (the runtime side loads nothing: its port is native).
 pub fn prepare(
     php: &Php,
     side: Side,
@@ -71,6 +71,15 @@ pub fn prepare(
         ));
         for file in &example.load {
             code.push_str(&format!(" require ABSPATH . {};", quote(file)));
+        }
+    }
+    if side == Side::WordPress {
+        if let Some(setup) = &example.setup {
+            code.push_str(&format!(
+                " define('GUIDE_MULTISITE', {}); require {};",
+                example.multisite,
+                quote(&setup.display().to_string())
+            ));
         }
     }
     php.eval("speedyspec://guide/setup", &code)

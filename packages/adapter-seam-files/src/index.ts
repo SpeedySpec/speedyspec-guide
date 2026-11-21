@@ -67,6 +67,12 @@ export class SeamFiles implements SeamRepository {
       }
       return out;
     }
+    let setup: string | undefined;
+    if (data.setup !== undefined) {
+      if (typeof data.setup !== 'string' || data.setup.trim() === '') throw new Error(`${where}: "setup" must be a file name`);
+      setup = join(this.dir, id, data.setup);
+      if (!existsSync(setup)) throw new Error(`${where}: setup file ${data.setup} does not exist`);
+    }
     return {
       id,
       name: text('name'),
@@ -80,6 +86,7 @@ export class SeamFiles implements SeamRepository {
       crates: list('crates'),
       dependencies: dependencies(),
       edges,
+      ...(setup === undefined ? {} : { setup }),
     };
   }
 }

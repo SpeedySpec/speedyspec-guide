@@ -38,8 +38,20 @@ jobs:
   examples:
     needs: test
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: guide_examples
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -ppassword"
+          --health-interval=5s --health-timeout=5s --health-retries=20
     env:
       GUIDE_SERVER_DIR: ${{ github.workspace }}/.cache/speedyspec-server
+      GUIDE_MYSQL_URL: mysql://root:password@127.0.0.1:3306/guide_examples
     steps:
       - uses: actions/checkout@v4
 

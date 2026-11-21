@@ -1,4 +1,4 @@
-import type { ExampleRunner } from '@speedyspec-guide/contracts';
+import type { ExampleRunner, RunnerExample } from '@speedyspec-guide/contracts';
 import type { ExampleRun, GuideSymbol, Side } from '@speedyspec-guide/domain';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -9,7 +9,7 @@ export class RunnerCrate implements ExampleRunner {
   /** @param timeoutMs How long one runner process may take before it is killed (default 30 minutes). */
   constructor(private readonly binary: string, private readonly timeoutMs = 30 * 60 * 1000) {}
 
-  async run(side: Side, examples: { id: string; file: string; load: string[] }[], wordpressDir: string): Promise<ExampleRun[]> {
+  async run(side: Side, examples: RunnerExample[], wordpressDir: string): Promise<ExampleRun[]> {
     const dir = mkdtempSync(join(tmpdir(), 'guide-manifest-'));
     try {
       const manifest = join(dir, 'manifest.json');
