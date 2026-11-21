@@ -1,24 +1,23 @@
 /** What the section index and seam pages list, and which symbol pages exist. */
 import type { GuideData } from './data.ts';
-import { assertUniqueSlugs, symbolSlug } from './slug.ts';
+import { indexOf } from './index-of.ts';
+import { assertUniqueSlugs } from './slug.ts';
 
-/** Every symbol with its own page in a seam: everything assigned to it except methods (they live on their class). */
+/** Every WordPress symbol with its own page in a seam: everything assigned to it except methods. */
 export function pageSymbols(seamId: string, d: GuideData): string[] {
-  return Object.entries(d.assignment.seamOf)
-    .filter(([id, s]) => s === seamId && !id.startsWith('method:'))
-    .map(([id]) => id)
-    .sort();
+  return indexOf(d).pageIds('wordpress').filter((id) => indexOf(d).seamOf(id) === seamId);
 }
 
-/** The WordPress pages to build: one per page symbol of every seam, with unique slugs. */
+/** The WordPress pages to build. */
 export function wordpressPaths(d: GuideData): { seam: string; slug: string; id: string }[] {
-  const out: { seam: string; slug: string; id: string }[] = [];
-  for (const seam of d.seams) {
-    const ids = pageSymbols(seam.id, d);
-    assertUniqueSlugs(ids);
-    for (const id of ids) out.push({ seam: seam.id, slug: symbolSlug(id), id });
-  }
-  return out;
+  return paths('wordpress', d);
+}
+
+function paths(section: 'wordpress' | 'speedyspec', d: GuideData): { seam: string; slug: string; id: string }[] {
+  const ix = indexOf(d);
+  const ids = ix.pageIds(section);
+  assertUniqueSlugs(ids.map((id) => id));
+  return ids.map((id) => ({ seam: ix.seamOf(id)!, slug: ix.slug(id), id }));
 }
 
 /** How many of a seam's page symbols have a hand-written page in a section. */
@@ -31,20 +30,7 @@ export function documented(seamId: string, section: 'wordpress' | 'speedyspec', 
 /** The SpeedySpec pages to build: symbols with a SpeedySpec page, symbols the fork modified or removed, and runtime
  * symbols a seam lists. */
 export function speedyspecPaths(d: GuideData): { seam: string; slug: string; id: string }[] {
-  const out: { seam: string; slug: string; id: string }[] = [];
-  const written = new Set(d.content.filter((c) => c.section === 'speedyspec' && c.kind === 'symbol').map((c) => c.symbol));
-  const runtime = new Set(d.runtime.map((s) => s.id));
-  const wordpress = new Set(d.inventory.symbols.map((s) => s.id));
-  for (const seam of d.seams) {
-    const ids = Object.entries(d.assignment.seamOf)
-      .filter(([id, s]) => s === seam.id && !id.startsWith('method:'))
-      .map(([id]) => id)
-      .filter((id) => written.has(id) || d.fork[id] === 'modified' || d.fork[id] === 'removed' || (runtime.has(id) && !wordpress.has(id)))
-      .sort();
-    assertUniqueSlugs(ids);
-    for (const id of ids) out.push({ seam: seam.id, slug: symbolSlug(id), id });
-  }
-  return out;
+  return paths('speedyspec', d);
 }
 
 const STATE_LABELS = { php: "calls WordPress's PHP", port: 'behind a port', rust: 'answered in Rust' } as const;

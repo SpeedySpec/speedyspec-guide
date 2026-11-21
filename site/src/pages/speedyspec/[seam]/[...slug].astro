@@ -10,7 +10,7 @@ import VerdictPill from '../../../components/VerdictPill.astro';
 import Reference from '../../../layouts/Reference.astro';
 import { loadGuideData } from '../../../model/data.ts';
 import { speedyspecPaths } from '../../../model/sections.ts';
-import { hrefOf, symbolView } from '../../../model/views.ts';
+import { pageOf, symbolView } from '../../../model/views.ts';
 
 export async function getStaticPaths() {
   const d = await loadGuideData();
@@ -20,7 +20,7 @@ export async function getStaticPaths() {
 const { id } = Astro.props as { id: string };
 const d = await loadGuideData();
 const view = symbolView(id, 'speedyspec', d);
-const inWordPress = d.inventory.symbols.some((s) => s.id === id);
+const wordpressPage = pageOf(id, 'wordpress', d);
 ---
 <Reference title={`${view.name} · SpeedySpec`} seam={view.seam} section="speedyspec" current={id}>
   <Head view={view} section="speedyspec" />
@@ -37,5 +37,5 @@ const inWordPress = d.inventory.symbols.some((s) => s.id === id);
   <Examples examples={view.examples} />
   {view.content ? <Prose entry={view.content} /> : <p class="not-documented">Not yet documented. The verdict comes from comparing SpeedySpec's packages/ tree with WordPress {d.inventory.version}.</p>}
   <History view={view} section="speedyspec" />
-  {inWordPress && <p class="wordpress-link">WordPress's own behaviour: <a href={hrefOf(id, 'wordpress', d)}>the WordPress page</a></p>}
+  {wordpressPage && <p class="wordpress-link">WordPress's own behaviour: <a href={wordpressPage}>the WordPress page</a></p>}
 </Reference>

@@ -1,4 +1,5 @@
 ---
+import MaybeLink from '../../../components/MaybeLink.astro';
 import Examples from '../../../components/Examples.astro';
 import Fires from '../../../components/Fires.astro';
 import Head from '../../../components/Head.astro';
@@ -11,7 +12,7 @@ import Reference from '../../../layouts/Reference.astro';
 import { loadGuideData } from '../../../model/data.ts';
 import { wordpressPaths } from '../../../model/sections.ts';
 import { methodAnchor } from '../../../model/slug.ts';
-import { hrefOf, symbolView } from '../../../model/views.ts';
+import { pageOf, symbolView } from '../../../model/views.ts';
 
 export async function getStaticPaths() {
   const d = await loadGuideData();
@@ -37,14 +38,14 @@ const name = (x: string) => x.slice(x.indexOf(':') + 1);
     <section class="fired-by">
       <h2>Fired by</h2>
       {firedBy.length === 0 ? <p class="muted">Nothing in WordPress fires it by this exact name.</p> : (
-        <ul>{firedBy.map((f) => <li>{f.startsWith('file:') ? <span class="mono">{f.slice(5)}</span> : <a class="mono" href={hrefOf(f, 'wordpress', d)}>{name(f)}</a>}</li>)}</ul>
+        <ul>{firedBy.map((f) => <li>{f.startsWith('file:') ? <span class="mono">{f.slice(5)}</span> : <MaybeLink class="mono" href={pageOf(f, 'wordpress', d)}>{name(f)}</MaybeLink>}</li>)}</ul>
       )}
     </section>
   )}
   {runs.length > 0 && (
     <section class="runs">
       <h2>WordPress's own callbacks</h2>
-      <ul>{runs.map((r) => <li><a class="mono" href={hrefOf(r, 'wordpress', d)}>{name(r)}</a></li>)}</ul>
+      <ul>{runs.map((r) => <li><MaybeLink class="mono" href={pageOf(r, 'wordpress', d)}>{name(r)}</MaybeLink></li>)}</ul>
     </section>
   )}
   <Fires fires={view.fires} />
@@ -58,5 +59,5 @@ const name = (x: string) => x.slice(x.indexOf(':') + 1);
     </section>
   ))}
   <History view={view} section="wordpress" />
-  <OnSpeedySpec verdict={view.verdict} href={hrefOf(id, 'speedyspec', d)} />
+  <OnSpeedySpec verdict={view.verdict} href={pageOf(id, 'speedyspec', d)} />
 </Reference>

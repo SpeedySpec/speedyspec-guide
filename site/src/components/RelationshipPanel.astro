@@ -1,4 +1,5 @@
 ---
+import MaybeLink from './MaybeLink.astro';
 import type { SymbolView } from '../model/views.ts';
 
 interface Props {
@@ -17,7 +18,7 @@ for (const c of callsInto) groups.set(`calls into ${c.seam}`, c.symbols);
         <dt>{label}</dt>
         <dd>
           {links.map((l) => (
-            <a class:list={['chip', { circular: l.circular }]} href={l.href}>{l.name}{l.circular && <span class="chip-note"> circular</span>}</a>
+            <MaybeLink class={l.circular ? 'chip circular' : 'chip'} href={l.href}>{l.name}{l.circular && <span class="chip-note"> circular</span>}</MaybeLink>
           ))}
         </dd>
       </div>

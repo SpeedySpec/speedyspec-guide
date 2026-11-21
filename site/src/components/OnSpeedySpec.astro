@@ -4,12 +4,12 @@ import VerdictPill from './VerdictPill.astro';
 
 interface Props {
   verdict: SymbolView['verdict'];
-  href: string;
+  href: string | null;
 }
 const { verdict, href } = Astro.props;
 ---
 <aside class="on-speedyspec">
   <div class="on-head"><b>On SpeedySpec</b> <VerdictPill verdict={verdict.verdict} /></div>
   {verdict.differences.length > 0 && <ul>{verdict.differences.map((x) => <li>{x.summary}</li>)}</ul>}
-  <a href={href}>The SpeedySpec page →</a>
+  {href ? <a href={href}>The SpeedySpec page →</a> : <p class="muted">SpeedySpec has nothing to add about it yet.</p>}
 </aside>

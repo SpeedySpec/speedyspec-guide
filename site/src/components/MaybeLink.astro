@@ -1,0 +1,11 @@
+---
+// A link to a symbol's page, or the same text without a link when the page doesn't exist.
+interface Props {
+  href: string | null;
+  class?: string;
+  /** The page being shown: not a link, marked as current. */
+  current?: boolean;
+}
+const { href, class: className, current = false } = Astro.props;
+---
+{current ? <span class={className} aria-current="page"><slot /></span> : href ? <a class={className} href={href}><slot /></a> : <span class:list={[className, 'no-page']}><slot /></span>}

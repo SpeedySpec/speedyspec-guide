@@ -1,10 +1,10 @@
 /**
- * URL slugs for symbol ids. Functions and classes are bare names (`add_filter`, `WP_Hook`); a namespace's `\` becomes
- * `.`; hooks, globals and constants are prefixed with their kind (`filter/the_content`). Methods live on their class
- * page, as an anchor.
+ * URL slugs for symbol ids. Functions are bare names (`add_filter`); classes, hooks, globals and constants are prefixed
+ * with their kind (`class/WP_Hook`, `filter/the_content`), so `class:WP_Scripts` and `function:wp_scripts` don't share a
+ * path on a case-insensitive file system. A namespace's `\` becomes `.`. Methods live on their class page, as an anchor.
  */
 
-const PREFIXED = new Set(['filter', 'action', 'global', 'constant']);
+const PREFIXED = new Set(['class', 'filter', 'action', 'global', 'constant']);
 
 export function symbolSlug(id: string): string {
   const colon = id.indexOf(':');
@@ -39,13 +39,33 @@ export function symbolFromSlug(slug: string, ids: Set<string>): string | undefin
   return undefined;
 }
 
-/** Throws when two of the ids would share a page. */
+/** Throws when two of the ids would share a page, ignoring case (macOS and Windows file systems do). */
 export function assertUniqueSlugs(ids: string[]): void {
   const seen = new Map<string, string>();
-  for (const id of ids) {
-    const slug = symbolSlug(id);
+  for (const id of [...ids].sort()) {
+    const slug = symbolSlug(id).toLowerCase();
     const other = seen.get(slug);
     if (other !== undefined && other !== id) throw new Error(`${other} and ${id} would both be at ${slug}`);
     seen.set(slug, id);
   }
+}
+
+/**
+ * Every id's slug, unique ignoring case: ids that would still collide (`global:post_ID` and `global:post_id`) are
+ * taken in sorted order and the second and later get `~2`, `~3`… The same ids always give the same slugs.
+ */
+export function uniqueSlugs(ids: string[]): Map<string, string> {
+  const out = new Map<string, string>();
+  const taken = new Map<string, number>();
+  for (const id of [...new Set(ids)].sort()) {
+    const slug = symbolSlug(id);
+    if (id.startsWith('method:')) {
+      out.set(id, slug);
+      continue;
+    }
+    const n = (taken.get(slug.toLowerCase()) ?? 0) + 1;
+    taken.set(slug.toLowerCase(), n);
+    out.set(id, n === 1 ? slug : `${slug}~${n}`);
+  }
+  return out;
 }

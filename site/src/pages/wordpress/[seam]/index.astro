@@ -1,4 +1,5 @@
 ---
+import MaybeLink from '../../../components/MaybeLink.astro';
 import Diagram from '../../../components/Diagram.astro';
 import Prose from '../../../components/Prose.astro';
 import VerdictPill from '../../../components/VerdictPill.astro';
@@ -32,7 +33,7 @@ const written = new Set(d.content.filter((c) => c.section === 'wordpress' && c.k
           <ul>
             {r.members.map((m) => (
               <li class:list={['member', { circular: m.circular }]}>
-                <a class="mono" href={m.href}>{m.name}</a> <VerdictPill verdict={m.verdict} />
+                <MaybeLink class="mono" href={m.href}>{m.name}</MaybeLink> <VerdictPill verdict={m.verdict} />
                 {m.circular && <span class="chip-note"> circular</span>}
                 {!written.has(m.id) && <span class="muted"> · not yet documented</span>}
               </li>

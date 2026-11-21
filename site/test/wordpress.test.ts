@@ -39,7 +39,7 @@ describe('the WordPress API section', () => {
   });
 
   test('a class page has a section per method, with its anchor', async () => {
-    const p = await html(dist, '/wordpress/hooks/WP_Hook/');
+    const p = await html(dist, '/wordpress/hooks/class/WP_Hook/');
     expect(p.text('.rail-methods .rail-member')).toEqual(['::add_filter', '::apply_filters']);
     expect(p.attr('.method h2', 'id')).toEqual(['add_filter', 'apply_filters']);
     expect(p.text('.not-documented')).toEqual(['Not yet documented. Signature and relationships are generated from WordPress 7.1.5.']);
@@ -58,6 +58,6 @@ describe('the WordPress API section', () => {
 
   test('no page for an unassigned symbol, and none for a method', () => {
     expect(existsSync(join(dist, 'wordpress', 'unassigned'))).toBe(false);
-    expect(existsSync(join(dist, 'wordpress', 'hooks', 'WP_Hook#apply_filters'))).toBe(false);
+    expect(existsSync(join(dist, 'wordpress', 'hooks', 'class', 'WP_Hook#apply_filters'))).toBe(false);
   });
 });

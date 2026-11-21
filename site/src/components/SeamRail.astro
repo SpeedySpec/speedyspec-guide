@@ -1,4 +1,5 @@
 ---
+import MaybeLink from './MaybeLink.astro';
 import type { SeamView } from '../model/views.ts';
 import { roleLabel } from '../model/wording.ts';
 
@@ -20,12 +21,12 @@ const label = (m: { kind: string; name: string }) => (m.kind === 'filter' || m.k
       <div class="rail-role">{roleLabel(r.role)}</div>
       {r.members.map((m) => (
         <>
-          <a class:list={['rail-member', { circular: m.circular }]} href={m.href} aria-current={m.id === current ? 'page' : undefined}>
+          <MaybeLink class={m.circular ? 'rail-member circular' : 'rail-member'} href={m.href} current={m.id === current}>
             {label(m)}{m.circular && <span class="cycle-mark" aria-hidden="true">↻</span>}{m.circular && <span class="visually-hidden"> (circular)</span>}
-          </a>
+          </MaybeLink>
           {m.methods && m.methods.length > 0 && open(m.id) && (
             <div class="rail-methods">
-              {m.methods.map((x) => <a class="rail-member" href={x.href} aria-current={x.id === current ? 'page' : undefined}>::{x.name}</a>)}
+              {m.methods.map((x) => <MaybeLink class="rail-member" href={x.href} current={x.id === current}>::{x.name}</MaybeLink>)}
             </div>
           )}
         </>

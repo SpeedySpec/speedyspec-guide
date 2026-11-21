@@ -7,7 +7,7 @@ import Base from '../../../layouts/Base.astro';
 import { loadGuideData } from '../../../model/data.ts';
 import { dependencies, seamCycles } from '../../../model/sections.ts';
 import { speedyspecVerdict } from '../../../model/verdict.ts';
-import { hrefOf, seamView } from '../../../model/views.ts';
+import { pageOf, seamView } from '../../../model/views.ts';
 
 export async function getStaticPaths() {
   const d = await loadGuideData();
@@ -17,10 +17,9 @@ export async function getStaticPaths() {
 const d = await loadGuideData();
 const view = seamView(Astro.params.seam!, 'speedyspec', d);
 const intro = d.content.find((c) => c.section === 'speedyspec' && c.seam === view.id && c.kind === 'seam');
-const wordpressHref = (id: string) => hrefOf(id, 'wordpress', d);
 const rows = view.roles.flatMap((r) => r.members).map((m) => {
   const v = speedyspecVerdict(m.id, d);
-  return { member: m, verdict: v.verdict, note: v.differences[0]?.summary, href: v.source === 'page' || v.verdict === 'modified' || v.verdict === 'removed' ? m.href : wordpressHref(m.id) };
+  return { member: m, verdict: v.verdict, note: v.differences[0]?.summary, href: m.href ?? pageOf(m.id, 'wordpress', d) };
 });
 const { dependsOn, dependedOnBy } = dependencies(view.id, d);
 const cycles = seamCycles(view.id, d);

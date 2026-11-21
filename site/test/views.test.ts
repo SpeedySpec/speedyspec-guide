@@ -46,8 +46,8 @@ describe('seamView', () => {
     expect(v.roles[3]?.members.map((m) => m.id)).toEqual(['filter:the_content']);
     const hook = v.roles[2]?.members.find((m) => m.id === 'class:WP_Hook');
     expect(hook?.methods?.map((m) => [m.id, m.href])).toEqual([
-      ['method:WP_Hook::add_filter', '/wordpress/hooks/WP_Hook/#add_filter'],
-      ['method:WP_Hook::apply_filters', '/wordpress/hooks/WP_Hook/#apply_filters'],
+      ['method:WP_Hook::add_filter', '/wordpress/hooks/class/WP_Hook/#add_filter'],
+      ['method:WP_Hook::apply_filters', '/wordpress/hooks/class/WP_Hook/#apply_filters'],
     ]);
   });
   test('a member in a cycle is circular', () => {
@@ -82,7 +82,7 @@ describe('symbolView', () => {
     expect(symbolView('function:add_filter', 'wordpress', without).examples[0]?.sides.map((s) => s.status)).toEqual(['not-run', 'not-run']);
   });
   test('example folders: a slug with / or # uses --', () => {
-    expect(exampleFolder('method:WP_Hook::apply_filters')).toBe('WP_Hook--apply_filters');
+    expect(exampleFolder('method:WP_Hook::apply_filters')).toBe('class--WP_Hook--apply_filters');
     expect(exampleFolder('filter:the_content')).toBe('filter--the_content');
   });
 });

@@ -39,6 +39,8 @@ export interface GuideData {
   inventory: Inventory;
   runtime: GuideSymbol[];
   assignment: Assignment;
+  /** Runtime-only symbols that a seam lists, by id: they have SpeedySpec pages and no WordPress ones. */
+  runtimeSeamOf: Record<string, string>;
   graph: Graph;
   cycles: Cycles;
   fork: Record<string, ForkVerdict>;
@@ -83,15 +85,18 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
   const examples: ExampleFile[] = await Promise.all(found.map(async (e) => ({ ...e, code: await Bun.file(e.file).text() })));
   const assignment = await json<Assignment>('assignment', { seamOf: {}, unassigned: [], conflicts: [] });
   const runtime = await json<GuideSymbol[]>('inventory-runtime', []);
-  // Runtime symbols a seam lists in `symbols` belong to that seam too (they are not in WordPress's inventory).
+  // Runtime symbols a seam lists in `symbols` belong to that seam, on the SpeedySpec side only (WordPress doesn't have them).
+  const wordpressIds = new Set((await json<Inventory>('inventory-wp', { base: 'wp', version: '', symbols: [], edges: [], unresolved: [] })).symbols.map((s) => s.id));
+  const runtimeSeamOf: Record<string, string> = {};
   for (const s of runtime) {
     const owner = seams.find((seam) => seam.symbols.includes(s.id));
-    if (owner && assignment.seamOf[s.id] === undefined) assignment.seamOf[s.id] = owner.id;
+    if (owner && !wordpressIds.has(s.id)) runtimeSeamOf[s.id] = owner.id;
   }
   return {
     inventory: await json<Inventory>('inventory-wp', { base: 'wp', version: '', symbols: [], edges: [], unresolved: [] }),
     runtime,
     assignment,
+    runtimeSeamOf,
     graph: await json<Graph>('graph', { nodes: [], edges: [], crossSeam: [] }),
     cycles: await json<Cycles>('cycles', { symbol: [], seam: [], components: [] }),
     fork: await json<Record<string, ForkVerdict>>('fork', {}),

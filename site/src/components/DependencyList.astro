@@ -1,7 +1,8 @@
 ---
+import MaybeLink from './MaybeLink.astro';
 import type { GuideData } from '../model/data.ts';
 import type { DependencyRow } from '../model/sections.ts';
-import { hrefOf } from '../model/views.ts';
+import { pageOf } from '../model/views.ts';
 
 interface Props {
   title: string;
@@ -21,7 +22,7 @@ const name = (id: string) => id.slice(id.indexOf(':') + 1);
       <ul>
         {rows.map((r) => (
           <li class:list={{ circular: r.circular }}>
-            <a class="mono" href={hrefOf(r.from, 'wordpress', data)}>{name(r.from)}</a> {r.kind} <a class="mono" href={hrefOf(r.to, 'wordpress', data)}>{name(r.to)}</a>
+            <MaybeLink class="mono" href={pageOf(r.from, 'wordpress', data)}>{name(r.from)}</MaybeLink> {r.kind} <MaybeLink class="mono" href={pageOf(r.to, 'wordpress', data)}>{name(r.to)}</MaybeLink>
             {' '}<span class="dep-state">{r.state}</span>{r.circular && <span class="chip-note"> circular</span>}
           </li>
         ))}
