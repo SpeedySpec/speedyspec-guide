@@ -6,6 +6,7 @@
  * GUIDE_SERVER_DIR. Composition root.
  */
 import { CompatFilesEvidence } from '@speedyspec-guide/adapter-compat-files-evidence';
+import { ContentFiles } from '@speedyspec-guide/adapter-content-files';
 import { GitTagHistory } from '@speedyspec-guide/adapter-git-tag-history';
 import { PhpParserSource } from '@speedyspec-guide/adapter-php-parser-source';
 import { SeamFiles } from '@speedyspec-guide/adapter-seam-files';
@@ -69,7 +70,7 @@ async function main(argv: string[]): Promise<number> {
     wordpressDir,
     forkDir,
     evidence: async () => new CompatFilesEvidence(await serverDir(), await wordpressDir(), await forkDir()),
-    contentDir: join(root, 'content'),
+    content: new ContentFiles(join(root, 'content')),
     wordpressVersion: sources.wordpress.version,
     forkCommit: sources.fork.commit,
     config: { requireAllAssigned: config.requireAllAssigned },

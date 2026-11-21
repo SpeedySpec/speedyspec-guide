@@ -7,5 +7,4 @@ export * from './history.ts';
 export * from './validate/rule.ts';
 export * from './validate/rules.ts';
 export * from './validate/run.ts';
-export * from './validate/citations-in-content.ts';
 export * from './pipeline.ts';

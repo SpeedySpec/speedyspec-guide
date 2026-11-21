@@ -1,11 +1,10 @@
-import type { EvidenceSource, GeneratedStore, ReleaseHistory, SeamRepository, SymbolSource } from '@speedyspec-guide/contracts';
+import type { ContentPages, EvidenceSource, GeneratedStore, ReleaseHistory, SeamRepository, SymbolSource } from '@speedyspec-guide/contracts';
 import type { Assignment, Inventory } from '@speedyspec-guide/domain';
 import { assign } from './assign.ts';
 import { findCycles } from './cycles.ts';
 import { compareFork } from './fork.ts';
 import { buildGraph } from './graph.ts';
 import { computeHistory, type HistoryFile } from './history.ts';
-import { citationsIn, versionsIn } from './validate/citations-in-content.ts';
 import type { Failure } from './validate/rule.ts';
 import { ALL_RULES, runRules } from './validate/run.ts';
 
@@ -21,7 +20,7 @@ export interface PipelineDeps {
   wordpressDir(): Promise<string>;
   forkDir(): Promise<string>;
   evidence(): Promise<EvidenceSource>;
-  contentDir: string;
+  content: ContentPages;
   wordpressVersion: string;
   forkCommit: string;
   config: { requireAllAssigned: boolean };
@@ -74,10 +73,11 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
         inventory: await need<Inventory>(store, 'inventory-wp'),
         assignment: await need<Assignment>(store, 'assignment'),
         seams: await deps.seams.all(),
-        citations: await citationsIn(deps.contentDir),
+        pages: await deps.content.pages(),
+        citations: await deps.content.citations(),
         evidence: await deps.evidence(),
         history: (await store.read<HistoryFile>('wordpress-history')) ?? EMPTY_HISTORY,
-        versionsOnPages: await versionsIn(deps.contentDir),
+        versionsOnPages: await deps.content.versions(),
         config: deps.config,
       });
       await store.write('validation', failures);

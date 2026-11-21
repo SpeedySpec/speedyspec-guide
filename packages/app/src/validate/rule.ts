@@ -1,7 +1,6 @@
 import type { EvidenceSource } from '@speedyspec-guide/contracts';
-import type { Assignment, Inventory, Seam } from '@speedyspec-guide/domain';
+import type { Assignment, ContentPage, Inventory, PageCitation, PageVersion, Seam } from '@speedyspec-guide/domain';
 import type { HistoryFile } from '../history.ts';
-import type { PageCitation, PageVersion } from './citations-in-content.ts';
 
 export interface Failure {
   rule: string;
@@ -13,6 +12,7 @@ export interface ValidationContext {
   inventory: Inventory;
   assignment: Assignment;
   seams: Seam[];
+  pages: ContentPage[];
   citations: PageCitation[];
   evidence: EvidenceSource;
   history: HistoryFile;

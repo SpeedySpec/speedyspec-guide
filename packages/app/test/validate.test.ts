@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import type { EvidenceSource } from '@speedyspec-guide/contracts';
 import type { Assignment, Inventory, Seam } from '@speedyspec-guide/domain';
-import { citationsIn, versionsIn } from '../src/validate/citations-in-content.ts';
+import { ContentFiles } from '../../adapter-content-files/src/index.ts';
 import { ALL_RULES, runRules } from '../src/validate/run.ts';
 import type { ValidationContext } from '../src/validate/rule.ts';
 
@@ -31,28 +31,22 @@ const hooks: Seam = { id: 'hooks', name: 'Hooks', job: 'j', ported: true, files:
 const inventory: Inventory = { base: 'wp', version: '7.1.5', symbols: [], edges: [], unresolved: [] };
 
 async function ctx(pages: Record<string, string>, over: Partial<ValidationContext> = {}): Promise<ValidationContext> {
-  const dir = content(pages);
+  const c = new ContentFiles(content(pages));
   return {
     inventory,
     assignment: { seamOf: {}, unassigned: [], conflicts: [] },
     seams: [hooks],
-    citations: await citationsIn(dir),
+    pages: await c.pages(),
+    citations: await c.citations(),
     evidence,
     history: { tags: ['7.1.5'], symbols: {} },
-    versionsOnPages: await versionsIn(dir),
+    versionsOnPages: await c.versions(),
     config: { requireAllAssigned: false },
     ...over,
   };
 }
 
 const rulesOf = async (c: ValidationContext) => (await runRules(ALL_RULES, c)).map((f) => f.rule);
-
-describe('citationsIn', () => {
-  test('reads <Ev/> citations with their page, section and seam', async () => {
-    const c = await citationsIn(content({ 'wordpress/hooks/add_filter.mdx': '# x\n\nReturns true. <Ev scenario="add_filter_returns_true"/>\n' }));
-    expect(c).toEqual([{ page: 'wordpress/hooks/add_filter.mdx', section: 'wordpress', seam: 'hooks', citation: { kind: 'scenario', area: 'hooks', name: 'add_filter_returns_true' } }]);
-  });
-});
 
 describe('rules', () => {
   test('a clean page passes', async () => {
@@ -91,6 +85,10 @@ describe('rules', () => {
 
   test('a SpeedySpec page of a ported seam that cites only source', async () => {
     expect(await rulesOf(await ctx({ 'speedyspec/hooks/a.mdx': `<Ev source="wp:wp-includes/plugin.php#L2" hash="${sha(LINES)}"/>` }))).toEqual(['PortedSeamVerified']);
+  });
+
+  test('a SpeedySpec page of a ported seam with no citations at all', async () => {
+    expect(await rulesOf(await ctx({ 'speedyspec/hooks/empty.mdx': '# add_filter\n\nNothing cited.' }))).toEqual(['PortedSeamVerified']);
   });
 
   test('a WordPress page citing SpeedySpec code', async () => {

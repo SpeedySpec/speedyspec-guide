@@ -1,4 +1,4 @@
-import type { Inventory, Seam } from '@speedyspec-guide/domain';
+import type { ContentPage, Inventory, PageCitation, PageVersion, Seam } from '@speedyspec-guide/domain';
 
 /** Extracts the inventory of a code base. */
 export interface SymbolSource {
@@ -36,4 +36,11 @@ export interface ReleaseHistory {
 export interface GeneratedStore {
   read<T>(name: string): Promise<T | null>;
   write(name: string, data: unknown): Promise<void>;
+}
+
+/** The documentation pages, and the citations and versions written in them. */
+export interface ContentPages {
+  pages(): Promise<ContentPage[]>;
+  citations(): Promise<PageCitation[]>;
+  versions(): Promise<PageVersion[]>;
 }

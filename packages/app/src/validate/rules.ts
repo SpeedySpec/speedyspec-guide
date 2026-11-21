@@ -58,13 +58,10 @@ export const PortedSeamVerified: Rule = {
   id: 'PortedSeamVerified',
   async check(ctx) {
     const ported = new Set(ctx.seams.filter((s) => s.ported).map((s) => s.id));
-    const byPage = new Map<string, Citation[]>();
-    for (const c of ctx.citations) {
-      if (c.section === 'speedyspec' && ported.has(c.seam)) byPage.set(c.page, [...(byPage.get(c.page) ?? []), c.citation]);
-    }
-    return [...byPage]
-      .filter(([, cs]) => cs.every((c) => c.kind === 'source'))
-      .map(([page]) => ({ rule: this.id, where: page, message: 'a ported seam\'s SpeedySpec page needs a scenario, break or test citation, not source alone' }));
+    const verified = new Set(ctx.citations.filter((c) => c.citation.kind !== 'source').map((c) => c.page));
+    return ctx.pages
+      .filter((p) => p.section === 'speedyspec' && ported.has(p.seam) && !verified.has(p.page))
+      .map(({ page }) => ({ rule: this.id, where: page, message: 'a ported seam\'s SpeedySpec page needs a scenario, break or test citation, not source alone' }));
   },
 };
 
