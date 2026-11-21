@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'methodCall',\n  2 => 'demo.add',\n  3 => 2,\n  4 => \n  array (\n    'k' => \n    array (\n      0 => 'bare',\n      1 => true,\n    ),\n  ),\n  5 => '20260102T03:04:05',\n)",
+ "error": null
+}

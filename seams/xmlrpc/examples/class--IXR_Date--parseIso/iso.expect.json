@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '20260102T03:04:05Z',\n  1 => '<dateTime.iso8601>20260102T03:04:05Z</dateTime.iso8601>',\n  2 => '19700102T00:00:00',\n  3 => 'Z',\n)",
+ "error": null
+}

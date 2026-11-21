@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 403,\n  1 => 'Bad &lt;login&gt;',\n  2 => '<methodResponse>\n  <fault>\n    <value>\n      <struct>\n        <member>\n          <name>faultCode</name>\n          <value><int>403</int></value>\n        </member>\n        <member>\n          <name>faultString</name>\n          <value><string>Bad &lt;login&gt;</string></value>\n        </member>\n      </struct>\n    </value>\n  </fault>\n</methodResponse>\n',\n)",
+ "error": null
+}

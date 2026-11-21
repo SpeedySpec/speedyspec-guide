@@ -1,0 +1,5 @@
+---
+symbol: "method:IXR_Server::serve"
+---
+
+Serves a request: the given XML, or the POST body (anything but a POST gets 405). A message that doesn't parse, or isn't a `methodCall`, gets a fault. The method's result is printed as a `methodResponse`, or as a fault when it is an `IXR_Error`, and the request ends. <Ev source="wp:wp-includes/IXR/class-IXR-server.php#L38-L85" hash="f645bc3ba7ccf7648054c6c6ae567642b16905881a45265dfd3626d071ddc7fa"/>

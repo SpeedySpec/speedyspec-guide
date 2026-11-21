@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<struct>\n  <member><name>title</name><value><string>A &amp; B</string></value></member>\n  <member><name>tags</name><value><array><data>\n  <value><string>x</string></value>\n  <value><int>2</int></value>\n</data></array></value></member>\n  <member><name>ok</name><value><boolean>0</boolean></value></member>\n</struct>'",
+ "error": null
+}

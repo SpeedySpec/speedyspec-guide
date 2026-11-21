@@ -1,0 +1,5 @@
+---
+symbol: "method:IXR_Message::parse"
+---
+
+Parses the message and returns whether it worked. It needs PHP's XML extension. It strips the XML declaration and refuses a DOCTYPE, a root other than `methodCall`, `methodResponse` or `fault`, and more than twice the element limit (30,000 by default) of `<`. It parses in chunks (256 KB by default), and a fault sets `faultCode` and `faultString`. <Ev source="wp:wp-includes/IXR/class-IXR-message.php#L45-L147" hash="7f49bc7dd7d0ee4115731bb0ec5127534b220649a6ed2f22075001c7cbaf352d"/>
