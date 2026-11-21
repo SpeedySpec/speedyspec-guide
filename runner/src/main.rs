@@ -55,7 +55,7 @@ fn main() -> ExitCode {
             return ExitCode::from(2);
         }
     };
-    let result = match command {
+    let result: Result<String, String> = match command {
         Command::Run { .. } => Err("run is not implemented yet".to_string()),
         Command::Reflect { .. } => Err("reflect is not implemented yet".to_string()),
     };
