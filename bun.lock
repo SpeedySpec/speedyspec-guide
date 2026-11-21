@@ -11,6 +11,13 @@
         "typescript": "^5.9.0",
       },
     },
+    "packages/adapter-git-tag-history": {
+      "name": "@speedyspec-guide/adapter-git-tag-history",
+      "dependencies": {
+        "@speedyspec-guide/contracts": "workspace:*",
+        "@speedyspec-guide/domain": "workspace:*",
+      },
+    },
     "packages/adapter-php-parser-source": {
       "name": "@speedyspec-guide/adapter-php-parser-source",
       "dependencies": {
@@ -50,6 +57,8 @@
     },
   },
   "packages": {
+    "@speedyspec-guide/adapter-git-tag-history": ["@speedyspec-guide/adapter-git-tag-history@workspace:packages/adapter-git-tag-history"],
+
     "@speedyspec-guide/adapter-php-parser-source": ["@speedyspec-guide/adapter-php-parser-source@workspace:packages/adapter-php-parser-source"],
 
     "@speedyspec-guide/adapter-seam-files": ["@speedyspec-guide/adapter-seam-files@workspace:packages/adapter-seam-files"],

@@ -1,0 +1,1 @@
+{ "name": "@speedyspec-guide/adapter-git-tag-history", "type": "module", "private": true, "main": "src/index.ts", "dependencies": { "@speedyspec-guide/contracts": "workspace:*", "@speedyspec-guide/domain": "workspace:*" } }

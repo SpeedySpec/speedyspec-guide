@@ -3,3 +3,4 @@ export * from './graph.ts';
 export * from './cycles.ts';
 export * from './hook-pattern.ts';
 export * from './fork.ts';
+export * from './history.ts';
