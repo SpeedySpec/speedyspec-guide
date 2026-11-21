@@ -30,16 +30,12 @@ describe('buildGraph', () => {
   });
 });
 
-describe('a hook name that is only a variable', () => {
-  test('matches nothing, because it passes any hook through rather than naming one', () => {
-    const g = buildGraph(inv([sym('action:{$hook_name}', true), sym('action:init')], []), asg({}));
-    expect(g.edges.filter((x) => x.kind === 'matches')).toEqual([]);
-  });
-});
-
 describe('a hook name with no literal text but separators', () => {
-  test('matches nothing, since `{$a}_{$b}` would match almost any hook', () => {
-    const g = buildGraph(inv([sym('filter:{$taxonomy}_{$field}', true), sym('filter:wp_insert_post_parent'), sym('filter:pre_{$x}', true), sym('filter:pre_y')], []), asg({}));
-    expect(g.edges.filter((x) => x.kind === 'matches')).toEqual([{ from: 'filter:pre_{$x}', to: 'filter:pre_y', kind: 'matches' }]);
+  test('still matches, but its links are marked broad', () => {
+    const g = buildGraph(inv([sym('action:{$hook_name}', true), sym('action:init'), sym('filter:{$taxonomy}_{$field}', true), sym('filter:wp_insert_post_parent'), sym('filter:pre_{$x}', true), sym('filter:pre_y')], []), asg({}));
+    const m = g.edges.filter((x) => x.kind === 'matches');
+    expect(m).toContainEqual({ from: 'action:{$hook_name}', to: 'action:init', kind: 'matches', broad: true });
+    expect(m).toContainEqual({ from: 'filter:{$taxonomy}_{$field}', to: 'filter:wp_insert_post_parent', kind: 'matches', broad: true });
+    expect(m).toContainEqual({ from: 'filter:pre_{$x}', to: 'filter:pre_y', kind: 'matches' });
   });
 });

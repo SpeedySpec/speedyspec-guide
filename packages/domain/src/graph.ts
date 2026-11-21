@@ -8,6 +8,8 @@ export interface Edge {
   to: string;
   kind: EdgeKind;
   at?: Citation;
+  /** A `matches` edge from a name with no literal text (`{$hook_name}`): shown, but never part of a cycle. */
+  broad?: boolean;
 }
 
 /** A call the extractor could not resolve to a symbol. */

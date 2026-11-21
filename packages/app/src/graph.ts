@@ -29,11 +29,15 @@ export function buildGraph(inv: Inventory, a: Assignment): Graph {
 
   const hooks = inv.symbols.filter((s) => s.kind === 'filter' || s.kind === 'action');
   const literals = hooks.filter((h) => !h.dynamic);
-  // A name with no literal text but separators (`{$hook_name}`, `{$taxonomy}_{$field}`) names no hook in particular:
-  // it would match almost every hook and invent dependencies, so it matches none.
-  for (const dyn of hooks.filter((h) => h.dynamic && h.name.replace(/\{\$[^}]*\}/g, '').replace(/[_\-./]/g, '') !== '')) {
+  for (const dyn of hooks.filter((h) => h.dynamic)) {
+    // A name with no literal text but separators (`{$hook_name}`, `{$taxonomy}_{$field}`) names no hook in
+    // particular: its links are kept but marked broad, so they never make a cycle.
+    const broad = dyn.name.replace(/\{\$[^}]*\}/g, '').replace(/[_\-./]/g, '') === '';
     const re = hookPattern(dyn.name);
-    for (const lit of literals) if (lit.kind === dyn.kind && re.test(lit.name)) edges.push({ from: dyn.id, to: lit.id, kind: 'matches' });
+    for (const lit of literals) {
+      if (lit.kind !== dyn.kind || !re.test(lit.name)) continue;
+      edges.push(broad ? { from: dyn.id, to: lit.id, kind: 'matches', broad: true } : { from: dyn.id, to: lit.id, kind: 'matches' });
+    }
   }
 
   for (const edge of inv.edges) {

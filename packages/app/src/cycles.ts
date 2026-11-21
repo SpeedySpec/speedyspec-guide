@@ -1,50 +1,71 @@
-import type { Assignment } from '@speedyspec-guide/domain';
 import type { Graph } from './graph.ts';
 
+/** One closed path, first node repeated last. `possible` when it only closes through a hook-name pattern match. */
+export interface CyclePath {
+  path: string[];
+  possible: boolean;
+}
+
 export interface Cycles {
-  /** Closed paths of symbols, first node repeated last. */
-  symbol: string[][];
+  /** One shortest cycle per circular group of symbols. */
+  symbol: CyclePath[];
   /** Closed paths of seams. */
   seam: string[][];
+  /** Every circular group of symbols (a strongly connected component), so each member can be marked. */
+  components: string[][];
 }
+
+type Adjacency = Map<string, Map<string, boolean>>; // node -> next -> whether the link is a pattern match
 
 /** Finds circular dependencies between symbols (through calls and hooks) and between seams. */
-export function findCycles(g: Graph, _a: Assignment): Cycles {
-  const symbolAdj = adjacency(g.edges.map((e) => [e.from, e.to] as const));
-  const seamAdj = adjacency(g.crossSeam.map((e) => [e.fromSeam, e.toSeam] as const));
-  return { symbol: cyclesOf(symbolAdj), seam: cyclesOf(seamAdj) };
+export function findCycles(g: Graph): Cycles {
+  const symbolAdj: Adjacency = new Map();
+  for (const e of g.edges) if (!e.broad) link(symbolAdj, e.from, e.to, e.kind === 'matches');
+  const seamAdj: Adjacency = new Map();
+  for (const e of g.crossSeam) link(seamAdj, e.fromSeam, e.toSeam, false);
+
+  const symbolGroups = circular(symbolAdj);
+  return {
+    symbol: symbolGroups.map((scc) => shortestCycle(symbolAdj, scc)).sort(byStart),
+    seam: circular(seamAdj).map((scc) => shortestCycle(seamAdj, scc).path).sort((x, y) => cmp(x[0]!, y[0]!)),
+    components: symbolGroups.map((scc) => [...scc].sort()).sort((x, y) => cmp(x[0]!, y[0]!)),
+  };
 }
 
-function adjacency(pairs: readonly (readonly [string, string])[]): Map<string, Set<string>> {
-  const adj = new Map<string, Set<string>>();
-  for (const [from, to] of pairs) {
-    if (!adj.has(from)) adj.set(from, new Set());
-    if (!adj.has(to)) adj.set(to, new Set());
-    adj.get(from)!.add(to);
-  }
-  return adj;
+function link(adj: Adjacency, from: string, to: string, pattern: boolean): void {
+  if (!adj.has(from)) adj.set(from, new Map());
+  if (!adj.has(to)) adj.set(to, new Map());
+  const next = adj.get(from)!;
+  next.set(to, (next.get(to) ?? true) && pattern);
 }
 
-/** One shortest cycle per strongly connected component, through the component's smallest node. */
-function cyclesOf(adj: Map<string, Set<string>>): string[][] {
-  const out: string[][] = [];
-  for (const scc of tarjan(adj)) {
-    const members = new Set(scc);
-    const start = [...scc].sort()[0]!;
-    if (scc.length === 1 && !adj.get(start)!.has(start)) continue;
-    out.push(shortestCycle(adj, members, start));
-  }
-  return out.sort((x, y) => (x[0]! < y[0]! ? -1 : x[0]! > y[0]! ? 1 : 0));
+const cmp = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
+const byStart = (x: CyclePath, y: CyclePath) => cmp(x.path[0]!, y.path[0]!);
+
+/** Strongly connected components that hold a cycle: more than one node, or a node linking to itself. */
+function circular(adj: Adjacency): string[][] {
+  return tarjan(adj).filter((scc) => scc.length > 1 || adj.get(scc[0]!)!.has(scc[0]!));
 }
 
-function shortestCycle(adj: Map<string, Set<string>>, members: Set<string>, start: string): string[] {
+/** The shortest cycle through the group's smallest node, using direct links only if it can, else pattern matches too. */
+function shortestCycle(adj: Adjacency, scc: string[]): CyclePath {
+  const members = new Set(scc);
+  const start = [...scc].sort()[0]!;
+  const direct = bfs(adj, members, start, false);
+  if (direct) return { path: direct, possible: false };
+  const any = bfs(adj, members, start, true);
+  if (!any) throw new Error(`no cycle through ${start}`);
+  return { path: any, possible: true };
+}
+
+function bfs(adj: Adjacency, members: Set<string>, start: string, allowPattern: boolean): string[] | null {
   const prev = new Map<string, string>();
-  const queue = [start];
   const seen = new Set<string>();
+  const queue = [start];
   while (queue.length > 0) {
     const node = queue.shift()!;
-    for (const next of [...adj.get(node)!].sort()) {
-      if (!members.has(next)) continue;
+    for (const [next, pattern] of [...adj.get(node)!].sort(([a], [b]) => cmp(a, b))) {
+      if (!members.has(next) || (pattern && !allowPattern)) continue;
       if (next === start) {
         const path: string[] = [];
         for (let n = node; n !== start; n = prev.get(n)!) path.unshift(n);
@@ -57,11 +78,11 @@ function shortestCycle(adj: Map<string, Set<string>>, members: Set<string>, star
       }
     }
   }
-  throw new Error(`no cycle through ${start}`);
+  return null;
 }
 
 /** Tarjan's strongly connected components, iterative so deep call chains don't overflow the stack. */
-function tarjan(adj: Map<string, Set<string>>): string[][] {
+function tarjan(adj: Adjacency): string[][] {
   let index = 0;
   const idx = new Map<string, number>();
   const low = new Map<string, number>();
@@ -78,7 +99,7 @@ function tarjan(adj: Map<string, Set<string>>): string[][] {
       index++;
       stack.push(node);
       onStack.add(node);
-      work.push({ node, it: adj.get(node)!.values() });
+      work.push({ node, it: adj.get(node)!.keys() });
     };
     visit(root);
     while (work.length > 0) {

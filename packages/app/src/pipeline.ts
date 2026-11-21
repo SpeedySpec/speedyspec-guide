@@ -59,7 +59,7 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
       const a = await need<Assignment>(store, 'assignment');
       const g = buildGraph(await need<Inventory>(store, 'inventory-wp'), a);
       await store.write('graph', g);
-      await store.write('cycles', findCycles(g, a));
+      await store.write('cycles', findCycles(g));
       break;
     }
     case 'history':
