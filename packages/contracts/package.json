@@ -1,0 +1,1 @@
+{ "name": "@speedyspec-guide/contracts", "type": "module", "private": true, "main": "src/index.ts", "dependencies": { "@speedyspec-guide/domain": "workspace:*" } }
