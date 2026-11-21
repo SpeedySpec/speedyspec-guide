@@ -19,6 +19,7 @@ describe('readGuideData', () => {
     expect(d.examples.results?.results).toHaveLength(2);
     expect(d.content.find((c) => c.section === 'wordpress' && c.slug === 'add_filter')).toMatchObject({ seam: 'hooks', kind: 'symbol', symbol: 'function:add_filter' });
     expect(d.content.find((c) => c.slug === '_seam')).toMatchObject({ kind: 'seam', seam: 'hooks' });
+    expect(d.content.find((c) => c.symbol === 'class:WP_Hook')).toMatchObject({ section: 'speedyspec', seam: 'hooks', slug: 'class/WP_Hook', kind: 'symbol' });
     expect(d.content.find((c) => c.section === 'speedyspec')?.data).toMatchObject({ verdict: 'works-with-differences' });
     expect(d.cycles.components).toEqual([['function:add_filter', 'function:get_option']]);
   });

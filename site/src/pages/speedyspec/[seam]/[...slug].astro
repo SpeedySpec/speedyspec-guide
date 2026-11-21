@@ -10,6 +10,7 @@ import VerdictPill from '../../../components/VerdictPill.astro';
 import Reference from '../../../layouts/Reference.astro';
 import { loadGuideData } from '../../../model/data.ts';
 import { speedyspecPaths } from '../../../model/sections.ts';
+import { methodAnchor } from '../../../model/slug.ts';
 import { pageOf, symbolView } from '../../../model/views.ts';
 import { notDocumentedText } from '../../../model/wording.ts';
 
@@ -37,6 +38,15 @@ const wordpressPage = pageOf(id, 'wordpress', d);
   <Signature signature={view.signature} />
   <Examples examples={view.examples} />
   {view.content ? <Prose entry={view.content} /> : <p class="not-documented">{notDocumentedText(view.verdict.source, d.inventory.version)}</p>}
+  {view.methods?.map((m) => (
+    <section class="method">
+      <h2 id={methodAnchor(m.id).anchor} class="mono">::{m.name}()</h2>
+      <Signature signature={m.signature} />
+      <RelationshipPanel edges={m.edges} callsInto={m.callsInto} />
+      <Examples examples={m.examples} />
+      {m.content && <Prose entry={m.content} />}
+    </section>
+  ))}
   <History view={view} section="speedyspec" />
   {wordpressPage && <p class="wordpress-link">WordPress's own behaviour: <a href={wordpressPage}>the WordPress page</a></p>}
 </Reference>

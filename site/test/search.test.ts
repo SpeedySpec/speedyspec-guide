@@ -26,7 +26,7 @@ describe('search and coverage', () => {
 
   test('the coverage page shows each seam and the unassigned symbols by folder', async () => {
     const p = await html(dist, '/coverage/');
-    expect(p.text('.coverage tbody tr:first-child td')).toEqual(['Hooks', 'ported', '5', '2', '1', '4']);
+    expect(p.text('.coverage tbody tr:first-child td')).toEqual(['Hooks', 'ported', '5', '2', '2', '4']);
     expect(p.text('.unassigned-count')).toEqual(['1 symbol is in no seam yet.']);
     expect(p.text('.unassigned h3')).toEqual(['wp-includes']);
     expect(p.text('.unassigned li')).toEqual(['unassigned_thing']);

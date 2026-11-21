@@ -124,10 +124,11 @@ async function readContent(dir: string): Promise<ContentEntry[]> {
   if (!existsSync(dir)) return [];
   const out: ContentEntry[] = [];
   for (const section of ['wordpress', 'speedyspec'] as const) {
-    for await (const file of new Bun.Glob(`${section}/*/*.mdx`).scan({ cwd: dir })) {
+    // A slug with a / (class/WP_Hook, filter/the_content) is a nested file.
+    for await (const file of new Bun.Glob(`${section}/*/**/*.mdx`).scan({ cwd: dir })) {
       const rel = file.split(sep).join('/');
-      const [, seam, name] = rel.split('/') as [string, string, string];
-      const slug = name.slice(0, -'.mdx'.length);
+      const [, seam, ...rest] = rel.split('/') as [string, string, ...string[]];
+      const slug = rest.join('/').slice(0, -'.mdx'.length);
       const text = await Bun.file(join(dir, file)).text();
       const data = frontmatter(text);
       const kind = KINDS[slug] ?? 'symbol';

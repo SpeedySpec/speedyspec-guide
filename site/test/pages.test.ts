@@ -32,7 +32,7 @@ describe('which pages exist', () => {
     expect(pageOf('function:add_filter', 'speedyspec', d)).toBe('/speedyspec/hooks/add_filter/');
     expect(pageOf('function:get_option', 'speedyspec', d)).toBe('/speedyspec/options/get_option/');
     expect(pageOf('global:wp_filter', 'speedyspec', d)).toBeNull();
-    expect(pageOf('method:WP_Hook::apply_filters', 'speedyspec', d)).toBeNull();
+    expect(pageOf('method:WP_Hook::apply_filters', 'speedyspec', d)).toBe('/speedyspec/hooks/class/WP_Hook/#apply_filters');
   });
 
   test('links to pages that do not exist are not links', () => {
