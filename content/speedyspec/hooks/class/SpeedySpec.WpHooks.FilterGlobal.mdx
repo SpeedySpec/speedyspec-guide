@@ -1,0 +1,8 @@
+---
+symbol: "class:SpeedySpec\\WpHooks\\FilterGlobal"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+`$wp_filter`: reading, indexing, iterating and counting it go to the native store, where each hook name gives a `WP_Hook`. <Ev test="speedyspec-wp-hooks-php::php::wp_filter_reads_and_iterates_like_wordpress"/> <Ev scenario="wp_filter_read_and_index"/> <Ev scenario="wp_filter_iterate"/>

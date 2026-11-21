@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpHooks\\write_back_views"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+Writes back every `WP_Hook::$callbacks` array PHP code may have changed in place, before a hook function reads the store, so direct edits to `$wp_filter[$name]->callbacks` take effect as in WordPress. <Ev scenario="wp_hook_array_access"/> Not for plugins.

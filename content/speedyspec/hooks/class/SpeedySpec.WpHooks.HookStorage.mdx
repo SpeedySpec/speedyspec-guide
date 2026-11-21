@@ -1,0 +1,12 @@
+---
+symbol: "class:SpeedySpec\\WpHooks\\HookStorage"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+The PHP side of the hook store port: a PHP object can be bound as the store, and every registration then goes to it instead of the in-memory store. <Ev test="speedyspec-wp-hooks-php::php_store::php_hook_store_binding_takes_every_registration"/>
+
+## Override
+
+Bind your own store under the container's hook-store key; see the architecture page.

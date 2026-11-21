@@ -1,0 +1,8 @@
+---
+symbol: "class:SpeedySpec\\WpHooks\\HookGlobal"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+What `$wp_filter`, `$wp_filters` and `$wp_actions` are on SpeedySpec: array-like proxies over the native hook store, implemented by `FilterGlobal` and `CountGlobal`. <Ev test="speedyspec-wp-hooks-php::php::wp_filter_reads_and_iterates_like_wordpress"/>
