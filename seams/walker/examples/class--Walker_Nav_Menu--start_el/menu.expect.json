@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<li id=\"menu-item-1\" class=\"menu-item menu-item-1\"><a href=\"http://example.org/1\" aria-current=\"page\">Home</a><ul class=\"sub-menu\"><li id=\"menu-item-2\" class=\"menu-item menu-item-2\"><a target=\"_blank\" rel=\"nofollow\" href=\"http://example.org/2\" title=\"All docs\">Docs</a></li></ul></li>'",
+ "error": null
+}

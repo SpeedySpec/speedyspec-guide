@@ -9,4 +9,34 @@ files:
   - 'wp-includes/class-walker-page-dropdown.php'
   - 'wp-includes/class-walker-page.php'
   - 'wp-includes/class-wp-walker.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side. There is no database: setup.php answers the
+# options the walkers read and puts the pages they link to in the object cache.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-error.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/link-template.php
+  - wp-includes/class-wp-post.php
+  - wp-includes/post.php
+  - wp-includes/class-wp-rewrite.php
+  - wp-includes/rewrite.php
+  - wp-includes/class-wp-term.php
+  - wp-includes/taxonomy.php
+  - wp-includes/class-wp-comment.php
+  - wp-includes/comment.php
+  - wp-includes/class-wp-walker.php
+  - wp-includes/class-walker-page.php
+  - wp-includes/class-walker-page-dropdown.php
+  - wp-includes/class-walker-category.php
+  - wp-includes/class-walker-category-dropdown.php
+  - wp-includes/class-walker-comment.php
+  - wp-includes/class-walker-nav-menu.php
+setup: setup.php

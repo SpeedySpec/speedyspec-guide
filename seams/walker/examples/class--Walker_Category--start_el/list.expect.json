@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'\t<li class=\"cat-item cat-item-1 x\"><a href=\"http://example.org/?cat=1\" data-id=\"1\">News</a> (1,200)\n<ul class=\\'children\\'>\n\t<li class=\"cat-item cat-item-2 x\"><a href=\"http://example.org/?cat=2\" data-id=\"2\">Local</a> (3)\n</li>\n</ul>\n</li>\n'",
+ "error": null
+}
