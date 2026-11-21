@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => false,\n  2 => 'Called MAIL FROM without being connected',\n)",
+ "error": null
+}

@@ -5,4 +5,22 @@ files:
   - 'wp-includes/PHPMailer/**'
   - 'wp-includes/class-pop3.php'
   - 'wp-includes/class-wp-phpmailer.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side. Nothing here connects to a mail server.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/PHPMailer/PHPMailer.php
+  - wp-includes/PHPMailer/SMTP.php
+  - wp-includes/PHPMailer/POP3.php
+  - wp-includes/PHPMailer/Exception.php
+  - wp-includes/PHPMailer/DSNConfigurator.php
+  - wp-includes/PHPMailer/OAuthTokenProvider.php
+  - wp-includes/PHPMailer/OAuth.php
+  - wp-includes/class-pop3.php
+  - wp-includes/class-wp-phpmailer.php
+setup: ../basic-setup.php
