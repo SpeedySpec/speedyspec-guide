@@ -111,3 +111,16 @@ fn requests_are_fresh() {
     );
     assert_eq!(r[1]["return"], "false");
 }
+
+#[test]
+fn speedyspec_hook_callbacks_do_not_outlive_their_request() {
+    for side in ["wordpress", "runtime"] {
+        let r = run(side, &[("hook-register.php", &[]), ("hook-fire.php", &[])]);
+        assert_eq!(r[0]["return"], "1", "{side}: {}", r[0]);
+        assert_eq!(
+            r[1]["return"], "'v'",
+            "{side}: a callback from the previous request ran: {}",
+            r[1]
+        );
+    }
+}

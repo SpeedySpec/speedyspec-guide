@@ -1,14 +1,14 @@
 //! Booting PHP for each side, and preparing each example's request.
 //!
-//! The runtime side boots the native areas `speedyspec-php-runtime/src/worker.rs` boots, except `RequestHooksArea`
-//! (private to that binary): `BootOptions.hooks` gets a `MemoryHooks`, as the server's own tests do. `tests/areas.rs`
-//! fails when the worker boots an area this file doesn't.
+//! The runtime side boots the native areas `speedyspec-php-runtime/src/worker.rs` boots. Both sides boot the
+//! request-scoped `SpeedySpec\\Hooks\\Hook` registry (`RequestHooksArea`, copied in `request_hooks.rs` because the
+//! worker's is private), because PHP always registers that class. `tests/areas.rs` fails when the worker boots an area,
+//! or builds one, differently from this file.
 
 use std::rc::Rc;
 
 use speedyspec_container::Container;
 use speedyspec_container_php::ContainerArea;
-use speedyspec_hooks_memory::MemoryHooks;
 use speedyspec_php::{BootOptions, NativeArea, Output, Php};
 use speedyspec_wp_hooks::HookStore;
 use speedyspec_wp_hooks_memory::MemoryHookStore;
@@ -16,16 +16,19 @@ use speedyspec_wp_hooks_php::{HOOK_STORE, PhpHookStore, WpHooksArea};
 
 use crate::Side;
 use crate::manifest::{Manifest, ManifestExample};
+use crate::request_hooks::{RequestHooks, RequestHooksArea};
 
 /// Boots PHP once for the process. PHP's own output goes to stderr, so an example's stray output never mixes with
 /// the JSON on stdout.
 pub fn boot(side: Side) -> Result<Php, String> {
-    let areas: Vec<Rc<dyn NativeArea>> = match side {
+    let legacy = Rc::new(RequestHooks::new());
+    let mut areas: Vec<Rc<dyn NativeArea>> = match side {
         Side::WordPress => Vec::new(),
         Side::Runtime => runtime_areas(),
     };
+    areas.push(Rc::new(RequestHooksArea(legacy.clone())));
     let php = Php::boot(BootOptions {
-        hooks: Rc::new(MemoryHooks::new()),
+        hooks: legacy,
         preload: &[],
         areas,
     })

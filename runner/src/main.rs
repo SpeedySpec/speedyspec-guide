@@ -9,6 +9,7 @@ use speedyspec_hooks::Value;
 use speedyspec_php::Php;
 
 mod manifest;
+mod request_hooks;
 mod sides;
 
 use manifest::{Manifest, RunResult};
