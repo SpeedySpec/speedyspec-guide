@@ -1,0 +1,12 @@
+{
+  "name": "speedyspec/guide-extractor",
+  "description": "Extracts symbols, calls, globals and hooks from PHP code for the SpeedySpec Guide.",
+  "type": "project",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": ">=8.2",
+    "nikic/php-parser": "^5.4"
+  },
+  "autoload": { "psr-4": { "Guide\\Extractor\\": "src/" } },
+  "config": { "sort-packages": true }
+}
