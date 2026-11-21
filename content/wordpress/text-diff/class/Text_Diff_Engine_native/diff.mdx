@@ -1,0 +1,5 @@
+---
+symbol: "method:Text_Diff_Engine_native::diff"
+---
+
+Returns the edits between two lists of lines. It strips line endings, skips the lines the two lists share at the start and the end, and ignores lines found in only one list. It finds the longest common subsequence of the rest with `_compareseq()`, shifts the boundaries of changes with `_shiftBoundaries()`, and builds the copies, deletions, additions and changes. <Ev source="wp:wp-includes/Text/Diff/Engine/native.php#L41-L141" hash="f5087d159dbd929ce38ff187bff0d556c4179b0a38c981dc43855b19057ce6e6"/>

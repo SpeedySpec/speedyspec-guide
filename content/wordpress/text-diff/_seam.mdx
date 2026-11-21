@@ -1,0 +1,4 @@
+---
+---
+
+WordPress compares texts with the PEAR Text_Diff package it bundles: a `Text_Diff` **compares** two lists of lines with an engine (the native one, or xdiff when that extension is loaded) and keeps the result as **edits**, and a renderer **prints** them. <Ev source="wp:wp-includes/Text/Diff.php#L36-L59" hash="5b757f9810836b5cad21644187a1c42e4201d77ada56fcea2da72270112543b0"/> WordPress adds two renderers of its own: `WP_Text_Diff_Renderer_Table`, which prints the table rows of the revisions screen and `wp_text_diff()`, and `WP_Text_Diff_Renderer_inline`, which marks changed words within a line. <Ev source="wp:wp-includes/class-wp-text-diff-renderer-table.php#L21-L60" hash="68243c483b7d180858e15fb7b30ea9ae813ccb085ae805bce5b455a6714c8de8"/>

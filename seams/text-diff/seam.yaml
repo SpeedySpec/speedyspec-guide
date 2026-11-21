@@ -12,4 +12,23 @@ files:
   - 'wp-includes/Text/Exception.php'
   - 'wp-includes/class-wp-text-diff-renderer-inline.php'
   - 'wp-includes/class-wp-text-diff-renderer-table.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side; Text_Diff loads its engine itself.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/Text/Diff.php
+  - wp-includes/Text/Diff/Renderer.php
+  - wp-includes/Text/Diff/Renderer/inline.php
+  - wp-includes/Text/Exception.php
+  - wp-includes/class-wp-text-diff-renderer-inline.php
+  - wp-includes/class-wp-text-diff-renderer-table.php
+setup: ../basic-setup.php
+roles:
+  compare: [class:Text_Diff, class:Text_MappedDiff, class:Text_Exception]
+  edits: [class:Text_Diff_Op, class:Text_Diff_Op_copy, class:Text_Diff_Op_delete, class:Text_Diff_Op_add, class:Text_Diff_Op_change]
+  engines: [class:Text_Diff_Engine_native, class:Text_Diff_Engine_xdiff, class:Text_Diff_Engine_shell, class:Text_Diff_Engine_string]
+  render: [class:Text_Diff_Renderer, class:Text_Diff_Renderer_inline, class:WP_Text_Diff_Renderer_inline, class:WP_Text_Diff_Renderer_Table]
+  filters: [filter:process_text_diff_html]

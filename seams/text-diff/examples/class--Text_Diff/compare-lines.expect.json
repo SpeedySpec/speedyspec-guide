@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Text_Diff_Op_copy',\n  1 => 'Text_Diff_Op_change',\n  2 => 'Text_Diff_Op_copy',\n  3 => 'Text_Diff_Op_add',\n)",
+ "error": null
+}

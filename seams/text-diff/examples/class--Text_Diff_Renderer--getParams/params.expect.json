@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'leading_context_lines' => 2,\n  'trailing_context_lines' => 0,\n)",
+ "error": null
+}

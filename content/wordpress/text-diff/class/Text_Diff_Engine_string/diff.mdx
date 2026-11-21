@@ -1,0 +1,5 @@
+---
+symbol: "method:Text_Diff_Engine_string::diff"
+---
+
+Works out the line endings and the format (`autodetect`, `context` or `unified`), skips the two file header lines, and parses the rest. An unsupported or undetectable format is reported through `PEAR::raiseError()`, which WordPress doesn't include, so that call fails. <Ev source="wp:wp-includes/Text/Diff/Engine/string.php#L38-L82" hash="67cd0f061531b8cef0eea3a119eb7a54aae95cf42f72208451e3ea5429d794f7"/>

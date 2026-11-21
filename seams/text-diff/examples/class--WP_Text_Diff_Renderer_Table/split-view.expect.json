@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<tr><td class=\\'diff-context\\'><span class=\\'screen-reader-text\\'>Unchanged: </span>a</td><td class=\\'diff-context\\'><span class=\\'screen-reader-text\\'>Unchanged: </span>a</td></tr>\n<tr><td>&nbsp;</td><td class=\\'diff-addedline\\'><span aria-hidden=\\'true\\' class=\\'dashicons dashicons-plus\\'></span><span class=\\'screen-reader-text\\'>Added: </span>b</td></tr>\n'",
+ "error": null
+}

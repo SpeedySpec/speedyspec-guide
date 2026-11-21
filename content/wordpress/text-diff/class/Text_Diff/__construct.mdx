@@ -1,0 +1,5 @@
+---
+symbol: "method:Text_Diff::__construct"
+---
+
+Takes an engine name and its arguments, or two lists of lines with no engine name. `auto`, or no name, picks `xdiff` when that extension is loaded and `native` otherwise. Any other name is reduced to its basename, its file in `Text/Diff/Engine/` is loaded, and its `diff()` gives the edits. <Ev source="wp:wp-includes/Text/Diff.php#L36-L56" hash="a096d434a306108e8e675e3d7e2f1bc16f6c6dabe1a175363fee00dfffdc512a"/>

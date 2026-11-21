@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'the <del>quick</del><ins>slow</ins> fox\n'",
+ "error": null
+}
