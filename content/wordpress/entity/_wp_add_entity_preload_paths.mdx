@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_add_entity_preload_paths"
+---
+
+## Behaviour
+
+Adds a route's path, once per post type, to the paths the block editor preloads, as `?kind=postType&name=<type>`. In the post editor that is the edited post's type. In the site editor it is the edited post's type and the types of the screen in `?p=`: `page`, `template` and `wp_template`, `pattern` (`wp_block` and `wp_template_part`), `wp_block` or `wp_template_part`. Post types that don't exist are skipped. Without a `WP_Block_Editor_Context` the paths come back unchanged. <Ev source="wp:wp-includes/entity-utils.php#L28-L82" hash="0b28840ad93a532c4b836abda751fe592a0fe6c5b8e35cbea15ddfc29287a03d"/>
+
+## Override
+
+Not overridable.

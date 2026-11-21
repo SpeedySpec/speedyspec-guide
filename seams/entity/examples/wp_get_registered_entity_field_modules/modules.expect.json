@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'id' => '@my-plugin/book-fields',\n    'fields' => \n    array (\n      0 => 'isbn',\n    ),\n  ),\n)",
+ "error": null
+}

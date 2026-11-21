@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_registered_entity_fields"
+---
+
+## Behaviour
+
+Returns an entity's registered fields, as a list. The first read after `init` has completed fires `wp_entity_fields_api_init`, where fields are registered. A read before then is reported through `_doing_it_wrong()` and finds nothing. <Ev source="wp:wp-includes/entity-fields.php#L109-L111" hash="695934b2f9c10d3775b5e068beb3e2c00eadea80397c069b1b705f03c0c75563"/>
+
+## Override
+
+Register, update or unregister fields on `wp_entity_fields_api_init`.

@@ -1,1 +1,1 @@
-{"requireAllAssigned": true, "requirePortedCoverage": true, "stubFiles": ["wp-admin/includes/noop.php"], "requireWordPressCoverage": ["options", "object-cache", "shortcode", "text-diff"]}
+{"requireAllAssigned": true, "requirePortedCoverage": true, "stubFiles": ["wp-admin/includes/noop.php"], "requireWordPressCoverage": ["options", "object-cache", "shortcode", "text-diff", "entity"]}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "WP_Entity_Fields_Registry::register Array\n(\n    [0] => pages\n)\n",
+ "return": "1",
+ "error": null
+}

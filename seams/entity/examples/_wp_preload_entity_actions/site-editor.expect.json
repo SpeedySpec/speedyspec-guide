@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '/wp/v2/types',\n  1 => '/wp/v2/entity-actions?kind=postType&name=wp_block',\n  2 => '/wp/v2/entity-actions?kind=postType&name=wp_template_part',\n)",
+ "error": null
+}

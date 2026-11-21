@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_register_entity_actions"
+---
+
+## Behaviour
+
+Registers actions for an entity, during `wp_entity_actions_api_init`, and returns the ids it registered. New in WordPress 7.2 (trunk); WordPress 7.1.5 has no entity API. Each action is an array with a non-empty string `id`, stored with an `origin` recording who registered it, and with the script module, if given, that runs it. `context` must be `list` and `modalSize` one of `small`, `medium`, `large` or `fill`. `callback`, `RenderModal` and `isEligible` belong in the script module: they are dropped and reported. Actions can be registered only while the registry itself fires `wp_entity_actions_api_init`, not on a `do_action()` of that hook elsewhere. It is `WP_Entity_Actions_Registry::register()`. <Ev source="wp:wp-includes/entity-actions.php#L44-L46" hash="2fc7fc912fcff5d60737df3f7a68b4d65d4da5a953511b10352a606b992ce6c8"/>
+
+## Override
+
+Not overridable.

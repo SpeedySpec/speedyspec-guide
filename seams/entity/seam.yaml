@@ -4,4 +4,37 @@ ported: false
 files:
   - 'wp-includes/entity-*.php'
   - 'wp-includes/class-wp-entity-*.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/post.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/class-wp-dependency.php
+  - wp-includes/class-wp-dependencies.php
+  - wp-includes/class-wp-scripts.php
+  - wp-includes/class-wp-block-editor-context.php
+  # register() checks field types against the REST controller's schema.
+  - wp-includes/rest-api/endpoints/class-wp-rest-controller.php
+  - wp-includes/rest-api/endpoints/class-wp-rest-entity-fields-controller.php
+  - wp-includes/entity-utils.php
+  - wp-includes/entity-fields.php
+  - wp-includes/entity-actions.php
+  - wp-includes/class-wp-entity-fields-registry.php
+  - wp-includes/class-wp-entity-actions-registry.php
+setup: ../basic-setup.php
+roles:
+  fields: [function:wp_register_entity_fields, function:wp_update_entity_fields, function:wp_unregister_entity_fields, function:wp_get_registered_entity_fields, function:wp_get_registered_entity_field_modules, function:wp_get_all_registered_entity_field_modules, function:wp_register_entity_field_collection, function:wp_get_entity_field_collection_fields]
+  actions: [function:wp_register_entity_actions, function:wp_unregister_entity_actions, function:wp_get_registered_entity_actions, function:wp_get_registered_entity_action_modules, function:wp_get_all_registered_entity_action_modules]
+  editor: [function:_wp_add_entity_field_modules_to_editor_script, function:_wp_add_entity_action_modules_to_editor_script, function:_wp_add_entity_modules_to_editor_script, function:_wp_preload_entity_fields, function:_wp_preload_entity_actions, function:_wp_add_entity_preload_paths]
+  registries: [class:WP_Entity_Fields_Registry, class:WP_Entity_Actions_Registry]
+  hooks: [action:wp_entity_fields_api_init, action:wp_entity_actions_api_init]
+edges:
+  - { from: function:wp_register_entity_fields, to: function:wp_unregister_entity_fields, kind: undone-by, at: { source: "wp:wp-includes/entity-fields.php#L52-L54", hash: 498ae8f2f452434de286144321aa20d833d23dda8d9d415880697e118253a560 } }
+  - { from: function:wp_register_entity_actions, to: function:wp_unregister_entity_actions, kind: undone-by, at: { source: "wp:wp-includes/entity-actions.php#L44-L46", hash: 2fc7fc912fcff5d60737df3f7a68b4d65d4da5a953511b10352a606b992ce6c8 } }
