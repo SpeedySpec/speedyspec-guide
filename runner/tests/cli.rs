@@ -1,7 +1,10 @@
 use std::process::Command;
 
 fn runner(args: &[&str]) -> std::process::Output {
-    Command::new(env!("CARGO_BIN_EXE_speedyspec-guide-examples")).args(args).output().unwrap()
+    Command::new(env!("CARGO_BIN_EXE_speedyspec-guide-examples"))
+        .args(args)
+        .output()
+        .unwrap()
 }
 
 #[test]
