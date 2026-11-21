@@ -1,4 +1,4 @@
-import type { ContentPage, Inventory, PageCitation, PageVersion, Seam } from '@speedyspec-guide/domain';
+import type { ContentPage, Example, ExampleRun, GuideSymbol, Inventory, PageCitation, PageVersion, Seam, Side } from '@speedyspec-guide/domain';
 
 /** Extracts the inventory of a code base. */
 export interface SymbolSource {
@@ -43,4 +43,21 @@ export interface ContentPages {
   pages(): Promise<ContentPage[]>;
   citations(): Promise<PageCitation[]>;
   versions(): Promise<PageVersion[]>;
+}
+
+/** A problem with an example file, reported rather than skipped. */
+export interface ExampleProblem {
+  where: string;
+  message: string;
+}
+
+/** The examples on disk, and what is wrong with any of them. */
+export interface ExampleSource {
+  all(): Promise<{ examples: Example[]; problems: ExampleProblem[] }>;
+}
+
+/** Runs example files on one side, and lists what PHP declares. */
+export interface ExampleRunner {
+  run(side: Side, examples: { id: string; file: string; load: string[] }[], wordpressDir: string): Promise<ExampleRun[]>;
+  reflect(mode: 'baseline' | 'runtime'): Promise<GuideSymbol[]>;
 }
