@@ -49,7 +49,7 @@ async function main(argv: string[]): Promise<number> {
   const root = process.cwd();
   const cache = join(root, '.cache');
   const sources = (await Bun.file(join(root, 'sources.json')).json()) as Sources;
-  const config = (await Bun.file(join(root, 'guide.config.json')).json()) as { requireAllAssigned: boolean; requirePortedCoverage?: boolean; stubFiles?: string[] };
+  const config = (await Bun.file(join(root, 'guide.config.json')).json()) as { requireAllAssigned: boolean; requirePortedCoverage?: boolean; requireWordPressCoverage?: string[]; stubFiles?: string[] };
   const env = (name: string) => (process.env[name] ? resolve(process.env[name]!) : undefined);
 
   // WordPress is the pinned commit's src/, exported from a local git directory: GUIDE_WORDPRESS_GIT (any clone of
@@ -107,7 +107,7 @@ async function main(argv: string[]): Promise<number> {
       },
     },
     wordpressVersion: sources.wordpress.version,
-    config: { requireAllAssigned: config.requireAllAssigned, requirePortedCoverage: config.requirePortedCoverage === true },
+    config: { requireAllAssigned: config.requireAllAssigned, requirePortedCoverage: config.requirePortedCoverage === true, requireWordPressCoverage: config.requireWordPressCoverage ?? [] },
   };
 
   for (const s of stage === 'all' ? STAGES : [stage as Stage]) {

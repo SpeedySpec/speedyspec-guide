@@ -131,6 +131,32 @@ export const PortedSeamCovered: Rule = {
   },
 };
 
+/**
+ * A seam listed in `requireWordPressCoverage` is documented on its WordPress side: every member but a method has a
+ * WordPress page, and every function has an example that ran and passed on WordPress.
+ */
+export const DocumentedSeamCovered: Rule = {
+  id: 'DocumentedSeamCovered',
+  async check(ctx) {
+    const seams = ctx.config.requireWordPressCoverage ?? [];
+    const f: Failure[] = [];
+    const passed = new Set((ctx.examples?.results ?? []).filter((r) => r.side === 'wordpress' && r.passed).map((r) => r.id.split('/').slice(0, 2).join('/')));
+    for (const seam of seams) {
+      const members = Object.entries(ctx.assignment.seamOf)
+        .filter(([id, s]) => s === seam && !id.startsWith('method:'))
+        .map(([id]) => id)
+        .sort();
+      for (const id of members) {
+        const fail = (need: string) => f.push({ rule: this.id, where: id, message: `the ${seam} seam is documented: ${id} needs ${need}` });
+        if (!ctx.pages.some((p) => p.section === 'wordpress' && p.symbol === id)) fail('a WordPress page');
+        // A function's examples are in the folder named after it.
+        else if (id.startsWith('function:') && !passed.has(`${seam}/${id.slice('function:'.length)}`)) fail('an example run on WordPress');
+      }
+    }
+    return f;
+  },
+};
+
 export const CitesItsScenario: Rule = {
   id: 'CitesItsScenario',
   async check(ctx) {

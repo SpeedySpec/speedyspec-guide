@@ -42,7 +42,7 @@ export interface PipelineDeps {
   /** The runtime's released versions; none when offline. */
   runtimeTags(offline: boolean): Promise<string[]>;
   wordpressVersion: string;
-  config: { requireAllAssigned: boolean; requirePortedCoverage?: boolean };
+  config: { requireAllAssigned: boolean; requirePortedCoverage?: boolean; requireWordPressCoverage?: string[] };
 }
 
 export interface StageResult {

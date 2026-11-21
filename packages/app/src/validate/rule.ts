@@ -19,7 +19,7 @@ export interface ValidationContext {
   evidence: EvidenceSource;
   history: HistoryFile;
   versionsOnPages: PageVersion[];
-  config: { requireAllAssigned: boolean; requirePortedCoverage?: boolean };
+  config: { requireAllAssigned: boolean; requirePortedCoverage?: boolean; requireWordPressCoverage?: string[] };
   /** `generated/examples.json`, or null when the runner stages did not run. */
   examples: ExamplesFile | null;
   /** Every example file on disk and the sides it declares: what must have run. */

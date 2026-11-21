@@ -248,3 +248,31 @@ describe('seam files', () => {
     expect(f.filter((x) => x.rule === 'SeamFilesExist')).toEqual([]);
   });
 });
+
+describe('a documented seam', () => {
+  const options: Seam = { ...hooks, id: 'options', ported: false };
+  const assignment: Assignment = { seamOf: { 'function:get_option': 'options', 'filter:option_{$option}': 'options' }, unassigned: [], conflicts: [] };
+  const pages = { 'wordpress/options/get_option.mdx': '---\nsymbol: function:get_option\n---\nx', 'wordpress/options/filter/option_{option}.mdx': '---\nsymbol: "filter:option_{$option}"\n---\nx' };
+  const ran = (passed: boolean) => ({ results: [{ id: 'options/get_option/a', side: 'wordpress' as const, passed, actual: { output: '', return: '1', error: null }, expected: { output: '', return: '1', error: null } }], problems: [], declared: [] });
+  const covered = async (over: Partial<ValidationContext>) =>
+    (await runRules(ALL_RULES, await ctx(pages, { seams: [options], assignment, config: { requireAllAssigned: false, requireWordPressCoverage: ['options'] }, ...over }))).filter((f) => f.rule === 'DocumentedSeamCovered');
+
+  test('a_function_with_a_page_but_no_example_fails', async () => {
+    expect(await covered({ examples: { results: [], problems: [], declared: [] } })).toEqual([
+      { rule: 'DocumentedSeamCovered', where: 'function:get_option', message: 'the options seam is documented: function:get_option needs an example run on WordPress' },
+    ]);
+  });
+
+  test('a_member_without_a_page_fails', async () => {
+    const f = await covered({ examples: ran(true), pages: (await ctx({ 'wordpress/options/get_option.mdx': '---\nsymbol: function:get_option\n---\nx' })).pages });
+    expect(f).toEqual([{ rule: 'DocumentedSeamCovered', where: 'filter:option_{$option}', message: 'the options seam is documented: filter:option_{$option} needs a WordPress page' }]);
+  });
+
+  test('a_page_and_a_passing_example_pass', async () => {
+    expect(await covered({ examples: ran(true) })).toEqual([]);
+  });
+
+  test('a_failing_example_does_not_count', async () => {
+    expect((await covered({ examples: ran(false) })).map((f) => f.where)).toEqual(['function:get_option']);
+  });
+});

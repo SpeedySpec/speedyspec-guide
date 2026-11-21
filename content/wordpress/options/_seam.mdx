@@ -1,0 +1,8 @@
+---
+---
+
+Options are a site's settings, stored by name in one table: `get_option()` **reads** them, and `add_option()`, `update_option()` and `delete_option()` **write** them. Values are stored serialized, and each option has an **autoload** value: the ones that load with every request are cached together as `alloptions`, and missing names are remembered in `notoptions`. <Ev scenario="get_from_alloptions" area="options"/> <Ev scenario="get_missing_notoptions" area="options"/>
+
+**Transients** are options with an expiry, kept in the object cache instead when there is a persistent one. **Network options** and site transients belong to a multisite network and live in `sitemeta`; on a single site they are ordinary options. <Ev scenario="transient_with_timeout" area="options"/> <Ev scenario="network_option_per_network" area="options"/> **Settings** register options for the settings screens and the REST API, and **user settings** keep each user's small interface choices in a cookie and a user option.
+
+The examples on these pages each run against a fresh table holding `siteurl` and `home` (`http://example.org`), `blogname` (`Guide`), `blogdescription` and `admin_email`, with user 1 as an administrator; the multisite ones add network 1 with its `site_name`, `Guide Network`.
