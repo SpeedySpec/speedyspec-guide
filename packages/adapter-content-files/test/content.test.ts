@@ -27,6 +27,11 @@ describe('ContentFiles', () => {
     expect(await c.pages()).toEqual([{ page: 'wordpress/hooks/add_filter.mdx', section: 'wordpress', seam: 'hooks', symbol: 'function:add_filter' }]);
   });
 
+  test('a quoted symbol in the front matter is read as YAML reads it', async () => {
+    const c = new ContentFiles(content({ 'speedyspec/hooks/a.mdx': '---\nsymbol: "function:has_filter"\nverdict: works-as-wordpress\n---\n\nText.' }));
+    expect((await c.pages())[0]?.symbol).toBe('function:has_filter');
+  });
+
   test('reads <Ev/> citations', async () => {
     const c = new ContentFiles(content({ 'wordpress/hooks/add_filter.mdx': 'Returns true. <Ev scenario="add_filter_returns_true"/>\n' }));
     expect(await c.citations()).toEqual([{ page: 'wordpress/hooks/add_filter.mdx', section: 'wordpress', seam: 'hooks', citation: { kind: 'scenario', area: 'hooks', name: 'add_filter_returns_true' } }]);

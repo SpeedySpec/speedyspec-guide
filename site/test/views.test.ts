@@ -86,3 +86,12 @@ describe('symbolView', () => {
     expect(exampleFolder('filter:the_content')).toBe('filter--the_content');
   });
 });
+
+describe('example order', () => {
+  test('a porting "before" comes just above its "after"', () => {
+    const pair = structuredClone(d);
+    const base = pair.examples.files[0]!;
+    pair.examples.files = ['porting-x-after', 'porting-x-before', 'a-plain-one'].map((name) => ({ ...base, id: `hooks/add_filter/${name}`, name }));
+    expect(symbolView('function:add_filter', 'wordpress', pair).examples.map((e) => e.name)).toEqual(['a-plain-one', 'porting-x-before', 'porting-x-after']);
+  });
+});

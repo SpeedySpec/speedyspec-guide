@@ -22,6 +22,7 @@
       "dependencies": {
         "@speedyspec-guide/contracts": "workspace:*",
         "@speedyspec-guide/domain": "workspace:*",
+        "yaml": "^2.8.0",
       },
     },
     "packages/adapter-example-files": {

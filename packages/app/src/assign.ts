@@ -10,8 +10,10 @@ export function assign(inv: Inventory, seams: Seam[]): Assignment {
   const conflicts: Assignment['conflicts'] = [];
   const claimed = new Set<string>();
 
+  // Only WordPress's symbols: an id a seam lists that the inventory doesn't have is the runtime's (the site places it).
+  const known = new Set(inv.symbols.map((s) => s.id));
   const explicit = new Map<string, string[]>();
-  for (const seam of seams) for (const id of seam.symbols) explicit.set(id, [...(explicit.get(id) ?? []), seam.id]);
+  for (const seam of seams) for (const id of seam.symbols) if (known.has(id)) explicit.set(id, [...(explicit.get(id) ?? []), seam.id]);
   for (const [id, owners] of explicit) {
     claimed.add(id);
     if (owners.length === 1) seamOf[id] = owners[0]!;

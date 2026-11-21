@@ -200,7 +200,8 @@ export function symbolView(id: string, section: Section, d: GuideData): SymbolVi
   const folder = exampleFolder(id);
   const examples: ExampleView[] = d.examples.files
     .filter((e) => e.seam === seamId && e.symbol === folder)
-    .sort((a, b) => a.name.localeCompare(b.name))
+    // A porting pair reads before, then after.
+    .sort((a, b) => (order(a.name) < order(b.name) ? -1 : order(a.name) > order(b.name) ? 1 : 0))
     .map((e) => {
       const { title, code } = splitTitle(e.code);
       return {
@@ -249,4 +250,9 @@ function splitTitle(source: string): { title?: string; code: string } {
   const lines = source.replace(/^<\?php\s*\n/, '').split('\n');
   const first = lines[0]?.match(/^\/\/\s*(.+)$/);
   return first ? { title: first[1]!.trim(), code: lines.slice(1).join('\n') } : { code: lines.join('\n') };
+}
+
+/** Sort key for an example: "-after" sorts after its "-before". */
+function order(name: string): string {
+  return name.replace(/-after$/, '-~after');
 }

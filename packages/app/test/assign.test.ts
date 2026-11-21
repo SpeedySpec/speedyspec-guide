@@ -63,3 +63,11 @@ describe('globals', () => {
     expect(res.conflicts).toEqual([{ symbol: 'global:g', seams: ['a', 'b'] }]);
   });
 });
+
+describe('symbols a seam lists that WordPress does not have', () => {
+  test('are not part of the WordPress assignment (they are the runtime\'s, placed by the site)', () => {
+    const r = assign(inv([s('function:x', 'a/x.php')]), [seam('a', { files: ['a/*.php'], symbols: ['class:SpeedySpec\\Only'] })]);
+    expect(r.seamOf['class:SpeedySpec\\Only']).toBeUndefined();
+    expect(r.seamOf['function:x']).toBe('a');
+  });
+});

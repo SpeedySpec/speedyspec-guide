@@ -2,6 +2,7 @@ import type { ContentPages } from '@speedyspec-guide/contracts';
 import { type ContentPage, type PageCitation, type PageVersion, parseCitation } from '@speedyspec-guide/domain';
 import { existsSync } from 'node:fs';
 import { join, sep } from 'node:path';
+import { parse } from 'yaml';
 
 const TAG = (name: string) => new RegExp(`<${name}\\s+([^>]*?)\\/?>`, 'g');
 const ATTR = /(\w+)="([^"]*)"/g;
@@ -18,7 +19,9 @@ export class ContentFiles implements ContentPages {
 
   async pages(): Promise<ContentPage[]> {
     return (await this.read()).map(({ page, section, seam, text }) => {
-      const symbol = /^---\r?\n[\s\S]*?^symbol:\s*(\S+)\s*$[\s\S]*?^---/m.exec(text)?.[1];
+      const front = /^---\r?\n([\s\S]*?)\r?\n?---/.exec(text)?.[1];
+      const data = front ? (parse(front) as Record<string, unknown> | null) : null;
+      const symbol = typeof data?.symbol === 'string' ? data.symbol : undefined;
       return symbol ? { page, section, seam, symbol } : { page, section, seam };
     });
   }
