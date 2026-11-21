@@ -1,5 +1,5 @@
 import type { EvidenceSource } from '@speedyspec-guide/contracts';
-import type { Assignment, ContentPage, Inventory, PageCitation, PageVersion, Seam } from '@speedyspec-guide/domain';
+import type { Assignment, ContentPage, Inventory, PageCitation, PageVersion, Seam, Side } from '@speedyspec-guide/domain';
 import type { ExamplesFile } from '../examples.ts';
 import type { HistoryFile } from '../history.ts';
 
@@ -21,6 +21,8 @@ export interface ValidationContext {
   config: { requireAllAssigned: boolean };
   /** `generated/examples.json`, or null when the runner stages did not run. */
   examples: ExamplesFile | null;
+  /** Every example file on disk and the sides it declares: what must have run. */
+  declaredExamples: { id: string; sides: Side[] }[];
   /** The runtime's released versions (`speedyspec-php-runtime-v*` tags, without the prefix). */
   runtimeTags: string[];
 }

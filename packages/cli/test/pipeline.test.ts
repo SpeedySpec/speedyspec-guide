@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { cpSync, existsSync, mkdtempSync, readFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -67,15 +67,38 @@ describe('the examples, reflect and runtime-history stages', () => {
   test('with a runner they write the results, the runtime API and its history', async () => {
     const dir = await work();
     const fake = join(fixtures, 'fake-runner', 'speedyspec-guide-examples');
-    for (const stage of ['examples', 'reflect', 'runtime-history']) {
+    // The fixture examples include broken files on purpose, so the examples stage reports them and fails.
+    const examples = guide(dir, ['examples', '--offline'], env({ GUIDE_RUNNER: fake }));
+    expect(examples.exitCode).toBe(1);
+    expect(examples.stdout.toString()).toContain('ExampleHasRun');
+    for (const stage of ['reflect', 'runtime-history']) {
       const p = guide(dir, [stage, '--offline'], env({ GUIDE_RUNNER: fake }));
       expect(p.exitCode, p.stderr.toString()).toBe(0);
     }
     const read = (f: string) => JSON.parse(readFileSync(join(dir, 'generated', `${f}.json`), 'utf8'));
-    const examples = read('examples');
-    expect(examples.results.find((r: { id: string; side: string }) => r.id === 'hooks/add_filter/a' && r.side === 'runtime')?.passed).toBe(true);
-    expect(examples.problems.length).toBeGreaterThan(0);
+    const results = read('examples');
+    expect(results.results.find((r: { id: string; side: string }) => r.id === 'hooks/add_filter/a' && r.side === 'runtime')?.passed).toBe(true);
+    expect(results.problems.length).toBeGreaterThan(0);
     expect(read('inventory-runtime').map((s: { id: string }) => s.id)).toEqual(['function:add_filter']);
     expect(read('speedyspec-history')).toEqual({ versions: [], symbols: { 'function:add_filter': { since: 'unreleased' } } });
+  });
+});
+
+describe('a failing example', () => {
+  test('fails the examples stage, naming it', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'pipeline-failing-'));
+    cpSync(join(fixtures, 'pipeline'), dir, { recursive: true });
+    cpSync(join(repo, 'sources.json'), join(dir, 'sources.json'));
+    await Bun.write(join(dir, 'guide.config.json'), JSON.stringify({ requireAllAssigned: false }));
+    const ex = join(dir, 'seams', 'hooks', 'examples', 'add_filter');
+    mkdirSync(ex, { recursive: true });
+    await Bun.write(join(ex, 'wrong.php'), '<?php return 20;\n');
+    await Bun.write(join(ex, 'wrong.expect.json'), JSON.stringify({ sides: ['wordpress'], output: '', return: '21', error: null }));
+    const p = Bun.spawnSync(['bun', join(repo, 'packages', 'cli', 'src', 'main.ts'), 'examples', '--offline'], {
+      cwd: dir,
+      env: { ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server'), GUIDE_RUNNER: join(fixtures, 'fake-runner', 'speedyspec-guide-examples') },
+    });
+    expect(p.exitCode).toBe(1);
+    expect(p.stdout.toString()).toContain('ExampleHasRun hooks/add_filter/wrong: fails on wordpress: expected return 21, got 20');
   });
 });

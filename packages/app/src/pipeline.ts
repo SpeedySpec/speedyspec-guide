@@ -3,7 +3,7 @@ import type { Assignment, GuideSymbol, Inventory } from '@speedyspec-guide/domai
 import { assign } from './assign.ts';
 import { findCycles } from './cycles.ts';
 import { compareFork } from './fork.ts';
-import { type ExamplesFile, runExamples, runtimeApi } from './examples.ts';
+import { type ExamplesFile, exampleFailures, runExamples, runtimeApi } from './examples.ts';
 import { buildGraph } from './graph.ts';
 import { type RuntimeHistoryFile, updateRuntimeHistory } from './runtime-history.ts';
 import { computeHistory, type HistoryFile } from './history.ts';
@@ -86,8 +86,10 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
       break;
     case 'examples': {
       const seams = await deps.seams.all();
-      await store.write('examples', await runExamples(deps.examples, deps.runner!, seams, await deps.wordpressDir()));
-      break;
+      const file = await runExamples(deps.examples, deps.runner!, seams, await deps.wordpressDir());
+      await store.write('examples', file);
+      const failures = exampleFailures(file, file.declared).map((f) => ({ rule: 'ExampleHasRun', ...f }));
+      return { ok: failures.length === 0, failures };
     }
     case 'reflect':
       await store.write('inventory-runtime', await runtimeApi(deps.runner!));
@@ -110,6 +112,7 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
         versionsOnPages: await deps.content.versions(),
         config: deps.config,
         examples: await store.read<ExamplesFile>('examples'),
+        declaredExamples: (await deps.examples.all()).examples.map((e) => ({ id: e.id, sides: e.sides })),
         runtimeTags: await deps.runtimeTags(opts.offline),
       });
       await store.write('validation', failures);

@@ -43,6 +43,7 @@ async function ctx(pages: Record<string, string>, over: Partial<ValidationContex
     versionsOnPages: await c.versions(),
     config: { requireAllAssigned: false },
     examples: null,
+    declaredExamples: [],
     runtimeTags: [],
     ...over,
   };
@@ -121,21 +122,26 @@ describe('examples', () => {
   });
 
   test('a failed run names the side and what differed', async () => {
-    const f = await runRules(ALL_RULES, await ctx({}, { examples: { results: [result('wordpress', true), result('runtime', false, '55')], problems: [], declared: [{ id: 'hooks/add_filter/a', sides: ['wordpress', 'runtime'] }] } }));
+    const f = await runRules(ALL_RULES, await ctx({}, { examples: { results: [result('wordpress', true), result('runtime', false, '55')], problems: [], declared: [] }, declaredExamples: [{ id: 'hooks/add_filter/a', sides: ['wordpress', 'runtime'] }] }));
     expect(f).toEqual([{ rule: 'ExampleHasRun', where: 'hooks/add_filter/a', message: 'fails on runtime: expected return 20, got 55' }]);
   });
 
   test('a declared side with no result is a failure', async () => {
-    const f = await runRules(ALL_RULES, await ctx({}, { examples: { results: [result('wordpress', true)], problems: [], declared: [{ id: 'hooks/add_filter/a', sides: ['wordpress', 'runtime'] }] } }));
+    const f = await runRules(ALL_RULES, await ctx({}, { examples: { results: [result('wordpress', true)], problems: [], declared: [] }, declaredExamples: [{ id: 'hooks/add_filter/a', sides: ['wordpress', 'runtime'] }] }));
     expect(f).toEqual([{ rule: 'ExampleHasRun', where: 'hooks/add_filter/a', message: 'did not run on runtime' }]);
   });
 
-  test('an examples file from before declared sides were recorded asks to rerun the stage', async () => {
-    const stale = { results: [], problems: [] } as unknown as NonNullable<ValidationContext['examples']>;
-    expect(await runRules(ALL_RULES, await ctx({}, { examples: stale }))).toEqual([{ rule: 'ExampleHasRun', where: 'generated/examples.json', message: 'written by an older toolchain; run bun run guide examples again' }]);
+  test('an example on disk that is not in the results did not run', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { examples: { results: [result('wordpress', true)], problems: [], declared: [] }, declaredExamples: [{ id: 'hooks/add_filter/a', sides: ['wordpress'] }, { id: 'hooks/add_filter/new', sides: ['wordpress'] }] }));
+    expect(f).toEqual([{ rule: 'ExampleHasRun', where: 'hooks/add_filter/new', message: 'did not run on wordpress' }]);
   });
 
-  test('no examples file means the runner did not run, which is not a failure', async () => {
+  test('examples on disk with no results at all is a failure saying how to run them', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { examples: null, declaredExamples: [{ id: 'hooks/add_filter/a', sides: ['wordpress'] }] }));
+    expect(f).toEqual([{ rule: 'ExampleHasRun', where: 'generated/examples.json', message: '1 example has not run: bun run runner:build && bun run guide examples' }]);
+  });
+
+  test('no examples file and no examples is not a failure', async () => {
     expect(await rulesOf(await ctx({}, { examples: null }))).toEqual([]);
   });
 

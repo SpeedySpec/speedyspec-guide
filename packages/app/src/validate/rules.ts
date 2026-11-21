@@ -1,4 +1,5 @@
-import { type Citation, citationText, type ExampleOutcome } from '@speedyspec-guide/domain';
+import { type Citation, citationText } from '@speedyspec-guide/domain';
+import { exampleFailures } from '../examples.ts';
 import type { Failure, Rule, ValidationContext } from './rule.ts';
 
 const sha256 = (s: string) => new Bun.CryptoHasher('sha256').update(s).digest('hex');
@@ -92,26 +93,6 @@ export const VersionHasTag: Rule = {
 export const ExampleHasRun: Rule = {
   id: 'ExampleHasRun',
   async check(ctx) {
-    if (ctx.examples === null) return [];
-    if (!Array.isArray(ctx.examples.declared)) {
-      return [{ rule: this.id, where: 'generated/examples.json', message: 'written by an older toolchain; run bun run guide examples again' }];
-    }
-    const f: Failure[] = ctx.examples.problems.map((p) => ({ rule: this.id, where: p.where, message: p.message }));
-    for (const { id, sides } of ctx.examples.declared) {
-      for (const side of sides) {
-        const r = ctx.examples.results.find((x) => x.id === id && x.side === side);
-        if (!r) f.push({ rule: this.id, where: id, message: `did not run on ${side}` });
-        else if (!r.passed) f.push({ rule: this.id, where: id, message: `fails on ${side}: ${difference(r.expected, r.actual)}` });
-      }
-    }
-    return f;
+    return exampleFailures(ctx.examples, ctx.declaredExamples).map((f) => ({ rule: this.id, ...f }));
   },
 };
-
-function difference(expected: ExampleOutcome, actual: ExampleOutcome): string {
-  const parts: string[] = [];
-  for (const field of ['return', 'error', 'output'] as const) {
-    if (expected[field] !== actual[field]) parts.push(`expected ${field} ${String(expected[field])}, got ${String(actual[field])}`);
-  }
-  return parts.join('; ');
-}
