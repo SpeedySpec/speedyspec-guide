@@ -60,7 +60,10 @@ describe('the SpeedySpec API section', () => {
 
   test('an unported seam lists its symbols as not in SpeedySpec yet, and they get no SpeedySpec page', async () => {
     const p = await html(dist, '/speedyspec/options/');
-    expect(p.text('.compat .pill')).toContain('Not in SpeedySpec yet');
+    // Every row would say the same, so the verdict shows once and the symbols are listed.
+    expect(p.text('.compat-uniform .pill')).toContain('Not in SpeedySpec yet');
+    expect(p.text('.compat-list a')).toContain('get_option');
+    expect(p.count('.compat tbody tr')).toBe(0);
     expect(existsSync(join(dist, 'speedyspec', 'options', 'get_option', 'index.html'))).toBe(false);
   });
 

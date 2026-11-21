@@ -8,16 +8,29 @@ interface Props {
   rows: { member: MemberView; verdict: SpeedySpecVerdict; note?: string; href: string | null }[];
 }
 const { rows } = Astro.props;
+// When every row would say the same (an unported seam's "not in SpeedySpec yet"), say it once and list the symbols.
+const uniform = rows.length > 0 && rows.every((r) => r.verdict === rows[0]!.verdict && !r.note);
 ---
-<table class="compat">
-  <thead><tr><th>Symbol</th><th>On SpeedySpec</th><th>Note</th></tr></thead>
-  <tbody>
-    {rows.map((r) => (
-      <tr class:list={{ circular: r.member.circular }}>
-        <td><MaybeLink class="mono" href={r.href}>{r.member.name}</MaybeLink>{r.member.circular && <span class="chip-note">{" "}circular</span>}</td>
-        <td><VerdictPill verdict={r.verdict} /></td>
-        <td class="muted">{r.note ?? ''}</td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+{uniform ? (
+  <>
+    <p class="compat-uniform">All <VerdictPill verdict={rows[0]!.verdict} /></p>
+    <ul class="compat-list">
+      {rows.map((r) => (
+        <li class:list={{ circular: r.member.circular }}><MaybeLink class="mono" href={r.href}>{r.member.name}</MaybeLink>{r.member.circular && <span class="chip-note">{" "}circular</span>}</li>
+      ))}
+    </ul>
+  </>
+) : (
+  <table class="compat">
+    <thead><tr><th>Symbol</th><th>On SpeedySpec</th><th>Note</th></tr></thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr class:list={{ circular: r.member.circular }}>
+          <td><MaybeLink class="mono" href={r.href}>{r.member.name}</MaybeLink>{r.member.circular && <span class="chip-note">{" "}circular</span>}</td>
+          <td><VerdictPill verdict={r.verdict} /></td>
+          <td class="muted">{r.note ?? ''}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+)}

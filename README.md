@@ -17,8 +17,7 @@ bun run typecheck
 
 | Stage | Writes |
 |-------|--------|
-| `extract` | `inventory-wp.json` (WordPress 7.1.5), `inventory-ss.json` (SpeedySpec's `packages/` fork) |
-| `fork` | `fork.json`: same, modified, removed or added, per function, class and method |
+| `extract` | `inventory-wp.json`: WordPress at the pinned trunk commit (`sources.json`), exported with `git archive` |
 | `assign` | `assignment.json`: each symbol's seam, from `seams/*/seam.yaml` |
 | `graph` | `graph.json` (dependencies, cross-seam edges), `cycles.json` (circular dependencies) |
 | `history` | `wordpress-history.json`: since and removed, from WordPress's release tags (committed; skipped with `--offline`) |
@@ -106,11 +105,6 @@ conflicts (`requireAllAssigned` is on). Most seams are one per package of Speedy
 PHP files) and `ai-client` (WordPress 7.1.5 code the fork doesn't have yet). A symbol the fork doesn't hold goes by
 its file; a hook or global used by several seams goes to the first in WordPress's load order (`wp-settings.php`).
 
-- **Fork verdicts:** a symbol the fork doesn't hold reads "Not in SpeedySpec's packages/": the comparison can't tell
-  whether the fork predates it (all of `ai-client`), renamed it (bundled libraries moved into namespaces) or dropped it.
-- **Outside the fork:** `admin` and `bundled` are `inFork: false`, because SpeedySpec's `packages/` tree doesn't
-  carry wp-admin or wp-content. Their symbols get no fork verdict, and their SpeedySpec seam pages say so
-  instead of listing every symbol.
 - **Largest seams:** admin (1,876), password (1,182), rest-api (1,106), theme (1,068), ai-client (1,042), block (908),
   feed (884), app-upgrader (865), query (840), media (786).
 - **Ported seams:**
@@ -134,3 +128,28 @@ Build at full size: 12,227 pages in about 5 minutes (peak memory 1.1 GB, 453 MB 
 - **Dependency and cycle lists:** a seam page shows each list's top rows; the full lists have their own pages.
 - **`bun run guide all`:** about 70 minutes from an empty `generated/`, almost all of it the `history` stage walking
   WordPress's release tags.
+
+## WordPress trunk, and no fork (2026-11-21)
+
+The guide now documents upstream WordPress trunk, pinned in `sources.json`: `WordPress/wordpress-develop` at
+`ce78d2d6eb` (7.2-RC1), `src/` exported with `git archive` into `.cache/wordpress-<commit>/`. It reads git objects
+only, so no checkout's working tree or branch is touched. SpeedySpec's PHP `packages/` tree is no longer read: it
+won't ship in SpeedySpec.
+
+- **Inventory:** 17,693 symbols (7.1.5 had 16,943), 70,530 edges, no parse errors, in 44 WordPress seams. The new
+  seam is **Entity fields and actions** (7.2's entity API). New trunk files joined their seams.
+- **Seams:** each seam that used a fork package now lists its WordPress files (505 files). The 47 symbols whose file
+  went to another seam are listed by id, so no symbol changed seam. An exact file beats a glob, and a seam may not
+  name a file WordPress doesn't have (`SeamFilesExist`).
+- **Verdicts:**
+  - A symbol in an unported seam is **Not in SpeedySpec yet**. It has no SpeedySpec page of its own; its seam's
+    SpeedySpec page lists it.
+  - The fork stage and its verdicts (same code, modified, removed) are gone.
+- **Provenance:** claims verified by a compat scenario say *verified against WordPress 7.1.5* (the release
+  speedyspec-server's compat is recorded on, `generated/compat.json`); claims read from source say *read from
+  WordPress 7.2-RC1 (trunk ce78d2d)*. A symbol in no release tag yet says so.
+- **Trunk against 7.1.5:**
+  - All 167 example runs pass on trunk, so no Hooks behaviour the guide documents changed.
+  - The 9 `wp:` citations moved with trunk's code and are re-hashed.
+- **Build:** 11,560 pages in about 5 minutes, 443 MB, 2.92 million internal links, 0 dead. The only pages over
+  400 KB are WordPress seam pages with a diagram.
