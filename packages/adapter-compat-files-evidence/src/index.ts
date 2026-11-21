@@ -47,6 +47,13 @@ export class CompatFilesEvidence implements EvidenceSource {
     return lines.slice(from - 1, to).join('\n');
   }
 
+  async compatVersion(area: string): Promise<string | null> {
+    const file = join(this.serverDir, 'compat', area, 'source.json');
+    if (!existsSync(file)) return null;
+    const v = ((await Bun.file(file).json()) as { wordpress?: unknown }).wordpress;
+    return typeof v === 'string' ? v : null;
+  }
+
   async catalogue(area: string): Promise<{ scenarios: Catalogue['scenarios']; breaks: Breaks['breaks'] } | null> {
     const c = await this.read<Catalogue>(join('compat', area, 'scenarios.json'));
     if (!c) return null;

@@ -42,7 +42,7 @@ describe('the WordPress API section', () => {
     const p = await html(dist, '/wordpress/hooks/class/WP_Hook/');
     expect(p.text('.rail-methods .rail-member')).toEqual(['::add_filter', '::apply_filters']);
     expect(p.attr('.method h2', 'id')).toEqual(['add_filter', 'apply_filters']);
-    expect(p.text('.not-documented')).toEqual(['Not yet documented. Signature and relationships are generated from WordPress 7.1.5.']);
+    expect(p.text('.not-documented')).toEqual(['Not yet documented. Signature and relationships are generated from WordPress 7.2-RC1.']);
   });
 
   test('a hook page names who fires it', async () => {

@@ -36,7 +36,7 @@ describe('components', () => {
   });
 
   test('every verdict pill', async () => {
-    expect((await page('pills')).text('.pill')).toEqual(['Works as WordPress', 'Works with differences', 'Breaks', 'New in SpeedySpec', 'Same code as WordPress', 'Modified in SpeedySpec', "Not in SpeedySpec's packages/", 'Not yet compared']);
+    expect((await page('pills')).text('.pill')).toEqual(['Works as WordPress', 'Works with differences', 'Breaks', 'New in SpeedySpec', 'Not in SpeedySpec yet', 'Not yet compared']);
   });
 
   test('examples: title, code without the title comment, both sides passed', async () => {

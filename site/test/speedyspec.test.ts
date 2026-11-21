@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import { beforeAll, describe, expect, test } from 'bun:test';
 import { fixtureSite } from './fixture-build.ts';
 import { html } from './helpers.ts';
@@ -56,10 +58,10 @@ describe('the SpeedySpec API section', () => {
     expect(p.raw).toContain('The same class, backed by the native store.');
   });
 
-  test('a modified symbol without a page shows the fork verdict', async () => {
-    const p = await html(dist, '/speedyspec/options/get_option/');
-    expect(p.text('.verdict .pill')).toEqual(['Modified in SpeedySpec']);
-    expect(p.text('.not-documented').length).toBe(1);
+  test('an unported seam lists its symbols as not in SpeedySpec yet, and they get no SpeedySpec page', async () => {
+    const p = await html(dist, '/speedyspec/options/');
+    expect(p.text('.compat .pill')).toContain('Not in SpeedySpec yet');
+    expect(existsSync(join(dist, 'speedyspec', 'options', 'get_option', 'index.html'))).toBe(false);
   });
 
   test('the runtime page lists runtime symbols no seam lists', async () => {

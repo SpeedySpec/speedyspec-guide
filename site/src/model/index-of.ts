@@ -29,8 +29,6 @@ export interface GuideIndex {
   edgesTo(id: string): GuideData['graph']['edges'];
   /** Cross-seam edges leaving a symbol. */
   crossSeamFrom(id: string): GuideData['graph']['crossSeam'];
-  /** False when SpeedySpec's packages/ tree doesn't carry the seam's code. */
-  inFork(seamId: string): boolean;
   /** Memo for views built from this data. */
   memo: Map<string, unknown>;
 }
@@ -80,7 +78,6 @@ export function indexOf(d: GuideData): GuideIndex {
   const content = new Map<string, ContentEntry>();
   for (const c of d.content) if (c.kind === 'symbol' && c.symbol) content.set(`${c.section}|${c.symbol}`, c);
 
-  const outsideFork = new Set<string>();
   const by = <T extends { from: string; to: string }>(list: T[], key: 'from' | 'to') => {
     const out = new Map<string, T[]>();
     for (const e of list) {
@@ -100,8 +97,7 @@ export function indexOf(d: GuideData): GuideIndex {
   for (const [id, seam] of Object.entries(d.assignment.seamOf)) {
     if (id.startsWith('method:') || !seams.has(seam) || !symbols.has(id)) continue;
     wordpressPages.add(id);
-    const forked = !outsideFork.has(seam) && (d.fork[id] === 'modified' || d.fork[id] === 'removed');
-    if (content.has(`speedyspec|${id}`) || forked) speedyspecPages.add(id);
+    if (content.has(`speedyspec|${id}`)) speedyspecPages.add(id);
   }
   for (const [id, seam] of Object.entries(d.runtimeSeamOf)) if (seams.has(seam) && !symbols.has(id) && !id.startsWith('method:')) speedyspecPages.add(id);
 
@@ -122,7 +118,6 @@ export function indexOf(d: GuideData): GuideIndex {
     edgesFrom: (id) => edgesFrom.get(id) ?? [],
     edgesTo: (id) => edgesTo.get(id) ?? [],
     crossSeamFrom: (id) => crossFrom.get(id) ?? [],
-    inFork: (seamId) => !outsideFork.has(seamId),
     memo: new Map(),
   };
   cache.set(d, index);

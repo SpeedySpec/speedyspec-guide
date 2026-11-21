@@ -25,13 +25,12 @@ const cycles = seamCycles(view.id, d);
   <main class="page" data-pagefind-body>
     <div class="crumbs"><a href="/speedyspec/">SpeedySpec API</a> › seam</div>
     <h1>{view.name}</h1>
-    <p class="muted">{view.ported ? 'Native (Rust): SpeedySpec answers this seam in Rust.' : "WordPress's PHP: SpeedySpec runs the PHP from its packages/ tree."}</p>
+    <p class="muted">{view.ported ? 'Native (Rust): SpeedySpec answers this seam in Rust.' : 'Not in SpeedySpec yet: SpeedySpec provides this seam once it is ported. Until then this page lists its WordPress symbols.'}</p>
     {intro && <Prose entry={intro} />}
     <p class="seam-links"><a href={`/speedyspec/porting/${view.id}/`}>Porting guide</a> · <a href={`/speedyspec/architecture/${view.id}/`}>Architecture</a></p>
 
     <h2>Compatibility</h2>
-    {groups === null && <p class="muted outside-fork">SpeedySpec's packages/ tree doesn't carry this seam's code, so its symbols aren't compared with WordPress. The <a href={`/wordpress/${view.id}/`}>WordPress seam page</a> lists them.</p>}
-    {groups?.map((g) => (
+    {groups.map((g) => (
       <>
         <h3 id={`role-${g.role}`}>{roleLabel(g.role)}</h3>
         <CompatTable rows={g.rows} />

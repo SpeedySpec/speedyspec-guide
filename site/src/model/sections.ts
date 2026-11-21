@@ -164,12 +164,8 @@ function shortest(start: string, group: Set<string>, next: Map<string, { to: str
   return null;
 }
 
-/**
- * A SpeedySpec seam page's compatibility rows by role, or null when SpeedySpec's packages/ tree doesn't carry the
- * seam's code: then nothing is compared and the page says so instead of listing a row per member.
- */
-export function compatGroups(seamId: string, d: GuideData): { role: string; rows: { member: MemberView; verdict: SpeedySpecVerdict; note?: string; href: string | null }[] }[] | null {
-  if (!indexOf(d).inFork(seamId)) return null;
+/** A SpeedySpec seam page's compatibility rows, by role. */
+export function compatGroups(seamId: string, d: GuideData): { role: string; rows: { member: MemberView; verdict: SpeedySpecVerdict; note?: string; href: string | null }[] }[] {
   const view = seamView(seamId, 'speedyspec', d);
   return view.roles.map((r) => ({
     role: r.role,

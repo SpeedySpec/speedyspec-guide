@@ -22,7 +22,7 @@ const { name } = Astro.params;
 const d = await loadGuideData();
 const seam = seamView('hooks', 'wordpress', d);
 const addFilter = symbolView('function:add_filter', 'wordpress', d);
-const verdicts: SpeedySpecVerdict[] = ['works-as-wordpress', 'works-with-differences', 'breaks', 'new-in-speedyspec', 'same-code', 'modified', 'removed', 'unknown'];
+const verdicts: SpeedySpecVerdict[] = ['works-as-wordpress', 'works-with-differences', 'breaks', 'new-in-speedyspec', 'not-in-speedyspec', 'unknown'];
 ---
 <Base title={`Component: ${name}`}>
   <main class="page" id="component">

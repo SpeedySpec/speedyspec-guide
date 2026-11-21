@@ -7,8 +7,6 @@ import { SeamFiles } from '@speedyspec-guide/adapter-seam-files';
 import type { CratesFile, Cycles, ExamplesFile, Graph, HistoryFile, RuntimeHistoryFile } from '@speedyspec-guide/app';
 import type { Assignment, Example, GuideSymbol, Inventory, Seam } from '@speedyspec-guide/domain';
 
-/** Left from the packages/ fork comparison until the site drops it (plan 6, Task 3). */
-type ForkVerdict = 'same' | 'modified' | 'removed' | 'added';
 import { existsSync } from 'node:fs';
 import { join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -46,7 +44,8 @@ export interface GuideData {
   runtimeSeamOf: Record<string, string>;
   graph: Graph;
   cycles: Cycles;
-  fork: Record<string, ForkVerdict>;
+  /** The WordPress release speedyspec-server's compat scenarios were recorded against (generated/compat.json). */
+  compatWordPress: string | null;
   wordpressHistory: HistoryFile | null;
   speedyspecHistory: RuntimeHistoryFile | null;
   crates: CratesFile;
@@ -110,7 +109,7 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
     runtimeSeamOf,
     graph: await json<Graph>('graph', { nodes: [], edges: [], crossSeam: [] }),
     cycles: await json<Cycles>('cycles', { symbol: [], seam: [], components: [] }),
-    fork: await json<Record<string, ForkVerdict>>('fork', {}),
+    compatWordPress: (await json<{ wordpress: string } | null>('compat', null))?.wordpress ?? null,
     wordpressHistory: await json<HistoryFile | null>('wordpress-history', null),
     speedyspecHistory: await json<RuntimeHistoryFile | null>('speedyspec-history', null),
     crates: await json<CratesFile>('crates', { crates: [] }),

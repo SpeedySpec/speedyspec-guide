@@ -115,6 +115,7 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
       break;
     case 'evidence':
       await store.write('evidence-index', await evidenceIndexes(deps));
+      await store.write('compat', { wordpress: await compatVersion(deps) });
       break;
     case 'validate': {
       const failures = await runRules(ALL_RULES, {
@@ -145,6 +146,16 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
 }
 
 /** The evidence index of every ported seam that has a compat area of its name. */
+/** The release the ported seams' compat scenarios were recorded against: the first one that says. */
+async function compatVersion(deps: PipelineDeps): Promise<string | null> {
+  const evidence = await deps.evidence();
+  for (const seam of (await deps.seams.all()).filter((s) => s.ported)) {
+    const v = await evidence.compatVersion(seam.id);
+    if (v) return v;
+  }
+  return null;
+}
+
 async function evidenceIndexes(deps: PipelineDeps): Promise<Record<string, EvidenceIndex>> {
   const evidence = await deps.evidence();
   const out: Record<string, EvidenceIndex> = {};

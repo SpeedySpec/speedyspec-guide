@@ -34,7 +34,7 @@ describe('search and coverage', () => {
 
   test('the home page explains the two sections and how to read a verdict', async () => {
     const p = await html(dist, '/');
-    expect(p.text('.legend .pill')).toEqual(['Works as WordPress', 'Works with differences', 'Breaks', 'New in SpeedySpec', 'Same code as WordPress', 'Modified in SpeedySpec', "Not in SpeedySpec's packages/", 'Not yet compared']);
+    expect(p.text('.legend .pill')).toEqual(['Works as WordPress', 'Works with differences', 'Breaks', 'New in SpeedySpec', 'Not in SpeedySpec yet', 'Not yet compared']);
     expect(p.attr('.porting-links a', 'href')).toEqual(['/speedyspec/porting/hooks/', '/speedyspec/porting/options/']);
   });
 });

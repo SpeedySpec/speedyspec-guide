@@ -23,6 +23,8 @@ export interface EvidenceSource {
   testExists(path: string): Promise<boolean>;
   /** The cited lines' text, or null when the file or lines don't exist. */
   sourceLines(base: 'wp' | 'ss', file: string, from: number, to: number): Promise<string | null>;
+  /** The WordPress release an area's compat scenarios were recorded against (compat/<area>/source.json), or null. */
+  compatVersion(area: string): Promise<string | null>;
   /** An area's compat scenarios and breaks, or null when it has none. */
   catalogue(area: string): Promise<{ scenarios: { name: string; steps: { call: string; args?: unknown[] }[] }[]; breaks: { scenario: string; step?: number; why: string }[] } | null>;
 }

@@ -14,7 +14,7 @@ beforeAll(async () => {
   d = await readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content') });
 });
 const copy = (change: (c: GuideData) => void): GuideData => {
-  const c = { ...d, seams: structuredClone(d.seams), graph: structuredClone(d.graph), fork: { ...d.fork } };
+  const c = { ...d, seams: structuredClone(d.seams), graph: structuredClone(d.graph) };
   change(c);
   return c;
 };
@@ -170,5 +170,12 @@ describe("a seam's home page", () => {
     const c: GuideData = { ...d, seams: [...d.seams, { ...d.seams[0]!, id: 'container', name: 'Container', symbols: [id], roles: {}, edges: [], dependencies: {} }], runtimeSeamOf: { ...d.runtimeSeamOf, [id]: 'container' } };
     expect(seamHref('container', c)).toBe('/speedyspec/container/');
     expect(seamHref('hooks', c)).toBe('/wordpress/hooks/');
+  });
+});
+
+describe('an unported symbol', () => {
+  test('an_unported_symbol_is_not_in_speedyspec_yet', () => {
+    expect(speedyspecVerdict('function:get_option', d)).toEqual({ verdict: 'not-in-speedyspec', differences: [], source: 'seam' });
+    expect(indexOf(d).hasPage('function:get_option', 'speedyspec')).toBe(false);
   });
 });

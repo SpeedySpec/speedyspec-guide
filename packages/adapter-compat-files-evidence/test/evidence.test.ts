@@ -50,3 +50,10 @@ describe('catalogue', () => {
     expect(await ev.catalogue('nope')).toBeNull();
   });
 });
+
+describe('compatVersion', () => {
+  test("the WordPress release an area's scenarios were recorded against, or null", async () => {
+    expect(await ev.compatVersion('hooks')).toBe('7.1.5');
+    expect(await ev.compatVersion('nope')).toBeNull();
+  });
+});

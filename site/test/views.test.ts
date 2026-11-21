@@ -14,8 +14,8 @@ describe('verdicts', () => {
   test("a SpeedySpec page's verdict wins", () => {
     expect(speedyspecVerdict('function:add_filter', d)).toEqual({ verdict: 'works-with-differences', differences: [{ summary: 'Replacing $wp_filter wholesale is not seen.', break: 'wp_filter_replace_wholesale' }], source: 'page' });
   });
-  test('an unported symbol takes the fork comparison', () => {
-    expect(speedyspecVerdict('function:get_option', d)).toMatchObject({ verdict: 'modified', source: 'fork' });
+  test('an unported symbol is not in SpeedySpec yet', () => {
+    expect(speedyspecVerdict('function:get_option', d)).toMatchObject({ verdict: 'not-in-speedyspec', source: 'seam' });
   });
   test('a ported symbol without a page is not yet compared', () => {
     expect(speedyspecVerdict('function:apply_filters', d)).toEqual({ verdict: 'unknown', differences: [], source: 'none' });
@@ -24,7 +24,7 @@ describe('verdicts', () => {
 
 describe('provenance', () => {
   test('a WordPress page citing a scenario is verified, with since from history', () => {
-    expect(wordpressProvenance('function:add_filter', d)).toEqual({ tier: 'verified', wordpress: '7.1.5', since: '0.71' });
+    expect(wordpressProvenance('function:add_filter', d)).toEqual({ tier: 'verified', wordpress: '7.2-RC1', commit: 'ce78d2d6eb8b7dc98a5e896760f5642049288868', compat: '7.1.5', released: true, since: '0.71' });
   });
   test('a page citing only source is read from source', () => {
     expect(wordpressProvenance('function:apply_filters', d).tier).toBe('read-from-source');

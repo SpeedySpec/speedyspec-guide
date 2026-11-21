@@ -17,7 +17,7 @@ describe('bun run guide all --offline', () => {
       env: { ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server') },
     });
     const out = p.stdout.toString() + p.stderr.toString();
-    for (const f of ['inventory-wp', 'assignment', 'graph', 'cycles', 'validation']) {
+    for (const f of ['inventory-wp', 'assignment', 'graph', 'cycles', 'compat', 'validation']) {
       // No fork stage any more: the guide doesn't read packages/.
       expect(existsSync(join(work, 'generated', 'fork.json'))).toBe(false);
       expect(existsSync(join(work, 'generated', `${f}.json`))).toBe(true);

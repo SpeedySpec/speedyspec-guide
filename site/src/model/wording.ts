@@ -8,10 +8,7 @@ const VERDICTS: Record<SpeedySpecVerdict, [string, Tone]> = {
   'works-with-differences': ['Works with differences', 'warn'],
   breaks: ['Breaks', 'bad'],
   'new-in-speedyspec': ['New in SpeedySpec', 'new'],
-  'same-code': ['Same code as WordPress', 'ok'],
-  modified: ['Modified in SpeedySpec', 'warn'],
-  // The fork comparison only knows the symbol is absent: the fork may predate it, rename it or have dropped it.
-  removed: ["Not in SpeedySpec's packages/", 'bad'],
+  'not-in-speedyspec': ['Not in SpeedySpec yet', 'muted'],
   unknown: ['Not yet compared', 'muted'],
 };
 
@@ -29,17 +26,19 @@ export function roleLabel(role: string): string {
 export function provenanceText(view: SymbolView, section: Section): string {
   if (section === 'wordpress') {
     const p = view.provenance.wordpress;
-    const tier = { verified: 'Verified against', 'read-from-source': 'Read from the source of', 'not-documented': 'Generated from' }[p.tier];
-    return [`${tier} WordPress ${p.wordpress}`, p.since && `Since ${p.since}`, p.removed && `Removed in ${p.removed}`].filter(Boolean).join(' · ');
+    const trunk = `WordPress ${p.wordpress}${p.commit ? ` (trunk ${p.commit.slice(0, 7)})` : ''}`;
+    const where = p.tier === 'verified' ? `Verified against WordPress ${p.compat ?? p.wordpress}` : p.tier === 'read-from-source' ? `Read from ${trunk}` : `Generated from ${trunk}`;
+    const when = p.released ? p.since && `Since ${p.since}` : 'Not in a WordPress release yet';
+    return [where, when, p.removed && `Removed in ${p.removed}`].filter(Boolean).join(' · ');
   }
   const s = view.provenance.speedyspec;
+  if (view.verdict.verdict === 'not-in-speedyspec') return 'Not in SpeedySpec yet';
   return [`Added in SpeedySpec ${s.added}`, s.removed && `Removed in SpeedySpec ${s.removed}`, s.native ? 'Native (Rust)' : "WordPress's PHP"].filter(Boolean).join(' · ');
 }
 
 export interface Sources {
-  wordpress: { version: string };
+  wordpress: { version: string; commit: string };
   server: { repo: string; commit: string };
-  fork: { repo: string; commit: string; path: string };
 }
 
 const web = (repo: string) => repo.replace(/\.git$/, '').replace(/^git@github\.com:/, 'https://github.com/');
@@ -62,15 +61,14 @@ export function evidenceLink(c: Citation, s: Sources | null): string | null {
     }
     case 'source':
       return c.base === 'wp'
-        ? `https://github.com/WordPress/wordpress-develop/blob/${s.wordpress.version}/src/${c.file}${lines(c.from, c.to)}`
-        : `${web(s.fork.repo)}/blob/${s.fork.commit}/${s.fork.path}/${c.file}${lines(c.from, c.to)}`;
+        ? `https://github.com/WordPress/wordpress-develop/blob/${s.wordpress.commit}/src/${c.file}${lines(c.from, c.to)}`
+        : `${server}/${c.file}${lines(c.from, c.to)}`;
   }
 }
 
 /** What a SpeedySpec page without hand-written content says, by where its verdict came from. */
-export function notDocumentedText(source: 'page' | 'fork' | 'outside-fork' | 'none', wordpress: string): string {
-  if (source === 'outside-fork') return "Not yet documented. SpeedySpec's packages/ tree doesn't carry this code, so it isn't compared with WordPress.";
-  if (source === 'fork') return `Not yet documented. The verdict comes from comparing SpeedySpec's packages/ tree with WordPress ${wordpress}.`;
+export function notDocumentedText(source: 'page' | 'seam' | 'none', _wordpress: string): string {
+  if (source === 'seam') return 'Not in SpeedySpec yet: SpeedySpec provides this when its seam is ported.';
   if (source === 'none') return 'Not yet documented, and not yet compared with WordPress.';
   return 'Not yet documented.';
 }

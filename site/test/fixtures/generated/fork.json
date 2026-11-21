@@ -1,1 +1,0 @@
-{ "function:add_filter": "same", "function:apply_filters": "same", "class:WP_Hook": "same", "method:WP_Hook::add_filter": "same", "method:WP_Hook::apply_filters": "same", "function:get_option": "modified", "function:unassigned_thing": "removed" }

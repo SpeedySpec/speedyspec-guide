@@ -1,20 +1,171 @@
-{ "base": "wp", "version": "7.1.5", "unresolved": [], "symbols": [
-  { "id": "function:add_filter", "kind": "function", "name": "add_filter", "file": "wp-includes/plugin.php", "line": 122, "signature": "add_filter($hook_name, $callback, $priority = 10, $accepted_args = 1)" },
-  { "id": "function:apply_filters", "kind": "function", "name": "apply_filters", "file": "wp-includes/plugin.php", "line": 205, "signature": "apply_filters($hook_name, $value, ...$args)" },
-  { "id": "class:WP_Hook", "kind": "class", "name": "WP_Hook", "file": "wp-includes/class-wp-hook.php", "line": 20, "signature": "final class WP_Hook implements Iterator, ArrayAccess" },
-  { "id": "method:WP_Hook::add_filter", "kind": "method", "name": "add_filter", "file": "wp-includes/class-wp-hook.php", "line": 70, "signature": "public add_filter($hook_name, $callback, $priority, $accepted_args)" },
-  { "id": "method:WP_Hook::apply_filters", "kind": "method", "name": "apply_filters", "file": "wp-includes/class-wp-hook.php", "line": 300, "signature": "public apply_filters($value, $args)" },
-  { "id": "global:wp_filter", "kind": "global", "name": "wp_filter", "file": "wp-includes/plugin.php", "line": 124 },
-  { "id": "filter:the_content", "kind": "filter", "name": "the_content", "file": "wp-includes/post-template.php", "line": 256 },
-  { "id": "function:get_option", "kind": "function", "name": "get_option", "file": "wp-includes/option.php", "line": 78, "signature": "get_option($option, $default_value = false)" },
-  { "id": "filter:pre_option_{$option}", "kind": "filter", "name": "pre_option_{$option}", "file": "wp-includes/option.php", "line": 120, "dynamic": true },
-  { "id": "function:unassigned_thing", "kind": "function", "name": "unassigned_thing", "file": "wp-includes/misc.php", "line": 3, "signature": "unassigned_thing()" }
-], "edges": [
-  { "from": "function:add_filter", "to": "global:wp_filter", "kind": "writes", "at": { "kind": "source", "base": "wp", "file": "wp-includes/plugin.php", "from": 124, "to": 124 } },
-  { "from": "function:add_filter", "to": "class:WP_Hook", "kind": "calls", "at": { "kind": "source", "base": "wp", "file": "wp-includes/plugin.php", "from": 127, "to": 127 } },
-  { "from": "function:apply_filters", "to": "global:wp_filter", "kind": "reads", "at": { "kind": "source", "base": "wp", "file": "wp-includes/plugin.php", "from": 206, "to": 206 } },
-  { "from": "function:add_filter", "to": "function:get_option", "kind": "calls", "at": { "kind": "source", "base": "wp", "file": "wp-includes/plugin.php", "from": 125, "to": 125 } },
-  { "from": "function:get_option", "to": "function:add_filter", "kind": "calls", "at": { "kind": "source", "base": "wp", "file": "wp-includes/option.php", "from": 90, "to": 90 } },
-  { "from": "function:get_option", "to": "filter:pre_option_{$option}", "kind": "fires", "at": { "kind": "source", "base": "wp", "file": "wp-includes/option.php", "from": 120, "to": 120 } },
-  { "from": "function:add_filter", "to": "filter:the_content", "kind": "fires", "at": { "kind": "source", "base": "wp", "file": "wp-includes/plugin.php", "from": 126, "to": 126 } }
-] }
+{
+ "base": "wp",
+ "version": "7.2-RC1",
+ "unresolved": [],
+ "symbols": [
+  {
+   "id": "function:add_filter",
+   "kind": "function",
+   "name": "add_filter",
+   "file": "wp-includes/plugin.php",
+   "line": 122,
+   "signature": "add_filter($hook_name, $callback, $priority = 10, $accepted_args = 1)"
+  },
+  {
+   "id": "function:apply_filters",
+   "kind": "function",
+   "name": "apply_filters",
+   "file": "wp-includes/plugin.php",
+   "line": 205,
+   "signature": "apply_filters($hook_name, $value, ...$args)"
+  },
+  {
+   "id": "class:WP_Hook",
+   "kind": "class",
+   "name": "WP_Hook",
+   "file": "wp-includes/class-wp-hook.php",
+   "line": 20,
+   "signature": "final class WP_Hook implements Iterator, ArrayAccess"
+  },
+  {
+   "id": "method:WP_Hook::add_filter",
+   "kind": "method",
+   "name": "add_filter",
+   "file": "wp-includes/class-wp-hook.php",
+   "line": 70,
+   "signature": "public add_filter($hook_name, $callback, $priority, $accepted_args)"
+  },
+  {
+   "id": "method:WP_Hook::apply_filters",
+   "kind": "method",
+   "name": "apply_filters",
+   "file": "wp-includes/class-wp-hook.php",
+   "line": 300,
+   "signature": "public apply_filters($value, $args)"
+  },
+  {
+   "id": "global:wp_filter",
+   "kind": "global",
+   "name": "wp_filter",
+   "file": "wp-includes/plugin.php",
+   "line": 124
+  },
+  {
+   "id": "filter:the_content",
+   "kind": "filter",
+   "name": "the_content",
+   "file": "wp-includes/post-template.php",
+   "line": 256
+  },
+  {
+   "id": "function:get_option",
+   "kind": "function",
+   "name": "get_option",
+   "file": "wp-includes/option.php",
+   "line": 78,
+   "signature": "get_option($option, $default_value = false)"
+  },
+  {
+   "id": "filter:pre_option_{$option}",
+   "kind": "filter",
+   "name": "pre_option_{$option}",
+   "file": "wp-includes/option.php",
+   "line": 120,
+   "dynamic": true
+  },
+  {
+   "id": "function:unassigned_thing",
+   "kind": "function",
+   "name": "unassigned_thing",
+   "file": "wp-includes/misc.php",
+   "line": 3,
+   "signature": "unassigned_thing()"
+  }
+ ],
+ "edges": [
+  {
+   "from": "function:add_filter",
+   "to": "global:wp_filter",
+   "kind": "writes",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/plugin.php",
+    "from": 124,
+    "to": 124
+   }
+  },
+  {
+   "from": "function:add_filter",
+   "to": "class:WP_Hook",
+   "kind": "calls",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/plugin.php",
+    "from": 127,
+    "to": 127
+   }
+  },
+  {
+   "from": "function:apply_filters",
+   "to": "global:wp_filter",
+   "kind": "reads",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/plugin.php",
+    "from": 206,
+    "to": 206
+   }
+  },
+  {
+   "from": "function:add_filter",
+   "to": "function:get_option",
+   "kind": "calls",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/plugin.php",
+    "from": 125,
+    "to": 125
+   }
+  },
+  {
+   "from": "function:get_option",
+   "to": "function:add_filter",
+   "kind": "calls",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/option.php",
+    "from": 90,
+    "to": 90
+   }
+  },
+  {
+   "from": "function:get_option",
+   "to": "filter:pre_option_{$option}",
+   "kind": "fires",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/option.php",
+    "from": 120,
+    "to": 120
+   }
+  },
+  {
+   "from": "function:add_filter",
+   "to": "filter:the_content",
+   "kind": "fires",
+   "at": {
+    "kind": "source",
+    "base": "wp",
+    "file": "wp-includes/plugin.php",
+    "from": 126,
+    "to": 126
+   }
+  }
+ ]
+}

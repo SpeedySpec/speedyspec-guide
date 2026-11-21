@@ -17,6 +17,7 @@ const evidence: EvidenceSource = {
   testExists: async () => false,
   sourceLines: async (_b, file, from) => (file === 'wp-includes/plugin.php' && from === 2 ? LINES : null),
   catalogue: async () => null,
+  compatVersion: async () => null,
 };
 
 function content(pages: Record<string, string>): string {
