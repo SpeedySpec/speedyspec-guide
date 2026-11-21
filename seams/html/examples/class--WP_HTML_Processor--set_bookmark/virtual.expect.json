@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "WP_HTML_Processor::set_bookmark ",
+ "return": "array (\n  0 => true,\n  1 => false,\n)",
+ "error": null
+}

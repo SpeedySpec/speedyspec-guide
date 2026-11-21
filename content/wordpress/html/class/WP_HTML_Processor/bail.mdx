@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_HTML_Processor::bail"
+---
+
+Stops parsing at markup it doesn't support: it records `ERROR_UNSUPPORTED` and a `WP_HTML_Unsupported_Exception` with the token and the stacks, and throws it, which `step()` catches. <Ev source="wp:wp-includes/html-api/class-wp-html-processor.php#L606-L632" hash="a5d219b4386b6b5b3bf0a2a0d1002ec96f9f2d7b84769f63cab62749884a092c"/>
