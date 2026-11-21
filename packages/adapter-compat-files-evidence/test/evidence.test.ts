@@ -29,3 +29,12 @@ describe('CompatFilesEvidence', () => {
     expect(await ev.sourceLines('wp', '../outside.php', 1, 1)).toBeNull();
   });
 });
+
+describe('catalogue', () => {
+  test("an area's scenarios and breaks, or null", async () => {
+    const c = await ev.catalogue('hooks');
+    expect(c?.scenarios.map((s) => s.name)).toEqual(['add_filter_returns_true', 'wp_filters_read_and_write']);
+    expect(c?.breaks.map((b) => b.scenario)).toEqual(['wp_filter_replace_wholesale', 'wp_filters_read_and_write']);
+    expect(await ev.catalogue('nope')).toBeNull();
+  });
+});

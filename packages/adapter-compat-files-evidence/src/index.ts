@@ -2,8 +2,8 @@ import type { EvidenceSource } from '@speedyspec-guide/contracts';
 import { existsSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 
-interface Catalogue { scenarios: { name: string }[] }
-interface Breaks { breaks: { scenario: string; step?: number }[] }
+interface Catalogue { scenarios: { name: string; steps: { call: string; args?: unknown[] }[] }[] }
+interface Breaks { breaks: { scenario: string; step?: number; why: string }[] }
 
 /** Evidence from a speedyspec-server checkout (compat files, tests) and the two code bases (source lines). */
 export class CompatFilesEvidence implements EvidenceSource {
@@ -38,6 +38,13 @@ export class CompatFilesEvidence implements EvidenceSource {
     const lines = (await Bun.file(full).text()).split('\n');
     if (from < 1 || to > lines.length || to < from) return null;
     return lines.slice(from - 1, to).join('\n');
+  }
+
+  async catalogue(area: string): Promise<{ scenarios: Catalogue['scenarios']; breaks: Breaks['breaks'] } | null> {
+    const c = await this.read<Catalogue>(join('compat', area, 'scenarios.json'));
+    if (!c) return null;
+    const b = await this.read<Breaks>(join('compat', area, 'breaks.json'));
+    return { scenarios: c.scenarios, breaks: b?.breaks ?? [] };
   }
 
   private async read<T>(path: string): Promise<T | null> {

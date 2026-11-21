@@ -16,6 +16,7 @@ const evidence: EvidenceSource = {
   breakExists: async (_a, s) => s === 'wp_filter_replace_wholesale',
   testExists: async () => false,
   sourceLines: async (_b, file, from) => (file === 'wp-includes/plugin.php' && from === 2 ? LINES : null),
+  catalogue: async () => null,
 };
 
 function content(pages: Record<string, string>): string {
@@ -45,6 +46,7 @@ async function ctx(pages: Record<string, string>, over: Partial<ValidationContex
     examples: null,
     declaredExamples: [],
     runtimeTags: [],
+    evidenceIndex: {},
     ...over,
   };
 }

@@ -33,7 +33,7 @@ describe('bun run guide all --offline', () => {
   test('an unknown stage is refused with the list of stages', () => {
     const p = Bun.spawnSync(['bun', join(repo, 'packages', 'cli', 'src', 'main.ts'), 'nope']);
     expect(p.exitCode).toBe(2);
-    expect(p.stderr.toString()).toContain('extract, fork, assign, graph, history, examples, reflect, runtime-history, crates, coverage, validate, all');
+    expect(p.stderr.toString()).toContain('extract, fork, assign, graph, history, examples, reflect, runtime-history, crates, coverage, evidence, validate, all');
   });
 });
 

@@ -1,6 +1,7 @@
 import type { EvidenceSource } from '@speedyspec-guide/contracts';
 import type { Assignment, ContentPage, Inventory, PageCitation, PageVersion, Seam, Side } from '@speedyspec-guide/domain';
 import type { ExamplesFile } from '../examples.ts';
+import type { EvidenceIndex } from '../evidence-index.ts';
 import type { HistoryFile } from '../history.ts';
 
 export interface Failure {
@@ -25,6 +26,8 @@ export interface ValidationContext {
   declaredExamples: { id: string; sides: Side[] }[];
   /** The runtime's released versions (`speedyspec-php-runtime-v*` tags, without the prefix). */
   runtimeTags: string[];
+  /** Per ported seam (the compat area of the same name), which scenarios and breaks exercise which symbol. */
+  evidenceIndex: Record<string, EvidenceIndex>;
 }
 
 /** One validation rule. Specification. */

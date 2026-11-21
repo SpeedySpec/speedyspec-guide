@@ -2,6 +2,7 @@ import type { ContentPages, CrateSource, EvidenceSource, ExampleRunner, ExampleS
 import type { Assignment, GuideSymbol, Inventory } from '@speedyspec-guide/domain';
 import { assign } from './assign.ts';
 import { computeCoverage } from './coverage.ts';
+import { buildEvidenceIndex, type EvidenceIndex } from './evidence-index.ts';
 import { readCrates } from './crates.ts';
 import { findCycles } from './cycles.ts';
 import { compareFork } from './fork.ts';
@@ -12,7 +13,7 @@ import { computeHistory, type HistoryFile } from './history.ts';
 import type { Failure } from './validate/rule.ts';
 import { ALL_RULES, runRules } from './validate/run.ts';
 
-export const STAGES = ['extract', 'fork', 'assign', 'graph', 'history', 'examples', 'reflect', 'runtime-history', 'crates', 'coverage', 'validate'] as const;
+export const STAGES = ['extract', 'fork', 'assign', 'graph', 'history', 'examples', 'reflect', 'runtime-history', 'crates', 'coverage', 'evidence', 'validate'] as const;
 export type Stage = (typeof STAGES)[number];
 
 /** What the stages need from outside. The CLI wires the adapters. */
@@ -113,6 +114,9 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
     case 'coverage':
       await store.write('coverage', computeCoverage(await need<Assignment>(store, 'assignment'), await deps.seams.all(), await deps.content.pages()));
       break;
+    case 'evidence':
+      await store.write('evidence-index', await evidenceIndexes(deps));
+      break;
     case 'validate': {
       const failures = await runRules(ALL_RULES, {
         inventory: await need<Inventory>(store, 'inventory-wp'),
@@ -127,6 +131,7 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
         examples: await store.read<ExamplesFile>('examples'),
         declaredExamples: (await deps.examples.all()).examples.map((e) => ({ id: e.id, sides: e.sides })),
         // Offline, the released versions are those recorded in the committed speedyspec-history.json.
+        evidenceIndex: await evidenceIndexes(deps),
         runtimeTags: opts.offline
           ? ((await store.read<RuntimeHistoryFile>('speedyspec-history'))?.versions ?? [])
           : await deps.runtimeTags(opts.offline),
@@ -136,4 +141,15 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
     }
   }
   return { ok: true, failures: [] };
+}
+
+/** The evidence index of every ported seam that has a compat area of its name. */
+async function evidenceIndexes(deps: PipelineDeps): Promise<Record<string, EvidenceIndex>> {
+  const evidence = await deps.evidence();
+  const out: Record<string, EvidenceIndex> = {};
+  for (const seam of (await deps.seams.all()).filter((s) => s.ported)) {
+    const c = await evidence.catalogue(seam.id);
+    if (c) out[seam.id] = buildEvidenceIndex(seam.id, c);
+  }
+  return out;
 }
