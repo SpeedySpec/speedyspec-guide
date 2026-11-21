@@ -54,6 +54,13 @@ describe('runExamples', () => {
 });
 
 describe('runtimeApi', () => {
+  test('includes SpeedySpec classes PHP always has, such as SpeedySpec\\Hooks\\Hook', async () => {
+    const hook: GuideSymbol = { id: 'class:SpeedySpec\\Hooks\\Hook', kind: 'class', name: 'SpeedySpec\\Hooks\\Hook', file: 'native', line: 0 };
+    const method: GuideSymbol = { id: 'method:SpeedySpec\\Hooks\\Hook::add', kind: 'method', name: 'add', file: 'native', line: 0 };
+    const runner: ExampleRunner = { run: async () => [], reflect: async () => [sym('function:strlen'), hook, method] };
+    expect((await runtimeApi(runner)).map((s) => s.id)).toEqual([hook.id, method.id]);
+  });
+
   test("is the runtime's symbols that plain PHP doesn't have", async () => {
     expect((await runtimeApi(fakeRunner({}).runner)).map((s) => s.id)).toEqual(['function:add_filter']);
   });

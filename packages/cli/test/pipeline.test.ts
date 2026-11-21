@@ -102,3 +102,21 @@ describe('a failing example', () => {
     expect(p.stdout.toString()).toContain('ExampleHasRun hooks/add_filter/wrong: fails on wordpress: expected return 21, got 20');
   });
 });
+
+describe('validating SpeedySpec versions offline', () => {
+  test('uses the released versions recorded in speedyspec-history.json', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'pipeline-versions-'));
+    cpSync(join(fixtures, 'pipeline'), dir, { recursive: true });
+    cpSync(join(repo, 'sources.json'), join(dir, 'sources.json'));
+    await Bun.write(join(dir, 'guide.config.json'), JSON.stringify({ requireAllAssigned: false, stubFiles: ['noop.php'] }));
+    await Bun.write(join(dir, 'generated', 'speedyspec-history.json'), JSON.stringify({ versions: ['1.0.0'], symbols: {} }));
+    await Bun.write(join(dir, 'content', 'speedyspec', 'hooks', 'add_filter.mdx'), '<Changed version="1.0.0"/> <Changed version="1.1.0"/> <Ev scenario="add_filter_returns_true"/>');
+    const p = Bun.spawnSync(['bun', join(repo, 'packages', 'cli', 'src', 'main.ts'), 'all', '--offline'], {
+      cwd: dir,
+      env: { ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_FORK_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server'), GUIDE_RUNNER: join(dir, 'none') },
+    });
+    const out = p.stdout.toString();
+    expect(out).toContain('VersionHasTag speedyspec/hooks/add_filter.mdx: SpeedySpec 1.1.0');
+    expect(out).not.toContain('SpeedySpec 1.0.0');
+  });
+});

@@ -25,10 +25,14 @@ export async function runExamples(source: ExampleSource, runner: ExampleRunner, 
   return { results, problems, declared: examples.map((e) => ({ id: e.id, sides: e.sides })) };
 }
 
-/** The runtime's own PHP API: what PHP declares with the runtime's native areas, and not without them. */
+/**
+ * The runtime's own PHP API: what PHP declares with the runtime's native areas and not without them, plus what
+ * SpeedySpec registers in every PHP it boots (the `SpeedySpec\\` namespace, such as `SpeedySpec\\Hooks\\Hook`).
+ */
 export async function runtimeApi(runner: ExampleRunner): Promise<GuideSymbol[]> {
   const baseline = new Set((await runner.reflect('baseline')).map((s) => s.id));
-  return (await runner.reflect('runtime')).filter((s) => !baseline.has(s.id));
+  const speedyspec = (id: string) => id.slice(id.indexOf(':') + 1).startsWith('SpeedySpec\\');
+  return (await runner.reflect('runtime')).filter((s) => !baseline.has(s.id) || speedyspec(s.id));
 }
 
 /**

@@ -63,5 +63,4 @@ Examples live in `seams/<seam>/examples/<symbol>/<name>.php`, each with `<name>.
 `var_export()` of what the file returns (`"1"` when it returns nothing); an `error` ending in `*` matches by prefix.
 `runtime` is allowed only in a ported seam.
 
-First run (2026-11-20): `hooks/add_filter/change-a-value` passes on both sides; the runtime's own API is 173 symbols
-(81 functions, 8 classes, 84 methods), all unreleased until the first `speedyspec-php-runtime-v*` tag.
+First run (2026-11-20): `hooks/add_filter/change-a-value` passes on both sides; the runtime's own API is 181 symbols(including `SpeedySpec\Hooks\Hook`), all unreleased until the first `speedyspec-php-runtime-v*` tag.

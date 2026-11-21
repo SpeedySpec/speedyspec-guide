@@ -5,7 +5,7 @@ import { findCycles } from './cycles.ts';
 import { compareFork } from './fork.ts';
 import { type ExamplesFile, exampleFailures, runExamples, runtimeApi } from './examples.ts';
 import { buildGraph } from './graph.ts';
-import { type RuntimeHistoryFile, updateRuntimeHistory } from './runtime-history.ts';
+import { releasedAt, type RuntimeHistoryFile, updateRuntimeHistory } from './runtime-history.ts';
 import { computeHistory, type HistoryFile } from './history.ts';
 import type { Failure } from './validate/rule.ts';
 import { ALL_RULES, runRules } from './validate/run.ts';
@@ -26,8 +26,11 @@ export interface PipelineDeps {
   examples: ExampleSource;
   /** Null when the runner binary is not built. */
   runner: ExampleRunner | null;
-  /** The PHP runtime's version at the pinned server, and whether it is a released (tagged) version. */
-  runtimeVersion(offline: boolean): Promise<{ version: string; released: boolean }>;
+  /**
+   * The PHP runtime's version at the pinned server, the pinned commit, and the commit the version's tag points to
+   * (null when it has no tag, or offline).
+   */
+  runtimeVersion(offline: boolean): Promise<{ version: string; pinnedCommit: string; tagCommit: string | null }>;
   /** The runtime's released versions; none when offline. */
   runtimeTags(offline: boolean): Promise<string[]>;
   wordpressVersion: string;
@@ -95,7 +98,8 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
       await store.write('inventory-runtime', await runtimeApi(deps.runner!));
       break;
     case 'runtime-history': {
-      const { version, released } = await deps.runtimeVersion(opts.offline);
+      const { version, pinnedCommit, tagCommit } = await deps.runtimeVersion(opts.offline);
+      const released = releasedAt(pinnedCommit, tagCommit);
       const file = (await store.read<RuntimeHistoryFile>('speedyspec-history')) ?? { versions: [], symbols: {} };
       await store.write('speedyspec-history', updateRuntimeHistory(await need<GuideSymbol[]>(store, 'inventory-runtime'), version, released, file));
       break;
@@ -113,7 +117,10 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
         config: deps.config,
         examples: await store.read<ExamplesFile>('examples'),
         declaredExamples: (await deps.examples.all()).examples.map((e) => ({ id: e.id, sides: e.sides })),
-        runtimeTags: await deps.runtimeTags(opts.offline),
+        // Offline, the released versions are those recorded in the committed speedyspec-history.json.
+        runtimeTags: opts.offline
+          ? ((await store.read<RuntimeHistoryFile>('speedyspec-history'))?.versions ?? [])
+          : await deps.runtimeTags(opts.offline),
       });
       await store.write('validation', failures);
       return { ok: failures.length === 0, failures };

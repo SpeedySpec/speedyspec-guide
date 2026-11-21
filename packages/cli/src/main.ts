@@ -72,7 +72,10 @@ async function main(argv: string[]): Promise<number> {
     const cargo = await Bun.file(join(await serverDir(), 'crates', 'speedyspec-php-runtime', 'Cargo.toml')).text();
     const version = /^version\s*=\s*"([^"]+)"/m.exec(cargo)?.[1];
     if (!version) throw new Error('no version in speedyspec-php-runtime/Cargo.toml');
-    return { version, released: (await runtimeTags(isOffline)).includes(version) };
+    // With GUIDE_SERVER_DIR the "pin" is whatever that checkout is at.
+    const dir = env('GUIDE_SERVER_DIR');
+    const pinnedCommit = dir ? Bun.spawnSync(['git', '-C', dir, 'rev-parse', 'HEAD']).stdout.toString().trim() : sources.server.commit;
+    return { version, pinnedCommit, tagCommit: isOffline ? null : await serverTags.tagCommit(version) };
   };
 
   const deps: PipelineDeps = {

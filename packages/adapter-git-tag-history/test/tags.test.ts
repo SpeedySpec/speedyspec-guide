@@ -48,3 +48,17 @@ describe('a tag prefix', () => {
     expect(tags).toEqual(['1.0.0']);
   });
 });
+
+describe('tagCommit', () => {
+  test('is the commit a tag points to, or null for no such tag', async () => {
+    const { makeServerRepo } = await import('../../../tests/fixtures/git/make-repo.ts');
+    const server = makeServerRepo();
+    const dir = mkdtempSync(join(tmpdir(), 'tags-commit-'));
+    const history = new GitTagHistory(server.url, dir, 'speedyspec-php-runtime-v');
+    const head = Bun.spawnSync(['git', '-C', server.url.replace('file://', ''), 'rev-parse', 'HEAD']).stdout.toString().trim();
+    expect(await history.tagCommit('1.0.0')).toBe(head);
+    expect(await history.tagCommit('9.9.9')).toBeNull();
+    server.cleanup();
+    rmSync(dir, { recursive: true, force: true });
+  });
+});

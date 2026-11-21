@@ -32,3 +32,12 @@ describe('updateRuntimeHistory', () => {
     expect(updateRuntimeHistory([sym('function:a')], '1.0.0', true, v1)).toEqual(v1);
   });
 });
+
+describe('releasedAt', () => {
+  test('a version counts as released only when the pinned commit is the one its tag points to', async () => {
+    const { releasedAt } = await import('../src/runtime-history.ts');
+    expect(releasedAt('abc', 'abc')).toBe(true);
+    expect(releasedAt('abc', 'def')).toBe(false);
+    expect(releasedAt('abc', null)).toBe(false);
+  });
+});

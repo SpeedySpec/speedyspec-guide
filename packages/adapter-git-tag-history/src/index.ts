@@ -24,6 +24,14 @@ export class GitTagHistory implements ReleaseHistory {
       .sort((a, b) => Version.parse(a).compare(Version.parse(b)));
   }
 
+  /** The commit `<prefix><tag>` points to (peeled, for an annotated tag), or null when there is no such tag. */
+  async tagCommit(tag: string): Promise<string | null> {
+    const ref = `refs/tags/${this.prefix}${tag}`;
+    const lines = run(['git', 'ls-remote', '--tags', this.remote, ref, `${ref}^{}`]).trim().split('\n').filter(Boolean);
+    const peeled = lines.find((l) => l.endsWith('^{}')) ?? lines[0];
+    return peeled ? peeled.split(/\s+/)[0]! : null;
+  }
+
   async checkout(tag: string): Promise<string> {
     this.ensureClone();
     // One checkout at a time: the previous tag's files are removed before the next is written.

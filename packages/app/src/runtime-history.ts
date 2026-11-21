@@ -28,3 +28,8 @@ export function updateRuntimeHistory(current: GuideSymbol[], version: string, re
   const versions = released && !file.versions.includes(version) ? [...file.versions, version] : [...file.versions];
   return { versions, symbols };
 }
+
+/** Whether the pinned server commit is the release: the commit the version's tag points to, if it has one. */
+export function releasedAt(pinnedCommit: string, tagCommit: string | null): boolean {
+  return tagCommit !== null && tagCommit === pinnedCommit;
+}
