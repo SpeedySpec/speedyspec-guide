@@ -16,7 +16,6 @@
     "astro": "^5",
     "mermaid-isomorphic": "^3.1.0",
     "playwright": "^1.65.1",
-    "rehype-mermaid": "^3.0.0",
     "yaml": "^2.9.1"
   },
   "devDependencies": {

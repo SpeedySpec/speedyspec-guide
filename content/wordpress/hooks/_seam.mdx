@@ -1,0 +1,6 @@
+---
+---
+
+Hooks are how WordPress code lets other code change what it does. A **filter** passes a value through every callback registered on it and returns the result; an **action** runs its callbacks for their effect. Both share one store and one API: callbacks are **registered** with a priority, **run** in priority order, **removed** at the priority they were added, and **inspected** while they run. <Ev scenario="globals_after_mixed_use"/> <Ev scenario="priorities_run_in_ascending_order"/>
+
+The state lives in four globals: `$wp_filter` (each hook's `WP_Hook`), `$wp_filters` and `$wp_actions` (how often each ran), and `$wp_current_filter` (the hooks running now). <Ev scenario="wp_filter_read_and_index"/> <Ev scenario="wp_current_filter_append"/>

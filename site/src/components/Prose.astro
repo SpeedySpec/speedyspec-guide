@@ -4,6 +4,7 @@ import { getEntry, render } from 'astro:content';
 import type { ContentEntry } from '../model/data.ts';
 import Changed from './Changed.astro';
 import Deprecated from './Deprecated.astro';
+import Diagram from './Diagram.astro';
 import Ev from './Ev.astro';
 import Removed from './Removed.astro';
 
@@ -15,4 +16,4 @@ const page = await getEntry('pages', entry.file.replace(/\.mdx$/, ''));
 if (!page) throw new Error(`no content entry for ${entry.file}`);
 const { Content } = await render(page);
 ---
-<div class="prose"><Content components={{ Ev, Changed, Deprecated, Removed }} /></div>
+<div class="prose"><Content components={{ Ev, Changed, Deprecated, Removed, Diagram }} /></div>

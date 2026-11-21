@@ -1,0 +1,6 @@
+---
+---
+
+Native: SpeedySpec answers the Hook API in Rust. Plugins call the same functions with the same arguments and get the same results; every recorded WordPress scenario replays unchanged except the documented breaks, which all concern replacing the hook globals wholesale. <Ev test="speedyspec-wp-hooks-php::php::replayed_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-hooks-php::wordpress::wordpress_hook_tests_pass"/>
+
+The four globals are proxies over the native store, so reading them, indexing them and iterating them work as in WordPress. A hook with no callbacks never enters PHP. <Ev test="speedyspec-wp-hooks-php::php::wp_filter_reads_and_iterates_like_wordpress"/> <Ev test="speedyspec-wp-hooks-php::php::empty_hooks_never_enter_php"/>
