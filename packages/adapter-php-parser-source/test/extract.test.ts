@@ -118,3 +118,23 @@ describe('stub files', () => {
     expect(withStubs.symbols.find((s) => s.id === 'function:apply_filters')).toMatchObject({ file: 'plugin.php', alternates: ['noop.php:4'] });
   });
 });
+
+describe('namespaces', () => {
+  test('classes with the same short name in different namespaces stay apart', () => {
+    const ns = run(join(fixtures, 'php-ns'));
+    const ids = ns.symbols.map((s) => s.id);
+    expect(ids).toContain('class:PHPMailer\\PHPMailer\\Exception');
+    expect(ids).toContain('class:WpOrg\\Requests\\Exception');
+    expect(ids).toContain('method:WpOrg\\Requests\\Exception::getType');
+    expect(ids).toContain('function:PHPMailer\\PHPMailer\\helper');
+    expect(ns.symbols.find((s) => s.id === 'class:PHPMailer\\PHPMailer\\Exception')?.alternates).toBeUndefined();
+  });
+
+  test('calls inside a namespace resolve: new to the namespaced class, a qualified call as written, a builtin to the global function', () => {
+    const ns = run(join(fixtures, 'php-ns'));
+    const has = (from: string, to: string) => ns.edges.some((e) => e.from === from && e.to === to && e.kind === 'calls');
+    expect(has('function:PHPMailer\\PHPMailer\\helper', 'class:PHPMailer\\PHPMailer\\Exception')).toBe(true);
+    expect(has('method:WpOrg\\Requests\\Exception::getType', 'function:PHPMailer\\PHPMailer\\helper')).toBe(true);
+    expect(has('method:PHPMailer\\PHPMailer\\Exception::errorMessage', 'function:strlen')).toBe(true);
+  });
+});

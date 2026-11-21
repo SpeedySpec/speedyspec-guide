@@ -12,6 +12,8 @@ final class Inventory {
 	private array $rank = array();
 	/** @var array<string, array<string, mixed>> */
 	private array $edges = array();
+	/** @var array<string, string> */
+	private array $preferred = array();
 	/** @var list<array<string, mixed>> */
 	private array $unresolved = array();
 
@@ -58,8 +60,12 @@ final class Inventory {
 		}
 	}
 
-	public function addEdge( string $from, string $to, string $kind, string $file, int $line ): void {
-		$key = "{$from}|{$to}|{$kind}";
+	/**
+	 * @param string|null $preferred A target to use instead of `$to` when that symbol turns out to exist (an unqualified
+	 *                               call in a namespace, which PHP resolves to the namespaced function first).
+	 */
+	public function addEdge( string $from, string $to, string $kind, string $file, int $line, ?string $preferred = null ): void {
+		$key = "{$from}|{$to}|{$kind}|{$preferred}";
 		if ( ! isset( $this->edges[ $key ] ) ) {
 			$this->edges[ $key ] = array(
 				'from' => $from,
@@ -67,6 +73,9 @@ final class Inventory {
 				'kind' => $kind,
 				'at'   => $this->at( $file, $line ),
 			);
+			if ( null !== $preferred ) {
+				$this->preferred[ $key ] = $preferred;
+			}
 		}
 	}
 
@@ -84,9 +93,21 @@ final class Inventory {
 			'base'       => $this->base,
 			'version'    => '',
 			'symbols'    => array_values( $this->symbols ),
-			'edges'      => array_values( $this->edges ),
+			'edges'      => $this->resolvedEdges(),
 			'unresolved' => $this->unresolved,
 		);
+	}
+
+	/** @return list<array<string, mixed>> Edges with preferred targets applied, kept once per (from, to, kind). */
+	private function resolvedEdges(): array {
+		$out = array();
+		foreach ( $this->edges as $key => $edge ) {
+			if ( isset( $this->preferred[ $key ] ) && isset( $this->symbols[ $this->preferred[ $key ] ] ) ) {
+				$edge['to'] = $this->preferred[ $key ];
+			}
+			$out[ "{$edge['from']}|{$edge['to']}|{$edge['kind']}" ] ??= $edge;
+		}
+		return array_values( $out );
 	}
 
 	/** @return array<string, mixed> */

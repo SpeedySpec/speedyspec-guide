@@ -186,9 +186,16 @@ final class Collector extends NodeVisitorAbstract {
 			$this->unresolved( $node );
 			return;
 		}
-		$name  = ltrim( $node->name->toString(), '\\' );
-		$lower = strtolower( $name );
-		$this->edge( "function:{$name}", 'calls', $node );
+		$resolved = $node->name->getAttribute( 'resolvedName' );
+		$name     = ltrim( ( $resolved instanceof Name ? $resolved : $node->name )->toString(), '\\' );
+		$lower    = strtolower( $name );
+		$inNamespace = $node->name->getAttribute( 'namespacedName' );
+		if ( $inNamespace instanceof Name ) {
+			// Unqualified, in a namespace: PHP calls the namespaced function if it exists, else the global one.
+			$this->inventory->addEdge( $this->from(), "function:{$name}", 'calls', $this->file, $node->getStartLine(), "function:{$inNamespace->toString()}" );
+		} else {
+			$this->edge( "function:{$name}", 'calls', $node );
+		}
 
 		$args = $node->getArgs();
 		if ( in_array( $lower, self::FILTERS, true ) || in_array( $lower, self::ACTIONS, true ) ) {
@@ -310,8 +317,7 @@ final class Collector extends NodeVisitorAbstract {
 	// Names and signatures.
 
 	private function declaredName( Stmt\ClassLike|Stmt\Function_ $node ): string {
-		$namespaced = $node->getAttribute( 'namespacedName' );
-		return $namespaced instanceof Name ? $namespaced->toString() : (string) $node->name;
+		return null !== $node->namespacedName ? $node->namespacedName->toString() : (string) $node->name;
 	}
 
 	private function className( Name $name ): ?string {
