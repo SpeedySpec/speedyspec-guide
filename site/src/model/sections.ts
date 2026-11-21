@@ -1,4 +1,5 @@
 /** What the section index and seam pages list, and which symbol pages exist. */
+import type { Citation } from '@speedyspec-guide/domain';
 import type { GuideData } from './data.ts';
 import { indexOf } from './index-of.ts';
 import { type SpeedySpecVerdict, speedyspecVerdict } from './verdict.ts';
@@ -52,6 +53,8 @@ export interface DependencyRow {
   from: string[];
   kinds: string[];
   state: string;
+  /** The evidence for the state, when one is recorded. */
+  cite?: Citation;
   circular: boolean;
 }
 
@@ -73,10 +76,7 @@ function computeDependencies(seamId: string, d: GuideData): { dependsOn: Map<str
   const ix = indexOf(d);
   const name = (id: string) => d.seams.find((s) => s.id === id)?.name ?? id;
   const together = (a: string, b: string) => ix.component(a)?.has(b) === true;
-  const state = (owner: string, target: string) => {
-    const s = d.seams.find((x) => x.id === owner)?.dependencies?.[target];
-    return s ? STATE_LABELS[s] : 'not yet recorded';
-  };
+  const recorded = (owner: string, target: string) => d.seams.find((x) => x.id === owner)?.dependencies?.[target];
   const collect = (outgoing: boolean) => {
     const rows = new Map<string, Map<string, DependencyRow & { fromSet: Set<string>; kindSet: Set<string> }>>();
     for (const e of d.graph.crossSeam) {
@@ -84,7 +84,8 @@ function computeDependencies(seamId: string, d: GuideData): { dependsOn: Map<str
       const group = name(outgoing ? e.toSeam : e.fromSeam);
       const byTarget = rows.get(group) ?? new Map();
       rows.set(group, byTarget);
-      const row = byTarget.get(e.to) ?? { target: e.to, calls: 0, from: [], kinds: [], state: state(e.fromSeam, e.to), circular: false, fromSet: new Set<string>(), kindSet: new Set<string>() };
+      const rec = recorded(e.fromSeam, e.to);
+      const row = byTarget.get(e.to) ?? { target: e.to, calls: 0, from: [], kinds: [], state: rec ? STATE_LABELS[rec.state] : 'not yet recorded', ...(rec ? { cite: rec.cite } : {}), circular: false, fromSet: new Set<string>(), kindSet: new Set<string>() };
       row.calls++;
       row.fromSet.add(e.from);
       row.kindSet.add(e.kind);

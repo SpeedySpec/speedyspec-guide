@@ -1,5 +1,7 @@
 ---
+import Ev from './Ev.astro';
 import MaybeLink from './MaybeLink.astro';
+import { citationAttrs } from '../model/wording.ts';
 import type { GuideData } from '../model/data.ts';
 import { type DependencyRow, topRows } from '../model/sections.ts';
 import { pageOf } from '../model/views.ts';
@@ -35,7 +37,7 @@ const total = [...groups.values()].reduce((n, rows) => n + rows.length, 0);
               <span class="muted"> {r.kinds.join(', ')} ×{r.calls}, from </span>
               {r.from.slice(0, SHOWN).map((f, i) => <>{i > 0 && ', '}<MaybeLink class="mono" href={pageOf(f, 'wordpress', data)}>{name(f)}</MaybeLink></>)}
               {r.from.length > SHOWN && <span class="muted"> and {r.from.length - SHOWN} more</span>}
-              {' '}<span class="dep-state">{r.state}</span>{r.circular && <span class="chip-note"> circular</span>}
+              {' '}<span class="dep-state">{r.state}</span>{r.cite && <> <Ev {...citationAttrs(r.cite)} /></>}{r.circular && <span class="chip-note"> circular</span>}
             </li>
           ))}
         </ul>

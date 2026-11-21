@@ -48,6 +48,7 @@ async function ctx(pages: Record<string, string>, over: Partial<ValidationContex
     runtimeTags: [],
     evidenceIndex: {},
     runtimeIds: null,
+    crossSeam: [],
     ...over,
   };
 }
@@ -199,5 +200,23 @@ describe('runtime members of a seamed class', () => {
   test('a_listed_runtime_method_passes', async () => {
     const f = await runRules(ALL_RULES, await ctx({}, { inventory: wp, assignment, seams: [{ ...hooks, symbols: ['method:C::extra'] }], runtimeIds: ['class:C', 'method:C::extra'] }));
     expect(f.filter((x) => x.rule === 'RuntimeMembersListed')).toEqual([]);
+  });
+});
+
+describe('dependency states', () => {
+  const cross = [{ from: 'function:a', to: 'function:t', kind: 'calls', fromSeam: 'hooks', toSeam: 'support' }];
+  const cite = { kind: 'source' as const, base: 'ss' as const, file: 'crates/x/src/a.rs', from: 1, to: 1, hash: 'h' };
+  test('ported_seam_missing_a_state_fails', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { crossSeam: cross }));
+    expect(f.find((x) => x.rule === 'DependencyStateRecorded')?.message).toBe('hooks: function:t has no recorded state');
+  });
+  test('state_for_a_non_dependency_fails', async () => {
+    const seams = [{ ...hooks, dependencies: { 'function:t': { state: 'port' as const, cite }, 'function:u': { state: 'rust' as const, cite } } }];
+    const f = await runRules(ALL_RULES, await ctx({}, { crossSeam: cross, seams }));
+    expect(f.filter((x) => x.rule === 'DependencyStateRecorded').map((x) => x.message)).toEqual(['hooks: function:u is not a dependency']);
+  });
+  test('an_unported_seam_need_not_record_states', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { crossSeam: cross, seams: [{ ...hooks, ported: false }] }));
+    expect(f.filter((x) => x.rule === 'DependencyStateRecorded')).toEqual([]);
   });
 });

@@ -67,7 +67,7 @@ describe('architectureDiagram', () => {
 
 describe('renderMermaid', () => {
   test('renders light and dark SVG', async () => {
-    const svg = await renderMermaid(diagram);
+    const svg = (await renderMermaid(diagram))!;
     expect(svg.light.startsWith('<svg')).toBe(true);
     expect(svg.dark.startsWith('<svg')).toBe(true);
     expect(svg.light).not.toBe(svg.dark);

@@ -8,6 +8,7 @@ const sha256 = (s: string) => new Bun.CryptoHasher('sha256').update(s).digest('h
 function allCitations(ctx: ValidationContext): { where: string; citation: Citation }[] {
   return [
     ...ctx.citations.map((c) => ({ where: c.page, citation: c.citation })),
+    ...ctx.seams.flatMap((s) => Object.values(s.dependencies ?? {}).map((dep) => ({ where: `seams/${s.id}/seam.yaml`, citation: dep.cite }))),
     ...ctx.seams.flatMap((s) => s.edges.filter((e) => e.at).map((e) => ({ where: `seams/${s.id}/seam.yaml`, citation: e.at! }))),
   ];
 }
@@ -165,6 +166,25 @@ export const RuntimeMembersListed: Rule = {
       const cls = `class:${id.slice('method:'.length, id.lastIndexOf('::'))}`;
       const seam = ctx.assignment.seamOf[cls];
       if (seam !== undefined) f.push({ rule: this.id, where: `seams/${seam}/seam.yaml`, message: `the runtime adds ${id} to ${cls}; list it in the seam` });
+    }
+    return f;
+  },
+};
+
+/**
+ * A ported seam records the state of every symbol it depends on in another seam (still WordPress's PHP, behind a
+ * port, or in Rust), and records no state for a symbol it doesn't depend on. Unported seams may record states.
+ */
+export const DependencyStateRecorded: Rule = {
+  id: 'DependencyStateRecorded',
+  async check(ctx) {
+    const f: Failure[] = [];
+    for (const seam of ctx.seams) {
+      const targets = new Set(ctx.crossSeam.filter((e) => e.fromSeam === seam.id).map((e) => e.to));
+      const recorded = seam.dependencies ?? {};
+      const where = `seams/${seam.id}/seam.yaml`;
+      if (seam.ported) for (const t of [...targets].sort()) if (!(t in recorded)) f.push({ rule: this.id, where, message: `${seam.id}: ${t} has no recorded state` });
+      for (const t of Object.keys(recorded).sort()) if (!targets.has(t)) f.push({ rule: this.id, where, message: `${seam.id}: ${t} is not a dependency` });
     }
     return f;
   },

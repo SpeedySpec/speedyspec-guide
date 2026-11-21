@@ -1,0 +1,7 @@
+name: States
+job: Records dependency states.
+ported: true
+dependencies:
+  function:t:
+    state: port
+    cite: { source: "ss:crates/x/src/a.rs#L1-L2", hash: abc }

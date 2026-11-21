@@ -1,0 +1,5 @@
+name: Stateless
+job: A state without evidence.
+dependencies:
+  function:t:
+    state: rust

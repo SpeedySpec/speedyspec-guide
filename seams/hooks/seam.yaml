@@ -99,3 +99,9 @@ edges:
   - { from: function:current_action, to: function:current_filter, kind: alias, at: { scenario: current_and_doing_outside_a_hook } }
   - { from: function:doing_action, to: function:doing_filter, kind: alias, at: { scenario: current_and_doing_outside_a_hook } }
   - { from: function:did_action, to: global:wp_actions, kind: reads, at: { scenario: wp_actions_read_and_write } }
+# The state of each symbol this seam depends on in another seam (DependencyStateRecorded).
+dependencies:
+  function:_deprecated_hook:
+    # The DeprecatedHooks port (speedyspec-wp-hooks api.rs) has this PHP adapter, which calls WordPress's function.
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-hooks-php/src/stores.rs#L212-L238", hash: "f532f2bafc30203060f595a2c327675288ae5947c0e891ffa3964d207bcea8df" }

@@ -30,6 +30,8 @@ export interface ValidationContext {
   evidenceIndex: Record<string, EvidenceIndex>;
   /** Every id the runtime declares (Reflection), or null when the runner has not run. */
   runtimeIds: string[] | null;
+  /** Cross-seam edges (generated/graph.json). */
+  crossSeam: { from: string; to: string; kind: string; fromSeam: string; toSeam: string }[];
 }
 
 /** One validation rule. Specification. */

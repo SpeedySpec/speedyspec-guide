@@ -3,4 +3,6 @@ job: Stores and reads site settings.
 ported: false
 files: [wp-includes/option.php]
 dependencies:
-  function:add_filter: php
+  function:add_filter:
+    state: php
+    cite: { scenario: add_filter_returns_true }

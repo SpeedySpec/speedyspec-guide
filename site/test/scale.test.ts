@@ -140,3 +140,16 @@ describe('a runtime method of a WordPress class', () => {
     expect(ix.methodsOf('class:WP_Hook', 'wordpress')).not.toContain(id);
   });
 });
+
+describe('a recorded dependency state', () => {
+  test('dependency_row_shows_state_and_citation', () => {
+    const cite = { kind: 'scenario' as const, area: 'hooks', name: 'add_filter_returns_true' };
+    const c = copy((x) => {
+      x.seams.find((s) => s.id === 'options')!.dependencies = { 'function:add_filter': { state: 'port', cite } };
+      x.graph.crossSeam = [{ from: 'function:get_option', to: 'function:add_filter', kind: 'calls', fromSeam: 'options', toSeam: 'hooks' }] as GuideData['graph']['crossSeam'];
+    });
+    const row = dependencies('options', c).dependsOn.get('Hooks')![0]!;
+    expect(row.state).toBe('behind a port');
+    expect(row.cite).toEqual(cite);
+  });
+});

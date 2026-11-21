@@ -73,3 +73,19 @@ export function notDocumentedText(source: 'page' | 'fork' | 'outside-fork' | 'no
   if (source === 'none') return 'Not yet documented, and not yet compared with WordPress.';
   return 'Not yet documented.';
 }
+
+/** The `<Ev>` attributes that write a citation back out. */
+export function citationAttrs(c: Citation): Record<string, string> {
+  switch (c.kind) {
+    case 'source':
+      return { source: `${c.base}:${c.file}#L${c.from}${c.to === c.from ? '' : `-L${c.to}`}`, ...(c.hash ? { hash: c.hash } : {}) };
+    case 'scenario':
+      return { scenario: c.name, area: c.area };
+    case 'break':
+      return { break: c.scenario, area: c.area, ...(c.step === undefined ? {} : { step: String(c.step) }) };
+    case 'test':
+      return { test: c.path };
+    case 'example':
+      return { example: c.id };
+  }
+}

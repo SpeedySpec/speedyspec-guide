@@ -1,3 +1,4 @@
+import type { Citation } from './citation.ts';
 import type { Edge } from './graph.ts';
 
 /** A boundary where behaviour can be swapped, and the symbols on it. Plain object. */
@@ -21,8 +22,8 @@ export interface Seam {
   inFork?: boolean;
   /** SpeedySpec crates that implement it. */
   crates?: string[];
-  /** The SpeedySpec state of each cross-seam dependency, by target symbol id. */
-  dependencies?: Record<string, DependencyState>;
+  /** The SpeedySpec state of each cross-seam dependency, by target symbol id, with the evidence for it. */
+  dependencies?: Record<string, { state: DependencyState; cite: Citation }>;
 }
 
 /** How a ported seam reaches another seam: still through WordPress's PHP, behind an outbound port, or in Rust. */

@@ -1,5 +1,5 @@
 import type { SeamRepository } from '@speedyspec-guide/contracts';
-import { type DependencyState, type Edge, type EdgeKind, parseCitation, type Seam } from '@speedyspec-guide/domain';
+import { type Citation, type DependencyState, type Edge, type EdgeKind, parseCitation, type Seam } from '@speedyspec-guide/domain';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
@@ -51,12 +51,17 @@ export class SeamFiles implements SeamRepository {
       if (e.at !== undefined) edge.at = parseCitation(Object.fromEntries(Object.entries(e.at as object).map(([k, v]) => [k, String(v)])));
       return edge;
     });
-    function dependencies(): Record<string, DependencyState> {
+    function dependencies(): Record<string, { state: DependencyState; cite: Citation }> {
       const v = (data!.dependencies ?? {}) as Record<string, unknown>;
-      for (const [target, state] of Object.entries(v)) {
-        if (!STATES.includes(String(state))) throw new Error(`${where}: dependency ${target} must be php, port or rust`);
+      const out: Record<string, { state: DependencyState; cite: Citation }> = {};
+      for (const [target, entry] of Object.entries(v)) {
+        const e = (entry ?? {}) as { state?: unknown; cite?: unknown };
+        if (!STATES.includes(String(e.state))) throw new Error(`${where}: dependency ${target} needs a state of php, port or rust`);
+        if (typeof e.cite !== 'object' || e.cite === null) throw new Error(`${where}: dependency ${target} needs a cite (source, test, scenario, break or example)`);
+        const cite = parseCitation(Object.fromEntries(Object.entries(e.cite as object).map(([k, x]) => [k, String(x)])));
+        out[target] = { state: e.state as DependencyState, cite };
       }
-      return v as Record<string, DependencyState>;
+      return out;
     }
     return {
       id,

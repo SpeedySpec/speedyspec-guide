@@ -11,7 +11,7 @@ import { type ExamplesFile, exampleFailures, runExamples, runtimeApi } from './e
 import { buildGraph } from './graph.ts';
 import { releasedAt, type RuntimeHistoryFile, updateRuntimeHistory } from './runtime-history.ts';
 import { computeHistory, type HistoryFile } from './history.ts';
-import type { Failure } from './validate/rule.ts';
+import type { Failure, ValidationContext } from './validate/rule.ts';
 import { ALL_RULES, runRules } from './validate/run.ts';
 
 export const STAGES = ['extract', 'fork', 'assign', 'graph', 'history', 'examples', 'reflect', 'runtime-history', 'crates', 'coverage', 'evidence', 'validate'] as const;
@@ -139,6 +139,7 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
         // Offline, the released versions are those recorded in the committed speedyspec-history.json.
         evidenceIndex: await evidenceIndexes(deps),
         runtimeIds: (await store.read<GuideSymbol[]>('inventory-runtime'))?.map((s) => s.id) ?? null,
+        crossSeam: (await store.read<{ crossSeam: ValidationContext['crossSeam'] }>('graph'))?.crossSeam ?? [],
         runtimeTags: opts.offline
           ? ((await store.read<RuntimeHistoryFile>('speedyspec-history'))?.versions ?? [])
           : await deps.runtimeTags(opts.offline),

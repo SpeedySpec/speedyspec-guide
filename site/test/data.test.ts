@@ -14,7 +14,7 @@ describe('readGuideData', () => {
     expect(d.runtime.map((s) => s.id)).toContain('class:SpeedySpec\\Hooks\\Hook');
     const hooks = d.seams.find((s) => s.id === 'hooks')!;
     expect(hooks).toMatchObject({ packages: ['wp-plugin'], crates: ['speedyspec-wp-hooks', 'speedyspec-wp-hooks-php'], dependencies: {} });
-    expect(d.seams.find((s) => s.id === 'options')?.dependencies).toEqual({ 'function:add_filter': 'php' });
+    expect(d.seams.find((s) => s.id === 'options')?.dependencies).toEqual({ 'function:add_filter': { state: 'php', cite: { kind: 'scenario', area: 'hooks', name: 'add_filter_returns_true' } } });
     expect(d.examples.files.map((e) => e.id)).toEqual(['hooks/add_filter/change-a-value']);
     expect(d.examples.results?.results).toHaveLength(2);
     expect(d.content.find((c) => c.section === 'wordpress' && c.slug === 'add_filter')).toMatchObject({ seam: 'hooks', kind: 'symbol', symbol: 'function:add_filter' });

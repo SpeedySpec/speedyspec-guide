@@ -31,6 +31,19 @@ describe('SeamFiles', () => {
     expect(forked).toMatchObject({ forkPackages: ['wp-forked'], inFork: false });
   });
 
+  test('a dependency state carries its state and citation', async () => {
+    const dir = only('states');
+    const [s] = await new SeamFiles(dir).all();
+    rmSync(dir, { recursive: true });
+    expect(s?.dependencies).toEqual({ 'function:t': { state: 'port', cite: { kind: 'source', base: 'ss', file: 'crates/x/src/a.rs', from: 1, to: 2, hash: 'abc' } } });
+  });
+
+  test('state_without_a_citation_fails', async () => {
+    const dir = only('stateless');
+    await expect(new SeamFiles(dir).all()).rejects.toThrow(/stateless\/seam\.yaml.*function:t.*cite/);
+    rmSync(dir, { recursive: true });
+  });
+
   test('a seam missing its job is refused, naming the file and field', async () => {
     const dir = only('broken');
     await expect(new SeamFiles(dir).all()).rejects.toThrow(/broken\/seam\.yaml.*job/);
