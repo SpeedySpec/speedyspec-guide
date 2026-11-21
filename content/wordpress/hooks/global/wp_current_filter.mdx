@@ -1,0 +1,7 @@
+---
+symbol: "global:wp_current_filter"
+---
+
+## Behaviour
+
+The names of the hooks running now, outermost first: `apply_filters()` and `do_action()` push the name and pop it when they finish; `current_filter()` returns the last. <Ev scenario="wp_current_filter_append"/> <Ev scenario="wp_current_filter_replace"/>

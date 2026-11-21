@@ -1,0 +1,9 @@
+---
+symbol: "global:wp_filter"
+---
+
+## Behaviour
+
+Every hook's callbacks: an array keyed by hook name, each value a `WP_Hook`. <Ev scenario="wp_filter_read_and_index"/> <Ev scenario="wp_filter_iterate"/> `add_filter()` creates the entry, and `remove_filter()` and `remove_all_filters()` delete it when it has no callbacks left. <Ev scenario="wp_filter_unset_hook"/>
+
+Code can read it, iterate it, set a new `WP_Hook` at a name, or replace it entirely; before WordPress loads, it may hold plain arrays, which `build_preinitialized_hooks()` turns into `WP_Hook` objects. <Ev scenario="wp_filter_set_new_hook_object"/> <Ev scenario="wp_filter_replace_wholesale"/> <Ev scenario="wp_hook_build_preinitialized_hooks"/>

@@ -1,0 +1,15 @@
+---
+symbol: "global:wp_filters"
+verdict: works-with-differences
+differences:
+  - summary: "Replacing $wp_filters wholesale does not reset the counts: the hook store keeps counting."
+    break: wp_filters_read_and_write
+---
+
+## Behaviour
+
+`$wp_filters` is a proxy (`SpeedySpec\WpHooks\CountGlobal`) over the store's counts. Reading a count and setting one behave as in WordPress. <Ev scenario="wp_filters_read_and_write"/>
+
+## Porting
+
+To count from a point, subtract an earlier `did_filter()` instead of resetting `$wp_filters`. <Ev break="wp_filters_read_and_write"/>

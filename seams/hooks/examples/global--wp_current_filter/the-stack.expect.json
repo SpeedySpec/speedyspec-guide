@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress",
+  "runtime"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'guide_c',\n)",
+ "error": null
+}

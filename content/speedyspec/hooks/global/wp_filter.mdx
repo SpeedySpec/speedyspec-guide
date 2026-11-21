@@ -1,0 +1,21 @@
+---
+symbol: "global:wp_filter"
+verdict: works-with-differences
+differences:
+  - summary: "Replacing $wp_filter wholesale is not seen: the global becomes a plain array, and the hook store keeps the callbacks."
+    break: wp_filter_replace_wholesale
+  - summary: "Replacing $wp_filter with the result of build_preinitialized_hooks() is not seen; arrays set before the request runs are imported instead."
+    break: wp_hook_build_preinitialized_hooks
+  - summary: "$wp_filter holds only WP_Hook objects: assigning anything else at a hook name throws a TypeError."
+    break: wp_filter_set_plain_array
+---
+
+## Behaviour
+
+`$wp_filter` is a proxy (`SpeedySpec\WpHooks\HookGlobal`) over the native hook store. Reading it, indexing it, iterating it, unsetting a hook and setting a new `WP_Hook` behave as in WordPress. <Ev scenario="wp_filter_read_and_index"/> <Ev scenario="wp_filter_iterate"/> <Ev scenario="wp_filter_unset_hook"/> <Ev scenario="wp_filter_set_new_hook_object"/>
+
+## Porting
+
+- Don't replace `$wp_filter` to clear hooks; remove the callbacks of the hooks you own with `remove_all_filters()`. <Ev break="wp_filter_replace_wholesale"/>
+- Don't put plain arrays at a hook name after WordPress has loaded; set a `WP_Hook`, or use `add_filter()`. <Ev break="wp_filter_set_plain_array"/>
+- To register hooks before WordPress loads, leave arrays in `$wp_filter` as WordPress documents; SpeedySpec imports them. Don't build `WP_Hook` objects and replace the global with them. <Ev break="wp_hook_build_preinitialized_hooks"/>
