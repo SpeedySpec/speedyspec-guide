@@ -16,10 +16,10 @@ export class CompatFilesEvidence implements EvidenceSource {
     return c?.scenarios.some((s) => s.name === name) ?? false;
   }
 
-  /** A break without a step covers every step of its scenario. */
+  /** A break without a step covers every step of its scenario; a citation without a step names any of its breaks. */
   async breakExists(area: string, scenario: string, step?: number): Promise<boolean> {
     const b = await this.read<Breaks>(join('compat', area, 'breaks.json'));
-    return b?.breaks.some((x) => x.scenario === scenario && (x.step === undefined || x.step === step)) ?? false;
+    return b?.breaks.some((x) => x.scenario === scenario && (x.step === undefined || step === undefined || x.step === step)) ?? false;
   }
 
   /** `<crate>::<tests file stem>::<fn>`, found as `fn <fn>` in `crates/<crate>/tests/<stem>.rs`. */

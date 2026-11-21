@@ -16,6 +16,9 @@ describe('CompatFilesEvidence', () => {
     expect(await ev.breakExists('hooks', 'wp_filters_read_and_write', 4)).toBe(false);
     expect(await ev.breakExists('hooks', 'wp_filter_replace_wholesale')).toBe(true);
     expect(await ev.breakExists('hooks', 'wp_filter_replace_wholesale', 2)).toBe(true);
+    // Without a step, a citation names the scenario's breaks, whichever steps they are at.
+    expect(await ev.breakExists('hooks', 'wp_filters_read_and_write')).toBe(true);
+    expect(await ev.breakExists('hooks', 'nope')).toBe(false);
   });
   test('tests, as crate::file::function', async () => {
     expect(await ev.testExists('speedyspec-wp-hooks-php::wordpress::replays_the_hooks_fixture')).toBe(true);
