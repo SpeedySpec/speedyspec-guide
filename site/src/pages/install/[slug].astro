@@ -1,0 +1,11 @@
+---
+import InstallPage from '../../components/InstallPage.astro';
+import { loadGuideData } from '../../model/data.ts';
+import { INSTALL_INDEX } from '../../model/install.ts';
+
+export async function getStaticPaths() {
+  const d = await loadGuideData();
+  return d.install.filter((p) => p.slug !== INSTALL_INDEX).map((p) => ({ params: { slug: p.slug } }));
+}
+---
+<InstallPage slug={Astro.params.slug!} />

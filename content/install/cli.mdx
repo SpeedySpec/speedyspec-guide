@@ -1,0 +1,122 @@
+---
+title: Installing the speedyspec CLI
+summary: Downloading the binary, adding the WordPress plugins, updating and removing it.
+order: 10
+---
+
+## Download a release binary
+
+Each release has one binary per platform and a `SHA256SUMS` file listing their checksums.
+The latest release's files are always at these addresses:
+
+| Platform | Binary |
+| --- | --- |
+| Linux x86_64 (static) | `https://github.com/SpeedySpec/speedyspec-cli/releases/latest/download/speedyspec-linux-x86_64` |
+| Linux aarch64 (static) | `https://github.com/SpeedySpec/speedyspec-cli/releases/latest/download/speedyspec-linux-aarch64` |
+| macOS Apple silicon (12 or later) | `https://github.com/SpeedySpec/speedyspec-cli/releases/latest/download/speedyspec-macos-aarch64` |
+| macOS Intel (12 or later) | `https://github.com/SpeedySpec/speedyspec-cli/releases/latest/download/speedyspec-macos-x86_64` |
+
+Download the binary under its own name, check it, then make it executable.
+For Linux x86_64:
+
+```bash
+base=https://github.com/SpeedySpec/speedyspec-cli/releases/latest/download
+curl -fsSLO "$base/speedyspec-linux-x86_64" -O "$base/SHA256SUMS"
+grep ' speedyspec-linux-x86_64$' SHA256SUMS | sha256sum -c     # macOS: shasum -a 256 -c
+chmod +x speedyspec-linux-x86_64 && mv speedyspec-linux-x86_64 /usr/local/bin/speedyspec
+```
+
+For another platform, use its binary's name in place of `speedyspec-linux-x86_64`.
+
+The macOS binaries are not notarized.
+A file downloaded with `curl` runs as it is.
+A file downloaded with a browser is quarantined by macOS, which refuses to open it until you clear the flag:
+
+```bash
+xattr -d com.apple.quarantine speedyspec-macos-aarch64
+```
+
+The project has no install script.
+The download above is the documented way to install it.
+
+## Check that it runs
+
+```bash
+speedyspec --version
+```
+
+It prints three lines: the `speedyspec` version, the PHP version and the version of the plugin contracts it bundles.
+Run with no arguments, `speedyspec` prints its help on stderr and exits with code 2.
+
+## Add the WordPress plugins
+
+`speedyspec self plugin install` installs a plugin from a zip URL or from a GitHub release (`owner/repo`, or `owner/repo@tag`).
+The two WordPress plugins live in the GitHub repositories their READMEs link to:
+
+```bash
+speedyspec self plugin install SpeedySpec/speedyspec-cli-wordpress
+speedyspec self plugin install SpeedySpec/speedyspec-cli-wordpress-org
+```
+
+The plugins' own READMEs do not give these commands; they are the CLI's `owner/repo` form applied to those repositories.
+Neither repository's release workflow uploads a `speedyspec-plugin.zip` asset, so the command uses the release's source archive.
+
+Before downloading, the command shows what it will fetch and warns that the plugin runs as you, with full access to your files and network.
+It asks you to confirm, or needs `--yes` when it cannot ask.
+`speedyspec/wordpress-org` depends on Guzzle; `self plugin install` installs it from the plugin's `composer.lock`, so Composer is not needed.
+
+The plugin's `contracts` range must match the contracts bundled in the binary.
+`speedyspec/wordpress` 0.1.2 needs contracts `^1.5`, which `speedyspec` 1.2.1 bundles.
+
+Check what is installed, and that the app is offered:
+
+```bash
+speedyspec self plugin list
+speedyspec app list
+```
+
+`self plugin list` prints `name`, `version` and `directory`, tab-separated.
+`app list` prints `id`, `label` and `drivers`; with `speedyspec/wordpress` installed it includes `wordpress`.
+
+Plugins are kept in `$SPEEDYSPEC_HOME/plugins`, or in the platform data directory's `speedyspec/plugins` when `SPEEDYSPEC_HOME` is not set.
+`SPEEDYSPEC_HOME` must be an absolute path.
+
+The next step is [installing WordPress with the CLI](/install/wordpress/).
+
+## Update
+
+```bash
+speedyspec self update --check    # say whether a newer release exists; changes nothing
+speedyspec self update            # download it, check it, and put it in place of this binary
+```
+
+`self update` downloads the binary for this machine from the latest GitHub release.
+It checks the download's size, its SHA-256 against the release's `SHA256SUMS`, and that it runs and reports the release's version.
+Only then does it replace the running binary, in one step.
+If any check fails, nothing changes.
+
+The binary's directory must be writable by you.
+When it is not, as with `/usr/local/bin`, the command says so before downloading: run `sudo speedyspec self update`, or download the binary again yourself.
+
+No credentials are needed.
+If GitHub refuses anonymous API calls, set `GITHUB_TOKEN`; it is sent to `api.github.com` only.
+`self update` starts no PHP and loads no plugin, so a broken plugin cannot stop an update.
+
+## Remove
+
+To remove a plugin:
+
+```bash
+speedyspec self plugin remove speedyspec/wordpress-org
+```
+
+It asks first, or needs `--yes` when it cannot ask.
+It works when a plugin is broken, and with `--no-plugins`.
+
+The README documents no step for removing `speedyspec` itself.
+It documents where the CLI writes:
+
+- the binary, wherever you put it;
+- plugins, in `$SPEEDYSPEC_HOME/plugins` or the platform data directory's `speedyspec/plugins`;
+- install records, in `$SPEEDYSPEC_HOME/installs` or the platform data directory's `speedyspec/installs`;
+- backups, by default in `$SPEEDYSPEC_HOME/backups`.
