@@ -35,6 +35,11 @@ describe('runExamples', () => {
     expect(calls[1]?.examples[0]?.load).toEqual([]);
   });
 
+  test('records what each example declares', async () => {
+    const { runner } = fakeRunner({ wordpress: '20', runtime: '20' });
+    expect((await runExamples(source, runner, [seam], '/wp')).declared).toEqual([{ id: example.id, sides: ['wordpress', 'runtime'] }]);
+  });
+
   test("the source's problems pass through", async () => {
     const { runner } = fakeRunner({});
     expect((await runExamples(source, runner, [seam], '/wp')).problems).toEqual([{ where: '/x/b.php', message: 'has no b.expect.json' }]);

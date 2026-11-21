@@ -66,14 +66,13 @@ async function main(argv: string[]): Promise<number> {
 
   const seams = new SeamFiles(join(root, 'seams'));
   const runnerBinary = env('GUIDE_RUNNER') ?? join(root, 'runner', 'target', 'release', 'speedyspec-guide-examples');
+  const serverTags = new GitTagHistory(sources.server.repo, join(cache, 'server-tags'), 'speedyspec-php-runtime-v');
+  const runtimeTags = async (isOffline: boolean): Promise<string[]> => (isOffline ? [] : serverTags.tags());
   const runtimeVersion = async (isOffline: boolean) => {
     const cargo = await Bun.file(join(await serverDir(), 'crates', 'speedyspec-php-runtime', 'Cargo.toml')).text();
     const version = /^version\s*=\s*"([^"]+)"/m.exec(cargo)?.[1];
     if (!version) throw new Error('no version in speedyspec-php-runtime/Cargo.toml');
-    if (isOffline) return { version, released: false };
-    const tags = Bun.spawnSync(['git', 'ls-remote', '--tags', '--refs', sources.server.repo, `refs/tags/speedyspec-php-runtime-v${version}`]);
-    if (tags.exitCode !== 0) throw new Error(`listing the server's tags: ${tags.stderr.toString().trim()}`);
-    return { version, released: tags.stdout.toString().trim() !== '' };
+    return { version, released: (await runtimeTags(isOffline)).includes(version) };
   };
 
   const deps: PipelineDeps = {
@@ -83,6 +82,7 @@ async function main(argv: string[]): Promise<number> {
     examples: { all: async () => new ExampleFiles(join(root, 'seams'), await seams.all()).all() },
     runner: existsSync(runnerBinary) ? new RunnerCrate(runnerBinary) : null,
     runtimeVersion,
+    runtimeTags,
     history: new GitTagHistory(sources.wordpress.tags, join(cache, 'wordpress-tags')),
     wordpressDir,
     forkDir,

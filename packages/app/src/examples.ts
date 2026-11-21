@@ -1,9 +1,11 @@
 import type { ExampleProblem, ExampleRunner, ExampleSource } from '@speedyspec-guide/contracts';
-import { compareExample, type ExampleResult, type GuideSymbol, SIDES, type Seam } from '@speedyspec-guide/domain';
+import { compareExample, type ExampleResult, type GuideSymbol, SIDES, type Seam, type Side } from '@speedyspec-guide/domain';
 
 export interface ExamplesFile {
   results: ExampleResult[];
   problems: ExampleProblem[];
+  /** Every example and the sides it declares, so a side with no result shows. */
+  declared: { id: string; sides: Side[] }[];
 }
 
 /** Runs every example on each side it declares (one runner call per side) and compares it with what it expects. */
@@ -20,7 +22,7 @@ export async function runExamples(source: ExampleSource, runner: ExampleRunner, 
       if (example) results.push(compareExample(example.expect, run));
     }
   }
-  return { results, problems };
+  return { results, problems, declared: examples.map((e) => ({ id: e.id, sides: e.sides })) };
 }
 
 /** The runtime's own PHP API: what PHP declares with the runtime's native areas, and not without them. */

@@ -3,7 +3,7 @@ import type { Assignment, GuideSymbol, Inventory } from '@speedyspec-guide/domai
 import { assign } from './assign.ts';
 import { findCycles } from './cycles.ts';
 import { compareFork } from './fork.ts';
-import { runExamples, runtimeApi } from './examples.ts';
+import { type ExamplesFile, runExamples, runtimeApi } from './examples.ts';
 import { buildGraph } from './graph.ts';
 import { type RuntimeHistoryFile, updateRuntimeHistory } from './runtime-history.ts';
 import { computeHistory, type HistoryFile } from './history.ts';
@@ -28,6 +28,8 @@ export interface PipelineDeps {
   runner: ExampleRunner | null;
   /** The PHP runtime's version at the pinned server, and whether it is a released (tagged) version. */
   runtimeVersion(offline: boolean): Promise<{ version: string; released: boolean }>;
+  /** The runtime's released versions; none when offline. */
+  runtimeTags(offline: boolean): Promise<string[]>;
   wordpressVersion: string;
   forkCommit: string;
   config: { requireAllAssigned: boolean };
@@ -107,6 +109,8 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
         history: (await store.read<HistoryFile>('wordpress-history')) ?? EMPTY_HISTORY,
         versionsOnPages: await deps.content.versions(),
         config: deps.config,
+        examples: await store.read<ExamplesFile>('examples'),
+        runtimeTags: await deps.runtimeTags(opts.offline),
       });
       await store.write('validation', failures);
       return { ok: failures.length === 0, failures };

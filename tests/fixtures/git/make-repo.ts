@@ -54,3 +54,19 @@ export function makeBrokenRepo(): { url: string; cleanup: () => void } {
   snapshot('1.2', '<?php function a() {}\n');
   return { url: `file://${dir}`, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
 }
+
+/** A repository tagged speedyspec-php-runtime-v1.0.0 and speedyspec-server-v0.1.0. */
+export function makeServerRepo(): { url: string; cleanup: () => void } {
+  const dir = mkdtempSync(join(tmpdir(), 'tags-server-'));
+  const git = (...args: string[]) => {
+    const p = Bun.spawnSync(['git', '-c', 'user.name=t', '-c', 'user.email=t@example.test', '-c', 'commit.gpgsign=false', '-c', 'tag.gpgsign=false', ...args], { cwd: dir });
+    if (p.exitCode !== 0) throw new Error(p.stderr.toString());
+  };
+  git('init', '-q', '-b', 'main');
+  writeFileSync(join(dir, 'README.md'), 'x\n');
+  git('add', '-A');
+  git('commit', '-qm', 'x');
+  git('tag', 'speedyspec-php-runtime-v1.0.0');
+  git('tag', 'speedyspec-server-v0.1.0');
+  return { url: `file://${dir}`, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
+}

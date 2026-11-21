@@ -42,6 +42,8 @@ async function ctx(pages: Record<string, string>, over: Partial<ValidationContex
     history: { tags: ['7.1.5'], symbols: {} },
     versionsOnPages: await c.versions(),
     config: { requireAllAssigned: false },
+    examples: null,
+    runtimeTags: [],
     ...over,
   };
 }
@@ -106,5 +108,39 @@ describe('rules', () => {
       'wordpress/hooks/b.mdx': '<Changed version="9.9.9" base="wp"/> <Ev source="ss:x.php#L1" hash="h"/>',
     }));
     expect(new Set(r)).toEqual(new Set(['CitationExists', 'VersionHasTag', 'WordPressPagesCiteWordPress']));
+  });
+});
+
+describe('examples', () => {
+  const expected = { output: '', return: '20', error: null };
+  const result = (side: 'wordpress' | 'runtime', passed: boolean, ret = '20') => ({ id: 'hooks/add_filter/a', side, passed, actual: { ...expected, return: ret }, expected });
+
+  test('a problem with an example file is a failure', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { examples: { results: [], problems: [{ where: '/s/b.php', message: 'has no b.expect.json' }], declared: [] } }));
+    expect(f).toEqual([{ rule: 'ExampleHasRun', where: '/s/b.php', message: 'has no b.expect.json' }]);
+  });
+
+  test('a failed run names the side and what differed', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { examples: { results: [result('wordpress', true), result('runtime', false, '55')], problems: [], declared: [{ id: 'hooks/add_filter/a', sides: ['wordpress', 'runtime'] }] } }));
+    expect(f).toEqual([{ rule: 'ExampleHasRun', where: 'hooks/add_filter/a', message: 'fails on runtime: expected return 20, got 55' }]);
+  });
+
+  test('a declared side with no result is a failure', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { examples: { results: [result('wordpress', true)], problems: [], declared: [{ id: 'hooks/add_filter/a', sides: ['wordpress', 'runtime'] }] } }));
+    expect(f).toEqual([{ rule: 'ExampleHasRun', where: 'hooks/add_filter/a', message: 'did not run on runtime' }]);
+  });
+
+  test('an examples file from before declared sides were recorded asks to rerun the stage', async () => {
+    const stale = { results: [], problems: [] } as unknown as NonNullable<ValidationContext['examples']>;
+    expect(await runRules(ALL_RULES, await ctx({}, { examples: stale }))).toEqual([{ rule: 'ExampleHasRun', where: 'generated/examples.json', message: 'written by an older toolchain; run bun run guide examples again' }]);
+  });
+
+  test('no examples file means the runner did not run, which is not a failure', async () => {
+    expect(await rulesOf(await ctx({}, { examples: null }))).toEqual([]);
+  });
+
+  test('a SpeedySpec version with no runtime tag', async () => {
+    const r = await rulesOf(await ctx({ 'speedyspec/hooks/a.mdx': '<Changed version="1.2.0"/> <Ev scenario="add_filter_returns_true"/>' }, { runtimeTags: ['1.0.0'] }));
+    expect(r).toEqual(['VersionHasTag']);
   });
 });

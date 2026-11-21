@@ -8,7 +8,8 @@ export class GitTagHistory implements ReleaseHistory {
   private readonly clone: string;
   private fetched = false;
 
-  constructor(private readonly remote: string, private readonly cacheDir: string) {
+  /** @param prefix Only tags starting with it count, and they are returned without it. */
+  constructor(private readonly remote: string, private readonly cacheDir: string, private readonly prefix = '') {
     this.clone = join(cacheDir, 'repository.git');
   }
 
@@ -17,6 +18,8 @@ export class GitTagHistory implements ReleaseHistory {
     return out
       .split('\n')
       .map((line) => /refs\/tags\/(.+)$/.exec(line)?.[1])
+      .filter((t): t is string => t !== undefined && t.startsWith(this.prefix))
+      .map((t) => t.slice(this.prefix.length))
       .filter((t): t is string => t !== undefined && Version.isRelease(t))
       .sort((a, b) => Version.parse(a).compare(Version.parse(b)));
   }
@@ -27,7 +30,7 @@ export class GitTagHistory implements ReleaseHistory {
     rmSync(join(this.cacheDir, 'tags'), { recursive: true, force: true });
     const dir = join(this.cacheDir, 'tags', tag);
     mkdirSync(dir, { recursive: true });
-    const archive = Bun.spawnSync(['git', '-C', this.clone, 'archive', '--format=tar', `refs/tags/${tag}`], { stdout: 'pipe' });
+    const archive = Bun.spawnSync(['git', '-C', this.clone, 'archive', '--format=tar', `refs/tags/${this.prefix}${tag}`], { stdout: 'pipe' });
     if (archive.exitCode !== 0) throw new Error(`git archive ${tag}: ${archive.stderr.toString()}`);
     const tar = Bun.spawnSync(['tar', '-x', '-C', dir], { stdin: archive.stdout });
     if (tar.exitCode !== 0) throw new Error(`extracting ${tag}: ${tar.stderr.toString()}`);

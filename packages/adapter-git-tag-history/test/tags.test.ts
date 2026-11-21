@@ -36,3 +36,15 @@ describe('the clone', () => {
     expect(filter.stdout.toString().trim()).toBe('');
   });
 });
+
+describe('a tag prefix', () => {
+  test('keeps only the tags with the prefix, without it', async () => {
+    const { makeServerRepo } = await import('../../../tests/fixtures/git/make-repo.ts');
+    const server = makeServerRepo();
+    const dir = mkdtempSync(join(tmpdir(), 'tags-prefix-'));
+    const tags = await new GitTagHistory(server.url, dir, 'speedyspec-php-runtime-v').tags();
+    server.cleanup();
+    rmSync(dir, { recursive: true, force: true });
+    expect(tags).toEqual(['1.0.0']);
+  });
+});
