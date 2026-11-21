@@ -1,0 +1,22 @@
+---
+import Prose from '../../../components/Prose.astro';
+import Base from '../../../layouts/Base.astro';
+import { loadGuideData } from '../../../model/data.ts';
+import { seamPage } from '../../../model/guide-page.ts';
+
+export async function getStaticPaths() {
+  const d = await loadGuideData();
+  return d.seams.map((s) => ({ params: { seam: s.id } }));
+}
+
+const d = await loadGuideData();
+const seam = d.seams.find((s) => s.id === Astro.params.seam)!;
+const page = seamPage(seam.id, 'porting', d);
+---
+<Base title={`Porting: ${seam.name}`} section="speedyspec">
+  <main class="page" data-pagefind-body>
+    <div class="crumbs"><a href={`/speedyspec/${seam.id}/`}>{seam.name}</a> › porting guide</div>
+    <h1>Porting: {seam.name}</h1>
+    {page ? <Prose entry={page} /> : <p class="not-written">Not written yet.</p>}
+  </main>
+</Base>

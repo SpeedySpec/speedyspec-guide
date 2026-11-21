@@ -4,7 +4,7 @@
  */
 import { ExampleFiles } from '@speedyspec-guide/adapter-example-files';
 import { SeamFiles } from '@speedyspec-guide/adapter-seam-files';
-import type { Cycles, ExamplesFile, Graph, HistoryFile, RuntimeHistoryFile } from '@speedyspec-guide/app';
+import type { CratesFile, Cycles, ExamplesFile, Graph, HistoryFile, RuntimeHistoryFile } from '@speedyspec-guide/app';
 import type { Assignment, Example, ForkVerdict, GuideSymbol, Inventory, Seam } from '@speedyspec-guide/domain';
 import { existsSync } from 'node:fs';
 import { join, sep } from 'node:path';
@@ -12,10 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
 import type { Sources } from './wording.ts';
 
-/** `generated/crates.json`: the server's crates and their dependencies on each other. */
-export interface CratesFile {
-  crates: { name: string; dependencies: string[] }[];
-}
+export type { CratesFile } from '@speedyspec-guide/app';
 
 export type ContentKind = 'symbol' | 'seam' | 'porting' | 'architecture';
 
@@ -84,10 +81,17 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
   const seams = existsSync(dirs.seams) ? await new SeamFiles(dirs.seams).all() : [];
   const found = seams.length > 0 ? (await new ExampleFiles(dirs.seams, seams).all()).examples : [];
   const examples: ExampleFile[] = await Promise.all(found.map(async (e) => ({ ...e, code: await Bun.file(e.file).text() })));
+  const assignment = await json<Assignment>('assignment', { seamOf: {}, unassigned: [], conflicts: [] });
+  const runtime = await json<GuideSymbol[]>('inventory-runtime', []);
+  // Runtime symbols a seam lists in `symbols` belong to that seam too (they are not in WordPress's inventory).
+  for (const s of runtime) {
+    const owner = seams.find((seam) => seam.symbols.includes(s.id));
+    if (owner && assignment.seamOf[s.id] === undefined) assignment.seamOf[s.id] = owner.id;
+  }
   return {
     inventory: await json<Inventory>('inventory-wp', { base: 'wp', version: '', symbols: [], edges: [], unresolved: [] }),
-    runtime: await json<GuideSymbol[]>('inventory-runtime', []),
-    assignment: await json<Assignment>('assignment', { seamOf: {}, unassigned: [], conflicts: [] }),
+    runtime,
+    assignment,
     graph: await json<Graph>('graph', { nodes: [], edges: [], crossSeam: [] }),
     cycles: await json<Cycles>('cycles', { symbol: [], seam: [], components: [] }),
     fork: await json<Record<string, ForkVerdict>>('fork', {}),

@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadGuideData } from '../../model/data.ts';
+import { speedyspecProvenance } from '../../model/verdict.ts';
+
+const d = await loadGuideData();
+const wordpress = new Set(d.inventory.symbols.map((s) => s.id));
+const unplaced = d.runtime.filter((s) => !wordpress.has(s.id) && d.assignment.seamOf[s.id] === undefined);
+const kinds = [...new Set(unplaced.map((s) => s.kind))].sort();
+---
+<Base title="The runtime's PHP API" section="speedyspec">
+  <main class="page" data-pagefind-body>
+    <div class="crumbs"><a href="/speedyspec/">SpeedySpec API</a></div>
+    <h1>The runtime's PHP API, not yet in a seam</h1>
+    <p class="muted">What the SpeedySpec runtime registers in PHP that WordPress doesn't have, and that no seam lists yet.</p>
+    {unplaced.length === 0 && <p class="muted">Everything the runtime registers is in a seam.</p>}
+    {kinds.map((k) => (
+      <section>
+        <h2>{k}</h2>
+        <ul>
+          {unplaced.filter((s) => s.kind === k).map((s) => (
+            <li class="runtime-symbol"><span class="mono">{s.name}</span> <span class="muted">{s.signature ?? ''} · Added in SpeedySpec {speedyspecProvenance(s.id, d).added}</span></li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </main>
+</Base>

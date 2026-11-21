@@ -91,6 +91,14 @@ async function main(argv: string[]): Promise<number> {
     forkDir,
     evidence: async () => new CompatFilesEvidence(await serverDir(), await wordpressDir(), await forkDir()),
     content: new ContentFiles(join(root, 'content')),
+    crates: {
+      manifests: async () => {
+        const dir = join(await serverDir(), 'crates');
+        const out: { path: string; text: string }[] = [];
+        for await (const file of new Bun.Glob('*/Cargo.toml').scan({ cwd: dir })) out.push({ path: file, text: await Bun.file(join(dir, file)).text() });
+        return out;
+      },
+    },
     wordpressVersion: sources.wordpress.version,
     forkCommit: sources.fork.commit,
     config: { requireAllAssigned: config.requireAllAssigned },

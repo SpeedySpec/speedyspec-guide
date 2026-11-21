@@ -1,0 +1,41 @@
+---
+import Ev from '../../../components/Ev.astro';
+import Examples from '../../../components/Examples.astro';
+import Head from '../../../components/Head.astro';
+import History from '../../../components/History.astro';
+import Prose from '../../../components/Prose.astro';
+import RelationshipPanel from '../../../components/RelationshipPanel.astro';
+import Signature from '../../../components/Signature.astro';
+import VerdictPill from '../../../components/VerdictPill.astro';
+import Reference from '../../../layouts/Reference.astro';
+import { loadGuideData } from '../../../model/data.ts';
+import { speedyspecPaths } from '../../../model/sections.ts';
+import { hrefOf, symbolView } from '../../../model/views.ts';
+
+export async function getStaticPaths() {
+  const d = await loadGuideData();
+  return speedyspecPaths(d).map((p) => ({ params: { seam: p.seam, slug: p.slug }, props: { id: p.id } }));
+}
+
+const { id } = Astro.props as { id: string };
+const d = await loadGuideData();
+const view = symbolView(id, 'speedyspec', d);
+const inWordPress = d.inventory.symbols.some((s) => s.id === id);
+---
+<Reference title={`${view.name} · SpeedySpec`} seam={view.seam} section="speedyspec" current={id}>
+  <Head view={view} section="speedyspec" />
+  <section class="verdict">
+    <VerdictPill verdict={view.verdict.verdict} />
+    {view.verdict.differences.length > 0 && (
+      <ul class="differences">
+        {view.verdict.differences.map((x) => <li>{x.summary}{x.break && ' '}{x.break && <Ev break={x.break} />}</li>)}
+      </ul>
+    )}
+  </section>
+  <RelationshipPanel edges={view.edges} callsInto={view.callsInto} />
+  <Signature signature={view.signature} />
+  <Examples examples={view.examples} />
+  {view.content ? <Prose entry={view.content} /> : <p class="not-documented">Not yet documented. The verdict comes from comparing SpeedySpec's packages/ tree with WordPress {d.inventory.version}.</p>}
+  <History view={view} section="speedyspec" />
+  {inWordPress && <p class="wordpress-link">WordPress's own behaviour: <a href={hrefOf(id, 'wordpress', d)}>the WordPress page</a></p>}
+</Reference>

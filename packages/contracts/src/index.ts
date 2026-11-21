@@ -61,3 +61,8 @@ export interface ExampleRunner {
   run(side: Side, examples: { id: string; file: string; load: string[] }[], wordpressDir: string): Promise<ExampleRun[]>;
   reflect(mode: 'baseline' | 'runtime'): Promise<GuideSymbol[]>;
 }
+
+/** The Cargo.toml of every crate in the pinned speedyspec-server checkout. */
+export interface CrateSource {
+  manifests(): Promise<{ path: string; text: string }[]>;
+}

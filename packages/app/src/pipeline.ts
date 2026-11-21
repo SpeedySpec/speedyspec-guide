@@ -1,6 +1,7 @@
-import type { ContentPages, EvidenceSource, ExampleRunner, ExampleSource, GeneratedStore, ReleaseHistory, SeamRepository, SymbolSource } from '@speedyspec-guide/contracts';
+import type { ContentPages, CrateSource, EvidenceSource, ExampleRunner, ExampleSource, GeneratedStore, ReleaseHistory, SeamRepository, SymbolSource } from '@speedyspec-guide/contracts';
 import type { Assignment, GuideSymbol, Inventory } from '@speedyspec-guide/domain';
 import { assign } from './assign.ts';
+import { readCrates } from './crates.ts';
 import { findCycles } from './cycles.ts';
 import { compareFork } from './fork.ts';
 import { type ExamplesFile, exampleFailures, runExamples, runtimeApi } from './examples.ts';
@@ -10,7 +11,7 @@ import { computeHistory, type HistoryFile } from './history.ts';
 import type { Failure } from './validate/rule.ts';
 import { ALL_RULES, runRules } from './validate/run.ts';
 
-export const STAGES = ['extract', 'fork', 'assign', 'graph', 'history', 'examples', 'reflect', 'runtime-history', 'validate'] as const;
+export const STAGES = ['extract', 'fork', 'assign', 'graph', 'history', 'examples', 'reflect', 'runtime-history', 'crates', 'validate'] as const;
 export type Stage = (typeof STAGES)[number];
 
 /** What the stages need from outside. The CLI wires the adapters. */
@@ -23,6 +24,7 @@ export interface PipelineDeps {
   forkDir(): Promise<string>;
   evidence(): Promise<EvidenceSource>;
   content: ContentPages;
+  crates: CrateSource;
   examples: ExampleSource;
   /** Null when the runner binary is not built. */
   runner: ExampleRunner | null;
@@ -104,6 +106,9 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
       await store.write('speedyspec-history', updateRuntimeHistory(await need<GuideSymbol[]>(store, 'inventory-runtime'), version, released, file));
       break;
     }
+    case 'crates':
+      await store.write('crates', readCrates(await deps.crates.manifests()));
+      break;
     case 'validate': {
       const failures = await runRules(ALL_RULES, {
         inventory: await need<Inventory>(store, 'inventory-wp'),

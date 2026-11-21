@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadGuideData } from '../../model/data.ts';
+
+const d = await loadGuideData();
+const deps = (id: string) => d.graph.crossSeam.filter((e) => e.fromSeam === id).length;
+---
+<Base title="SpeedySpec API" section="speedyspec">
+  <main class="page">
+    <h1>SpeedySpec API</h1>
+    <p class="muted">What SpeedySpec does with each seam: native or WordPress's PHP, what differs, how to port, and how it is built.</p>
+    <ul class="seam-list">
+      {d.seams.map((s) => {
+        const n = deps(s.id);
+        return (
+          <li>
+            <a href={`/speedyspec/${s.id}/`}>{s.name}</a> <span class="state">{s.ported ? 'Native (Rust)' : "WordPress's PHP"}</span>
+            <span class="deps muted">{n} cross-seam {n === 1 ? 'dependency' : 'dependencies'}</span>
+          </li>
+        );
+      })}
+    </ul>
+    <p><a href="/speedyspec/runtime/">The runtime's PHP API not yet in a seam</a></p>
+  </main>
+</Base>

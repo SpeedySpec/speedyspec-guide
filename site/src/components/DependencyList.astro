@@ -1,0 +1,31 @@
+---
+import type { GuideData } from '../model/data.ts';
+import type { DependencyRow } from '../model/sections.ts';
+import { hrefOf } from '../model/views.ts';
+
+interface Props {
+  title: string;
+  kind: 'depends-on' | 'depended-on-by';
+  groups: Map<string, DependencyRow[]>;
+  data: GuideData;
+}
+const { title, kind, groups, data } = Astro.props;
+const name = (id: string) => id.slice(id.indexOf(':') + 1);
+---
+<section class={kind}>
+  <h2>{title}</h2>
+  {groups.size === 0 && <p class="muted">Nothing.</p>}
+  {[...groups].map(([seamName, rows]) => (
+    <>
+      <h3>{seamName}</h3>
+      <ul>
+        {rows.map((r) => (
+          <li class:list={{ circular: r.circular }}>
+            <a class="mono" href={hrefOf(r.from, 'wordpress', data)}>{name(r.from)}</a> {r.kind} <a class="mono" href={hrefOf(r.to, 'wordpress', data)}>{name(r.to)}</a>
+            {' '}<span class="dep-state">{r.state}</span>{r.circular && <span class="chip-note"> circular</span>}
+          </li>
+        ))}
+      </ul>
+    </>
+  ))}
+</section>

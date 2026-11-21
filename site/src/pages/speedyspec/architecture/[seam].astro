@@ -1,0 +1,26 @@
+---
+import Diagram from '../../../components/Diagram.astro';
+import Prose from '../../../components/Prose.astro';
+import Base from '../../../layouts/Base.astro';
+import { loadGuideData } from '../../../model/data.ts';
+import { seamPage } from '../../../model/guide-page.ts';
+import { architectureDiagram } from '../../../model/mermaid.ts';
+
+export async function getStaticPaths() {
+  const d = await loadGuideData();
+  return d.seams.map((s) => ({ params: { seam: s.id } }));
+}
+
+const d = await loadGuideData();
+const seam = d.seams.find((s) => s.id === Astro.params.seam)!;
+const page = seamPage(seam.id, 'architecture', d);
+const hasParts = (seam.packages?.length ?? 0) + (seam.crates?.length ?? 0) > 0;
+---
+<Base title={`Architecture: ${seam.name}`} section="speedyspec">
+  <main class="page" data-pagefind-body>
+    <div class="crumbs"><a href={`/speedyspec/${seam.id}/`}>{seam.name}</a> › architecture</div>
+    <h1>Architecture: {seam.name}</h1>
+    {hasParts ? <Diagram code={architectureDiagram(seam, d.crates)} label={`The WordPress packages and SpeedySpec crates of the ${seam.name} seam`} /> : <p class="muted">The seam names no packages or crates yet.</p>}
+    {page ? <Prose entry={page} /> : <p class="not-written">Not written yet.</p>}
+  </main>
+</Base>

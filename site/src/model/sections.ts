@@ -27,3 +27,55 @@ export function documented(seamId: string, section: 'wordpress' | 'speedyspec', 
   const written = new Set(d.content.filter((c) => c.section === section && c.kind === 'symbol').map((c) => c.symbol));
   return { documented: ids.filter((id) => written.has(id)).length, total: ids.length };
 }
+
+/** The SpeedySpec pages to build: symbols with a SpeedySpec page, symbols the fork modified or removed, and runtime
+ * symbols a seam lists. */
+export function speedyspecPaths(d: GuideData): { seam: string; slug: string; id: string }[] {
+  const out: { seam: string; slug: string; id: string }[] = [];
+  const written = new Set(d.content.filter((c) => c.section === 'speedyspec' && c.kind === 'symbol').map((c) => c.symbol));
+  const runtime = new Set(d.runtime.map((s) => s.id));
+  const wordpress = new Set(d.inventory.symbols.map((s) => s.id));
+  for (const seam of d.seams) {
+    const ids = Object.entries(d.assignment.seamOf)
+      .filter(([id, s]) => s === seam.id && !id.startsWith('method:'))
+      .map(([id]) => id)
+      .filter((id) => written.has(id) || d.fork[id] === 'modified' || d.fork[id] === 'removed' || (runtime.has(id) && !wordpress.has(id)))
+      .sort();
+    assertUniqueSlugs(ids);
+    for (const id of ids) out.push({ seam: seam.id, slug: symbolSlug(id), id });
+  }
+  return out;
+}
+
+const STATE_LABELS = { php: "calls WordPress's PHP", port: 'behind a port', rust: 'answered in Rust' } as const;
+
+export interface DependencyRow {
+  from: string;
+  to: string;
+  kind: string;
+  state: string;
+  circular: boolean;
+}
+
+/** A seam's cross-seam dependencies, grouped by the other seam: what it depends on, and what depends on it. */
+export function dependencies(seamId: string, d: GuideData): { dependsOn: Map<string, DependencyRow[]>; dependedOnBy: Map<string, DependencyRow[]> } {
+  const name = (id: string) => d.seams.find((s) => s.id === id)?.name ?? id;
+  const together = (a: string, b: string) => d.cycles.components.some((c) => c.includes(a) && c.includes(b));
+  const state = (owner: string, target: string) => {
+    const s = d.seams.find((x) => x.id === owner)?.dependencies?.[target];
+    return s ? STATE_LABELS[s] : 'not yet recorded';
+  };
+  const dependsOn = new Map<string, DependencyRow[]>();
+  const dependedOnBy = new Map<string, DependencyRow[]>();
+  for (const e of d.graph.crossSeam) {
+    const row = (owner: string): DependencyRow => ({ from: e.from, to: e.to, kind: e.kind, state: state(owner, e.to), circular: together(e.from, e.to) });
+    if (e.fromSeam === seamId) dependsOn.set(name(e.toSeam), [...(dependsOn.get(name(e.toSeam)) ?? []), row(seamId)]);
+    if (e.toSeam === seamId) dependedOnBy.set(name(e.fromSeam), [...(dependedOnBy.get(name(e.fromSeam)) ?? []), row(e.fromSeam)]);
+  }
+  return { dependsOn, dependedOnBy };
+}
+
+/** The cycles that pass through any member of the seam. */
+export function seamCycles(seamId: string, d: GuideData): { path: string[]; possible: boolean }[] {
+  return d.cycles.symbol.filter((c) => c.path.some((id) => d.assignment.seamOf[id] === seamId));
+}

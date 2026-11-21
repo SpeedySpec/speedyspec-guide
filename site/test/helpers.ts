@@ -58,7 +58,7 @@ function collect(raw: string, selector: string): string[] {
         open.push(entry);
         el.onEndTag(() => {
           open.splice(open.indexOf(entry), 1);
-          out.push(entry.text.replace(/\s+/g, ' ').trim());
+          out.push(decode(entry.text).replace(/\s+/g, ' ').trim());
         });
       },
       text(t) {
@@ -67,4 +67,12 @@ function collect(raw: string, selector: string): string[] {
     })
     .transform(raw);
   return out;
+}
+
+/** Text with HTML entities decoded, as a reader sees it. */
+function decode(text: string): string {
+  const named: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+  return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e: string) =>
+    e[0] === '#' ? String.fromCodePoint(e[1]?.toLowerCase() === 'x' ? Number.parseInt(e.slice(2), 16) : Number(e.slice(1))) : (named[e] ?? m),
+  );
 }
