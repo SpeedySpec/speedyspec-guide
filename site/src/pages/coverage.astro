@@ -1,0 +1,41 @@
+---
+import { computeCoverage } from '@speedyspec-guide/app';
+import Base from '../layouts/Base.astro';
+import { loadGuideData } from '../model/data.ts';
+
+const d = await loadGuideData();
+const pages = d.content.map((c) => ({ page: c.file, section: c.section, seam: c.seam, ...(c.symbol ? { symbol: c.symbol } : {}) }));
+const coverage = computeCoverage(d.assignment, d.seams, pages);
+const name = (id: string) => d.seams.find((s) => s.id === id)?.name ?? id;
+const byFolder = new Map<string, string[]>();
+for (const id of d.assignment.unassigned) {
+  const sym = d.inventory.symbols.find((s) => s.id === id);
+  const folder = sym ? sym.file.split('/').slice(0, -1).join('/') || '.' : '?';
+  byFolder.set(folder, [...(byFolder.get(folder) ?? []), sym?.name ?? id]);
+}
+const n = coverage.unassigned;
+---
+<Base title="Coverage">
+  <main class="page">
+    <h1>Coverage</h1>
+    <p class="muted">How much of each seam is written. A ported seam needs every member documented on both sides.</p>
+    <table class="compat coverage">
+      <thead><tr><th>Seam</th><th>SpeedySpec</th><th>Members</th><th>WordPress pages</th><th>SpeedySpec pages</th><th>Missing</th></tr></thead>
+      <tbody>
+        {coverage.seams.map((s) => (
+          <tr><td><a href={`/wordpress/${s.id}/`}>{name(s.id)}</a></td><td>{s.ported ? 'ported' : 'unported'}</td><td>{s.members}</td><td>{s.wordpressPages}</td><td>{s.speedyspecPages}</td><td>{s.missing.length}</td></tr>
+        ))}
+      </tbody>
+    </table>
+    <section class="unassigned">
+      <h2>In no seam yet</h2>
+      <p class="unassigned-count">{n} {n === 1 ? 'symbol is' : 'symbols are'} in no seam yet.</p>
+      {[...byFolder].sort(([a], [b]) => a.localeCompare(b)).map(([folder, names]) => (
+        <>
+          <h3 class="mono">{folder}</h3>
+          <ul class="names">{names.sort().map((x) => <li class="mono">{x}</li>)}</ul>
+        </>
+      ))}
+    </section>
+  </main>
+</Base>

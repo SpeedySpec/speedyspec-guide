@@ -22,6 +22,11 @@ describe('ContentFiles', () => {
     ]);
   });
 
+  test("a page's symbol comes from its front matter", async () => {
+    const c = new ContentFiles(content({ 'wordpress/hooks/add_filter.mdx': '---\nsymbol: function:add_filter\n---\n\nText.' }));
+    expect(await c.pages()).toEqual([{ page: 'wordpress/hooks/add_filter.mdx', section: 'wordpress', seam: 'hooks', symbol: 'function:add_filter' }]);
+  });
+
   test('reads <Ev/> citations', async () => {
     const c = new ContentFiles(content({ 'wordpress/hooks/add_filter.mdx': 'Returns true. <Ev scenario="add_filter_returns_true"/>\n' }));
     expect(await c.citations()).toEqual([{ page: 'wordpress/hooks/add_filter.mdx', section: 'wordpress', seam: 'hooks', citation: { kind: 'scenario', area: 'hooks', name: 'add_filter_returns_true' } }]);

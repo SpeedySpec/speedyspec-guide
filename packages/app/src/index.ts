@@ -11,3 +11,4 @@ export * from './pipeline.ts';
 export * from './examples.ts';
 export * from './runtime-history.ts';
 export * from './crates.ts';
+export * from './coverage.ts';

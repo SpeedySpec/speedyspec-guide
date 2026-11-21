@@ -1,6 +1,7 @@
 import type { ContentPages, CrateSource, EvidenceSource, ExampleRunner, ExampleSource, GeneratedStore, ReleaseHistory, SeamRepository, SymbolSource } from '@speedyspec-guide/contracts';
 import type { Assignment, GuideSymbol, Inventory } from '@speedyspec-guide/domain';
 import { assign } from './assign.ts';
+import { computeCoverage } from './coverage.ts';
 import { readCrates } from './crates.ts';
 import { findCycles } from './cycles.ts';
 import { compareFork } from './fork.ts';
@@ -11,7 +12,7 @@ import { computeHistory, type HistoryFile } from './history.ts';
 import type { Failure } from './validate/rule.ts';
 import { ALL_RULES, runRules } from './validate/run.ts';
 
-export const STAGES = ['extract', 'fork', 'assign', 'graph', 'history', 'examples', 'reflect', 'runtime-history', 'crates', 'validate'] as const;
+export const STAGES = ['extract', 'fork', 'assign', 'graph', 'history', 'examples', 'reflect', 'runtime-history', 'crates', 'coverage', 'validate'] as const;
 export type Stage = (typeof STAGES)[number];
 
 /** What the stages need from outside. The CLI wires the adapters. */
@@ -37,7 +38,7 @@ export interface PipelineDeps {
   runtimeTags(offline: boolean): Promise<string[]>;
   wordpressVersion: string;
   forkCommit: string;
-  config: { requireAllAssigned: boolean };
+  config: { requireAllAssigned: boolean; requirePortedCoverage?: boolean };
 }
 
 export interface StageResult {
@@ -108,6 +109,9 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
     }
     case 'crates':
       await store.write('crates', readCrates(await deps.crates.manifests()));
+      break;
+    case 'coverage':
+      await store.write('coverage', computeCoverage(await need<Assignment>(store, 'assignment'), await deps.seams.all(), await deps.content.pages()));
       break;
     case 'validate': {
       const failures = await runRules(ALL_RULES, {

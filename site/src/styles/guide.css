@@ -110,3 +110,10 @@ h1, h2, h3 { line-height: 1.25; }
 .compat { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
 .compat th, .compat td { text-align: left; padding: 0.35rem 0.5rem; border-top: 1px solid var(--line); }
 .compat th { font-size: 0.75rem; color: var(--muted); font-weight: 600; }
+.legend { display: grid; grid-template-columns: max-content 1fr; gap: 0.4rem 1rem; align-items: center; }
+.legend dd { margin: 0; color: var(--muted); font-size: 0.9375rem; }
+.seam-list { list-style: none; padding: 0; }
+.seam-list li { padding: 0.5rem 0; border-top: 1px solid var(--line); display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: baseline; }
+.seam-list .count, .seam-list .deps { margin-left: auto; font-size: 0.8125rem; }
+.search-open { font: inherit; font-size: 0.8125rem; color: var(--muted); background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 0.2rem 0.7rem; cursor: pointer; }
+.names { columns: 3; font-size: 0.8125rem; }

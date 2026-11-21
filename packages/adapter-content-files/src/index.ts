@@ -17,7 +17,10 @@ export class ContentFiles implements ContentPages {
   constructor(private readonly dir: string) {}
 
   async pages(): Promise<ContentPage[]> {
-    return (await this.read()).map(({ page, section, seam }) => ({ page, section, seam }));
+    return (await this.read()).map(({ page, section, seam, text }) => {
+      const symbol = /^---\r?\n[\s\S]*?^symbol:\s*(\S+)\s*$[\s\S]*?^---/m.exec(text)?.[1];
+      return symbol ? { page, section, seam, symbol } : { page, section, seam };
+    });
   }
 
   /** Every `<Ev …/>`. */

@@ -1,13 +1,36 @@
 ---
+import VerdictPill from '../components/VerdictPill.astro';
 import Base from '../layouts/Base.astro';
+import { loadGuideData } from '../model/data.ts';
+import type { SpeedySpecVerdict } from '../model/verdict.ts';
+
+const d = await loadGuideData();
+const verdicts: [SpeedySpecVerdict, string][] = [
+  ['works-as-wordpress', 'Your code behaves the same; every claim is backed by a recorded scenario or test.'],
+  ['works-with-differences', 'It works, but something differs; the page says what and what to do instead.'],
+  ['breaks', 'Code relying on this needs changing before it runs on SpeedySpec.'],
+  ['new-in-speedyspec', 'Only SpeedySpec has it.'],
+  ['same-code', "Not ported yet: SpeedySpec runs WordPress's own PHP for it, unchanged."],
+  ['modified', "Not ported, but SpeedySpec's copy of the PHP differs from WordPress's."],
+  ['removed', 'SpeedySpec does not have it.'],
+  ['unknown', 'Not compared yet.'],
+];
 ---
 <Base title="Home">
   <main class="page">
     <h1>SpeedySpec Guide</h1>
-    <p>The WordPress API and the SpeedySpec API, by seam: what works as in WordPress, what doesn't and why, and what SpeedySpec adds.</p>
+    <p>The WordPress API and the SpeedySpec API, by seam: what works as in WordPress, what doesn't and why, and what SpeedySpec adds. A seam is a boundary where behaviour can be swapped, so the functions and classes that work together are documented together.</p>
     <ul>
-      <li><a href="/wordpress/">WordPress API</a>: WordPress 7.1.5 as it is, readable on its own.</li>
-      <li><a href="/speedyspec/">SpeedySpec API</a>: verdicts, differences, porting guides and the new API.</li>
+      <li><a href="/wordpress/">WordPress API</a>: WordPress {d.inventory.version || ''} as it is, readable on its own.</li>
+      <li><a href="/speedyspec/">SpeedySpec API</a>: verdicts, differences, porting guides, architecture and the new API.</li>
+    </ul>
+    <h2>Reading a verdict</h2>
+    <dl class="legend">
+      {verdicts.map(([v, text]) => (<><dt><VerdictPill verdict={v} /></dt><dd>{text}</dd></>))}
+    </dl>
+    <h2>Start porting</h2>
+    <ul class="porting-links">
+      {d.seams.map((s) => <li><a href={`/speedyspec/porting/${s.id}/`}>{s.name}</a></li>)}
     </ul>
   </main>
 </Base>

@@ -20,8 +20,24 @@ const { title, section } = Astro.props;
       <a href="/wordpress/" aria-current={section === 'wordpress' ? 'page' : undefined}>WordPress API</a>
       <a href="/speedyspec/" aria-current={section === 'speedyspec' ? 'page' : undefined}>SpeedySpec API</a>
       <a href="/coverage/">Coverage</a>
-      <div class="search" id="search"></div>
+      <div class="search" id="search"><button type="button" class="search-open">Search functions, classes, hooks</button></div>
     </header>
     <slot />
+    <script is:inline>
+      // Pagefind's search UI, loaded only when someone asks to search.
+      document.querySelector('.search-open')?.addEventListener('click', () => {
+        const css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = '/pagefind/pagefind-ui.css';
+        document.head.append(css);
+        const js = document.createElement('script');
+        js.src = '/pagefind/pagefind-ui.js';
+        js.onload = () => {
+          document.querySelector('#search').innerHTML = '';
+          new PagefindUI({ element: '#search', showSubResults: true, autofocus: true });
+        };
+        document.head.append(js);
+      }, { once: true });
+    </script>
   </body>
 </html>

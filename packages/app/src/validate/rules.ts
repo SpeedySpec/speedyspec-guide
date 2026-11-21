@@ -96,3 +96,23 @@ export const ExampleHasRun: Rule = {
     return exampleFailures(ctx.examples, ctx.declaredExamples).map((f) => ({ rule: this.id, ...f }));
   },
 };
+
+export const PortedSeamCovered: Rule = {
+  id: 'PortedSeamCovered',
+  async check(ctx) {
+    if (!ctx.config.requirePortedCoverage) return [];
+    const has = (section: 'wordpress' | 'speedyspec', id: string) => ctx.pages.some((p) => p.section === section && p.symbol === id);
+    const f: Failure[] = [];
+    for (const seam of ctx.seams.filter((s) => s.ported)) {
+      const members = Object.entries(ctx.assignment.seamOf)
+        .filter(([id, s]) => s === seam.id && !id.startsWith('method:'))
+        .map(([id]) => id)
+        .sort();
+      for (const id of members) {
+        const missing = [!has('wordpress', id) && 'WordPress', !has('speedyspec', id) && 'SpeedySpec'].filter(Boolean);
+        if (missing.length > 0) f.push({ rule: this.id, where: id, message: `the ${seam.id} seam is ported: needs a WordPress page and a SpeedySpec page (missing: ${missing.join(', ')})` });
+      }
+    }
+    return f;
+  },
+};

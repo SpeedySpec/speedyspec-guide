@@ -15,7 +15,14 @@ export function buildSite(env: Record<string, string>): { dist: string; exitCode
     cwd: siteDir,
     env: { ...process.env, ...env },
   });
-  const result = { dist, exitCode: p.exitCode ?? 1, output: p.stdout.toString() + p.stderr.toString() };
+  let output = p.stdout.toString() + p.stderr.toString();
+  let exitCode = p.exitCode ?? 1;
+  if (exitCode === 0) {
+    const search = Bun.spawnSync(['bunx', '--bun', 'pagefind', '--site', dist], { cwd: siteDir });
+    output += search.stdout.toString() + search.stderr.toString();
+    exitCode = search.exitCode ?? 1;
+  }
+  const result = { dist, exitCode, output };
   builds.set(key, result);
   return result;
 }

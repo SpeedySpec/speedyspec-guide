@@ -49,7 +49,7 @@ async function main(argv: string[]): Promise<number> {
   const root = process.cwd();
   const cache = join(root, '.cache');
   const sources = (await Bun.file(join(root, 'sources.json')).json()) as Sources;
-  const config = (await Bun.file(join(root, 'guide.config.json')).json()) as { requireAllAssigned: boolean; stubFiles?: string[] };
+  const config = (await Bun.file(join(root, 'guide.config.json')).json()) as { requireAllAssigned: boolean; requirePortedCoverage?: boolean; stubFiles?: string[] };
   const env = (name: string) => (process.env[name] ? resolve(process.env[name]!) : undefined);
 
   const wordpressDir = async () => env('GUIDE_WORDPRESS_DIR') ?? new WordPressRelease(sources.wordpress, cache).fetch(sources.wordpress.version);
@@ -101,7 +101,7 @@ async function main(argv: string[]): Promise<number> {
     },
     wordpressVersion: sources.wordpress.version,
     forkCommit: sources.fork.commit,
-    config: { requireAllAssigned: config.requireAllAssigned },
+    config: { requireAllAssigned: config.requireAllAssigned, requirePortedCoverage: config.requirePortedCoverage === true },
   };
 
   for (const s of stage === 'all' ? STAGES : [stage as Stage]) {
