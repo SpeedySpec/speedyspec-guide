@@ -1,6 +1,7 @@
 import type { ContentPages, CrateSource, EvidenceSource, ExampleRunner, ExampleSource, GeneratedStore, ReleaseHistory, SeamRepository, SymbolSource } from '@speedyspec-guide/contracts';
 import type { Assignment, GuideSymbol, Inventory } from '@speedyspec-guide/domain';
 import { assign } from './assign.ts';
+import { loadOrder } from './load-order.ts';
 import { computeCoverage } from './coverage.ts';
 import { buildEvidenceIndex, type EvidenceIndex } from './evidence-index.ts';
 import { readCrates } from './crates.ts';
@@ -23,6 +24,8 @@ export interface PipelineDeps {
   seams: SeamRepository;
   history: ReleaseHistory;
   wordpressDir(): Promise<string>;
+  /** A file of the WordPress release, by its path in the release. */
+  wordpressFile(rel: string): Promise<string>;
   forkDir(): Promise<string>;
   evidence(): Promise<EvidenceSource>;
   content: ContentPages;
@@ -75,7 +78,10 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
       await store.write('fork', compareFork(await need<Inventory>(store, 'inventory-wp'), await need<Inventory>(store, 'inventory-ss')));
       break;
     case 'assign':
-      await store.write('assignment', assign(await need<Inventory>(store, 'inventory-wp'), await deps.seams.all()));
+      await store.write(
+        'assignment',
+        assign(await need<Inventory>(store, 'inventory-wp'), await deps.seams.all(), await need<Inventory>(store, 'inventory-ss'), loadOrder(await deps.wordpressFile('wp-settings.php'))),
+      );
       break;
     case 'graph': {
       const a = await need<Assignment>(store, 'assignment');

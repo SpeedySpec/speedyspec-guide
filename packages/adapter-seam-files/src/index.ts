@@ -70,6 +70,8 @@ export class SeamFiles implements SeamRepository {
       wordpress: list('wordpress'),
       packages: list('packages'),
       crates: list('crates'),
+      forkPackages: list('forkPackages'),
+      inFork: data.inFork !== false,
       dependencies: dependencies(),
       edges,
     };

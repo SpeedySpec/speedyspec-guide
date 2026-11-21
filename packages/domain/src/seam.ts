@@ -15,6 +15,10 @@ export interface Seam {
   wordpress: string[];
   /** WordPress packages that implement the seam. */
   packages?: string[];
+  /** Fork packages (`packages/wp-<x>`) whose WordPress symbols this seam takes. */
+  forkPackages?: string[];
+  /** False when SpeedySpec's packages/ tree doesn't carry the seam's code, so its symbols get no fork verdict. */
+  inFork?: boolean;
   /** SpeedySpec crates that implement it. */
   crates?: string[];
   /** The SpeedySpec state of each cross-seam dependency, by target symbol id. */

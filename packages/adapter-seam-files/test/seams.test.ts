@@ -23,6 +23,14 @@ describe('SeamFiles', () => {
     expect(seams[1]).toMatchObject({ ported: true, symbols: ['function:shared'], exclude: [], roles: {}, edges: [], wordpress: [] });
   });
 
+  test('reads forkPackages and inFork, which defaults to true', async () => {
+    const dir = only('a', 'forked');
+    const [a, forked] = await new SeamFiles(dir).all();
+    rmSync(dir, { recursive: true });
+    expect(a).toMatchObject({ forkPackages: [], inFork: true });
+    expect(forked).toMatchObject({ forkPackages: ['wp-forked'], inFork: false });
+  });
+
   test('a seam missing its job is refused, naming the file and field', async () => {
     const dir = only('broken');
     await expect(new SeamFiles(dir).all()).rejects.toThrow(/broken\/seam\.yaml.*job/);

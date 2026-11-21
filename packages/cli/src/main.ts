@@ -88,6 +88,7 @@ async function main(argv: string[]): Promise<number> {
     runtimeTags,
     history: new GitTagHistory(sources.wordpress.tags, join(cache, 'wordpress-tags')),
     wordpressDir,
+    wordpressFile: async (rel: string) => Bun.file(join(await wordpressDir(), rel)).text(),
     forkDir,
     evidence: async () => new CompatFilesEvidence(await serverDir(), await wordpressDir(), await forkDir()),
     content: new ContentFiles(join(root, 'content')),

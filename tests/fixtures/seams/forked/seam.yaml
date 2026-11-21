@@ -1,0 +1,4 @@
+name: Forked
+job: Takes the fork package wp-forked.
+forkPackages: [wp-forked]
+inFork: false
