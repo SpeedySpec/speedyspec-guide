@@ -116,8 +116,8 @@ edges:
   - { from: function:add_action, to: function:remove_action, kind: undone-by, at: { scenario: remove_action_alias } }
   - { from: function:add_action, to: function:add_filter, kind: alias, at: { scenario: globals_after_mixed_use } }
   - { from: function:has_action, to: function:has_filter, kind: alias, at: { scenario: has_filter_variants } }
-  - { from: function:remove_action, to: function:remove_filter, kind: alias, at: { source: "wp:wp-includes/plugin.php#L624", hash: fb581baeff5e99d42bece9fe5a19c5858880726c9b47212de7b73a4b0ef444ae } }
-  - { from: function:remove_all_actions, to: function:remove_all_filters, kind: alias, at: { source: "wp:wp-includes/plugin.php#L638", hash: 5ea43f32a25e30166f74538e322111164ab755a88f8738babd9f533274f759f5 } }
+  - { from: function:remove_action, to: function:remove_filter, kind: alias, at: { source: "wp:wp-includes/plugin.php#L638", hash: fb581baeff5e99d42bece9fe5a19c5858880726c9b47212de7b73a4b0ef444ae } }
+  - { from: function:remove_all_actions, to: function:remove_all_filters, kind: alias, at: { source: "wp:wp-includes/plugin.php#L652", hash: 5ea43f32a25e30166f74538e322111164ab755a88f8738babd9f533274f759f5 } }
   - { from: function:current_action, to: function:current_filter, kind: alias, at: { scenario: current_and_doing_outside_a_hook } }
   - { from: function:doing_action, to: function:doing_filter, kind: alias, at: { scenario: current_and_doing_outside_a_hook } }
   - { from: function:did_action, to: global:wp_actions, kind: reads, at: { scenario: wp_actions_read_and_write } }
