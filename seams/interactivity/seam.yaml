@@ -6,4 +6,38 @@ files:
   - 'wp-includes/interactivity-api/class-wp-interactivity-api-directives-processor.php'
   - 'wp-includes/interactivity-api/class-wp-interactivity-api.php'
   - 'wp-includes/interactivity-api/interactivity-api.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side, as wp-settings.php orders them.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/class-wp-token-map.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/kses.php
+  - wp-includes/html-api/html5-named-character-references.php
+  - wp-includes/html-api/class-wp-html-attribute-token.php
+  - wp-includes/html-api/class-wp-html-span.php
+  - wp-includes/html-api/class-wp-html-doctype-info.php
+  - wp-includes/html-api/class-wp-html-text-replacement.php
+  - wp-includes/html-api/class-wp-html-decoder.php
+  - wp-includes/html-api/class-wp-html-tag-processor.php
+  - wp-includes/html-api/class-wp-html-unsupported-exception.php
+  - wp-includes/html-api/class-wp-html-active-formatting-elements.php
+  - wp-includes/html-api/class-wp-html-open-elements.php
+  - wp-includes/html-api/class-wp-html-token.php
+  - wp-includes/html-api/class-wp-html-stack-event.php
+  - wp-includes/html-api/class-wp-html-processor-state.php
+  - wp-includes/html-api/class-wp-html-processor.php
+  - wp-includes/interactivity-api/class-wp-interactivity-api.php
+  - wp-includes/interactivity-api/class-wp-interactivity-api-directives-processor.php
+  - wp-includes/interactivity-api/class-wp-interactivity-dangerous-html.php
+  - wp-includes/interactivity-api/interactivity-api.php
+setup: ../basic-setup.php
+roles:
+  state: [function:wp_interactivity, function:wp_interactivity_state, function:wp_interactivity_config, function:wp_interactivity_get_context, function:wp_interactivity_get_element, function:wp_interactivity_data_wp_context, global:wp_interactivity]
+  process: [function:wp_interactivity_process_directives, function:wp_interactivity_as_dangerous_html]
+  classes: [class:WP_Interactivity_API, class:WP_Interactivity_API_Directives_Processor, class:WP_Interactivity_Dangerous_HTML]
+  filters: ["filter:script_module_data_@wordpress/interactivity", "filter:script_module_data_@wordpress/interactivity-router"]

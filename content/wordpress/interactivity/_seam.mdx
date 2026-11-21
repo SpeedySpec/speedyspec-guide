@@ -1,0 +1,4 @@
+---
+---
+
+The Interactivity API makes server-rendered markup interactive: blocks write `data-wp-*` **directives** in their HTML, and a script module in the browser runs them against a **store** of state, keyed by namespace. On the server, `wp_interactivity_state()` and `wp_interactivity_config()` fill the store, and `wp_interactivity_process_directives()` applies the directives the server can (text, classes, attributes, styles, lists) so the page arrives already rendered. <Ev source="wp:wp-includes/interactivity-api/interactivity-api.php#L39-L41" hash="9897f16fd92c2e65a418132160fed032ede23285ae064c7aebabfc21251565d3"/> The examples on these pages each start with an empty store.

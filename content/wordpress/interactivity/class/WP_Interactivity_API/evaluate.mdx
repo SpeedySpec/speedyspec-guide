@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Interactivity_API::evaluate"
+---
+
+Reads a directive's value, such as `state.user.name` or `context.open`, from the namespace's state or the current context. A leading `!` negates it, `length` gives a list's count or a string's length, and a closure on the path is called as derived state. A missing path gives `null`, and so does a closure that throws, which is reported. <Ev source="wp:wp-includes/interactivity-api/class-wp-interactivity-api.php#L773-L880" hash="29a2066f6918118bc10c74856551c0852a5544a396cf9c3b84b91a463939cb49"/>

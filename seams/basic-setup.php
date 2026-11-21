@@ -7,7 +7,8 @@ declare(strict_types=1);
  *  `default-constants.php` would define, and translation functions that return text unchanged.
  *
  *  `l10n.php` is not loaded, so `__()` and its kin return their text as given. With `GUIDE_MULTISITE` true,
- *  `MULTISITE` is defined. When the seam loads the object cache, a fresh one is started.
+ *  `MULTISITE` is defined. When the seam loads the object cache, a fresh one is started. With no database,
+ *  `blog_charset` is supplied as `UTF-8`, so the escaping functions work.
  */
 
 foreach ([
@@ -56,6 +57,9 @@ if (!function_exists('__'))
         return esc_attr($text);
     }
 }
+
+// There is no database: the one option escaping reads, blog_charset, is supplied as an installed site stores it.
+add_filter('pre_option_blog_charset', static fn () => 'UTF-8');
 
 // wp-settings.php starts the object cache early; seams that load it get a fresh one.
 if (function_exists('wp_cache_init'))

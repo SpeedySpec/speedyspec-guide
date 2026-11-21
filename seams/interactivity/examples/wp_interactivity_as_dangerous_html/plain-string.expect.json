@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "WP_Interactivity_API::data_wp_html_processor ",
+ "return": "'<div data-wp-interactive=\"my-plugin\"><div data-wp-html=\"state.html\"></div></div>'",
+ "error": null
+}

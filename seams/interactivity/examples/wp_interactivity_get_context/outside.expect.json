@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "WP_Interactivity_API::get_context ",
+ "return": "array (\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_interactivity_state"
+---
+
+## Behaviour
+
+Merges state into a store namespace, recursively, and returns that namespace's state. A closure in the state is derived state: it is called when a directive reads it. Inside directive processing the namespace may be omitted, meaning the current one; outside it, a missing namespace is reported through `_doing_it_wrong()` and gives an empty array. The state is sent to the browser in the `@wordpress/interactivity` script module's data. <Ev source="wp:wp-includes/interactivity-api/interactivity-api.php#L62-L64" hash="60a634a6243043d0046a42ba24f20409d490c5d0745ab62d435893ce990e8d78"/>
+
+## Override
+
+Not overridable.

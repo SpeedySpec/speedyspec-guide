@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Interactivity_API::data_wp_html_processor"
+---
+
+Replaces the element's content with the HTML of a `WP_Interactivity_Dangerous_HTML` token from the store. Any other value empties it and is reported. It does nothing with `data-wp-text`, `data-wp-each` or `data-wp-router-region` on the same element, which it reports. The HTML is held in a placeholder until processing ends, so its own directives aren't processed. New in WordPress 7.2 (trunk). <Ev source="wp:wp-includes/interactivity-api/class-wp-interactivity-api.php#L1630-L1706" hash="75de7f78670b648394735b1b8923508efae1132194e7072272df959350e09ea5"/>

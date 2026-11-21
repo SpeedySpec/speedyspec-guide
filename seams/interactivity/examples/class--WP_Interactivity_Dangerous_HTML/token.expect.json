@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '{\"wpServerHtml\":true}',\n  1 => '<b>x</b>',\n  2 => NULL,\n)",
+ "error": null
+}
