@@ -1,0 +1,11 @@
+---
+symbol: function:add_action
+---
+
+## Behaviour
+
+Registers a callback on an action. It calls `add_filter()` with the same arguments and returns its result, so actions and filters share one store and one set of priorities. <Ev scenario="globals_after_mixed_use"/> <Ev scenario="do_action_basics"/>
+
+## Override
+
+`add_action()` fires no hooks and is not pluggable.

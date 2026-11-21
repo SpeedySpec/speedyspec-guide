@@ -1,0 +1,17 @@
+---
+symbol: function:add_filter
+---
+
+## Behaviour
+
+Registers a callback on a filter or action hook, at a priority, receiving up to `$accepted_args` arguments. It always returns `true`. <Ev scenario="add_filter_returns_true"/>
+
+Lower priorities run first. <Ev scenario="priorities_run_in_ascending_order"/> At one priority, callbacks run in the order they were added. <Ev scenario="apply_filters_same_priority_in_added_order"/> Adding the same callback twice at one priority keeps one entry. <Ev scenario="same_callback_twice_at_one_priority_is_one_entry"/>
+
+The callback receives at most `$accepted_args` arguments, the value first. <Ev scenario="accepted_args_one"/> <Ev scenario="accepted_args_more_than_given"/>
+
+A callback can be a function name, a closure, an invokable object, an `[object, method]` or `[class, method]` array, or a `Class::method` string. <Ev scenario="callback_kind_closure"/> <Ev scenario="callback_kind_method"/> <Ev scenario="callback_kind_static_string"/> A callback added to a hook while that hook runs takes part in the current run when its priority has not been reached yet. <Ev scenario="add_during_run_at_later_priority"/>
+
+## Override
+
+`add_filter()` fires no hooks and is not pluggable. To change what a filter returns, add another callback at a later priority.

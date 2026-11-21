@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress",
+  "runtime"
+ ],
+ "output": "deprecated: guide_old",
+ "return": "'value!'",
+ "error": null
+}

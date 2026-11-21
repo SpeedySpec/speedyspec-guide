@@ -1,0 +1,7 @@
+---
+symbol: function:apply_filters_deprecated
+---
+
+## Behaviour
+
+For a filter that is going away. With no callbacks on it, it returns the first argument and reports nothing. <Ev scenario="apply_filters_deprecated_without_callbacks"/> With callbacks, it reports the deprecation through `_deprecated_hook()` and then runs the filter as `apply_filters_ref_array()` does. <Ev scenario="apply_filters_deprecated_with_callbacks"/>

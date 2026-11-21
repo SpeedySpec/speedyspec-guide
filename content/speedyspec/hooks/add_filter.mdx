@@ -1,0 +1,12 @@
+---
+symbol: function:add_filter
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: SpeedySpec registers the callback in its hook store in Rust. Every recorded scenario of `add_filter()` replays as in WordPress. <Ev scenario="add_filter_returns_true"/> <Ev scenario="apply_filters_same_priority_in_added_order"/> <Ev scenario="callback_kind_method"/>
+
+## Override
+
+Callbacks live in the hook store behind the `HookStore` port. To keep them somewhere else, bind another store; see the architecture page.

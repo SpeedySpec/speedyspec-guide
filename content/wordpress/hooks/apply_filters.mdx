@@ -1,0 +1,15 @@
+---
+symbol: function:apply_filters
+---
+
+## Behaviour
+
+Runs every callback on a filter, in priority order, passing the value through each and returning the last result. With no callbacks it returns the value unchanged. <Ev scenario="apply_filters_without_callbacks"/> <Ev scenario="apply_filters_single_callback"/>
+
+Arguments after the value are passed to each callback, up to its `$accepted_args`. <Ev scenario="return_arg_picks_an_argument"/> Each call counts in `did_filter()`, with or without callbacks. <Ev scenario="did_filter_counts"/> While it runs, the hook name is on `$wp_current_filter`, so `current_filter()` names it. <Ev scenario="current_and_doing_inside_a_filter"/>
+
+Callbacks on the `all` hook run first, for every hook. <Ev scenario="all_hook_sees_every_hook"/> An exception from a callback leaves the run and the hook stack as WordPress leaves them. <Ev scenario="exception_in_filter"/>
+
+## Override
+
+It fires the hook it is given, and `all`. It is not pluggable.

@@ -1,0 +1,13 @@
+---
+symbol: function:do_action
+---
+
+## Behaviour
+
+Runs every callback on an action, in priority order, with the arguments given. It returns `null`. <Ev scenario="do_action_basics"/> <Ev scenario="do_action_returns_null"/>
+
+Each call counts in `did_action()`, even with no callbacks. <Ev scenario="wp_actions_read_and_write"/> Called with no arguments, it passes one empty string to its callbacks. <Ev scenario="do_action_without_args_passes_empty_string"/> A single argument that is an array holding one object is passed as that object. <Ev scenario="do_action_unwraps_single_object_in_array"/>
+
+## Override
+
+It fires the hook it is given, and `all`. It is not pluggable.

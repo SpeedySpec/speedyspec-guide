@@ -1,0 +1,7 @@
+---
+symbol: function:do_action_deprecated
+---
+
+## Behaviour
+
+For an action that is going away. With callbacks on it, it reports the deprecation through `_deprecated_hook()` and then runs the action as `do_action_ref_array()` does; with none, it does nothing. <Ev scenario="do_action_deprecated"/>

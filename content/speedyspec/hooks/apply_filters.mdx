@@ -1,0 +1,8 @@
+---
+symbol: function:apply_filters
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the run happens in Rust, calling back into PHP for each PHP callback. Every recorded scenario replays as in WordPress, including nested and recursive runs. <Ev scenario="apply_filters_single_callback"/> <Ev scenario="nested_filters"/> <Ev scenario="recursive_filter"/>
