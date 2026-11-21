@@ -1,0 +1,62 @@
+---
+import Examples from '../../../components/Examples.astro';
+import Fires from '../../../components/Fires.astro';
+import Head from '../../../components/Head.astro';
+import History from '../../../components/History.astro';
+import OnSpeedySpec from '../../../components/OnSpeedySpec.astro';
+import Prose from '../../../components/Prose.astro';
+import RelationshipPanel from '../../../components/RelationshipPanel.astro';
+import Signature from '../../../components/Signature.astro';
+import Reference from '../../../layouts/Reference.astro';
+import { loadGuideData } from '../../../model/data.ts';
+import { wordpressPaths } from '../../../model/sections.ts';
+import { methodAnchor } from '../../../model/slug.ts';
+import { hrefOf, symbolView } from '../../../model/views.ts';
+
+export async function getStaticPaths() {
+  const d = await loadGuideData();
+  return wordpressPaths(d).map((p) => ({ params: { seam: p.seam, slug: p.slug }, props: { id: p.id } }));
+}
+
+const { id } = Astro.props as { id: string };
+const d = await loadGuideData();
+const view = symbolView(id, 'wordpress', d);
+const version = d.inventory.version;
+const isHook = view.kind === 'filter' || view.kind === 'action';
+const firedBy = isHook ? d.graph.edges.filter((e) => e.kind === 'fires' && e.to === id).map((e) => e.from) : [];
+const runs = isHook ? d.graph.edges.filter((e) => e.kind === 'runs' && e.from === id).map((e) => e.to) : [];
+const name = (x: string) => x.slice(x.indexOf(':') + 1);
+---
+<Reference title={view.name} seam={view.seam} section="wordpress" current={id}>
+  <Head view={view} section="wordpress" />
+  <RelationshipPanel edges={view.edges} callsInto={view.callsInto} />
+  <Signature signature={view.signature} />
+  <Examples examples={view.examples} />
+  {view.content ? <Prose entry={view.content} /> : <p class="not-documented">Not yet documented. Signature and relationships are generated from WordPress {version}.</p>}
+  {isHook && (
+    <section class="fired-by">
+      <h2>Fired by</h2>
+      {firedBy.length === 0 ? <p class="muted">Nothing in WordPress fires it by this exact name.</p> : (
+        <ul>{firedBy.map((f) => <li>{f.startsWith('file:') ? <span class="mono">{f.slice(5)}</span> : <a class="mono" href={hrefOf(f, 'wordpress', d)}>{name(f)}</a>}</li>)}</ul>
+      )}
+    </section>
+  )}
+  {runs.length > 0 && (
+    <section class="runs">
+      <h2>WordPress's own callbacks</h2>
+      <ul>{runs.map((r) => <li><a class="mono" href={hrefOf(r, 'wordpress', d)}>{name(r)}</a></li>)}</ul>
+    </section>
+  )}
+  <Fires fires={view.fires} />
+  {view.methods?.map((m) => (
+    <section class="method">
+      <h2 id={methodAnchor(m.id).anchor} class="mono">::{m.name}()</h2>
+      <Signature signature={m.signature} />
+      <RelationshipPanel edges={m.edges} callsInto={m.callsInto} />
+      <Examples examples={m.examples} />
+      {m.content && <Prose entry={m.content} />}
+    </section>
+  ))}
+  <History view={view} section="wordpress" />
+  <OnSpeedySpec verdict={view.verdict} href={hrefOf(id, 'speedyspec', d)} />
+</Reference>

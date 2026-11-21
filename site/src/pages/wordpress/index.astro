@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadGuideData } from '../../model/data.ts';
+import { documented } from '../../model/sections.ts';
+
+const d = await loadGuideData();
+---
+<Base title="WordPress API" section="wordpress">
+  <main class="page">
+    <h1>WordPress API</h1>
+    <p class="muted">WordPress {d.inventory.version || ''} as it is, by seam. Each page also says, in one box, how it behaves on SpeedySpec.</p>
+    <ul class="seam-list">
+      {d.seams.map((s) => {
+        const c = documented(s.id, 'wordpress', d);
+        return (
+          <li><a href={`/wordpress/${s.id}/`}>{s.name}</a> <span class="muted">{s.job}</span> <span class="count">{c.documented} of {c.total} documented</span></li>
+        );
+      })}
+    </ul>
+  </main>
+</Base>

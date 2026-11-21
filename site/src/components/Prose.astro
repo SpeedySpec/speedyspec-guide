@@ -1,0 +1,18 @@
+---
+// A hand-written page's MDX body, with the guide's components available in it.
+import { getEntry, render } from 'astro:content';
+import type { ContentEntry } from '../model/data.ts';
+import Changed from './Changed.astro';
+import Deprecated from './Deprecated.astro';
+import Ev from './Ev.astro';
+import Removed from './Removed.astro';
+
+interface Props {
+  entry: ContentEntry;
+}
+const { entry } = Astro.props;
+const page = await getEntry('pages', entry.file.replace(/\.mdx$/, ''));
+if (!page) throw new Error(`no content entry for ${entry.file}`);
+const { Content } = await render(page);
+---
+<div class="prose"><Content components={{ Ev, Changed, Deprecated, Removed }} /></div>

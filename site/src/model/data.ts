@@ -8,6 +8,7 @@ import type { Cycles, ExamplesFile, Graph, HistoryFile, RuntimeHistoryFile } fro
 import type { Assignment, Example, ForkVerdict, GuideSymbol, Inventory, Seam } from '@speedyspec-guide/domain';
 import { existsSync } from 'node:fs';
 import { join, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
 import type { Sources } from './wording.ts';
 
@@ -54,7 +55,7 @@ export interface GuideData {
   sources: Sources | null;
 }
 
-const root = join(import.meta.dir, '..', '..', '..');
+const root = fileURLToPath(new URL('../../../', import.meta.url));
 
 export function guideDirs(env: Record<string, string | undefined> = process.env) {
   return {
