@@ -17,7 +17,8 @@ export interface GuideIndex {
   wordpressMembers(seamId: string): string[];
   /** Runtime-only symbols the seam lists. */
   runtimeMembers(seamId: string): string[];
-  methodsOf(classId: string): string[];
+  /** A class's methods; the SpeedySpec section adds the methods the runtime adds to it. */
+  methodsOf(classId: string, section?: 'wordpress' | 'speedyspec'): string[];
   component(id: string): Set<string> | undefined;
   content(section: 'wordpress' | 'speedyspec', id: string): ContentEntry | null;
   hasPage(id: string, section: 'wordpress' | 'speedyspec'): boolean;
@@ -62,7 +63,13 @@ export function indexOf(d: GuideData): GuideIndex {
   }
   for (const list of methods.values()) list.sort();
   const runtimeMembers = new Map<string, string[]>();
-  for (const [id, seam] of Object.entries(d.runtimeSeamOf)) push(runtimeMembers, seam, id);
+  const runtimeMethods = new Map<string, string[]>();
+  for (const [id, seam] of Object.entries(d.runtimeSeamOf)) {
+    push(runtimeMembers, seam, id);
+    // A method the runtime adds to a class is listed with the class's methods.
+    if (id.startsWith('method:') && !symbols.has(id)) push(runtimeMethods, `class:${id.slice('method:'.length, id.lastIndexOf('::'))}`, id);
+  }
+  for (const list of runtimeMethods.values()) list.sort();
 
   const component = new Map<string, Set<string>>();
   for (const c of d.cycles.components) {
@@ -96,7 +103,7 @@ export function indexOf(d: GuideData): GuideIndex {
     const forked = !outsideFork.has(seam) && (d.fork[id] === 'modified' || d.fork[id] === 'removed');
     if (content.has(`speedyspec|${id}`) || forked) speedyspecPages.add(id);
   }
-  for (const [id, seam] of Object.entries(d.runtimeSeamOf)) if (seams.has(seam) && !symbols.has(id)) speedyspecPages.add(id);
+  for (const [id, seam] of Object.entries(d.runtimeSeamOf)) if (seams.has(seam) && !symbols.has(id) && !id.startsWith('method:')) speedyspecPages.add(id);
 
   const slugs = uniqueSlugs([...wordpressPages, ...speedyspecPages]);
 
@@ -106,7 +113,7 @@ export function indexOf(d: GuideData): GuideIndex {
     seamOf: (id) => d.assignment.seamOf[id] ?? d.runtimeSeamOf[id],
     wordpressMembers: (seam) => wordpressMembers.get(seam) ?? [],
     runtimeMembers: (seam) => runtimeMembers.get(seam) ?? [],
-    methodsOf: (cls) => methods.get(cls) ?? [],
+    methodsOf: (cls, section = 'wordpress') => [...(methods.get(cls) ?? []), ...(section === 'speedyspec' ? (runtimeMethods.get(cls) ?? []) : [])],
     component: (id) => component.get(id),
     content: (section, id) => content.get(`${section}|${id}`) ?? null,
     hasPage: (id, section) => (section === 'wordpress' ? wordpressPages : speedyspecPages).has(id),

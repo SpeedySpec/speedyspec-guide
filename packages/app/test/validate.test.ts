@@ -188,3 +188,16 @@ describe('example citations', () => {
     expect(f.filter((x) => x.rule === 'CitationExists' || x.rule === 'PortedSeamVerified')).toEqual([]);
   });
 });
+
+describe('runtime members of a seamed class', () => {
+  const wp: Inventory = { ...inventory, symbols: [{ id: 'class:C', kind: 'class', name: 'C', file: 'c.php', line: 1 }] };
+  const assignment = { seamOf: { 'class:C': 'hooks' }, unassigned: [], conflicts: [] };
+  test('runtime_method_of_a_seamed_class_must_be_listed', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { inventory: wp, assignment, runtimeIds: ['class:C', 'method:C::extra'] }));
+    expect(f.find((x) => x.rule === 'RuntimeMembersListed')?.message).toContain('method:C::extra');
+  });
+  test('a_listed_runtime_method_passes', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { inventory: wp, assignment, seams: [{ ...hooks, symbols: ['method:C::extra'] }], runtimeIds: ['class:C', 'method:C::extra'] }));
+    expect(f.filter((x) => x.rule === 'RuntimeMembersListed')).toEqual([]);
+  });
+});

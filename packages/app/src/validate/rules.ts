@@ -148,6 +148,28 @@ export const CitesItsScenario: Rule = {
   },
 };
 
+/**
+ * A method the runtime adds to a WordPress class in a seam (WP_Hook::speedyspec_wrap) is listed by that seam, so its
+ * page sits with its class instead of on the runtime page.
+ */
+export const RuntimeMembersListed: Rule = {
+  id: 'RuntimeMembersListed',
+  async check(ctx) {
+    if (ctx.runtimeIds === null) return [];
+    const wordpress = new Set(ctx.inventory.symbols.map((s) => s.id));
+    const listed = new Map<string, string>();
+    for (const seam of ctx.seams) for (const id of seam.symbols) listed.set(id, seam.id);
+    const f: Failure[] = [];
+    for (const id of ctx.runtimeIds) {
+      if (!id.startsWith('method:') || wordpress.has(id) || listed.has(id)) continue;
+      const cls = `class:${id.slice('method:'.length, id.lastIndexOf('::'))}`;
+      const seam = ctx.assignment.seamOf[cls];
+      if (seam !== undefined) f.push({ rule: this.id, where: `seams/${seam}/seam.yaml`, message: `the runtime adds ${id} to ${cls}; list it in the seam` });
+    }
+    return f;
+  },
+};
+
 export const SeamSymbolsExist: Rule = {
   id: 'SeamSymbolsExist',
   async check(ctx) {

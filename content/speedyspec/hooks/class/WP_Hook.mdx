@@ -12,6 +12,18 @@ differences:
 
 `WP_Hook` is SpeedySpec's own class with WordPress's methods: each object is a handle on one hook in the native store, so `$wp_filter[$name]`, `ArrayAccess` and iteration behave as in WordPress. <Ev scenario="wp_hook_methods"/> <Ev scenario="wp_hook_array_access"/> <Ev scenario="wp_hook_iterator"/> It also implements `Countable` and has `speedyspec_`-prefixed members, which WordPress's class doesn't. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L140-L141" hash="5cad2380cae67bdfc1ce50f3a723e58e08b464abcbcbde738dbd0eea9356927f"/>
 
+## SpeedySpec's own members
+
+These exist only on SpeedySpec's `WP_Hook`; WordPress's class has none of them. The `speedyspec_` methods are internal.
+
+- `__construct()` creates the hook in the native store. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L176-L180" hash="2dee0da58b2717e10e98adfc0c57900f655994b2c75a61d37600404295a7d333"/>
+- `speedyspec_wrap( $id )` returns a `WP_Hook` for an existing native hook, without running the constructor. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L187-L196" hash="7a414eda9bac6822c4f3bb4bcc225153d7bf30cb3e55c9d1287b7818a3545d87"/>
+- `__clone()` writes back any `callbacks` view PHP changed, then copies the native hook, so the clone is a separate hook. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L198-L204" hash="7d7f49bea891d149826893c0a911c17cb35a71e55735e3648b0c86084a0384c0"/>
+- Reading `->callbacks` (`__get()`) gives a copy of the hook's callbacks and remembers it; reading any other undefined property raises a warning. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L206-L217" hash="b0edee3d2219afeb892ca100e9a1a2f0938d48d088a5551adb3e1796ca15a8b2"/>
+- `speedyspec_write_back()` writes this hook's remembered `callbacks` copy back to the native hook when PHP changed it; `speedyspec_write_back_all()` does so for every hook. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L224-L245" hash="52bb63beef37f037e3b64d3c87d23c0b7dd83855e4cf7daea13d7667b0f4acdb"/>
+- Setting `->callbacks` (`__set()`) replaces the hook's callbacks; `isset( $hook->callbacks )` is true; unsetting it removes every callback. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L247-L265" hash="bcbeb13a0654b23acb85a3c0e9bc95f9505b8bc740e9f290ca57533c35b7cbb7"/>
+- `count()` gives the number of priorities with callbacks (`Countable`). <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L418-L422" hash="a0ebf2ccbfedc1c2699bb2737bdcc17d7b47cea68c1f1f355425fee74c44a3d3"/>
+
 ## Override
 
 Hooks live in the hook store behind the `HookStore` port; bind another store to keep them elsewhere. See the architecture page.

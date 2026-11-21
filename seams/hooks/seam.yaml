@@ -19,6 +19,16 @@ wordpress:
 packages: [wp-plugin]
 crates: [speedyspec-wp-hooks, speedyspec-wp-hooks-memory, speedyspec-wp-hooks-php, speedyspec-container, speedyspec-container-php, speedyspec-php-ext]
 symbols:
+  - "method:WP_Hook::__construct"
+  - "method:WP_Hook::speedyspec_wrap"
+  - "method:WP_Hook::__clone"
+  - "method:WP_Hook::__get"
+  - "method:WP_Hook::speedyspec_write_back"
+  - "method:WP_Hook::speedyspec_write_back_all"
+  - "method:WP_Hook::__set"
+  - "method:WP_Hook::__isset"
+  - "method:WP_Hook::__unset"
+  - "method:WP_Hook::count"
   - global:wp_filter
   - global:wp_actions
   - global:wp_filters

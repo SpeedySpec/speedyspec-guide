@@ -104,7 +104,7 @@ function member(id: string, section: Section, d: GuideData): MemberView {
     verdict: speedyspecVerdict(id, d).verdict,
     circular: indexOf(d).component(id) !== undefined,
   };
-  if (view.kind === 'class') view.methods = indexOf(d).methodsOf(id).map((m) => member(m, section, d));
+  if (view.kind === 'class') view.methods = indexOf(d).methodsOf(id, section).map((m) => member(m, section, d));
   return view;
 }
 
@@ -255,7 +255,7 @@ export function symbolView(id: string, section: Section, d: GuideData): SymbolVi
     examples,
     content: ix.content(section, id),
   };
-  if (view.kind === 'class') view.methods = ix.methodsOf(id).map((m) => symbolView(m, section, d));
+  if (view.kind === 'class') view.methods = ix.methodsOf(id, section).map((m) => symbolView(m, section, d));
   return view;
 }
 

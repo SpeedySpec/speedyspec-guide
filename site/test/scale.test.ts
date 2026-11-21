@@ -129,3 +129,14 @@ describe('a seam outside the fork', () => {
     expect(compatGroups('options', c)).toBeNull();
   });
 });
+
+describe('a runtime method of a WordPress class', () => {
+  test('is_a_method_on_its_class_page_not_a_page_of_its_own', () => {
+    const id = 'method:WP_Hook::speedyspec_wrap';
+    const c: GuideData = { ...d, runtimeSeamOf: { ...d.runtimeSeamOf, [id]: 'hooks' }, runtime: [...d.runtime, { id, kind: 'method', name: 'speedyspec_wrap', file: '', line: 0 }] };
+    const ix = indexOf(c);
+    expect(ix.hasPage(id, 'speedyspec')).toBe(false);
+    expect(ix.methodsOf('class:WP_Hook', 'speedyspec')).toContain(id);
+    expect(ix.methodsOf('class:WP_Hook', 'wordpress')).not.toContain(id);
+  });
+});
