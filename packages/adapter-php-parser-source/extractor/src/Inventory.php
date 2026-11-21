@@ -16,6 +16,8 @@ final class Inventory {
 	private array $preferred = array();
 	/** @var list<array<string, mixed>> */
 	private array $unresolved = array();
+	/** @var list<array{file: string, message: string}> */
+	private array $errors = array();
 
 	public function __construct( private readonly string $base ) {}
 
@@ -79,6 +81,10 @@ final class Inventory {
 		}
 	}
 
+	public function addError( string $file, string $message ): void {
+		$this->errors[] = array( 'file' => $file, 'message' => $message );
+	}
+
 	public function addUnresolved( string $from, string $code, string $file, int $line ): void {
 		$this->unresolved[] = array(
 			'from' => $from,
@@ -95,6 +101,7 @@ final class Inventory {
 			'symbols'    => array_values( $this->symbols ),
 			'edges'      => $this->resolvedEdges(),
 			'unresolved' => $this->unresolved,
+			'errors'     => $this->errors,
 		);
 	}
 

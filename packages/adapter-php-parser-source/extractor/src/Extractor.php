@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Guide\Extractor;
 
 use PhpParser\Error;
+use PhpParser\ErrorHandler\Collecting;
+use PhpParser\PhpVersion;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitor\ParentConnectingVisitor;
@@ -17,7 +19,8 @@ final class Extractor {
 
 	/** @return array<string, mixed> */
 	public function extract( string $root ): array {
-		$parser    = ( new ParserFactory() )->createForNewestSupportedVersion();
+		// PHP 7.0 grammar: it still accepts `$s{0}`, which older WordPress releases use; `=& new` is recovered from below.
+		$parser    = ( new ParserFactory() )->createForVersion( PhpVersion::fromString( '7.0' ) );
 		$printer   = new Printer();
 		$inventory = new Inventory( $this->base );
 
@@ -27,10 +30,12 @@ final class Extractor {
 				fwrite( STDERR, "unreadable: {$relative}\n" );
 				continue;
 			}
-			try {
-				$ast = $parser->parse( $code ) ?? array();
-			} catch ( Error $e ) {
-				fwrite( STDERR, "parse error in {$relative}: {$e->getMessage()}\n" );
+			$errors = new Collecting();
+			$ast    = $parser->parse( $code, $errors );
+			if ( null === $ast ) {
+				$messages = array_map( static fn( Error $e ) => $e->getMessage(), $errors->getErrors() );
+				$inventory->addError( $relative, implode( '; ', $messages ) );
+				fwrite( STDERR, "parse error in {$relative}: " . implode( '; ', $messages ) . "\n" );
 				continue;
 			}
 			$traverser = new NodeTraverser(

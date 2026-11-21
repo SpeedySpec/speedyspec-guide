@@ -24,4 +24,6 @@ export interface Inventory {
   symbols: GuideSymbol[];
   edges: Edge[];
   unresolved: Unresolved[];
+  /** Files that could not be parsed. */
+  errors?: { file: string; message: string }[];
 }

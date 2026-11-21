@@ -34,3 +34,23 @@ export function makeRepo(): { dir: string; url: string; cleanup: () => void } {
   snapshot('3.8-beta1');
   return { dir, url: `file://${dir}`, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
 }
+
+/** Tags 1.0 (a.php defines a()) and 1.1 (a.php no longer parses), then 1.2 (a.php fixed). */
+export function makeBrokenRepo(): { url: string; cleanup: () => void } {
+  const dir = mkdtempSync(join(tmpdir(), 'tags-broken-'));
+  const git = (...args: string[]) => {
+    const p = Bun.spawnSync(['git', '-c', 'user.name=t', '-c', 'user.email=t@example.test', '-c', 'commit.gpgsign=false', '-c', 'tag.gpgsign=false', ...args], { cwd: dir });
+    if (p.exitCode !== 0) throw new Error(p.stderr.toString());
+  };
+  const snapshot = (tag: string, code: string) => {
+    writeFileSync(join(dir, 'a.php'), code);
+    git('add', '-A');
+    git('commit', '-qm', tag);
+    git('tag', tag);
+  };
+  git('init', '-q', '-b', 'trunk');
+  snapshot('1.0', '<?php function a() {}\n');
+  snapshot('1.1', '<?php function a( {\n');
+  snapshot('1.2', '<?php function a() {}\n');
+  return { url: `file://${dir}`, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
+}

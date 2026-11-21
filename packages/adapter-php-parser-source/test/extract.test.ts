@@ -138,3 +138,17 @@ describe('namespaces', () => {
     expect(has('method:PHPMailer\\PHPMailer\\Exception::errorMessage', 'function:strlen')).toBe(true);
   });
 });
+
+describe('old WordPress syntax', () => {
+  test('curly string offsets and =& new still parse', () => {
+    const old = run(join(fixtures, 'php-old'));
+    expect(old.symbols.map((s) => s.id)).toEqual(expect.arrayContaining(['function:old_first_char', 'function:old_by_ref']));
+    expect(old.edges.some((e) => e.from === 'function:old_by_ref' && e.to === 'class:WP_Query')).toBe(true);
+  });
+
+  test('a file that cannot be parsed is reported in the inventory, not only on stderr', () => {
+    const old = run(join(fixtures, 'php-old'));
+    expect(old.errors).toEqual([expect.objectContaining({ file: 'broken.php' })]);
+    expect(old.errors?.some((e) => e.file === 'old.php')).toBe(false);
+  });
+});

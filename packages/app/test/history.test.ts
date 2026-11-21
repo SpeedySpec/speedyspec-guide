@@ -33,3 +33,16 @@ describe('computeHistory', () => {
     expect(again).toEqual(first);
   });
 });
+
+describe('a tag with files that do not parse', () => {
+  test('records the errors and marks nothing removed in that tag', async () => {
+    const { makeBrokenRepo } = await import('../../../tests/fixtures/git/make-repo.ts');
+    const broken = makeBrokenRepo();
+    const dir = mkdtempSync(join(tmpdir(), 'history-broken-'));
+    const h = await computeHistory(new GitTagHistory(broken.url, dir), new PhpParserSource(), { tags: [], symbols: {} });
+    broken.cleanup();
+    rmSync(dir, { recursive: true, force: true });
+    expect(h.symbols['function:a']).toEqual({ since: '1.0' });
+    expect(h.errors?.['1.1']).toEqual([expect.stringContaining('a.php')]);
+  });
+});
