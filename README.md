@@ -35,7 +35,8 @@ Inputs are pinned in `sources.json`. Checkouts go to `.cache/`. For local runs, 
 `guide.config.json`: `requireAllAssigned` (fail when a symbol is in no seam) and `stubFiles` (files whose declarations
 never replace a real one, like `wp-admin/includes/noop.php`).
 
-### WordPress 7.1.5, first run (2026-11-20)
+### WordPress 7.1.5 (2026-11-20)
 
-16,879 symbols, 63,037 edges, 563 unresolved calls; 237 symbol cycles (138 of them a function calling itself, 4
-through hooks); 50 symbols in the Hooks seam; no seam cycles yet, because Hooks is the only seam.
+16,943 symbols (2,108 namespaced), 63,254 edges, 555 unresolved calls, no parse errors; 1,237 hook registrations
+(289 to class methods); 243 circular groups holding 1,330 symbols, one of them only possible (it closes through a
+hook-name pattern); 49 symbols in the Hooks seam; no seam cycles yet, because Hooks is the only seam.

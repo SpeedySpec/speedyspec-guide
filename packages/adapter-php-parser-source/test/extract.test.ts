@@ -179,3 +179,11 @@ describe('scopes and callbacks', () => {
     expect(scope().symbols.find((s) => s.id === 'function:wp_cache_add_multiple')).toMatchObject({ file: 'cache.php', alternates: ['a-cache-compat.php:3'], pluggable: true });
   });
 });
+
+describe('modern syntax next to old syntax', () => {
+  test('match, nullsafe and enums parse with the newest grammar', () => {
+    const inv = run(join(fixtures, 'php-old'));
+    expect(inv.symbols.map((s) => s.id)).toEqual(expect.arrayContaining(['function:new_syntax', 'class:Suit']));
+    expect(inv.errors?.some((e) => e.file === 'new.php')).toBe(false);
+  });
+});
