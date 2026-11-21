@@ -1,0 +1,23 @@
+{
+  "name": "@speedyspec-guide/site",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4",
+    "@speedyspec-guide/adapter-example-files": "workspace:*",
+    "@speedyspec-guide/adapter-seam-files": "workspace:*",
+    "@speedyspec-guide/app": "workspace:*",
+    "@speedyspec-guide/domain": "workspace:*",
+    "astro": "^5",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "typescript": "^5.9"
+  }
+}

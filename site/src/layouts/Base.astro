@@ -1,0 +1,27 @@
+---
+import '../styles/guide.css';
+
+interface Props {
+  title: string;
+  section?: 'wordpress' | 'speedyspec';
+}
+const { title, section } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · SpeedySpec Guide</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">SpeedySpec Guide</a>
+      <a href="/wordpress/" aria-current={section === 'wordpress' ? 'page' : undefined}>WordPress API</a>
+      <a href="/speedyspec/" aria-current={section === 'speedyspec' ? 'page' : undefined}>SpeedySpec API</a>
+      <a href="/coverage/">Coverage</a>
+      <div class="search" id="search"></div>
+    </header>
+    <slot />
+  </body>
+</html>

@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "site"
   ],
   "scripts": {
     "test": "bun test",
@@ -11,7 +12,9 @@
     "guide": "bun packages/cli/src/main.ts",
     "runner:link": "bun scripts/link-server.ts",
     "runner:build": "cd runner && cargo build --release",
-    "runner:test": "cd runner && cargo test"
+    "runner:test": "cd runner && cargo test",
+    "site:dev": "cd site && bun run dev",
+    "site:build": "cd site && bun run build"
   },
   "devDependencies": {
     "@types/bun": "^1.3.0",

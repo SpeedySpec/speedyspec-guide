@@ -7,3 +7,5 @@ vendor/
 runner/server
 runner/target/
 !generated/speedyspec-history.json
+site/dist/
+site/.astro/
