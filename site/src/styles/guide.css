@@ -128,3 +128,8 @@ li.circular a, .member.circular a { color: var(--bad); }
 table.conversion { border-collapse: collapse; margin: 1rem 0; }
 table.conversion th, table.conversion td { border-bottom: 1px solid var(--line); padding: 0.25rem 0.75rem; text-align: left; }
 table.conversion td + td { text-align: right; }
+
+/* The installation guide. */
+.install-contents ol { padding-left: 1.25rem; }
+.install-contents li { margin: 0.25rem 0; }
+.install-pager { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.875rem; }

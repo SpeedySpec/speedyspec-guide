@@ -1,0 +1,293 @@
+---
+title: Installing speedyspec-server
+summary: Binaries, configuration, systemd, Docker, Kubernetes, the PHP runtime, first run and upgrades.
+order: 30
+---
+
+## Choose a mode
+
+The server runs in one of two modes, set by `mode` in its configuration.
+
+| | `managed` (default) | `immutable` |
+| --- | --- | --- |
+| Where | A host or VM under systemd, or Kubernetes with a writable volume for `data_dir` | Containers with read-only storage |
+| Apps come from | `source`: a release index URL | `path`: a directory baked into the image |
+| Writes to disk | `data_dir` (releases, `state.json`) and `run_dir` | Nothing; sockets only, in an existing `run_dir` |
+| Upgrades | `release …` and auto-update; the server upgrades itself by handoff | A new image |
+
+## Download a release binary
+
+The server and the PHP runtime are published on the GitHub releases of `SpeedySpec/speedyspec-server`, each with its own version:
+
+- the server under tags `speedyspec-server-v<version>`;
+- the PHP runtime under tags `speedyspec-php-runtime-v<version>`.
+
+Each release has one binary per target, its `.minisig` signature, and `SHA256SUMS`.
+The binaries are named after the target:
+
+| Target | Server binary | PHP runtime binary |
+| --- | --- | --- |
+| Linux x86_64 | `speedyspec-server-x86_64-unknown-linux-musl` | `speedyspec-php-runtime-x86_64-unknown-linux-musl` |
+| Linux aarch64 | `speedyspec-server-aarch64-unknown-linux-musl` | `speedyspec-php-runtime-aarch64-unknown-linux-musl` |
+| macOS Apple silicon | `speedyspec-server-aarch64-apple-darwin` | `speedyspec-php-runtime-aarch64-apple-darwin` |
+
+No macOS Intel binary is published.
+The README gives no download command or "latest" address for these releases.
+
+Check a download against the signing key and the checksums:
+
+```bash
+minisign -V -p minisign.pub -m speedyspec-server-x86_64-unknown-linux-musl
+```
+
+```bash
+grep ' speedyspec-server-x86_64-unknown-linux-musl$' SHA256SUMS | sha256sum -c
+```
+
+`minisign.pub` is in the repository.
+Its second line is the public key, `RWT1iFxWT0DcUmOoHd7G9+GvpsUxaAPTOqtDr0GyVUvsJHHuBNRxI+0n`.
+
+The systemd unit expects the binary at `/usr/local/bin/speedyspec-server`.
+
+In managed mode you install only the server binary by hand.
+The server downloads the PHP runtime itself, as the `php-runtime` app (see [The PHP runtime](#the-php-runtime)).
+
+## Configure it
+
+The configuration is TOML, read from `/etc/speedyspec/server.toml` unless `--config` names another file.
+The repository's Kubernetes example holds the smallest documented configuration:
+
+```toml
+mode = "managed"
+data_dir = "/var/lib/speedyspec"
+run_dir = "/run/speedyspec"
+
+[[listener]]
+address = "0.0.0.0:8080"
+
+[app.server]
+kind = "server"
+source = "https://releases.speedyspec.com/server/index.json"
+keys = ["RWT1iFxWT0DcUmOoHd7G9+GvpsUxaAPTOqtDr0GyVUvsJHHuBNRxI+0n"]
+
+[app.admin]
+kind = "static"
+source = "https://releases.example.com/admin/index.json"
+keys = ["RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3"]
+
+[[mount]]
+path = "/admin/"
+app = "admin"
+access = "signed-in"
+```
+
+The Kubernetes example also has a `[cluster]` table, left out here; see [Kubernetes](#kubernetes).
+The `admin` source and key are placeholders: the example says to replace them with your release indexes and minisign keys.
+The projects publish no release index for the admin.
+
+What the settings mean:
+
+- `data_dir` is required in managed mode.
+  It holds the kept releases and `state.json`.
+- `run_dir` defaults to `/run/speedyspec`.
+  It holds `server.lock` and `keeper.sock`, which `status`, `release …` and `reload` talk to.
+- Each `[[listener]]` is an address.
+  Add `tls = { cert = "…", key = "…" }` for TLS, and `http3 = true` for HTTP/3 on the same UDP port, which needs TLS.
+- `[app.server]` is required, exactly once, with `kind = "server"`.
+  Its release is this binary.
+  Its `source` is the published server index, and its `keys` hold the key from `minisign.pub`.
+- Each other `[app.<id>]` is an app, with `kind` `static`, `php` or `runtime`.
+  In managed mode it takes a `source`; in immutable mode a `path`, and `source` is refused there.
+- Each `[[mount]]` serves an app at a path, optionally on a `host`, with `access` `public` (the default) or `signed-in`.
+- `[access]` sets how `signed-in` mounts are checked: `gate`, `deny`, or `dev-allow-all` (only when every listener is on a loopback address).
+  `gate` needs a `[gate]` table naming the admin API app.
+
+The server's README has the full example, with `[proxy]`, `[gate]`, `[health]`, `[limits]` and `[handoff]`.
+
+### The PHP runtime
+
+PHP apps (`kind = "php"`) run on a runtime app (`kind = "runtime"`).
+In managed mode its published index is the `source`, and the app's id must be `php-runtime`:
+
+```toml
+[app.php-runtime]
+kind = "runtime"
+source = "https://releases.speedyspec.com/php-runtime/index.json"
+keys = ["RWT1iFxWT0DcUmOoHd7G9+GvpsUxaAPTOqtDr0GyVUvsJHHuBNRxI+0n"]
+update = "manual"
+```
+
+The same key signs the server and the runtime.
+In immutable mode, the runtime app's `path` is a directory holding the `speedyspec-php-runtime` binary.
+`speedyspec-php-runtime manifest` prints its version, contracts and PHP version as JSON.
+
+A PHP app names its runtime with `runtime = "php-runtime"`, or leaves it out when only one runtime app is configured.
+Its pool settings go under `[app.<id>.php]`.
+In managed mode each PHP app needs a `site_dir`, its writable directory:
+
+```toml
+[app.blog.php]
+workers = { min = 1, max = 4 }
+site_dir = "/var/lib/speedyspec/sites/blog"
+```
+
+The server's `docs/php.md` describes every pool setting, the site directory and the environment each worker gets.
+
+## Run it under systemd
+
+The repository ships a unit file, `docs/systemd/speedyspec-server.service`, for managed mode.
+
+1. Install the binary at `/usr/local/bin/speedyspec-server`.
+2. Install a configuration at `/etc/speedyspec/server.toml` with `data_dir = "/var/lib/speedyspec"` and `run_dir = "/run/speedyspec"`.
+3. Install the unit file, then enable and start it:
+
+```bash
+systemctl enable --now speedyspec-server
+```
+
+The unit's comments do not say which directory to put the file in.
+
+The unit creates `/var/lib/speedyspec` and `/run/speedyspec` (`StateDirectory` and `RuntimeDirectory`).
+It runs as user and group `speedyspec`; the docs do not say how to create them.
+It may bind ports below 1024 without root (`CAP_NET_BIND_SERVICE`).
+`Type=notify`: the server tells systemd it is ready once its first generation serves.
+`systemctl reload speedyspec-server` runs `speedyspec-server reload`.
+
+## Run it in a container
+
+The `Dockerfile` builds an image holding one static binary on an empty base:
+
+```bash
+docker build -t speedyspec-server .
+```
+
+Run it from a checkout of the repository.
+The image's command is `run --config /etc/speedyspec/server.toml`, so mount a configuration there.
+The projects document no published image.
+
+In a container, run the server in immutable mode with each app's files baked into the image.
+The server never creates `run_dir` in immutable mode.
+If `run_dir` does not exist, the server serves, but `status` and `release list` cannot reach it; mount an empty, writable directory there if you want them.
+On Kubernetes with a writable volume for `data_dir`, managed mode works as on a host.
+
+## Kubernetes
+
+`deploy/kubernetes/` holds an example for several replicas in managed mode:
+
+- `serviceaccount.yaml`, `role.yaml` and `rolebinding.yaml`: the Role allows `create` on Leases, and `get` and `update` on the one Lease;
+- `pvc.yaml`: the shared `data_dir`, ReadWriteMany, 2 GiB;
+- `configmap.yaml`: the configuration above, with `[cluster]`;
+- `deployment.yaml`: three replicas of the image `speedyspec-server:latest`, wired to the probes and `POD_NAME`;
+- `service.yaml`: port 80 to the pods' `http` port.
+
+The README does not give a command to apply them.
+Build the image with the `Dockerfile` first, since none is published.
+
+Several replicas share one `data_dir` volume.
+One pod leads, elected through a Lease: it alone downloads, switches and writes `state.json`.
+Add `[cluster]` to the configuration:
+
+```toml
+[cluster]
+leadership = "kubernetes"
+probe = "0.0.0.0:9090"
+```
+
+- The volume must be ReadWriteMany when pods run on several nodes.
+- Run release commands on the leader; a follower refuses them and names the leader.
+- `probe` serves `/livez` and `/readyz`.
+
+The README's "Kubernetes: several replicas" section lists every `[cluster]` setting, and `docs/cluster.md` explains leaders, followers and rollouts.
+
+## First run
+
+Start the server in the foreground:
+
+```bash
+speedyspec-server run --config /etc/speedyspec/server.toml
+```
+
+This starts the keeper.
+It binds the listeners and starts one generation, a child process that does the serving.
+On first start in managed mode, the running binary becomes the first confirmed server release, copied to `<data_dir>/releases/server/<version>/`.
+
+From another shell, check it:
+
+```bash
+speedyspec-server status
+```
+
+`status` prints, tab-separated: the server's version and mode, the active generation (PID, version, `trial` or `confirmed`), the keeper's version, then one line per app.
+For example:
+
+```text
+server	0.2.0	managed
+generation	66985	0.2.0	confirmed
+keeper	0.2.0
+admin	static	1.0.0	1.0.0	-	-
+```
+
+Each app line is `app kind active kept pinned failed`, with `-` for none.
+
+Other checks:
+
+```bash
+speedyspec-server release list
+speedyspec-server release check
+speedyspec-server manifest
+```
+
+`release list` prints the app lines only.
+`release check` prints the newest release each app could install.
+`manifest` prints this binary's release manifest as JSON.
+Errors go to stderr, prefixed `speedyspec-server:`, with exit code 1.
+
+## Upgrading
+
+### In managed mode
+
+Apps with `update = "auto"` install and switch on their own every `check_interval`.
+The server app defaults to `update = "manual"`.
+To upgrade by hand:
+
+```bash
+speedyspec-server release check server
+speedyspec-server release install server 0.2.0
+speedyspec-server release switch server@0.2.0
+```
+
+`release install` downloads and keeps a release without switching to it.
+`release switch` makes kept releases live; it takes several `<app>@<version>` targets at once, as one step.
+
+A server switch is a handoff, with no refused connections.
+The keeper starts a generation of the new binary on the same sockets, the old one drains, and the new version is on trial for `trial_period` (2 minutes by default).
+If the new generation exits during the trial, the old one resumes serving and the version is marked failed.
+If it survives, the version is confirmed and the keeper re-executes itself from the new binary.
+
+To go back:
+
+```bash
+speedyspec-server release rollback server
+```
+
+A rollback marks the release it left as failed and pins the app, so auto-update does not bring it back.
+`speedyspec-server release unpin <app>` lets auto-update run again.
+
+Starting the server from a newer binary than the confirmed one, for example after replacing the file in place, adopts it the same way, unless that version has failed before.
+
+The PHP runtime is switched on its own, never in the same step as an app on it, and is on trial for `runtime.trial_period`.
+
+`speedyspec-server reload` re-reads the configuration and hands off to a new generation, with the same trial.
+Listener changes need a full restart.
+
+### In immutable mode
+
+Upgrade and roll back by rolling out a different image.
+`release install`, `switch`, `rollback`, `pin`, `unpin` and `reload` are refused.
+
+## Removing it
+
+The server's README and docs document no uninstall step.
+What the server writes is in `data_dir` (releases and `state.json`) and `run_dir` (`server.lock`, `keeper.sock`, and the PHP workers' sockets).
+`SIGTERM` to the keeper drains the current generation and exits.
+Under systemd, the unit's `KillMode=mixed` sends `SIGTERM` to the keeper only, and kills anything left after `TimeoutStopSec`.

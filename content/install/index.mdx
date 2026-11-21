@@ -1,0 +1,77 @@
+---
+title: Installing SpeedySpec
+summary: What the parts are, how they fit together, and what each needs.
+order: 0
+---
+
+SpeedySpec has two programs you install: the `speedyspec` command line and the `speedyspec-server` web server.
+This guide covers getting each one onto a machine and running it.
+Every command here comes from the two projects' READMEs, docs, scripts and config files.
+Where they say nothing, the guide says so.
+
+These pages were written against `speedyspec` 1.2.1 and `speedyspec-server` 0.1.0 (commit `8fc4983`).
+
+## The parts
+
+### `speedyspec`, the command line
+
+`speedyspec` is one binary with a statically linked PHP 8.5 inside it.
+It needs no PHP, Composer or `php.ini` on the machine.
+On its own it knows no application.
+PHP plugins, loaded at start-up, add commands and installable "apps".
+
+Two plugins make it a WordPress tool:
+
+- `speedyspec/wordpress` adds the `wordpress` app.
+  It installs WordPress, writes `wp-config.php`, reaches the site's database, backs the site up and restores it, and manages its plugin and theme files.
+- `speedyspec/wordpress-org` lets `speedyspec plugin install` and `speedyspec theme install` fetch from wordpress.org.
+
+`speedyspec` never runs WordPress.
+A site it installs on a machine is served by that machine's own web server and PHP, for example php-fpm.
+A site it installs on Kubernetes is served by the official WordPress image.
+
+### `speedyspec-server`, the web server
+
+`speedyspec-server` is one binary that serves, by host and path, over HTTP/1.1, HTTP/2 and HTTP/3:
+
+- the SpeedySpec admin, a static site held in memory;
+- the admin API, the front-end API and the blog, which are PHP apps.
+
+The server holds no PHP.
+Its PHP apps run on a separate binary, the PHP runtime `speedyspec-php-runtime`, which the server starts and supervises.
+The runtime embeds a static PHP with the extensions WordPress needs, and WordPress's hook functions in Rust.
+
+Each app, the PHP runtime and the server itself has its own releases.
+The server downloads, verifies, keeps, switches and rolls back each one without touching the others.
+The same binary is the control tool: `status`, `release …` and `reload` talk to the running server.
+
+## How they fit together
+
+The two projects document no step that takes a site installed by `speedyspec` and serves it with `speedyspec-server`.
+
+- `speedyspec app install wordpress` puts WordPress files in a directory, or on a Kubernetes claim, for another web server and PHP to serve.
+- `speedyspec-server` gets its apps from release indexes (managed mode) or from directories baked into an image (immutable mode), not from a `speedyspec` install.
+
+The server's README says an immutable-mode server is upgraded "by rolling out a different image with the `speedyspec` CLI".
+The CLI's README documents no command that does this.
+
+## Requirements
+
+### For `speedyspec`
+
+- One of these platforms: Linux x86_64 or aarch64 (static binaries), or macOS 12 or later on Apple silicon or Intel.
+- Nothing else to run the binary.
+- For a WordPress install on the machine: a MySQL or MariaDB database and user that already exist, and a web server with PHP to serve the files.
+- For a WordPress install on Kubernetes: a cluster reachable through your kubeconfig, or through `--server` and a token.
+  kubectl and Helm are not needed.
+
+### For `speedyspec-server`
+
+- One of the published targets: `x86_64-unknown-linux-musl`, `aarch64-unknown-linux-musl` or `aarch64-apple-darwin`.
+- In managed mode, a writable directory for `data_dir`: on a host or VM under systemd, or a writable volume on Kubernetes.
+- In immutable mode, a container image with each app's files baked in.
+- For several replicas on several Kubernetes nodes, a ReadWriteMany volume shared as `data_dir`.
+- No PHP on the machine: the PHP runtime is released as an app of its own.
+- To check a download's signature by hand, `minisign`.
+
+To build either project from source, see [Building from source](/install/building-from-source/).
