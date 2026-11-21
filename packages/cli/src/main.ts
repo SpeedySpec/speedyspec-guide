@@ -15,7 +15,8 @@ import { SeamFiles } from '@speedyspec-guide/adapter-seam-files';
 import { WordPressCommit } from '@speedyspec-guide/adapter-wordpress-git';
 import { type PipelineDeps, runStage, STAGES, type Stage } from '@speedyspec-guide/app';
 import type { GeneratedStore } from '@speedyspec-guide/contracts';
-import { existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { checkout } from './checkout.ts';
 
@@ -92,6 +93,16 @@ async function main(argv: string[]): Promise<number> {
         const dir = join(await serverDir(), 'crates');
         const out: { path: string; text: string }[] = [];
         for await (const file of new Bun.Glob('*/Cargo.toml').scan({ cwd: dir })) out.push({ path: file, text: await Bun.file(join(dir, file)).text() });
+        return out;
+      },
+      facades: async () => {
+        const dir = join(await serverDir(), 'crates');
+        const out = mkdtempSync(join(tmpdir(), 'guide-facades-'));
+        for await (const file of new Bun.Glob('speedyspec-wp-*-php/src/*.php').scan({ cwd: dir })) {
+          // The runtime evals these, so they start without an opening tag; the extractor needs one.
+          const text = await Bun.file(join(dir, file)).text();
+          await Bun.write(join(out, file.replaceAll('/', '--')), text.trimStart().startsWith('<?php') ? text : `<?php\n${text}`);
+        }
         return out;
       },
     },

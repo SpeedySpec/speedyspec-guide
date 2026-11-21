@@ -79,4 +79,9 @@ export interface ExampleRunner {
 /** The Cargo.toml of every crate in the pinned speedyspec-server checkout. */
 export interface CrateSource {
   manifests(): Promise<{ path: string; text: string }[]>;
+  /**
+   * A folder holding the PHP facades speedyspec-server's ports declare WordPress's API from
+   * (`crates/speedyspec-wp-*-php/src/*.php`), for the PHP extractor.
+   */
+  facades(): Promise<string>;
 }

@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { parse } from 'yaml';
 
 /** Fixed routes under /speedyspec/, so never seam ids. */
-const RESERVED = ['porting', 'architecture', 'runtime'];
+const RESERVED = ['porting', 'architecture', 'runtime', 'conversion'];
 const STATES = ['php', 'port', 'rust'];
 
 const EDGE_KINDS: EdgeKind[] = ['calls', 'reads', 'writes', 'fires', 'runs', 'matches', 'alias', 'undone-by'];

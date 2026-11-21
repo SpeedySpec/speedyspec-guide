@@ -44,6 +44,11 @@ export interface GuideData {
   runtimeSeamOf: Record<string, string>;
   graph: Graph;
   cycles: Cycles;
+  /**
+   * Each WordPress symbol SpeedySpec has converted to Rust: `runtime` when the runtime registers it, `ported` when a
+   * speedyspec-server port declares it but the runtime doesn't boot that port yet (generated/conversion.json).
+   */
+  conversion: Record<string, 'runtime' | 'ported'>;
   /** The WordPress release each seam's compat area was recorded against (generated/compat.json). */
   compatAreas: Record<string, string>;
   wordpressHistory: HistoryFile | null;
@@ -109,6 +114,7 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
     runtimeSeamOf,
     graph: await json<Graph>('graph', { nodes: [], edges: [], crossSeam: [] }),
     cycles: await json<Cycles>('cycles', { symbol: [], seam: [], components: [] }),
+    conversion: (await json<{ states?: Record<string, 'runtime' | 'ported'> } | null>('conversion', null))?.states ?? {},
     compatAreas: (await json<{ areas?: Record<string, string> } | null>('compat', null))?.areas ?? {},
     wordpressHistory: await json<HistoryFile | null>('wordpress-history', null),
     speedyspecHistory: await json<RuntimeHistoryFile | null>('speedyspec-history', null),

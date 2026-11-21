@@ -38,7 +38,7 @@ describe('bun run guide all --offline', () => {
   test('an unknown stage is refused with the list of stages', () => {
     const p = Bun.spawnSync(['bun', join(repo, 'packages', 'cli', 'src', 'main.ts'), 'nope']);
     expect(p.exitCode).toBe(2);
-    expect(p.stderr.toString()).toContain('extract, assign, graph, history, examples, reflect, runtime-history, crates, coverage, evidence, validate, all');
+    expect(p.stderr.toString()).toContain('extract, assign, graph, history, examples, reflect, runtime-history, conversion, crates, coverage, evidence, validate, all');
   });
 });
 
@@ -86,6 +86,18 @@ describe('the examples, reflect and runtime-history stages', () => {
     expect(results.problems.length).toBeGreaterThan(0);
     expect(read('inventory-runtime').map((s: { id: string }) => s.id)).toEqual(['function:add_filter']);
     expect(read('speedyspec-history')).toEqual({ versions: [], symbols: { 'function:add_filter': { since: 'unreleased' } } });
+  });
+
+  test('conversion_says_which_wordpress_symbols_are_rust', async () => {
+    const dir = await work();
+    const fake = join(fixtures, 'fake-runner', 'speedyspec-guide-examples');
+    expect(guide(dir, ['conversion', '--offline'], env({ GUIDE_RUNNER: fake })).stderr.toString()).toContain('conversion skipped: no inventory-runtime.json');
+    for (const stage of ['extract', 'reflect', 'conversion']) {
+      const p = guide(dir, [stage, '--offline'], env({ GUIDE_RUNNER: fake }));
+      expect(p.exitCode, p.stderr.toString()).toBe(0);
+    }
+    const conversion = JSON.parse(readFileSync(join(dir, 'generated', 'conversion.json'), 'utf8'));
+    expect(conversion).toEqual({ states: { 'function:add_filter': 'runtime', 'function:update_option': 'ported' } });
   });
 });
 

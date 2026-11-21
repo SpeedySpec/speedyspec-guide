@@ -55,6 +55,13 @@ describe('SeamFiles', () => {
     rmSync(dir, { recursive: true });
   });
 
+  test('a_seam_named_conversion_is_refused_as_a_route', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'seams-'));
+    cpSync(join(fixtures, 'a'), join(dir, 'conversion'), { recursive: true });
+    await expect(new SeamFiles(dir).all()).rejects.toThrow('seams/conversion: conversion is reserved for a route');
+    rmSync(dir, { recursive: true });
+  });
+
   test('packages_is_refused', async () => {
     const dir = only('packaged');
     await expect(new SeamFiles(dir).all()).rejects.toThrow("packaged/seam.yaml: packages is no longer supported; SpeedySpec doesn't ship the PHP packages/ tree");

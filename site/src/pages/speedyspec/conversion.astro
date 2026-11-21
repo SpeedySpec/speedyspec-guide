@@ -1,0 +1,52 @@
+---
+import Base from '../../layouts/Base.astro';
+import MaybeLink from '../../components/MaybeLink.astro';
+import { conversionView, STATE_LABELS } from '../../model/conversion.ts';
+import { loadGuideData } from '../../model/data.ts';
+
+const d = await loadGuideData();
+const { withRust, phpOnly } = conversionView(d);
+---
+<Base title="Rust or PHP" section="speedyspec">
+  <main class="page" data-pagefind-body>
+    <div class="crumbs"><a href="/speedyspec/">SpeedySpec API</a></div>
+    <h1>Rust or PHP</h1>
+    <p>Which WordPress functions, classes, methods and constants SpeedySpec has converted to Rust. Each is in one of three states:</p>
+    <ul>
+      <li><strong>{STATE_LABELS.runtime}:</strong> the SpeedySpec runtime registers it, so WordPress's PHP for it doesn't run.</li>
+      <li><strong>{STATE_LABELS.ported}:</strong> a speedyspec-server port provides it in Rust, checked against WordPress by the server's compatibility scenarios, but the runtime doesn't load that port yet.</li>
+      <li><strong>{STATE_LABELS.php}:</strong> WordPress's own PHP.</li>
+    </ul>
+    <p class="muted">Hooks and globals have no state of their own: the functions that fire or hold them decide.</p>
+
+    <table class="conversion">
+      <thead><tr><th>Seam</th><th>{STATE_LABELS.runtime}</th><th>{STATE_LABELS.ported}</th><th>{STATE_LABELS.php}</th></tr></thead>
+      <tbody>
+        {withRust.map((r) => (
+          <tr><td><a href={`#${r.seam}`}>{r.name}</a></td><td>{r.runtime}</td><td>{r.ported}</td><td>{r.php}</td></tr>
+        ))}
+      </tbody>
+    </table>
+
+    {withRust.map((r) => (
+      <section id={r.seam}>
+        <h2><a href={`/wordpress/${r.seam}/`}>{r.name}</a></h2>
+        {r.groups.map((g) => (
+          <>
+            <h3>{g.label} <span class="muted">({g.members.length})</span></h3>
+            <ul class="inline-list">
+              {g.members.map((m) => <li><MaybeLink href={m.href}><span class="mono">{m.name}</span></MaybeLink></li>)}
+            </ul>
+          </>
+        ))}
+      </section>
+    ))}
+
+    <section id="php-only">
+      <h2>Wholly in PHP</h2>
+      <ul>
+        {phpOnly.map((r) => <li><a href={`/wordpress/${r.seam}/`}>{r.name}</a> <span class="muted">{r.php} in PHP</span></li>)}
+      </ul>
+    </section>
+  </main>
+</Base>

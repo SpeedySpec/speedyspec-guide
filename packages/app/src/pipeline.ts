@@ -3,6 +3,7 @@ import type { Assignment, GuideSymbol, Inventory } from '@speedyspec-guide/domai
 import { assign } from './assign.ts';
 import { loadOrder } from './load-order.ts';
 import { computeCoverage } from './coverage.ts';
+import { type ConversionFile, conversionStates } from './conversion.ts';
 import { buildEvidenceIndex, type EvidenceIndex } from './evidence-index.ts';
 import { readCrates } from './crates.ts';
 import { findCycles } from './cycles.ts';
@@ -13,7 +14,7 @@ import { computeHistory, type HistoryFile } from './history.ts';
 import type { Failure, ValidationContext } from './validate/rule.ts';
 import { ALL_RULES, runRules } from './validate/run.ts';
 
-export const STAGES = ['extract', 'assign', 'graph', 'history', 'examples', 'reflect', 'runtime-history', 'crates', 'coverage', 'evidence', 'validate'] as const;
+export const STAGES = ['extract', 'assign', 'graph', 'history', 'examples', 'reflect', 'runtime-history', 'conversion', 'crates', 'coverage', 'evidence', 'validate'] as const;
 export type Stage = (typeof STAGES)[number];
 
 /** What the stages need from outside. The CLI wires the adapters. */
@@ -107,6 +108,14 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
       const released = releasedAt(pinnedCommit, tagCommit);
       const file = (await store.read<RuntimeHistoryFile>('speedyspec-history')) ?? { versions: [], symbols: {} };
       await store.write('speedyspec-history', updateRuntimeHistory(await need<GuideSymbol[]>(store, 'inventory-runtime'), version, released, file));
+      break;
+    }
+    case 'conversion': {
+      const runtime = await store.read<GuideSymbol[]>('inventory-runtime');
+      if (runtime === null) return { ok: true, failures: [], skipped: 'no inventory-runtime.json (bun run guide reflect)' };
+      const ported = await deps.source.extract(await deps.crates.facades(), 'ss', '');
+      const states = conversionStates((await need<Inventory>(store, 'inventory-wp')).symbols, new Set(runtime.map((s) => s.id)), new Set(ported.symbols.map((s) => s.id)));
+      await store.write('conversion', { states } satisfies ConversionFile);
       break;
     }
     case 'crates':
