@@ -6,3 +6,4 @@ generated/*
 vendor/
 runner/server
 runner/target/
+!generated/speedyspec-history.json

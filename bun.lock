@@ -45,6 +45,13 @@
         "@speedyspec-guide/domain": "workspace:*",
       },
     },
+    "packages/adapter-runner-crate": {
+      "name": "@speedyspec-guide/adapter-runner-crate",
+      "dependencies": {
+        "@speedyspec-guide/contracts": "workspace:*",
+        "@speedyspec-guide/domain": "workspace:*",
+      },
+    },
     "packages/adapter-seam-files": {
       "name": "@speedyspec-guide/adapter-seam-files",
       "dependencies": {
@@ -71,8 +78,10 @@
       "dependencies": {
         "@speedyspec-guide/adapter-compat-files-evidence": "workspace:*",
         "@speedyspec-guide/adapter-content-files": "workspace:*",
+        "@speedyspec-guide/adapter-example-files": "workspace:*",
         "@speedyspec-guide/adapter-git-tag-history": "workspace:*",
         "@speedyspec-guide/adapter-php-parser-source": "workspace:*",
+        "@speedyspec-guide/adapter-runner-crate": "workspace:*",
         "@speedyspec-guide/adapter-seam-files": "workspace:*",
         "@speedyspec-guide/adapter-wordpress-release": "workspace:*",
         "@speedyspec-guide/app": "workspace:*",
@@ -100,6 +109,8 @@
     "@speedyspec-guide/adapter-git-tag-history": ["@speedyspec-guide/adapter-git-tag-history@workspace:packages/adapter-git-tag-history"],
 
     "@speedyspec-guide/adapter-php-parser-source": ["@speedyspec-guide/adapter-php-parser-source@workspace:packages/adapter-php-parser-source"],
+
+    "@speedyspec-guide/adapter-runner-crate": ["@speedyspec-guide/adapter-runner-crate@workspace:packages/adapter-runner-crate"],
 
     "@speedyspec-guide/adapter-seam-files": ["@speedyspec-guide/adapter-seam-files@workspace:packages/adapter-seam-files"],
 

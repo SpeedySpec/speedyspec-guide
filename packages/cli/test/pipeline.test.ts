@@ -33,6 +33,49 @@ describe('bun run guide all --offline', () => {
   test('an unknown stage is refused with the list of stages', () => {
     const p = Bun.spawnSync(['bun', join(repo, 'packages', 'cli', 'src', 'main.ts'), 'nope']);
     expect(p.exitCode).toBe(2);
-    expect(p.stderr.toString()).toContain('extract, fork, assign, graph, history, validate, all');
+    expect(p.stderr.toString()).toContain('extract, fork, assign, graph, history, examples, reflect, runtime-history, validate, all');
+  });
+});
+
+describe('the examples, reflect and runtime-history stages', () => {
+  async function work(): Promise<string> {
+    const dir = mkdtempSync(join(tmpdir(), 'pipeline-examples-'));
+    cpSync(join(fixtures, 'pipeline'), dir, { recursive: true });
+    cpSync(join(repo, 'sources.json'), join(dir, 'sources.json'));
+    await Bun.write(join(dir, 'guide.config.json'), JSON.stringify({ requireAllAssigned: false, stubFiles: ['noop.php'] }));
+    cpSync(join(fixtures, 'examples-seams', 'hooks', 'examples'), join(dir, 'seams', 'hooks', 'examples'), { recursive: true });
+    return dir;
+  }
+  const env = (extra: Record<string, string> = {}) => ({ ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_FORK_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server'), ...extra });
+  const guide = (dir: string, args: string[], e: Record<string, string | undefined>) => Bun.spawnSync(['bun', join(repo, 'packages', 'cli', 'src', 'main.ts'), ...args], { cwd: dir, env: e });
+
+  test('offline without a runner binary, they are skipped', async () => {
+    const dir = await work();
+    const p = guide(dir, ['examples', '--offline'], env({ GUIDE_RUNNER: join(dir, 'no-such-binary') }));
+    expect(p.exitCode).toBe(0);
+    expect(p.stderr.toString()).toContain('no runner binary');
+    expect(existsSync(join(dir, 'generated', 'examples.json'))).toBe(false);
+  });
+
+  test('online without a runner binary, they fail and say how to build it', async () => {
+    const dir = await work();
+    const p = guide(dir, ['examples'], env({ GUIDE_RUNNER: join(dir, 'no-such-binary') }));
+    expect(p.exitCode).toBe(1);
+    expect(p.stderr.toString()).toContain('bun run runner:build');
+  });
+
+  test('with a runner they write the results, the runtime API and its history', async () => {
+    const dir = await work();
+    const fake = join(fixtures, 'fake-runner', 'speedyspec-guide-examples');
+    for (const stage of ['examples', 'reflect', 'runtime-history']) {
+      const p = guide(dir, [stage, '--offline'], env({ GUIDE_RUNNER: fake }));
+      expect(p.exitCode, p.stderr.toString()).toBe(0);
+    }
+    const read = (f: string) => JSON.parse(readFileSync(join(dir, 'generated', `${f}.json`), 'utf8'));
+    const examples = read('examples');
+    expect(examples.results.find((r: { id: string; side: string }) => r.id === 'hooks/add_filter/a' && r.side === 'runtime')?.passed).toBe(true);
+    expect(examples.problems.length).toBeGreaterThan(0);
+    expect(read('inventory-runtime').map((s: { id: string }) => s.id)).toEqual(['function:add_filter']);
+    expect(read('speedyspec-history')).toEqual({ versions: [], symbols: { 'function:add_filter': { since: 'unreleased' } } });
   });
 });

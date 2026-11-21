@@ -8,3 +8,5 @@ export * from './validate/rule.ts';
 export * from './validate/rules.ts';
 export * from './validate/run.ts';
 export * from './pipeline.ts';
+export * from './examples.ts';
+export * from './runtime-history.ts';

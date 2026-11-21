@@ -7,13 +7,15 @@
  */
 import { CompatFilesEvidence } from '@speedyspec-guide/adapter-compat-files-evidence';
 import { ContentFiles } from '@speedyspec-guide/adapter-content-files';
+import { ExampleFiles } from '@speedyspec-guide/adapter-example-files';
+import { RunnerCrate } from '@speedyspec-guide/adapter-runner-crate';
 import { GitTagHistory } from '@speedyspec-guide/adapter-git-tag-history';
 import { PhpParserSource } from '@speedyspec-guide/adapter-php-parser-source';
 import { SeamFiles } from '@speedyspec-guide/adapter-seam-files';
 import { WordPressRelease } from '@speedyspec-guide/adapter-wordpress-release';
 import { type PipelineDeps, runStage, STAGES, type Stage } from '@speedyspec-guide/app';
 import type { GeneratedStore } from '@speedyspec-guide/contracts';
-import { mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { checkout } from './checkout.ts';
 
@@ -62,10 +64,25 @@ async function main(argv: string[]): Promise<number> {
   };
   const serverDir = async () => env('GUIDE_SERVER_DIR') ?? checkout(cache, 'speedyspec-server', sources.server.repo, sources.server.commit);
 
+  const seams = new SeamFiles(join(root, 'seams'));
+  const runnerBinary = env('GUIDE_RUNNER') ?? join(root, 'runner', 'target', 'release', 'speedyspec-guide-examples');
+  const runtimeVersion = async (isOffline: boolean) => {
+    const cargo = await Bun.file(join(await serverDir(), 'crates', 'speedyspec-php-runtime', 'Cargo.toml')).text();
+    const version = /^version\s*=\s*"([^"]+)"/m.exec(cargo)?.[1];
+    if (!version) throw new Error('no version in speedyspec-php-runtime/Cargo.toml');
+    if (isOffline) return { version, released: false };
+    const tags = Bun.spawnSync(['git', 'ls-remote', '--tags', '--refs', sources.server.repo, `refs/tags/speedyspec-php-runtime-v${version}`]);
+    if (tags.exitCode !== 0) throw new Error(`listing the server's tags: ${tags.stderr.toString().trim()}`);
+    return { version, released: tags.stdout.toString().trim() !== '' };
+  };
+
   const deps: PipelineDeps = {
     store: new GeneratedFiles(join(root, 'generated')),
     source: new PhpParserSource('php', config.stubFiles ?? []),
-    seams: new SeamFiles(join(root, 'seams')),
+    seams,
+    examples: { all: async () => new ExampleFiles(join(root, 'seams'), await seams.all()).all() },
+    runner: existsSync(runnerBinary) ? new RunnerCrate(runnerBinary) : null,
+    runtimeVersion,
     history: new GitTagHistory(sources.wordpress.tags, join(cache, 'wordpress-tags')),
     wordpressDir,
     forkDir,
@@ -79,6 +96,7 @@ async function main(argv: string[]): Promise<number> {
   for (const s of stage === 'all' ? STAGES : [stage as Stage]) {
     process.stderr.write(`guide: ${s}\n`);
     const result = await runStage(s, deps, { offline });
+    if (result.skipped) process.stderr.write(`guide: ${s} skipped: ${result.skipped}\n`);
     for (const f of result.failures) process.stdout.write(`${f.rule} ${f.where}: ${f.message}\n`);
     if (!result.ok) {
       process.stderr.write(`guide: ${s} failed with ${result.failures.length} problem(s)\n`);

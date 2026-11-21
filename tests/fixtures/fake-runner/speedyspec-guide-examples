@@ -1,0 +1,20 @@
+#!/usr/bin/env bun
+// A stand-in for the runner binary: every example returns '20'; reflect lists add_filter only with the runtime.
+const args = process.argv.slice(2);
+if (process.env.FAKE_RUNNER_LOG) {
+  const fs = require('node:fs');
+  const manifest = args[0] === 'run' ? JSON.parse(fs.readFileSync(args[4], 'utf8')) : null;
+  fs.appendFileSync(process.env.FAKE_RUNNER_LOG, `${JSON.stringify({ args, manifest })}\n`);
+}
+if (process.env.FAKE_RUNNER_FAIL) {
+  console.error('the runner broke');
+  process.exit(1);
+}
+if (args[0] === 'run') {
+  const manifest = JSON.parse(require('node:fs').readFileSync(args[4], 'utf8'));
+  console.log(JSON.stringify(manifest.examples.map((e) => ({ id: e.id, side: args[2], output: '', return: '20', error: null }))));
+} else if (args[0] === 'reflect') {
+  const strlen = { id: 'function:strlen', kind: 'function', name: 'strlen', file: 'native', line: 0, signature: 'strlen(string $string): int' };
+  const addFilter = { id: 'function:add_filter', kind: 'function', name: 'add_filter', file: 'native', line: 0, signature: 'add_filter($hook_name, $callback, $priority = 10, $accepted_args = 1)' };
+  console.log(JSON.stringify(args[2] === 'runtime' ? [strlen, addFilter] : [strlen]));
+}

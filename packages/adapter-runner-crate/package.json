@@ -1,0 +1,1 @@
+{ "name": "@speedyspec-guide/adapter-runner-crate", "type": "module", "private": true, "main": "src/index.ts", "dependencies": { "@speedyspec-guide/contracts": "workspace:*", "@speedyspec-guide/domain": "workspace:*" } }
