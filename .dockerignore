@@ -7,3 +7,4 @@ runner/server
 site/dist
 site/.astro
 packages/adapter-php-parser-source/extractor/vendor
+.git

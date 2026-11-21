@@ -1,4 +1,5 @@
-# The guide's static site. Build from the repository root (the site reads generated/, seams/ and content/):
+# The guide's static site. Build from the repository root, after `bun run guide all` (the site reads generated/,
+# seams/ and content/, and refuses to build without the generated data):
 #   docker build -f site/Dockerfile .
 FROM oven/bun:1.3 AS build
 WORKDIR /guide

@@ -80,6 +80,14 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
     const file = Bun.file(join(dirs.data, `${name}.json`));
     return (await file.exists()) ? ((await file.json()) as T) : empty;
   };
+  // An empty site is almost always a mistake (the generated data wasn't made or copied): refuse it unless asked for.
+  if (env.GUIDE_ALLOW_EMPTY !== '1') {
+    for (const name of ['inventory-wp', 'assignment']) {
+      if (!(await Bun.file(join(dirs.data, `${name}.json`)).exists())) {
+        throw new Error(`${join(dirs.data, name)}.json is missing: run bun run guide all first, or set GUIDE_ALLOW_EMPTY=1 for an empty site`);
+      }
+    }
+  }
   const seams = existsSync(dirs.seams) ? await new SeamFiles(dirs.seams).all() : [];
   const found = seams.length > 0 ? (await new ExampleFiles(dirs.seams, seams).all()).examples : [];
   const examples: ExampleFile[] = await Promise.all(found.map(async (e) => ({ ...e, code: await Bun.file(e.file).text() })));

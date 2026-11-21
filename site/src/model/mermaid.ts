@@ -4,7 +4,12 @@
  */
 import type { Seam } from '@speedyspec-guide/domain';
 import type { CratesFile, GuideData } from './data.ts';
+import { seamCycles } from './sections.ts';
 import type { SeamView } from './views.ts';
+
+/** Past these, a diagram stops being readable and Mermaid refuses it (500 edges): the page says so instead. */
+export const MAX_NODES = 150;
+export const MAX_LINKS = 300;
 
 export const RED = '#9b1c1c';
 const CYCLE_CLASS = `classDef cycle fill:#fde8e8,stroke:${RED},color:#7f1d1d`;
@@ -33,8 +38,9 @@ interface Link {
  * A seam's functions, classes and globals, the links between them, and one node per other seam it depends on or is
  * depended on by.
  */
-export function seamDiagram(view: SeamView, d: GuideData): string {
+export function seamDiagram(view: SeamView, d: GuideData): string | null {
   const members = view.roles.flatMap((r) => r.members).filter((m) => m.kind === 'function' || m.kind === 'class' || m.kind === 'global' || m.kind === 'constant');
+  if (members.length > MAX_NODES) return null;
   const node = new Map<string, string>();
   const lines = ['flowchart LR'];
   const inCycle = new Set(d.cycles.components.flat());
@@ -63,13 +69,18 @@ export function seamDiagram(view: SeamView, d: GuideData): string {
     if (label && a && b && a !== b) add(a, b, label, false, [e.from, e.to]);
   }
 
-  // Through hooks: a member fires a hook that runs another member.
+  // Through hooks: a member fires a hook that runs another member. One dashed link per pair, however many hooks.
+  const via = new Map<string, { from: string; to: string; hooks: Set<string>; pair: [string, string] }>();
   for (const fire of d.graph.edges.filter((e) => e.kind === 'fires' && node.has(e.from))) {
     for (const run of d.graph.edges.filter((e) => e.kind === 'runs' && e.from === fire.to && node.has(e.to))) {
-      const hook = fire.to.slice(fire.to.indexOf(':') + 1);
-      add(node.get(fire.from)!, node.get(run.to)!, `via ${hook}`, true, [fire.from, run.to]);
+      if (fire.from === run.to) continue;
+      const key = `${fire.from}|${run.to}`;
+      const v = via.get(key) ?? { from: node.get(fire.from)!, to: node.get(run.to)!, hooks: new Set<string>(), pair: [fire.from, run.to] as [string, string] };
+      v.hooks.add(fire.to.slice(fire.to.indexOf(':') + 1));
+      via.set(key, v);
     }
   }
+  for (const v of via.values()) add(v.from, v.to, v.hooks.size === 1 ? `via ${[...v.hooks][0]}` : `via ${v.hooks.size} hooks`, true, v.pair);
 
   // Other seams: one node each; one counted edge per member and direction.
   const outside = new Map<string, string>();
@@ -99,10 +110,11 @@ export function seamDiagram(view: SeamView, d: GuideData): string {
   }
   for (const c of counted.values()) links.push({ ...c, label: `${c.kind} ${c.count}` });
 
+  if (links.length > MAX_LINKS) return null;
   links.forEach((l) => lines.push(`  ${l.from} ${l.dashed ? '-.->' : '-->'}|${escapeLabel(l.label)}| ${l.to}`));
 
-  // Cycle edges: a link whose symbol pair is a step of a listed cycle path.
-  const steps = new Set(d.cycles.symbol.flatMap((c) => c.path.slice(1).map((to, i) => `${c.path[i]}|${to}`)));
+  // Cycle edges: a link whose symbol pair is a step of one of the seam's cycles (as its page lists them).
+  const steps = new Set(seamCycles(view.id, d).flatMap((c) => c.path.slice(1).map((to, i) => `${c.path[i]}|${to}`)));
   links.forEach((l, i) => {
     if (l.pairs.some(([a, b]) => steps.has(`${a}|${b}`))) lines.push(`  linkStyle ${i} stroke:${RED},stroke-width:2px`);
   });

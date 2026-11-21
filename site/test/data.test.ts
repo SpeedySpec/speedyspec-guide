@@ -25,7 +25,7 @@ describe('readGuideData', () => {
 
   test('missing data gives empty values', async () => {
     const empty = () => mkdtempSync(join(tmpdir(), 'guide-empty-'));
-    const d = await readGuideData({ GUIDE_DATA_DIR: empty(), GUIDE_SEAMS_DIR: empty(), GUIDE_CONTENT_DIR: empty() });
+    const d = await readGuideData({ GUIDE_DATA_DIR: empty(), GUIDE_SEAMS_DIR: empty(), GUIDE_CONTENT_DIR: empty(), GUIDE_ALLOW_EMPTY: '1' });
     expect(d.inventory.symbols).toEqual([]);
     expect(d.seams).toEqual([]);
     expect(d.wordpressHistory).toBeNull();

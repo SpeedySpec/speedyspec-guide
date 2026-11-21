@@ -17,6 +17,8 @@ export async function getStaticPaths() {
 const d = await loadGuideData();
 const view = seamView(Astro.params.seam!, 'wordpress', d);
 const intro = d.content.find((c) => c.section === 'wordpress' && c.seam === view.id && c.kind === 'seam');
+const memberCount = view.roles.reduce((n, r) => n + r.members.length, 0);
+const diagram = memberCount === 0 ? null : seamDiagram(view, d);
 const written = new Set(d.content.filter((c) => c.section === 'wordpress' && c.kind === 'symbol').map((c) => c.symbol));
 ---
 <Base title={`${view.name} · WordPress API`} section="wordpress">
@@ -25,7 +27,7 @@ const written = new Set(d.content.filter((c) => c.section === 'wordpress' && c.k
     <h1>{view.name}</h1>
     <p class="muted">{view.job}</p>
     {intro && <Prose entry={intro} />}
-    <Diagram code={seamDiagram(view, d)} label={`The ${view.name} seam: its functions, classes and globals, and the seams it depends on`} />
+    {diagram ? <Diagram code={diagram} label={`The ${view.name} seam: its functions, classes and globals, and the seams it depends on`} /> : <p class="muted no-diagram">{memberCount === 0 ? 'This seam has no members yet.' : 'This seam is too large to draw; its members and their links are listed below.'}</p>}
     <div class="members">
       {view.roles.map((r) => (
         <section>

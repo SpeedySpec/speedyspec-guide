@@ -11,6 +11,7 @@ import Reference from '../../../layouts/Reference.astro';
 import { loadGuideData } from '../../../model/data.ts';
 import { speedyspecPaths } from '../../../model/sections.ts';
 import { pageOf, symbolView } from '../../../model/views.ts';
+import { notDocumentedText } from '../../../model/wording.ts';
 
 export async function getStaticPaths() {
   const d = await loadGuideData();
@@ -35,7 +36,7 @@ const wordpressPage = pageOf(id, 'wordpress', d);
   <RelationshipPanel edges={view.edges} callsInto={view.callsInto} />
   <Signature signature={view.signature} />
   <Examples examples={view.examples} />
-  {view.content ? <Prose entry={view.content} /> : <p class="not-documented">Not yet documented. The verdict comes from comparing SpeedySpec's packages/ tree with WordPress {d.inventory.version}.</p>}
+  {view.content ? <Prose entry={view.content} /> : <p class="not-documented">{notDocumentedText(view.verdict.source, d.inventory.version)}</p>}
   <History view={view} section="speedyspec" />
   {wordpressPage && <p class="wordpress-link">WordPress's own behaviour: <a href={wordpressPage}>the WordPress page</a></p>}
 </Reference>

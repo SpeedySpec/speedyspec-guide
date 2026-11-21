@@ -31,7 +31,7 @@ const verdicts: SpeedySpecVerdict[] = ['works-as-wordpress', 'works-with-differe
     {name === 'panel' && <RelationshipPanel edges={addFilter.edges} callsInto={addFilter.callsInto} />}
     {name === 'pills' && verdicts.map((v) => <VerdictPill verdict={v} />)}
     {name === 'examples' && <Examples examples={addFilter.examples} />}
-    {name === 'diagram' && <Diagram code={seamDiagram(seam, d)} label="The Hooks seam" />}
+    {name === 'diagram' && <Diagram code={seamDiagram(seam, d)!} label="The Hooks seam" />}
     {name === 'on-speedyspec' && <OnSpeedySpec verdict={addFilter.verdict} href="/speedyspec/hooks/add_filter/" />}
   </main>
 </Base>

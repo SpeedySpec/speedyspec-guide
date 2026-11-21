@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test } from 'bun:test';
 import { join } from 'node:path';
 import { type GuideData, readGuideData } from '../src/model/data.ts';
-import { evidenceLink, provenanceText, roleLabel, verdictLabel, verdictTone } from '../src/model/wording.ts';
+import { evidenceLink, notDocumentedText, provenanceText, roleLabel, verdictLabel, verdictTone } from '../src/model/wording.ts';
 import { symbolView } from '../src/model/views.ts';
 
 const fixtures = join(import.meta.dir, 'fixtures');
@@ -45,5 +45,13 @@ describe('wording', () => {
     expect(evidenceLink({ kind: 'scenario', area: 'hooks', name: 'x' }, sources)).toBe('https://github.com/SpeedySpec/speedyspec-server/blob/abc/compat/hooks/scenarios.json');
     expect(evidenceLink({ kind: 'source', base: 'ss', file: 'wp-plugin/a.php', from: 3, to: 3 }, sources)).toBe('https://github.com/SpeedySpec/wordpress-develop/blob/def/packages/wp-plugin/a.php#L3');
     expect(evidenceLink({ kind: 'test', path: 'a::b::c' }, sources)).toBe('https://github.com/SpeedySpec/speedyspec-server/blob/abc/crates/a/tests/b.rs');
+  });
+});
+
+describe('notDocumentedText', () => {
+  test('says where the verdict comes from', () => {
+    expect(notDocumentedText('fork', '7.1.5')).toBe("Not yet documented. The verdict comes from comparing SpeedySpec's packages/ tree with WordPress 7.1.5.");
+    expect(notDocumentedText('none', '7.1.5')).toBe('Not yet documented, and not yet compared with WordPress.');
+    expect(notDocumentedText('page', '7.1.5')).toBe('Not yet documented.');
   });
 });

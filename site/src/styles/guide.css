@@ -117,3 +117,6 @@ h1, h2, h3 { line-height: 1.25; }
 .seam-list .count, .seam-list .deps { margin-left: auto; font-size: 0.8125rem; }
 .search-open { font: inherit; font-size: 0.8125rem; color: var(--muted); background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 0.2rem 0.7rem; cursor: pointer; }
 .names { columns: 3; font-size: 0.8125rem; }
+/* Circular dependencies: red background wherever they are listed (the text "circular" is always there too). */
+li.circular, .member.circular, p.path.circular { background: var(--bad-soft); color: var(--bad); border-radius: 4px; padding: 0.1rem 0.4rem; }
+li.circular a, .member.circular a { color: var(--bad); }

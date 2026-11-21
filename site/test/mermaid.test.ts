@@ -10,7 +10,7 @@ let d: GuideData;
 let diagram: string;
 beforeAll(async () => {
   d = await readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content') });
-  diagram = seamDiagram(seamView('hooks', 'wordpress', d), d);
+  diagram = seamDiagram(seamView('hooks', 'wordpress', d), d)!;
 });
 
 const nodeLine = (label: string) => diagram.split('\n').find((l) => l.includes(`"${label}`));
@@ -52,7 +52,7 @@ describe('seamDiagram', () => {
   test('links through hooks are dashed', async () => {
     const withHook = structuredClone(d);
     withHook.graph.edges.push({ from: 'filter:the_content', to: 'function:apply_filters', kind: 'runs' });
-    expect(seamDiagram(seamView('hooks', 'wordpress', withHook), withHook)).toMatch(/-\.->\|"via the_content"\|/);
+    expect(seamDiagram(seamView('hooks', 'wordpress', withHook), withHook)!).toMatch(/-\.->\|"via the_content"\|/);
   });
 });
 
@@ -72,4 +72,34 @@ describe('renderMermaid', () => {
     expect(svg.dark.startsWith('<svg')).toBe(true);
     expect(svg.light).not.toBe(svg.dark);
   }, 60_000);
+});
+
+describe('diagram limits and cycle arrows', () => {
+  test('two hooks between the same pair of members make one dashed link', () => {
+    const two = structuredClone(d);
+    two.graph.edges.push({ from: 'filter:the_content', to: 'function:apply_filters', kind: 'runs' });
+    two.inventory.symbols.push({ id: 'filter:the_title', kind: 'filter', name: 'the_title', file: 'x.php', line: 1 });
+    two.graph.edges.push({ from: 'function:add_filter', to: 'filter:the_title', kind: 'fires' }, { from: 'filter:the_title', to: 'function:apply_filters', kind: 'runs' });
+    const text = seamDiagram(seamView('hooks', 'wordpress', two), two)!;
+    expect(text.match(/-\.->/g)?.length).toBe(1);
+    expect(text).toContain('"via 2 hooks"');
+  });
+
+  test('a seam too large to draw gives no diagram', () => {
+    const big = structuredClone(d);
+    for (let i = 0; i < 300; i++) {
+      const id = `function:f${i}`;
+      big.inventory.symbols.push({ id, kind: 'function', name: `f${i}`, file: 'wp-includes/plugin.php', line: i });
+      big.assignment.seamOf[id] = 'hooks';
+      big.graph.edges.push({ from: id, to: 'global:wp_filter', kind: 'reads' }, { from: id, to: 'function:add_filter', kind: 'calls' });
+    }
+    expect(seamDiagram(seamView('hooks', 'wordpress', big), big)).toBeNull();
+  });
+
+  test("cycle arrows follow the seam's own cycles, not the group's stored sample path", () => {
+    const elsewhere = structuredClone(d);
+    elsewhere.cycles.symbol = [{ path: ['function:x', 'function:y', 'function:x'], possible: false }];
+    const text = seamDiagram(seamView('hooks', 'wordpress', elsewhere), elsewhere)!;
+    expect(text.match(/linkStyle \d+ stroke:#9b1c1c/g)?.length).toBe(2);
+  });
 });
