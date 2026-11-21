@@ -95,7 +95,7 @@ First real build (2026-11-20): 61 pages in 4 seconds, 57 of them indexed for sea
 Fully documented and enforced (`requirePortedCoverage`): all 29 WordPress members have a WordPress page and a
 SpeedySpec page, `WP_Hook`'s 20 methods are documented on its class page, and SpeedySpec's own 47 Hooks symbols
 have SpeedySpec pages. 129 MDX pages; 76 examples, 148 runs (WordPress 7.1.5 and the runtime), all passing; every
-documented break has a porting before/after pair. Findings (incompatibilities the guide found that speedyspec-server doesn't record yet): four, in [docs/hooks-findings.md](docs/hooks-findings.md).
+documented break has a porting before/after pair. Findings (incompatibilities the guide found that speedyspec-server doesn't record yet): five, in [docs/hooks-findings.md](docs/hooks-findings.md).
 
 ## The seam map (2026-11-21)
 
@@ -105,8 +105,10 @@ conflicts (`requireAllAssigned` is on). Most seams are one per package of Speedy
 PHP files) and `ai-client` (WordPress 7.1.5 code the fork doesn't have yet). A symbol the fork doesn't hold goes by
 its file; a hook or global used by several seams goes to the first in WordPress's load order (`wp-settings.php`).
 
+- **Fork verdicts:** a symbol the fork doesn't hold reads "Not in SpeedySpec's packages/": the comparison can't tell
+  whether the fork predates it (all of `ai-client`), renamed it (bundled libraries moved into namespaces) or dropped it.
 - **Outside the fork:** `admin` and `bundled` are `inFork: false`, because SpeedySpec's `packages/` tree doesn't
-  carry wp-admin or wp-content. Their symbols get no "removed" verdict, and their SpeedySpec seam pages say so
+  carry wp-admin or wp-content. Their symbols get no fork verdict, and their SpeedySpec seam pages say so
   instead of listing every symbol.
 - **Largest seams:** admin (1,876), password (1,182), rest-api (1,106), theme (1,068), ai-client (1,042), block (908),
   feed (884), app-upgrader (865), query (840), media (786).

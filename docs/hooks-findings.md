@@ -37,5 +37,22 @@ callback on `f` adds a callback to another hook, then `f` runs. The guide cites 
 WordPress 7.1.5's `plugin.php` requires `class-wp-filter-sentinel.php` (L26), which declares
 `final class WP_Filter_Sentinel {}`. The runtime answers `plugin.php` natively and declares no such class:
 `class_exists( 'WP_Filter_Sentinel' )` is false (`seams/hooks/examples/class--WP_Filter_Sentinel/not-declared-on-speedyspec.php`).
-WordPress 7.1.5's `WP_Ability::execute()` creates one as the default of `wp_pre_execute_ability`, so that code fails
-with an Error on the runtime. Documented on `content/speedyspec/hooks/class/WP_Filter_Sentinel.mdx` as *breaks*.
+Creating one fails on the runtime with `Error: Class "WP_Filter_Sentinel" not found`
+(`seams/hooks/examples/class--WP_Filter_Sentinel/constructing-fails-on-speedyspec.php`). WordPress 7.1.5's
+`WP_Ability::execute()` creates one as the default of `wp_pre_execute_ability`, so that code would fail the same way. Documented on `content/speedyspec/hooks/class/WP_Filter_Sentinel.mdx` as *breaks*.
+
+## 5. Setting `WP_Hook::$callbacks` after reading it doesn't hold
+
+```php
+add_filter( 'guide_set', 'trim' );
+$hook = $GLOBALS['wp_filter']['guide_set'];
+$hook->callbacks;
+$hook->callbacks = array();
+return has_filter( 'guide_set' );
+```
+
+WordPress returns `false`; the runtime returns `true`. Reading `->callbacks` (`__get`, hooks.php L206–217) keeps a
+pending copy; `__set` (L247–254) replaces the native callbacks but leaves that copy pending, and the next hook call's
+write-back (L224–245) writes the old copy over the new value. The examples are
+`seams/hooks/examples/class--WP_Hook--__set/`. Documented on `content/speedyspec/hooks/class/WP_Hook.mdx` as a
+difference.

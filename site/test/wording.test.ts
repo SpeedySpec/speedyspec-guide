@@ -19,7 +19,7 @@ describe('wording', () => {
       ['new-in-speedyspec', 'New in SpeedySpec', 'new'],
       ['same-code', 'Same code as WordPress', 'ok'],
       ['modified', 'Modified in SpeedySpec', 'warn'],
-      ['removed', 'Removed in SpeedySpec', 'bad'],
+      ['removed', "Not in SpeedySpec's packages/", 'bad'],
       ['unknown', 'Not yet compared', 'muted'],
     ].every(([v, label, tone]) => verdictLabel(v as never) === label && verdictTone(v as never) === tone)).toBe(true);
   });

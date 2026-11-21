@@ -3,7 +3,7 @@
 
 SpeedySpec's own hook registry, the plugin registry, which Rust and PHP plugins share. It is separate from WordPress's Hook API (`add_filter` and friends), which has its own seam, and it has no WordPress counterpart.
 
-PHP uses it through `SpeedySpec\Hooks\Hook`'s static methods `add`, `remove`, `has`, `run`, `filter` and `ran`, which match the Rust `Hooks` trait. <Ev source="ss:crates/speedyspec-hooks/src/contract.rs#L89-L104" hash="fb73297a3763dc1306e13100991127c0b8535caad6a902b87cab57431614e9ee"/>
+PHP uses it through `SpeedySpec\Hooks\Hook`'s static methods `add`, `remove`, `has`, `run`, `filter` and `ran` <Ev source="ss:crates/speedyspec-php/src/hook_class.rs#L138-L143" hash="b6d815ea7a8c54458a254c2f0b3dc939c6f6d64badb22510bed3539543935525"/>, which mirror the main methods of the Rust `Hooks` trait. <Ev source="ss:crates/speedyspec-hooks/src/contract.rs#L89-L104" hash="fb73297a3763dc1306e13100991127c0b8535caad6a902b87cab57431614e9ee"/>
 
 - Callbacks are added from PHP and run in priority order; a filter's value passes through each one. <Ev test="speedyspec-php::php::case_hook_add_and_run"/> <Ev test="speedyspec-php::php::case_priority_order"/> <Ev test="speedyspec-php::php::case_filter_from_php"/>
 - Rust and PHP see each other's callbacks: a Rust callback runs when PHP fires the hook, and Rust can fire into PHP callbacks. A hook with only Rust callbacks never enters PHP. <Ev test="speedyspec-php::php::case_rust_callback_seen_by_php"/> <Ev test="speedyspec-php::php::case_rust_fires_into_php"/> <Ev test="speedyspec-php::php::case_rust_only_hook_skips_php"/>

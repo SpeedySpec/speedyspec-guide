@@ -4,6 +4,7 @@ verdict: works-with-differences
 differences:
   - summary: "Replacing $wp_filter with the result of build_preinitialized_hooks() is not seen by SpeedySpec's hook store; hooks set before the request's PHP runs are imported instead."
     break: wp_hook_build_preinitialized_hooks
+  - summary: "Setting ->callbacks after reading it doesn't hold: the copy read first is written back over the new value at the next hook call (found by the guide)."
   - summary: "SpeedySpec's WP_Hook is also Countable (count() gives its number of priorities; on WordPress count() throws a TypeError) and has speedyspec_* members of its own (found by the guide)."
     break: undefined
 ---
@@ -21,7 +22,7 @@ These exist only on SpeedySpec's `WP_Hook`; WordPress's class has none of them. 
 - `__clone()` writes back any `callbacks` view PHP changed, then copies the native hook, so the clone is a separate hook. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L198-L204" hash="7d7f49bea891d149826893c0a911c17cb35a71e55735e3648b0c86084a0384c0"/>
 - Reading `->callbacks` (`__get()`) gives a copy of the hook's callbacks and remembers it; reading any other undefined property raises a warning. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L206-L217" hash="b0edee3d2219afeb892ca100e9a1a2f0938d48d088a5551adb3e1796ca15a8b2"/>
 - `speedyspec_write_back()` writes this hook's remembered `callbacks` copy back to the native hook when PHP changed it; `speedyspec_write_back_all()` does so for every hook. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L224-L245" hash="52bb63beef37f037e3b64d3c87d23c0b7dd83855e4cf7daea13d7667b0f4acdb"/>
-- Setting `->callbacks` (`__set()`) replaces the hook's callbacks; `isset( $hook->callbacks )` is true; unsetting it removes every callback. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L247-L265" hash="bcbeb13a0654b23acb85a3c0e9bc95f9505b8bc740e9f290ca57533c35b7cbb7"/>
+- Setting `->callbacks` (`__set()`) replaces the hook's callbacks, unless the same object's `->callbacks` was read first: that copy is still pending, and the next hook call writes it back over the new value. On WordPress the new value holds. <Ev example="hooks/class--WP_Hook--__set/set-after-read-on-speedyspec"/> `isset( $hook->callbacks )` is true, and unsetting it removes every callback. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L247-L265" hash="bcbeb13a0654b23acb85a3c0e9bc95f9505b8bc740e9f290ca57533c35b7cbb7"/>
 - `count()` gives the number of priorities with callbacks (`Countable`). <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L418-L422" hash="a0ebf2ccbfedc1c2699bb2737bdcc17d7b47cea68c1f1f355425fee74c44a3d3"/>
 
 ## Override

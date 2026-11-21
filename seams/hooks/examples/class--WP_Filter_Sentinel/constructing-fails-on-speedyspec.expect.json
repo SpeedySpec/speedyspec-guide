@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "runtime"
+ ],
+ "output": "",
+ "return": null,
+ "error": "Error: Class \"WP_Filter_Sentinel\" not found"
+}

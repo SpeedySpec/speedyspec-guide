@@ -10,7 +10,8 @@ const VERDICTS: Record<SpeedySpecVerdict, [string, Tone]> = {
   'new-in-speedyspec': ['New in SpeedySpec', 'new'],
   'same-code': ['Same code as WordPress', 'ok'],
   modified: ['Modified in SpeedySpec', 'warn'],
-  removed: ['Removed in SpeedySpec', 'bad'],
+  // The fork comparison only knows the symbol is absent: the fork may predate it, rename it or have dropped it.
+  removed: ["Not in SpeedySpec's packages/", 'bad'],
   unknown: ['Not yet compared', 'muted'],
 };
 

@@ -7,7 +7,7 @@ differences:
 
 ## Behaviour
 
-SpeedySpec doesn't declare the class: `class_exists( 'WP_Filter_Sentinel' )` is false on the runtime. <Ev example="hooks/class--WP_Filter_Sentinel/not-declared-on-speedyspec"/>
+SpeedySpec doesn't declare the class: `class_exists( 'WP_Filter_Sentinel' )` is false on the runtime, and `new WP_Filter_Sentinel()` fails with `Error: Class "WP_Filter_Sentinel" not found`. <Ev example="hooks/class--WP_Filter_Sentinel/not-declared-on-speedyspec"/> <Ev example="hooks/class--WP_Filter_Sentinel/constructing-fails-on-speedyspec"/>
 
 ## Porting
 
