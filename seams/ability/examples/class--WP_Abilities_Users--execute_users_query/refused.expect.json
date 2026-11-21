@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'The where filter must be an object.',\n  1 => 'The ids filter must list one or more valid values.',\n  2 => 'Sorry, you are not allowed to filter users by role.',\n  3 => 'Sorry, you are not allowed to filter users by username.',\n  4 => 'The has_published_posts filter must be true or list one or more post type names.',\n)",
+ "error": null
+}

@@ -35,4 +35,12 @@ wordpress:
   - wp-includes/abilities-api/class-wp-ability.php
   - wp-includes/abilities-api/class-wp-abilities-registry.php
   - wp-includes/abilities-api.php
+  # WordPress's own abilities: they read the registered post types, roles and settings.
+  - wp-includes/class-wp-post.php
+  - wp-includes/class-wp-post-type.php
+  - wp-includes/post.php
+  - wp-includes/class-wp-list-util.php
+  # core/get-site-info reads get_bloginfo().
+  - wp-includes/general-template.php
+  - wp-includes/abilities.php
 setup: setup.php

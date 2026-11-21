@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'ids',\n    1 => 'slugs',\n    2 => 'usernames',\n    3 => 'roles',\n    4 => 'has_published_posts',\n  ),\n  1 => \n  array (\n    0 => 'administrator',\n  ),\n  2 => \n  array (\n    0 => 'id',\n    1 => 'name',\n    2 => 'description',\n    3 => 'url',\n    4 => 'link',\n    5 => 'slug',\n    6 => 'avatar_urls',\n    7 => 'username',\n    8 => 'email',\n    9 => 'first_name',\n    10 => 'last_name',\n    11 => 'nickname',\n    12 => 'locale',\n    13 => 'registered',\n    14 => 'registered.site',\n    15 => 'registered.gmt',\n    16 => 'roles',\n  ),\n  3 => \n  array (\n    'type' => 'integer',\n    'minimum' => 1,\n    'maximum' => 100,\n    'description' => 'Maximum number of users to return per page.',\n  ),\n)",
+ "error": null
+}

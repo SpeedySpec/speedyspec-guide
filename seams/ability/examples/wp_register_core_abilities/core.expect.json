@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'core/get-site-info' => 'site manage_options',\n  'core/get-user-info' => 'user ',\n  'core/get-environment-info' => 'site view_site_health_checks',\n  'core/settings-get' => 'site manage_options',\n  'core/users-query' => 'user ',\n  'core/content-query' => 'content ',\n)",
+ "error": null
+}

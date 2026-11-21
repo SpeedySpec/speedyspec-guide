@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Abilities_Users::execute_users_query"
+---
+
+Runs the query with `WP_User_Query`. A filter it can't honour is refused rather than dropped, so the query never widens: `where` that isn't an object, a list with no valid value left, `roles` or `usernames` without `list_users`, or an unusable `has_published_posts`. Without `list_users`, only authors of posts of publicly viewable types are listed. A page holds 10 users, or up to 100 when listing by IDs, slugs or usernames, unless `per_page` says otherwise. A page past the last is an error. <Ev source="wp:wp-includes/abilities/class-wp-abilities-users.php#L176-L315" hash="3455f06faf177809f39ce67b139e99bf917d0563b18f144b91d1f008315a15f7"/>

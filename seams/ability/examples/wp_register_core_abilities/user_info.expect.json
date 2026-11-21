@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => false,\n  2 => \n  array (\n    0 => 'environment',\n    1 => 'php_version',\n    2 => 'db_server_info',\n    3 => 'wp_version',\n  ),\n)",
+ "error": null
+}

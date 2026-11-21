@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'ability_invalid_permissions',\n  1 => \n  array (\n    'name' => 'Guide',\n    'description' => 'Just another guide',\n    'charset' => 'UTF-8',\n  ),\n  2 => 'ability_invalid_input',\n)",
+ "error": null
+}
