@@ -2,7 +2,7 @@
  * The guide's build: `bun run guide <stage> [--offline]`, run from the repository root.
  * Stages: extract, fork, assign, graph, history, validate, or all of them in order.
  *
- * Inputs come from sources.json and checkouts under .cache/, or from GUIDE_WORDPRESS_DIR, GUIDE_FORK_DIR and
+ * Inputs come from sources.json and checkouts under .cache/, or from GUIDE_WORDPRESS_GIT, GUIDE_WORDPRESS_DIR, GUIDE_FORK_DIR and
  * GUIDE_SERVER_DIR. Composition root.
  */
 import { CompatFilesEvidence } from '@speedyspec-guide/adapter-compat-files-evidence';
@@ -12,7 +12,7 @@ import { RunnerCrate } from '@speedyspec-guide/adapter-runner-crate';
 import { GitTagHistory } from '@speedyspec-guide/adapter-git-tag-history';
 import { PhpParserSource } from '@speedyspec-guide/adapter-php-parser-source';
 import { SeamFiles } from '@speedyspec-guide/adapter-seam-files';
-import { WordPressRelease } from '@speedyspec-guide/adapter-wordpress-release';
+import { WordPressCommit } from '@speedyspec-guide/adapter-wordpress-git';
 import { type PipelineDeps, runStage, STAGES, type Stage } from '@speedyspec-guide/app';
 import type { GeneratedStore } from '@speedyspec-guide/contracts';
 import { existsSync, mkdirSync } from 'node:fs';
@@ -20,7 +20,7 @@ import { join, resolve } from 'node:path';
 import { checkout } from './checkout.ts';
 
 interface Sources {
-  wordpress: { version: string; url: string; sha256: string; tags: string };
+  wordpress: { repo: string; commit: string; version: string; path: string; tags: string };
   server: { repo: string; commit: string };
   fork: { repo: string; branch: string; commit: string; path: string };
 }
@@ -52,7 +52,10 @@ async function main(argv: string[]): Promise<number> {
   const config = (await Bun.file(join(root, 'guide.config.json')).json()) as { requireAllAssigned: boolean; requirePortedCoverage?: boolean; stubFiles?: string[] };
   const env = (name: string) => (process.env[name] ? resolve(process.env[name]!) : undefined);
 
-  const wordpressDir = async () => env('GUIDE_WORDPRESS_DIR') ?? new WordPressRelease(sources.wordpress, cache).fetch(sources.wordpress.version);
+  // WordPress is the pinned commit's src/, exported from a local git directory: GUIDE_WORDPRESS_GIT (any clone of
+  // wordpress-develop, read only), else the bare clone the history stage keeps.
+  const wordpressGit = env('GUIDE_WORDPRESS_GIT') ?? join(cache, 'wordpress-tags', 'repository.git');
+  const wordpressDir = async () => env('GUIDE_WORDPRESS_DIR') ?? new WordPressCommit(sources.wordpress, cache, wordpressGit).fetch(sources.wordpress.version);
   const forkDir = async () => {
     const dir = env('GUIDE_FORK_DIR');
     if (dir) return dir;

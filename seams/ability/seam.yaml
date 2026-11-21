@@ -3,5 +3,6 @@ job: "Registers abilities and ability categories, and looks them up from their r
 ported: false
 packages: [wp-ability]
 forkPackages: [wp-ability]
-files: []
+files:
+  - 'wp-includes/abilities/**'
 wordpress: []

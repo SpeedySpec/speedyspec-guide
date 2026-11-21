@@ -47,7 +47,7 @@ jobs:
         id: pins
         run: |
           echo "server=$(jq -r .server.commit sources.json)" >> "$GITHUB_OUTPUT"
-          echo "wordpress=$(jq -r .wordpress.sha256 sources.json)" >> "$GITHUB_OUTPUT"
+          echo "wordpress=$(jq -r .wordpress.commit sources.json)" >> "$GITHUB_OUTPUT"
 
       - name: Check out speedyspec-server at the pin
         uses: actions/checkout@v4

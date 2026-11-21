@@ -12,7 +12,8 @@ import { loadOrder } from '../src/load-order.ts';
 const root = join(import.meta.dir, '..', '..', '..');
 const gen = (name: string) => join(root, 'generated', `${name}.json`);
 const ready = existsSync(gen('inventory-wp')) && existsSync(gen('inventory-ss'));
-const settings = join(root, '.cache', 'wordpress-7.1.5', 'wordpress', 'wp-settings.php');
+const pin = JSON.parse(readFileSync(join(root, 'sources.json'), 'utf8')) as { wordpress: { commit: string } };
+const settings = join(root, '.cache', `wordpress-${pin.wordpress.commit.slice(0, 12)}`, 'wp-settings.php');
 
 describe.skipIf(!ready || !existsSync(settings))('the seam map (run `bun run guide extract fork` first)', () => {
   test('every_wordpress_symbol_is_in_one_seam', async () => {

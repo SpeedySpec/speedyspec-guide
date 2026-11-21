@@ -3,5 +3,6 @@ job: "Processes Interactivity API directives in rendered markup and holds its st
 ported: false
 packages: [wp-interactivity]
 forkPackages: [wp-interactivity]
-files: []
+files:
+  - 'wp-includes/interactivity-api/class-wp-interactivity-dangerous-html.php'
 wordpress: []

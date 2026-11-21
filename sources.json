@@ -1,8 +1,9 @@
 {
   "wordpress": {
-    "version": "7.1.5",
-    "url": "https://wordpress.org/wordpress-7.1.5.tar.gz",
-    "sha256": "053857d980eaee8702c617c685948becb9be2523ba0dcbc98e4dbb2300367c79",
+    "repo": "https://github.com/WordPress/wordpress-develop.git",
+    "commit": "ce78d2d6eb8b7dc98a5e896760f5642049288868",
+    "version": "7.2-RC1",
+    "path": "src",
     "tags": "https://github.com/WordPress/wordpress-develop.git"
   },
   "server": {

@@ -61,8 +61,8 @@
         "yaml": "^2.8.0",
       },
     },
-    "packages/adapter-wordpress-release": {
-      "name": "@speedyspec-guide/adapter-wordpress-release",
+    "packages/adapter-wordpress-git": {
+      "name": "@speedyspec-guide/adapter-wordpress-git",
       "dependencies": {
         "@speedyspec-guide/contracts": "workspace:*",
       },
@@ -84,7 +84,7 @@
         "@speedyspec-guide/adapter-php-parser-source": "workspace:*",
         "@speedyspec-guide/adapter-runner-crate": "workspace:*",
         "@speedyspec-guide/adapter-seam-files": "workspace:*",
-        "@speedyspec-guide/adapter-wordpress-release": "workspace:*",
+        "@speedyspec-guide/adapter-wordpress-git": "workspace:*",
         "@speedyspec-guide/app": "workspace:*",
         "@speedyspec-guide/contracts": "workspace:*",
         "@speedyspec-guide/domain": "workspace:*",
@@ -390,7 +390,7 @@
 
     "@speedyspec-guide/adapter-seam-files": ["@speedyspec-guide/adapter-seam-files@workspace:packages/adapter-seam-files"],
 
-    "@speedyspec-guide/adapter-wordpress-release": ["@speedyspec-guide/adapter-wordpress-release@workspace:packages/adapter-wordpress-release"],
+    "@speedyspec-guide/adapter-wordpress-git": ["@speedyspec-guide/adapter-wordpress-git@workspace:packages/adapter-wordpress-git"],
 
     "@speedyspec-guide/app": ["@speedyspec-guide/app@workspace:packages/app"],
 

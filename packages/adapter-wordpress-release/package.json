@@ -1,1 +1,0 @@
-{ "name": "@speedyspec-guide/adapter-wordpress-release", "type": "module", "private": true, "main": "src/index.ts", "dependencies": { "@speedyspec-guide/contracts": "workspace:*" } }

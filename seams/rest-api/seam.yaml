@@ -4,6 +4,9 @@ ported: false
 packages: [wp-rest-api]
 forkPackages: [wp-rest-api]
 files:
+  - 'wp-includes/rest-api/endpoints/class-wp-rest-entity-actions-controller.php'
+  - 'wp-includes/rest-api/endpoints/class-wp-rest-entity-fields-controller.php'
+  - 'wp-includes/rest-api/fields/class-wp-rest-revision-meta-fields.php'
   - 'wp-includes/rest-api/endpoints/class-wp-rest-icons-controller.php'
   - 'wp-includes/rest-api/endpoints/class-wp-rest-icon-collections-controller.php'
   - 'wp-includes/json-schema.php'

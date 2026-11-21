@@ -1,0 +1,7 @@
+name: "Entity fields and actions"
+job: "Registers fields and actions for kinds of entity, and adds their script modules to the editor."
+ported: false
+files:
+  - 'wp-includes/entity-*.php'
+  - 'wp-includes/class-wp-entity-*.php'
+wordpress: []

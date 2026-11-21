@@ -30,7 +30,10 @@ bun run typecheck
 
 Inputs are pinned in `sources.json`. Checkouts go to `.cache/`. For local runs, point at folders instead:
 
-- `GUIDE_WORDPRESS_DIR`: an extracted WordPress release;
+- `GUIDE_WORDPRESS_GIT`: a local clone of `WordPress/wordpress-develop` to export the pinned commit's `src/` from, read
+  only (`git archive`; no checkout or branch is touched), e.g. `wordpress-develop-original`. Without it, the bare
+  clone the `history` stage keeps in `.cache/wordpress-tags/` is used, and fetched into when it lacks the commit;
+- `GUIDE_WORDPRESS_DIR`: an already exported WordPress `src/` folder, used as is;
 - `GUIDE_FORK_DIR`: the fork's `packages/` folder, e.g. from
   `git -C <wordpress-develop> archive <commit> packages | tar -x -C .cache/fork-local`;
 - `GUIDE_SERVER_DIR`: a speedyspec-server checkout.

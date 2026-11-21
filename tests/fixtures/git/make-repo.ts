@@ -70,3 +70,31 @@ export function makeServerRepo(): { url: string; cleanup: () => void } {
   git('tag', 'speedyspec-server-v0.1.0');
   return { url: `file://${dir}`, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
 }
+
+/**
+ * A WordPress-shaped repository: commit A has src/wp-includes/plugin.php saying "a", commit B (HEAD, trunk) says "b".
+ * Its working tree is checked out at B.
+ */
+export function makeWordPressRepo(): { dir: string; url: string; a: string; b: string; cleanup: () => void } {
+  const dir = mkdtempSync(join(tmpdir(), 'wp-repo-'));
+  const git = (...args: string[]): string => {
+    const p = Bun.spawnSync(['git', '-c', 'user.name=t', '-c', 'user.email=t@example.test', '-c', 'commit.gpgsign=false', ...args], { cwd: dir });
+    if (p.exitCode !== 0) throw new Error(p.stderr.toString());
+    return p.stdout.toString().trim();
+  };
+  const write = (path: string, code: string) => {
+    mkdirSync(dirname(join(dir, path)), { recursive: true });
+    writeFileSync(join(dir, path), code);
+  };
+  git('init', '-q', '-b', 'trunk');
+  write('src/wp-includes/plugin.php', '<?php // a\n');
+  write('README.md', 'not exported\n');
+  git('add', '-A');
+  git('commit', '-qm', 'a');
+  const a = git('rev-parse', 'HEAD');
+  write('src/wp-includes/plugin.php', '<?php // b\n');
+  git('add', '-A');
+  git('commit', '-qm', 'b');
+  const b = git('rev-parse', 'HEAD');
+  return { dir, url: `file://${dir}`, a, b, cleanup: () => rmSync(dir, { recursive: true, force: true }) };
+}
