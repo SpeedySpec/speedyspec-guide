@@ -12,8 +12,9 @@ import { SeamFiles } from '@speedyspec-guide/adapter-seam-files';
 import { WordPressRelease } from '@speedyspec-guide/adapter-wordpress-release';
 import { type PipelineDeps, runStage, STAGES, type Stage } from '@speedyspec-guide/app';
 import type { GeneratedStore } from '@speedyspec-guide/contracts';
-import { existsSync, mkdirSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { checkout } from './checkout.ts';
 
 interface Sources {
   wordpress: { version: string; url: string; sha256: string; tags: string };
@@ -31,21 +32,6 @@ class GeneratedFiles implements GeneratedStore {
     mkdirSync(this.dir, { recursive: true });
     await Bun.write(join(this.dir, `${name}.json`), `${JSON.stringify(data)}\n`);
   }
-}
-
-function git(args: string[], cwd?: string): void {
-  const p = Bun.spawnSync(['git', ...args], { cwd, stdout: 'pipe', stderr: 'pipe' });
-  if (p.exitCode !== 0) throw new Error(`git ${args.join(' ')}: ${p.stderr.toString().trim()}`);
-}
-
-/** A checkout of `repo` at `commit` in `.cache/<name>`, made once. */
-function checkout(cache: string, name: string, repo: string, commit: string): string {
-  const dir = join(cache, `${name}-${commit.slice(0, 12)}`);
-  if (!existsSync(dir)) {
-    git(['clone', '--quiet', '--filter=blob:none', '--no-checkout', repo, dir]);
-    git(['checkout', '--quiet', commit], dir);
-  }
-  return dir;
 }
 
 async function main(argv: string[]): Promise<number> {
