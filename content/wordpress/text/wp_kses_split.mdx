@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_kses_split"
+---
+
+## Behaviour
+
+Legacy parser: runs every tag in content through `wp_kses_split2()`, leaving text between tags. A stray `>` becomes `&gt;`, and a stray `<` swallows the text up to the next `>`. <Ev source="wp:wp-includes/kses.php#L2358-L2379" hash="91a823c0da0e610b03b04926a49d551cbe958f8166ad221e85e55ac5f5046ed0"/>
+
+## Override
+
+Not overridable.

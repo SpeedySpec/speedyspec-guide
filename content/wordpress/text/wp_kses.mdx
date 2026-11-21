@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_kses"
+---
+
+## Behaviour
+
+Filters HTML so that only the allowed elements and attributes remain, and URL attributes use only allowed protocols. The allowed HTML is an array of element ⇒ attributes, or a context name such as `post`. On trunk WordPress filters through the HTML API (`wp_sanitize_html_kses()`), because `default-filters.php` turns the legacy parser off with `wp_kses_force_legacy_parser`. With the legacy parser it removes NULLs, normalizes entities and runs every tag through `wp_kses_split()`. <Ev source="wp:wp-includes/kses.php#L979-L1011" hash="5c87a6788b82ff4b4f88e02f48e4a207cde6d37df8174282627b843968ad9709"/>
+
+## Override
+
+`pre_kses` filters the content first, `wp_kses_allowed_html` the allowed HTML, and `wp_kses_force_legacy_parser` picks the parser.

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_filter_global_styles_post"
+---
+
+## Behaviour
+
+For a user's global styles, stored as JSON with `isGlobalStylesUserThemeJSON`, it removes insecure properties with `WP_Theme_JSON::remove_insecure_properties()`. Any other content passes through unchanged. <Ev source="wp:wp-includes/kses.php#L3549-L3572" hash="7152c5efee3975ffa8b49ee326fcc6fd6040a9cccde808cc8eea06b426e79192"/>
+
+## Override
+
+Not overridable.

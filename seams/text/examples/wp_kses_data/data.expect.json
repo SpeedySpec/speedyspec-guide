@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<b>bold</b><a href=\"https://example.org\" title=\"t\">link</a>'",
+ "error": null
+}

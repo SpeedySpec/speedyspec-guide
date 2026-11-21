@@ -1,0 +1,11 @@
+---
+symbol: "function:safecss_filter_attr"
+---
+
+## Behaviour
+
+Filters a `style` attribute's value: it keeps only the properties `safe_style_css` allows, refuses `url()` in properties that can't take one, and drops values with expressions or comments. <Ev source="wp:wp-includes/kses.php#L3737-L4175" hash="fdedbf3b71017904abde2f36dbe615f19ecefb25231aadfec5d46b7932dbe711"/>
+
+## Override
+
+`safe_style_css` filters the allowed properties, and `safecss_filter_attr_allow_css` decides each declaration.

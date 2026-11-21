@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_kses_split_callback"
+---
+
+## Behaviour
+
+The `preg_replace_callback()` callback `wp_kses_split()` uses, passing each match to `wp_kses_split2()` with the allowed HTML and protocols from the `$pass_allowed_html` and `$pass_allowed_protocols` globals. <Ev source="wp:wp-includes/kses.php#L2445-L2449" hash="13f09a0059e9f76de9199688c0fa6741f3daa31c8aee79fcadc9f666b12b24f3"/>
+
+## Override
+
+Not overridable.

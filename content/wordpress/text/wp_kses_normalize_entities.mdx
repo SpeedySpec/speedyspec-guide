@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_kses_normalize_entities"
+---
+
+## Behaviour
+
+Escapes `&` that doesn't start a valid entity and keeps the valid ones. Decimal entities are padded to three digits. In the `xml` context, HTML's named entities that XML lacks become their characters. <Ev source="wp:wp-includes/kses.php#L3248-L3293" hash="2b7dddf5e96b8cb111dd5bafa669b8c1e7c5ceede84c83b483fb3429d63479f4"/>
+
+## Override
+
+Not overridable.

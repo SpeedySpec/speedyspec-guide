@@ -1,0 +1,7 @@
+---
+symbol: "filter:wp_kses_force_legacy_parser"
+---
+
+## Behaviour
+
+New in WordPress 7.2 (trunk). Fired by `wp_kses()` with `true`: a true result keeps the legacy regular-expression parser, and false uses `wp_sanitize_html_kses()`. `default-filters.php` adds `__return_false`, so a full WordPress uses the HTML API unless a plugin returns true later. <Ev source="wp:wp-includes/kses.php#L979-L1011" hash="5c87a6788b82ff4b4f88e02f48e4a207cde6d37df8174282627b843968ad9709"/>

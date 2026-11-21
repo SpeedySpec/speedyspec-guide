@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<p style=\"color:red\"><img alt=\"A\" src=\"a.png\"></p>'",
+ "error": null
+}

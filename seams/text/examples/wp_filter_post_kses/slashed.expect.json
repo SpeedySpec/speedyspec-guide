@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<p class=\\\\\"x\\\\\">a</p>'",
+ "error": null
+}

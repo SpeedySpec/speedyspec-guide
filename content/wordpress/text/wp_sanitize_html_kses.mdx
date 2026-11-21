@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_sanitize_html_kses"
+---
+
+## Behaviour
+
+New in WordPress 7.2 (trunk): kses rebuilt on the HTML API. It parses the markup as a browser would and keeps the allowed elements and attributes, writing them out afresh. Disallowed elements whose content is raw text, such as `script` and `style`, go with their contents. `wp_kses()` uses it unless the legacy parser is forced. <Ev source="wp:wp-includes/kses.php#L1033-L2051" hash="ae5d3de75e880e821a84018485b60158b9ceddf87cea3d86891caddbfb94ae80"/>
+
+## Override
+
+Not overridable.

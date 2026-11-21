@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_kses_html_error"
+---
+
+## Behaviour
+
+Deprecated in WordPress 7.2 (trunk), and moved to `deprecated.php`: it reports itself through `_deprecated_function()`, and still removes the first attribute-like part of a string, as the legacy parser once did. <Ev source="wp:wp-includes/deprecated.php#L3864-L3868" hash="f12e401239ed64beff32affe9a0cc60ad622b5093e262e8e0882a62afa616025"/>
+
+## Override
+
+Not overridable.
