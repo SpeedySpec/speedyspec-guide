@@ -1,0 +1,11 @@
+---
+symbol: "function:sanitize_email"
+---
+
+## Behaviour
+
+Removes the characters an address can't have, returning the cleaned address, or an empty string when it can't be one. <Ev source="wp:wp-includes/formatting.php#L3891-L3987" hash="036f9db7427cbd0c1c7beb05f7950318101569df041f0a38f56485d3b2a7fae2"/>
+
+## Override
+
+`sanitize_email` filters the result, with the reason it failed.

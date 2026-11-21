@@ -1,0 +1,11 @@
+---
+symbol: "function:wptexturize"
+---
+
+## Behaviour
+
+Turns straight quotes into curly ones, `--` and `---` into dashes, `...` into an ellipsis, ` (tm)` into ™, and quotes after numbers into primes. It leaves alone the contents of `code`, `kbd`, `pre`, `script`, `style` and `tt`, shortcodes like `[code]`, and HTML tags themselves. <Ev source="wp:wp-includes/formatting.php#L37-L304" hash="28e5047538500dc8e22e7def65013d6ff728ebb028ceb88284f8e0d25b1280a1"/>
+
+## Override
+
+`run_wptexturize` turns it off; `no_texturize_tags` and `no_texturize_shortcodes` add elements and shortcodes to leave alone.

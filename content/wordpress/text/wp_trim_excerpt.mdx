@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_trim_excerpt"
+---
+
+## Behaviour
+
+Makes an excerpt from a post's content when no excerpt is given: blocks rendered, shortcodes stripped, cut to `excerpt_length` words (55) with `excerpt_more` ([…]). A given excerpt comes back as it is. <Ev source="wp:wp-includes/formatting.php#L4071-L4146" hash="46cde377f093bfc93fcd657bdad389e3d95136a98dc56a623d042f727d80cff5"/>
+
+## Override
+
+`excerpt_length`, `excerpt_more` and `wp_trim_excerpt` filter it.

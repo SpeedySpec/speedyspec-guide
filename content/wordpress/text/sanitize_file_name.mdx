@@ -1,0 +1,11 @@
+---
+symbol: "function:sanitize_file_name"
+---
+
+## Behaviour
+
+Makes a file name safe: special characters removed, whitespace and some punctuation turned into dashes, and runs of dashes collapsed. In a name with several dots, each middle part that looks like an extension (2 to 5 letters) but isn't an allowed upload type gets an underscore, so `x.php.jpg` becomes `x.php_.jpg`. <Ev source="wp:wp-includes/formatting.php#L2038-L2135" hash="01a5a5f28ed4f806110c5d22daebb70c507a5d422ce92be1fb6a59c9c521974b"/>
+
+## Override
+
+`sanitize_file_name_chars` filters the characters removed, and `sanitize_file_name` the result.

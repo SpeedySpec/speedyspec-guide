@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'\\\\\\\\1\\\\s\\\\t \\\\d\\\\a\\\\y'",
+ "error": null
+}

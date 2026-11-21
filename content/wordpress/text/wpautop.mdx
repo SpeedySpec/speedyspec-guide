@@ -1,0 +1,11 @@
+---
+symbol: "function:wpautop"
+---
+
+## Behaviour
+
+Turns double line breaks into paragraphs and, with `$br`, single ones into `<br />`, without wrapping block elements or splitting `pre`, `script`, `style` and `svg` contents. <Ev source="wp:wp-includes/formatting.php#L446-L605" hash="fe4af355ceffe75f4abed3cc379d9e29ded6ccabb7550e175b7d55d731ea7018"/>
+
+## Override
+
+Remove it from `the_content` (`remove_filter( 'the_content', 'wpautop' )`) to turn it off.

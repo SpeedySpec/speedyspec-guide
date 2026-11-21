@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_check_invalid_utf8"
+---
+
+## Behaviour
+
+Checks that a string is valid UTF-8, when the site's charset is UTF-8. An invalid one comes back empty, or, with `$strip`, with each invalid byte replaced by U+FFFD. <Ev source="wp:wp-includes/formatting.php#L1130-L1150" hash="0be6b0cbb8e93ba77bcafed71f4c098453d53c1e05293ba148bb20bdff7fa162"/>
+
+## Override
+
+Not overridable.

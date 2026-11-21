@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a<WPPreserveNewline />title>'",
+ "error": null
+}
