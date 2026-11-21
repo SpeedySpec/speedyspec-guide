@@ -1,0 +1,13 @@
+---
+symbol: "function:update_option"
+---
+
+## Behaviour
+
+Saves a new value for an option and returns `true`. A value equal to the stored one, compared serialized, changes nothing and returns `false`. <Ev scenario="update_option_unchanged" area="options"/> <Ev scenario="update_option_serialized_equal" area="options"/> An option that isn't stored is added with `add_option()`. <Ev scenario="update_option_missing_adds" area="options"/>
+
+The value is sanitized with `sanitize_option()` first: `home` and `siteurl` keep their stored value when the new one isn't a URL. <Ev source="wp:wp-includes/formatting.php#L5101-L5112" hash="183c3f3935fa6ef01e80bae4839b7b2b542e77d877192509e6451515f154f38c"/> `alloptions` and `notoptions` can't be updated. <Ev scenario="protected_update_option_alloptions" area="options"/> <Ev scenario="protected_update_option_notoptions" area="options"/>
+
+## Override
+
+`pre_update_option_{$option}` and then `pre_update_option` can change the value before it is compared and saved. <Ev scenario="update_option_unchanged" area="options"/> After a change it fires `update_option`, then `update_option_{$option}` and `updated_option`.

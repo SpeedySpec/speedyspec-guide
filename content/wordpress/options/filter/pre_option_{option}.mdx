@@ -1,0 +1,7 @@
+---
+symbol: "filter:pre_option_{$option}"
+---
+
+## Behaviour
+
+Fired first by `get_option()` for the option named, with `false`, the name and the default. A value other than `false` is returned as the option's value, without reading the cache or the table. <Ev scenario="pre_option_named_short_circuits" area="options"/> For example, `pre_option_blogname` for `blogname`.

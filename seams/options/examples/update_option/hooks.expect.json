@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "update_option update_option_blogname updated_option ",
+ "return": "1",
+ "error": null
+}

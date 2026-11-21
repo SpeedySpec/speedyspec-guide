@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'admin_email',\n  1 => 'blogdescription',\n  2 => 'blogname',\n  3 => 'home',\n  4 => 'siteurl',\n)",
+ "error": null
+}

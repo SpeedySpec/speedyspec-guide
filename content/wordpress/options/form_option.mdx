@@ -1,0 +1,11 @@
+---
+symbol: "function:form_option"
+---
+
+## Behaviour
+
+Prints the option's value escaped with `esc_attr()`, for an HTML attribute. <Ev scenario="form_option_escapes" area="options"/>
+
+## Override
+
+The value passes through `get_option()`'s filters, then `attribute_escape`.

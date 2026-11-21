@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_protect_special_option"
+---
+
+## Behaviour
+
+Stops with `wp_die()` when given `alloptions` or `notoptions`, the names of WordPress's own option cache entries; any other name passes. <Ev scenario="protect_special_option_direct" area="options"/> `add_option()`, `update_option()` and `delete_option()` call it.
+
+## Override
+
+Not overridable; `wp_die_handler` decides how it stops.

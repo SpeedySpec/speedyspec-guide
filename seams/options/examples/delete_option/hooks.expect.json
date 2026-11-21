@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "delete_option delete_option_blogdescription deleted_option ",
+ "return": "1",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_load_alloptions"
+---
+
+## Behaviour
+
+Returns every option whose autoload value is one `wp_autoload_values_to_autoload()` lists, keyed by name, and caches them as `alloptions`. <Ev scenario="autoload_stored_on" area="options"/> <Ev scenario="autoload_stored_off" area="options"/> An option stored with autoload off is not in the set. <Ev scenario="autoload_stored_auto_off" area="options"/> With `$force_cache` true it reads the cache again rather than the copy it already has. <Ev scenario="load_alloptions_force_cache" area="options"/>
+
+## Override
+
+`pre_wp_load_alloptions` replaces the whole set before the cache is read. <Ev scenario="load_alloptions_pre_filter" area="options"/> `pre_cache_alloptions` changes what is cached after a table read, and `alloptions` filters what is returned. <Ev scenario="load_alloptions_pre_cache_filter" area="options"/>

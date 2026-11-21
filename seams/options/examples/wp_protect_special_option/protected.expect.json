@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": null,
+ "error": "WPDieException: notoptions is a protected WP option and may not be modified"
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "get_option 5.5.0",
+ "return": "'spam'",
+ "error": null
+}

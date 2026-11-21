@@ -1,0 +1,13 @@
+---
+symbol: "function:add_option"
+---
+
+## Behaviour
+
+Stores a new option and returns `true`. An option that is already stored is left as it is, and it returns `false`. <Ev scenario="add_option_existing" area="options"/> A value from `default_option_{$option}` counts as stored. <Ev scenario="add_option_default_filter" area="options"/> A name in the `notoptions` cache is removed from it. <Ev scenario="add_option_after_notoptions" area="options"/>
+
+The third argument is deprecated: passing anything there reports it through `_deprecated_argument()`. <Ev scenario="add_option_deprecated_argument" area="options"/> `alloptions` and `notoptions` can't be added: `wp_protect_special_option()` stops with `wp_die()`. <Ev scenario="protected_add_option_alloptions" area="options"/> <Ev scenario="protected_add_option_notoptions" area="options"/> How `$autoload` is stored is on [`wp_determine_option_autoload_value()`](/wordpress/options/wp_determine_option_autoload_value/).
+
+## Override
+
+It fires `add_option` before the insert, then `add_option_{$option}` and `added_option` after it. <Ev scenario="add_option_existing" area="options"/>

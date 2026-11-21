@@ -1,0 +1,11 @@
+---
+symbol: "function:get_options"
+---
+
+## Behaviour
+
+Primes the cache for every name in one query, then returns each option keyed by its name, as `get_option()` would return it; a missing one is `false`. <Ev scenario="get_options" area="options"/>
+
+## Override
+
+Each value passes through the same filters as `get_option()`.

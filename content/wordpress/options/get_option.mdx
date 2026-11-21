@@ -1,0 +1,17 @@
+---
+symbol: "function:get_option"
+---
+
+## Behaviour
+
+Returns the value of a stored option, unserialized. <Ev scenario="value_serialized" area="options"/> <Ev scenario="value_nested" area="options"/> Autoloaded options come from the `alloptions` cache; others are read from the table once and cached. <Ev scenario="get_from_alloptions" area="options"/> <Ev scenario="get_from_database" area="options"/>
+
+An option that isn't stored returns `$default_value` (`false` when none is given), passed through `default_option_{$option}`. <Ev scenario="get_missing_passed_false" area="options"/> Its name is remembered in the `notoptions` cache, so the next read doesn't query the table. <Ev scenario="get_missing_notoptions" area="options"/>
+
+A name that is empty once trimmed returns `false`. <Ev scenario="blank_and_odd_names" area="options"/> The renamed `blacklist_keys` and `comment_whitelist` read their new names, `disallowed_keys` and `comment_previously_approved`, and report the old name through `_deprecated_argument()`. <Ev scenario="deprecated_blacklist_keys" area="options"/> <Ev scenario="deprecated_comment_whitelist" area="options"/>
+
+An empty `home` reads as `siteurl`. <Ev scenario="home_falls_back_to_siteurl" area="options"/> `siteurl`, `home`, `category_base` and `tag_base` come back without a trailing slash. <Ev scenario="untrailingslashed_names" area="options"/> On trunk `wp_random_base` does too; WordPress 7.1.5 left it as stored. <Ev source="wp:wp-includes/option.php#L239-L241" hash="5a00413326e716a198c19a36084b2ac036b5a59dc64c79dcd245f0bf667894bb"/>
+
+## Override
+
+A value other than `false` from `pre_option_{$option}` or `pre_option` is returned without reading the cache or the table. <Ev scenario="pre_option_named_short_circuits" area="options"/> <Ev scenario="pre_option_short_circuits" area="options"/> `option_{$option}` filters the value read.

@@ -1,0 +1,7 @@
+---
+symbol: "filter:pre_option"
+---
+
+## Behaviour
+
+Fired by `get_option()` for every option, after `pre_option_{$option}`, with that filter's result, the name and the default. A value other than `false` is returned without reading the cache or the table. <Ev scenario="pre_option_short_circuits" area="options"/>

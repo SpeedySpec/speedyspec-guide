@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "add_option add_option_guide_color added_option ",
+ "return": "1",
+ "error": null
+}

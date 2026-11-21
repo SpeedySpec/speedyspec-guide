@@ -1,0 +1,7 @@
+---
+symbol: "filter:default_option_{$option}"
+---
+
+## Behaviour
+
+Fired when the option named isn't stored, with the default, the name, and whether a default was passed. Its result is what `get_option()` returns. <Ev scenario="get_missing_passed_false" area="options"/> `add_option()` also reads it, and treats a value other than `false` as already stored. <Ev scenario="add_option_default_filter" area="options"/> `register_setting()` uses it for a setting's `default`.

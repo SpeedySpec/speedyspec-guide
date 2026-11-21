@@ -1,0 +1,11 @@
+---
+symbol: "function:delete_option"
+---
+
+## Behaviour
+
+Deletes a stored option and returns `true`; it then reads as missing. An option that isn't stored returns `false`. <Ev scenario="delete_option" area="options"/> `alloptions` and `notoptions` can't be deleted. <Ev scenario="protected_delete_option_alloptions" area="options"/> <Ev scenario="protected_delete_option_notoptions" area="options"/>
+
+## Override
+
+It fires `delete_option` before the delete, then `delete_option_{$option}` and `deleted_option` once the row is gone. <Ev scenario="delete_option" area="options"/>
