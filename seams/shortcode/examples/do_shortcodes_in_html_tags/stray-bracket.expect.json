@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<img alt=\"a &#91; b\">'",
+ "error": null
+}

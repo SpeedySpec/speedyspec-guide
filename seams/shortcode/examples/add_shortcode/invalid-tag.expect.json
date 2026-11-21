@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "add_shortcode ",
+ "return": "false",
+ "error": null
+}

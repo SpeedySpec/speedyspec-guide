@@ -1,0 +1,7 @@
+---
+symbol: "filter:pre_do_shortcode_tag"
+---
+
+## Behaviour
+
+Fired by `do_shortcode_tag()` before a shortcode's callback, with `false`, the tag, the attributes and the regular expression match. A value other than `false` replaces the shortcode, and the callback isn't called. <Ev source="wp:wp-includes/shortcodes.php#L402-L458" hash="1ddc5171d163b8b06c6dc8cd8c244dc8a25aca82e6c58e147e182bdf1b4a6c92"/>

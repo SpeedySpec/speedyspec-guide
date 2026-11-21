@@ -3,4 +3,24 @@ job: "Registers shortcodes and replaces them in content."
 ported: false
 files:
   - 'wp-includes/shortcodes.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side; basic-setup.php defines the constants and
+# translation stubs _doing_it_wrong() needs, and starts the object cache kses reads.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/shortcodes.php
+setup: ../basic-setup.php
+roles:
+  register: [function:add_shortcode, function:remove_shortcode, function:remove_all_shortcodes]
+  inspect: [function:shortcode_exists, function:has_shortcode, function:get_shortcode_tags_in_content]
+  run: [function:do_shortcode, function:apply_shortcodes, function:do_shortcode_tag, function:shortcode_atts, function:shortcode_parse_atts]
+  strip: [function:strip_shortcodes, function:strip_shortcode_tag]
+  internals: [function:get_shortcode_regex, function:get_shortcode_atts_regex, function:do_shortcodes_in_html_tags, function:unescape_invalid_shortcodes, function:_filter_do_shortcode_context]
+  state: [global:shortcode_tags]
+  filters: [filter:pre_do_shortcode_tag, filter:do_shortcode_tag, "filter:shortcode_atts_{$shortcode}", filter:strip_shortcodes_tagnames]

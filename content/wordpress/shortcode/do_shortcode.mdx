@@ -1,0 +1,15 @@
+---
+symbol: "function:do_shortcode"
+---
+
+## Behaviour
+
+Replaces each registered shortcode in content with its callback's output, and returns the result. Content without `[`, or without any registered tag, is returned untouched. <Ev source="wp:wp-includes/shortcodes.php#L251-L292" hash="80bf4015829bf5d3a32534b521c6450984804400b821ce4726f2c5429d053a78"/>
+
+A tag in double brackets, `[[tag]]`, is printed as `[tag]` instead of being run. Shortcodes inside an enclosing shortcode's content are not run unless its callback calls `do_shortcode()` on them. Shortcodes inside HTML attributes go through `do_shortcodes_in_html_tags()` first, unless `$ignore_html` is true. <Ev source="wp:wp-includes/shortcodes.php#L402-L458" hash="1ddc5171d163b8b06c6dc8cd8c244dc8a25aca82e6c58e147e182bdf1b4a6c92"/> <Ev source="wp:wp-includes/shortcodes.php#L251-L292" hash="80bf4015829bf5d3a32534b521c6450984804400b821ce4726f2c5429d053a78"/>
+
+While it runs it adds `_filter_do_shortcode_context()` to `wp_get_attachment_image_context`, so images made by shortcodes know their context.
+
+## Override
+
+Each shortcode passes through `pre_do_shortcode_tag` and `do_shortcode_tag`.

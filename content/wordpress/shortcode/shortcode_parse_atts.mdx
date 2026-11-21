@@ -1,0 +1,11 @@
+---
+symbol: "function:shortcode_parse_atts"
+---
+
+## Behaviour
+
+Parses a shortcode's attribute text into an array. Named values in double quotes, single quotes or none are keyed by their lowercased name, and values without a name are keyed by number. Values are unescaped with `stripcslashes()`, and a value holding an unclosed HTML element becomes an empty string. Text with nothing to parse gives an empty array. <Ev source="wp:wp-includes/shortcodes.php#L625-L657" hash="20b555fe515eee417e4a2184e3de12c50a4ac1089a11b3ce883b5137317dd0c6"/>
+
+## Override
+
+Not overridable.
