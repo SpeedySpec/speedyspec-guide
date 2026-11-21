@@ -8,6 +8,10 @@ interface Props {
   current?: string;
 }
 const { seam, section, current } = Astro.props;
+// A class's methods show only on the class's own page.
+const open = (classId: string) => current === classId || current?.startsWith(`method:${classId.slice('class:'.length)}::`);
+// Hooks of both kinds can share a name, so the rail says which.
+const label = (m: { kind: string; name: string }) => (m.kind === 'filter' || m.kind === 'action' ? `${m.kind} ${m.name}` : m.name);
 ---
 <nav class="rail" aria-label={`${seam.name} seam`}>
   <a class="rail-seam" href={`/${section}/${seam.id}/`}><b>{seam.name}</b> · seam</a>
@@ -17,9 +21,9 @@ const { seam, section, current } = Astro.props;
       {r.members.map((m) => (
         <>
           <a class:list={['rail-member', { circular: m.circular }]} href={m.href} aria-current={m.id === current ? 'page' : undefined}>
-            {m.name}{m.circular && <span class="cycle-mark" aria-hidden="true">↻</span>}{m.circular && <span class="visually-hidden"> (circular)</span>}
+            {label(m)}{m.circular && <span class="cycle-mark" aria-hidden="true">↻</span>}{m.circular && <span class="visually-hidden"> (circular)</span>}
           </a>
-          {m.methods && m.methods.length > 0 && (
+          {m.methods && m.methods.length > 0 && open(m.id) && (
             <div class="rail-methods">
               {m.methods.map((x) => <a class="rail-member" href={x.href} aria-current={x.id === current ? 'page' : undefined}>::{x.name}</a>)}
             </div>

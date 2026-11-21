@@ -68,7 +68,7 @@ h1, h2, h3 { line-height: 1.25; }
 .rail-seam { display: block; color: var(--muted); margin-bottom: 0.5rem; }
 .rail-seam b { color: var(--text); }
 .rail-role { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0.9rem 0 0.2rem; }
-.rail-member { display: block; font-family: var(--mono); padding: 0.1rem 0.4rem; border-radius: 4px; color: var(--text); }
+.rail-member { display: block; font-family: var(--mono); padding: 0.1rem 0.4rem; border-radius: 4px; color: var(--text); overflow-wrap: anywhere; }
 .rail-member[aria-current='page'] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
 .rail-member.circular { background: var(--bad-soft); color: var(--bad); }
 .rail-methods { padding-left: 0.6rem; }

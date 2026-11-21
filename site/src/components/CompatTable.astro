@@ -13,7 +13,7 @@ const { rows } = Astro.props;
   <tbody>
     {rows.map((r) => (
       <tr class:list={{ circular: r.member.circular }}>
-        <td><a class="mono" href={r.href}>{r.member.name}</a>{r.member.circular && <span class="chip-note"> circular</span>}</td>
+        <td><a class="mono" href={r.href}>{r.member.name}</a>{r.member.circular && <span class="chip-note">{" "}circular</span>}</td>
         <td><VerdictPill verdict={r.verdict} /></td>
         <td class="muted">{r.note ?? ''}</td>
       </tr>

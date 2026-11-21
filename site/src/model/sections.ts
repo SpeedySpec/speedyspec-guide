@@ -75,7 +75,55 @@ export function dependencies(seamId: string, d: GuideData): { dependsOn: Map<str
   return { dependsOn, dependedOnBy };
 }
 
-/** The cycles that pass through any member of the seam. */
+/**
+ * A shortest cycle through each member of the seam that is in a circular group, found in the dependency graph (the
+ * group's stored sample path may never touch this seam). Direct links are preferred; a cycle that only closes through
+ * a hook-name pattern is marked possible. A member already on a listed cycle gets no second one.
+ */
 export function seamCycles(seamId: string, d: GuideData): { path: string[]; possible: boolean }[] {
-  return d.cycles.symbol.filter((c) => c.path.some((id) => d.assignment.seamOf[id] === seamId));
+  const members = Object.entries(d.assignment.seamOf).filter(([, s]) => s === seamId).map(([id]) => id).sort();
+  const groupOf = new Map<string, Set<string>>();
+  for (const c of d.cycles.components) {
+    const set = new Set(c);
+    for (const id of c) groupOf.set(id, set);
+  }
+  const next = new Map<string, { to: string; pattern: boolean }[]>();
+  for (const e of d.graph.edges) {
+    if (e.broad) continue;
+    next.set(e.from, [...(next.get(e.from) ?? []), { to: e.to, pattern: e.kind === 'matches' }]);
+  }
+  const out: { path: string[]; possible: boolean }[] = [];
+  const covered = new Set<string>();
+  for (const start of members) {
+    const group = groupOf.get(start);
+    if (!group || covered.has(start)) continue;
+    const found = shortest(start, group, next, false) ?? shortest(start, group, next, true);
+    if (!found) continue;
+    out.push(found);
+    for (const id of found.path) covered.add(id);
+  }
+  return out;
+}
+
+function shortest(start: string, group: Set<string>, next: Map<string, { to: string; pattern: boolean }[]>, allowPattern: boolean) {
+  const prev = new Map<string, string>();
+  const queue = [start];
+  const seen = new Set([start]);
+  while (queue.length > 0) {
+    const node = queue.shift()!;
+    for (const { to, pattern } of [...(next.get(node) ?? [])].sort((x, y) => x.to.localeCompare(y.to))) {
+      if (!group.has(to) || (pattern && !allowPattern)) continue;
+      if (to === start) {
+        const path: string[] = [];
+        for (let n = node; n !== start; n = prev.get(n)!) path.unshift(n);
+        return { path: [start, ...path, start], possible: allowPattern };
+      }
+      if (!seen.has(to)) {
+        seen.add(to);
+        prev.set(to, node);
+        queue.push(to);
+      }
+    }
+  }
+  return null;
 }

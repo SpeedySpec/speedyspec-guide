@@ -16,7 +16,7 @@ describe('components', () => {
   test("the rail marks the current member and nests a class's methods", async () => {
     const p = await page('rail');
     expect(p.text('.rail-member[aria-current="page"]')).toEqual(['apply_filters']);
-    expect(p.text('.rail-methods .rail-member')).toEqual(['::add_filter', '::apply_filters']);
+    expect(p.text('.rail-methods .rail-member')).toEqual([]);
     expect(p.text('.rail-member.circular')).toEqual(['add_filter↻ (circular)']);
   });
 

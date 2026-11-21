@@ -3,8 +3,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build && pagefind --site dist",
+    "dev": "bunx --bun astro dev",
+    "build": "bunx --bun astro build && bunx --bun pagefind --site dist",
     "check": "astro check"
   },
   "dependencies": {

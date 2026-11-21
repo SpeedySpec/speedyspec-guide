@@ -40,12 +40,14 @@ describe('the WordPress API section', () => {
 
   test('a class page has a section per method, with its anchor', async () => {
     const p = await html(dist, '/wordpress/hooks/WP_Hook/');
+    expect(p.text('.rail-methods .rail-member')).toEqual(['::add_filter', '::apply_filters']);
     expect(p.attr('.method h2', 'id')).toEqual(['add_filter', 'apply_filters']);
     expect(p.text('.not-documented')).toEqual(['Not yet documented. Signature and relationships are generated from WordPress 7.1.5.']);
   });
 
   test('a hook page names who fires it', async () => {
     const p = await html(dist, '/wordpress/options/filter/pre_option_{option}/');
+    expect(p.text('.rail-member')).toContain('filter pre_option_{$option}');
     expect(p.text('h1')).toEqual(['pre_option_{$option}']);
     expect(p.text('.fired-by a')).toEqual(['get_option']);
   });
