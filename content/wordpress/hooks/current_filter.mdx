@@ -1,0 +1,7 @@
+---
+symbol: "function:current_filter"
+---
+
+## Behaviour
+
+Returns the name of the hook running now: the innermost, when hooks are nested, and `false` outside every hook. It reads the last entry of `$wp_current_filter`. <Ev scenario="current_and_doing_inside_a_filter"/> <Ev scenario="current_and_doing_outside_a_hook"/>

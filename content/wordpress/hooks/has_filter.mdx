@@ -1,0 +1,9 @@
+---
+symbol: "function:has_filter"
+---
+
+## Behaviour
+
+Without a callback, it returns whether the hook has any callbacks. With one, it returns the callback's priority, or `false` when it was not added. With a priority too, it returns whether the callback is at that priority. <Ev scenario="has_filter_variants"/>
+
+A callback at priority 0 returns `0`, so compare with `false` using `===`. <Ev scenario="has_filter_priority_zero"/> A static method given as `array( 'Class', 'm' )` and as `'Class::m'` is the same callback. <Ev scenario="static_array_and_string_are_one_callback"/>

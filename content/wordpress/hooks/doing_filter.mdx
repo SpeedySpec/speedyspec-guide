@@ -1,0 +1,7 @@
+---
+symbol: "function:doing_filter"
+---
+
+## Behaviour
+
+Without a name, it returns whether any hook is running. With one, it returns whether that hook is running anywhere in the current stack, not only innermost. <Ev scenario="current_and_doing_outside_a_hook"/> <Ev scenario="wp_current_filter_append"/>

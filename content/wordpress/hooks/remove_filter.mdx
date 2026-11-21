@@ -1,0 +1,13 @@
+---
+symbol: "function:remove_filter"
+---
+
+## Behaviour
+
+Removes one callback from a hook, at one priority (10 when not given), and returns whether it removed one. <Ev scenario="remove_filter_variants"/> The callback must be given the way it was added: the same function name, the same closure object, or the same `[object, method]`. <Ev scenario="callback_kind_closure"/> <Ev scenario="callback_kind_method"/> A callback added at two priorities is removed from the one named. <Ev scenario="same_callback_at_two_priorities"/>
+
+When the hook has no callbacks left, the hook itself is removed from `$wp_filter`. Removing during a run of the same hook takes effect for the rest of that run. <Ev scenario="remove_during_run_later_priority"/> <Ev scenario="remove_self_during_run"/>
+
+## Override
+
+It fires no hooks and is not pluggable.
