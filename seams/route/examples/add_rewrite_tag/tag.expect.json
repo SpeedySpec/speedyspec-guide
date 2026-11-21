@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => '%guide%',\n    1 => '%topic%',\n  ),\n  1 => \n  array (\n    0 => '([^/]+)',\n    1 => '([0-9]+)',\n  ),\n  2 => \n  array (\n    0 => 'guide=',\n    1 => 'cat=',\n  ),\n  3 => true,\n)",
+ "error": null
+}

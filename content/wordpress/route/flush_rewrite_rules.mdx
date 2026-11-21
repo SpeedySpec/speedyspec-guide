@@ -1,0 +1,11 @@
+---
+symbol: "function:flush_rewrite_rules"
+---
+
+## Behaviour
+
+Rebuilds and saves the rewrite rules, once `wp_loaded` has fired; a hard flush (the default) also writes `.htaccess` and `web.config` when their savers are loaded. <Ev source="wp:wp-includes/rewrite.php#L282-L288" hash="14bb7c3e5d86b15287cbe63b30128995e240cf3e4eefb1967a425bcfe28b8bef"/>
+
+## Override
+
+Not overridable.

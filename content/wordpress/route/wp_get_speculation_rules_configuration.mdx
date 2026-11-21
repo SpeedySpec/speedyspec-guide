@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_speculation_rules_configuration"
+---
+
+## Behaviour
+
+The speculative loading configuration: for logged-out visitors on a site with pretty permalinks, `prefetch` with `conservative` eagerness. A missing, `auto` or invalid mode or eagerness takes the default, and `immediate` is never used. `null` means off. <Ev source="wp:wp-includes/speculative-loading.php#L26-L101" hash="48713871fb6ac3c5d236c63d8f5e8573c3550f056cb033223cad01e221eeb7ed"/>
+
+## Override
+
+`wp_speculation_rules_configuration` changes the configuration.

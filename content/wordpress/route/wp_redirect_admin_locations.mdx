@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_redirect_admin_locations"
+---
+
+## Behaviour
+
+On a 404 with pretty permalinks, redirects `/wp-admin`, `/dashboard` and `/admin` to the admin and `/login` and `/wp-login.php` to the login page. It also sends `/.well-known/change-password` to the profile. <Ev source="wp:wp-includes/canonical.php#L1063-L1127" hash="ec164f64744ff76325ee338d538d694109eb73274bdefb8a0af2cc231259fb52"/>
+
+## Override
+
+`wp_change_password_url` changes the change-password destination.

@@ -1,0 +1,11 @@
+---
+symbol: "function:add_rewrite_rule"
+---
+
+## Behaviour
+
+Adds a rewrite rule from a regex to a query, at the bottom of the extra rules or, with `'top'`, above WordPress's own. A query that doesn't start with `index.php` makes an external rule, written to `.htaccess`. <Ev source="wp:wp-includes/rewrite.php#L140-L144" hash="ad75807613d93d35ecb3dc3657587a28a3924aed7745d8bb288c4e7ae0badc72"/>
+
+## Override
+
+Not overridable.

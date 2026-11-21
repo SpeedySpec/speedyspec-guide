@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Rewrite::flush_rules"
+---
+
+Before `wp_loaded`, waits for it. Then it rebuilds and saves the rules and, for a hard flush, writes `.htaccess` and `web.config` when their savers are loaded. <Ev source="wp:wp-includes/class-wp-rewrite.php#L2043-L2078" hash="6bec6809acb24b03fd9d8f4066b645aa0ebf127628931dd255959cbd3149544c"/>

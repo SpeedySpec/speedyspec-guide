@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Rewrite::rewrite_rules"
+---
+
+Builds every rule, in order: the top extra rules, then robots, favicon, the old sitemap, the old feed files and the random rules. After those come the root, comments, search, author, date, post, page and extra structures, then the bottom extra rules. With plain permalinks there are none. Each group has a filter, `generate_rewrite_rules` fires with the object, and `rewrite_rules_array` filters the whole. <Ev source="wp:wp-includes/class-wp-rewrite.php#L1295-L1529" hash="ca2df3a6b8204c92c2adbbd6ed7034b104e22a24743532022e7acc20681a77e1"/>

@@ -1,0 +1,11 @@
+---
+symbol: "function:url_to_postid"
+---
+
+## Behaviour
+
+The post ID of a URL on the site: from `?p=`, `?page_id=` or `?attachment_id=`, the front page, or by matching the rewrite rules and running the query they give. Another host, or a URL no rule matches, gives 0. <Ev source="wp:wp-includes/rewrite.php#L513-L684" hash="bbd0548fb8509e60eac8c40ad64091855b129a33cdb232e98fc22538c5d7d504"/>
+
+## Override
+
+`url_to_postid` filters the URL first.

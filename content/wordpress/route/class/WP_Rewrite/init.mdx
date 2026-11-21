@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Rewrite::init"
+---
+
+Resets the extra rules, external rules and endpoints, and reads the permalink structure and random base. It works out the front (the part before the first tag), the root (`index.php/` for `PATHINFO` permalinks), trailing slashes, and whether page rules come first (the first tag is `%postname%`, `%category%`, `%tag%` or `%author%`). It also clears the cached structures. <Ev source="wp:wp-includes/class-wp-rewrite.php#L2089-L2119" hash="748e08df7306c33dcb4fd50035ff25675c0a869d490985493fdeac21797486c9"/>
