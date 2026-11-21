@@ -14,6 +14,9 @@ const one = async (theme: 'default' | 'dark') => {
 };
 const light = await one('default');
 const dark = await one('dark');
-// Wait for the whole pair to be written before exiting: a large SVG is more than one pipe buffer.
-await Bun.write(Bun.stdout, JSON.stringify({ light, dark }));
+// Wait for the whole pair to be written before exiting: a large SVG is more than one pipe buffer. Chromium leaves
+// stdout non-blocking, so the write must wait out a full pipe: Bun.write stalls for good at the first full buffer and
+// fs.writeSync stops short, while process.stdout waits for the reader to drain it.
+const json = JSON.stringify({ light, dark });
+await new Promise<void>((resolve, reject) => process.stdout.write(json, (e) => (e ? reject(e) : resolve())));
 process.exit(0);

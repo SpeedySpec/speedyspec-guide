@@ -100,6 +100,21 @@ describe('a diagram too slow to draw', () => {
   });
 });
 
+describe('diagrams rendered at once', () => {
+  test('two_large_diagrams_rendered_together_both_draw', async () => {
+    const { renderWith } = await import('../src/model/render-mermaid.ts');
+    const cli = join(import.meta.dir, '..', 'src', 'model', 'mermaid-cli.ts');
+    // Each pair of SVGs is many pipe buffers long, so a child that can't wait out a full pipe never finishes.
+    const big = (k: string) => ['flowchart LR', ...Array.from({ length: 300 }, (_, i) => `  ${k}${i}["${k} node ${i} with a label"] --> ${k}${i + 1}`)].join('\n');
+    const drawn = await Promise.all(['a', 'b'].map((k) => renderWith(['bun', cli, k], big(k), 20_000)));
+    for (const svg of drawn) {
+      expect(svg).not.toBeNull();
+      expect(svg!.light).toContain('<svg');
+      expect(svg!.dark).toContain('<svg');
+    }
+  }, 60_000);
+});
+
 describe('long dependency lists', () => {
   test('top_rows_are_the_most_called_then_by_name', async () => {
     const { topRows } = await import('../src/model/sections.ts');
