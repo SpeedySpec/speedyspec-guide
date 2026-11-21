@@ -24,6 +24,9 @@ describe('CompatFilesEvidence', () => {
     expect(await ev.testExists('speedyspec-wp-hooks-php::wordpress::replays_the_hooks_fixture')).toBe(true);
     expect(await ev.testExists('speedyspec-wp-hooks-php::wordpress::missing')).toBe(false);
     expect(await ev.testExists('bad-path')).toBe(false);
+    // Harness-style tests name their checks in strings: check("name", …).
+    expect(await ev.testExists('speedyspec-wp-hooks-php::wordpress::php_hook_store_binding_takes_every_registration')).toBe(true);
+    expect(await ev.testExists('speedyspec-wp-hooks-php::wordpress::not_a_check')).toBe(false);
   });
   test('source lines', async () => {
     expect(await ev.sourceLines('wp', 'wp-includes/plugin.php', 2, 3)).toBe('function add_filter( $hook_name, $callback ) {\n\treturn true;');

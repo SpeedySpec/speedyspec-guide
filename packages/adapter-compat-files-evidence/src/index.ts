@@ -22,13 +22,18 @@ export class CompatFilesEvidence implements EvidenceSource {
     return b?.breaks.some((x) => x.scenario === scenario && (x.step === undefined || step === undefined || x.step === step)) ?? false;
   }
 
-  /** `<crate>::<tests file stem>::<fn>`, found as `fn <fn>` in `crates/<crate>/tests/<stem>.rs`. */
+  /**
+   * `<crate>::<tests file stem>::<name>`, found in `crates/<crate>/tests/<stem>.rs` as `fn <name>(` or, for a harness-style
+   * test, as a check named `"<name>"`.
+   */
   async testExists(path: string): Promise<boolean> {
     const [crate, stem, fn, ...rest] = path.split('::');
     if (!crate || !stem || !fn || rest.length > 0) return false;
     const file = join(this.serverDir, 'crates', crate, 'tests', `${stem}.rs`);
     if (!existsSync(file)) return false;
-    return new RegExp(`\\bfn\\s+${fn.replace(/\W/g, '')}\\s*\\(`).test(await Bun.file(file).text());
+    const name = fn.replace(/\W/g, '');
+    const text = await Bun.file(file).text();
+    return new RegExp(`\\bfn\\s+${name}\\s*\\(`).test(text) || text.includes(`"${name}"`);
   }
 
   async sourceLines(base: 'wp' | 'ss', file: string, from: number, to: number): Promise<string | null> {
