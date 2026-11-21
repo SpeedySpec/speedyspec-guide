@@ -4,11 +4,13 @@ verdict: works-with-differences
 differences:
   - summary: "Replacing $wp_filter with the result of build_preinitialized_hooks() is not seen by SpeedySpec's hook store; hooks set before the request's PHP runs are imported instead."
     break: wp_hook_build_preinitialized_hooks
+  - summary: "SpeedySpec's WP_Hook is also Countable (count() gives its number of priorities; on WordPress count() throws a TypeError) and has speedyspec_* members of its own (found by the guide)."
+    break: undefined
 ---
 
 ## Behaviour
 
-`WP_Hook` is SpeedySpec's own class with the same methods: each object is a handle on one hook in the native store, so `$wp_filter[$name]`, `ArrayAccess` and iteration behave as in WordPress. <Ev scenario="wp_hook_methods"/> <Ev scenario="wp_hook_array_access"/> <Ev scenario="wp_hook_iterator"/>
+`WP_Hook` is SpeedySpec's own class with WordPress's methods: each object is a handle on one hook in the native store, so `$wp_filter[$name]`, `ArrayAccess` and iteration behave as in WordPress. <Ev scenario="wp_hook_methods"/> <Ev scenario="wp_hook_array_access"/> <Ev scenario="wp_hook_iterator"/> It also implements `Countable` and has `speedyspec_`-prefixed members, which WordPress's class doesn't. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L140-L141" hash="5cad2380cae67bdfc1ce50f3a723e58e08b464abcbcbde738dbd0eea9356927f"/>
 
 ## Override
 

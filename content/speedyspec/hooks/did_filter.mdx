@@ -3,4 +3,4 @@ symbol: "function:did_filter"
 verdict: works-as-wordpress
 ---
 
-Native. <Ev scenario="did_filter_counts"/> <Ev scenario="apply_filters_without_callbacks"/>
+Native. <Ev scenario="did_filter_counts"/> <Ev scenario="apply_filters_without_callbacks"/> Resetting the counts by replacing `$wp_filters` doesn't work on SpeedySpec; see [$wp_filters](/speedyspec/hooks/global/wp_filters/).

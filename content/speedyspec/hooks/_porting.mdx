@@ -1,23 +1,24 @@
 ---
 ---
 
-Most plugins port without changes: the Hook API's functions, `WP_Hook` and reading the globals behave as in WordPress. <Ev test="speedyspec-wp-hooks-php::php::replayed_scenarios_match_wordpress"/> What needs changing is code that **replaces** the hook globals instead of using the functions.
+Most plugins port without changes: the Hook API's functions and `WP_Hook` behave as in WordPress, and so does reading the globals by index, `isset()` and `foreach`. <Ev test="speedyspec-wp-hooks-php::php::replayed_scenarios_match_wordpress"/> What needs changing is code that replaces the hook globals, puts something other than a `WP_Hook` in `$wp_filter`, or passes the globals to array functions.
 
 ## Checklist
 
-Search your plugin or theme for each pattern. A match is worth a look; the linked page says what to write instead.
+Search your plugin or theme for each pattern. The patterns are a starting point: they can match code that is fine and miss code written another way (through a variable, say). The linked page says what to write instead.
 
 | Search for | What it means | What to do |
 |---|---|---|
-| `\$wp_filter\s*=` or `\$GLOBALS\['wp_filter'\]\s*=` | Replacing every hook at once. SpeedySpec keeps the callbacks. <Ev break="wp_filter_replace_wholesale"/> | Remove the callbacks of the hooks you own with `remove_all_filters()`. [$wp_filter](/speedyspec/hooks/global/wp_filter/) |
-| `\$wp_filter\[[^\]]+\]\s*=\s*(array\|\[)` | Putting a plain array at a hook name after WordPress loads. SpeedySpec throws a `TypeError`. <Ev break="wp_filter_set_plain_array"/> | Set a `WP_Hook`, or use `add_filter()`. [$wp_filter](/speedyspec/hooks/global/wp_filter/) |
+| `\$wp_filter\s*=[^=]` or `\$GLOBALS\[.wp_filter.\]\s*=[^=]` | Replacing every hook at once. SpeedySpec keeps the callbacks. <Ev break="wp_filter_replace_wholesale"/> | Remove the callbacks of the hooks you own with `remove_all_filters()`. [$wp_filter](/speedyspec/hooks/global/wp_filter/) |
+| `wp_filter.\]?\[[^\]]+\]\s*=\s*(array\|\[)` | Putting a plain array at a hook name after WordPress loads. WordPress fails at the next `add_filter()` on that hook; SpeedySpec throws a `TypeError` at once. <Ev break="wp_filter_set_plain_array"/> | Set a `WP_Hook`, or use `add_filter()`. [$wp_filter](/speedyspec/hooks/global/wp_filter/) |
 | `build_preinitialized_hooks` | Building `WP_Hook` objects and replacing `$wp_filter` with them. <Ev break="wp_hook_build_preinitialized_hooks"/> | Leave arrays in `$wp_filter` before WordPress loads; SpeedySpec imports them. [WP_Hook](/speedyspec/hooks/class/WP_Hook/) |
-| `\$wp_filters\s*=` or `\$wp_actions\s*=` | Resetting the run counts. SpeedySpec keeps counting. <Ev break="wp_filters_read_and_write"/> | Subtract an earlier `did_filter()` or `did_action()`. [$wp_filters](/speedyspec/hooks/global/wp_filters/) |
+| `\$wp_filters\s*=[^=]` or `\$wp_actions\s*=[^=]` | Resetting the run counts. SpeedySpec keeps counting. <Ev break="wp_filters_read_and_write"/> (For `$wp_actions` no compat break is recorded yet; the guide's own example shows it.) | Subtract an earlier `did_filter()` or `did_action()`. [$wp_filters](/speedyspec/hooks/global/wp_filters/), [$wp_actions](/speedyspec/hooks/global/wp_actions/) |
+| `array_\w+\(\s*\$(GLOBALS\[.)?wp_(filter\|filters\|actions)\b` or `in_array\|is_array` over them | Passing the hook globals to array functions. They are objects on SpeedySpec, so these throw a `TypeError`. <Ev source="ss:compat/hooks/breaks.json#L31-L36" hash="54b93d5ce67537aac4a63b115152329265e083c37e3e600e441dc4f2b8368703"/> | Iterate with `foreach`, test with `isset()` or `has_filter()`. [$wp_filter](/speedyspec/hooks/global/wp_filter/) |
 
 ```bash
-grep -rnE '\$wp_filter\s*=|\$GLOBALS\[.wp_filter.\]\s*=|\$wp_filter\[[^]]+\]\s*=\s*(array|\[)|build_preinitialized_hooks|\$wp_filters\s*=|\$wp_actions\s*=' --include='*.php' .
+grep -rnE '\$wp_filter\s*=[^=]|\$GLOBALS\[.wp_filter.\]\s*=[^=]|wp_filter.\]?\[[^]]+\]\s*=\s*(array|\[)|build_preinitialized_hooks|\$wp_(filters|actions)\s*=[^=]|(array_[a-z_]+|in_array|is_array)\(\s*\$(GLOBALS\[.)?wp_(filter|filters|actions)\b' --include='*.php' .
 ```
 
 ## What keeps working
 
-Registering and running hooks ([add_filter](/speedyspec/hooks/add_filter/), [apply_filters](/speedyspec/hooks/apply_filters/), [do_action](/speedyspec/hooks/do_action/)), removing and inspecting them ([remove_filter](/speedyspec/hooks/remove_filter/), [has_filter](/speedyspec/hooks/has_filter/), [current_filter](/speedyspec/hooks/current_filter/)), `WP_Hook` and its `ArrayAccess` and `Iterator` use, and reading the globals. <Ev scenario="wp_hook_array_access"/> <Ev scenario="wp_filter_iterate"/>
+Registering and running hooks ([add_filter](/speedyspec/hooks/add_filter/), [apply_filters](/speedyspec/hooks/apply_filters/), [do_action](/speedyspec/hooks/do_action/)), removing and inspecting them ([remove_filter](/speedyspec/hooks/remove_filter/), [has_filter](/speedyspec/hooks/has_filter/), [current_filter](/speedyspec/hooks/current_filter/)), `WP_Hook` and its `ArrayAccess` and `Iterator` use, and reading the globals by index, `isset()` and `foreach`. <Ev scenario="wp_hook_array_access"/> <Ev scenario="wp_filter_iterate"/>

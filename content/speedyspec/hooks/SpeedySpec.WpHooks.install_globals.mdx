@@ -5,4 +5,4 @@ verdict: new-in-speedyspec
 
 ## Behaviour
 
-Installs the proxies as `$wp_filter`, `$wp_filters`, `$wp_actions` and `$wp_current_filter` at the start of every request, so WordPress code that reaches for the globals finds them. <Ev test="speedyspec-wp-hooks-php::php::wp_filter_reads_and_iterates_like_wordpress"/> Not for plugins.
+At the start of every request: imports hooks left as arrays in `$wp_filter` before the request's PHP ran (through `WP_Hook::build_preinitialized_hooks()`), then installs the proxies `FilterGlobal` as `$wp_filter` and `CountGlobal` as `$wp_actions` and `$wp_filters`, and sets `$wp_current_filter` to a real array. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L118-L131" hash="d6926b1d27bda0cf7d16eb5967e975f9a793f3eb379e5fbedf268fcfd3b74098"/> <Ev test="speedyspec-wp-hooks-php::php::wp_filter_reads_and_iterates_like_wordpress"/> Not for plugins.

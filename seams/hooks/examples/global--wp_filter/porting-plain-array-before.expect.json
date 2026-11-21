@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "true",
- "error": null
+ "return": null,
+ "error": "Error: Call to a member function add_filter() on array"
 }

@@ -5,4 +5,4 @@ verdict: new-in-speedyspec
 
 ## Behaviour
 
-Writes back every `WP_Hook::$callbacks` array PHP code may have changed in place, before a hook function reads the store, so direct edits to `$wp_filter[$name]->callbacks` take effect as in WordPress. <Ev scenario="wp_hook_array_access"/> Not for plugins.
+Called before a hook function reads the store: when PHP code has taken a `WP_Hook::$callbacks` array to change, writes every such array back to the store. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L106-L111" hash="48cd15ee166f7f54fd654e44a11168b2a2459be9bdd376f749be25b629322920"/> The replayed WordPress scenarios pass with it in place. <Ev test="speedyspec-wp-hooks-php::php::replayed_scenarios_match_wordpress"/> Not for plugins.

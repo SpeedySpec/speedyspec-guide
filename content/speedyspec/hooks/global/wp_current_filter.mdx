@@ -5,4 +5,4 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Kept by the native store and shown as the same array. Appending to it and replacing it behave as in WordPress. <Ev scenario="wp_current_filter_append"/> <Ev scenario="wp_current_filter_replace"/>
+A real array, as in WordPress, kept equal to the native store's stack of running hooks. Appending to it and replacing it behave as in WordPress. <Ev scenario="wp_current_filter_append"/> <Ev scenario="wp_current_filter_replace"/> <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L129-L130" hash="cc1e959931bb08662fd6a6b3598f9324556bad323bba560520367eea280fa92e"/>

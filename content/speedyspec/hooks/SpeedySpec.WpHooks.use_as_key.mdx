@@ -5,4 +5,4 @@ verdict: new-in-speedyspec
 
 ## Behaviour
 
-Checks that a priority can be an array key, as PHP would when WordPress stores it, and fails the same way for one that can't. <Ev scenario="non_numeric_priority"/> <Ev scenario="float_priority"/> Not for plugins.
+For a float priority, uses it as an array key once, so PHP raises the same deprecation it raises when WordPress stores the priority as a key. Other priorities are left alone. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L93-L99" hash="34b6891b264b6418c1809bb5a484859fad161c7c0f36c90ac93b288e04a23a28"/> <Ev scenario="float_priority"/> Not for plugins.

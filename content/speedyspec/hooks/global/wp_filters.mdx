@@ -4,11 +4,17 @@ verdict: works-with-differences
 differences:
   - summary: "Replacing $wp_filters wholesale does not reset the counts: the hook store keeps counting."
     break: wp_filters_read_and_write
+  - summary: "Passing it to an array function (array_keys, array_key_exists, in_array, array_pop, …) throws a TypeError, and is_array() is false: it is an object. Reading, indexing, isset, iterating and counting work."
+    break: undefined
 ---
 
 ## Behaviour
 
-`$wp_filters` is a proxy (`SpeedySpec\WpHooks\CountGlobal`) over the store's counts. Reading a count and setting one behave as in WordPress. <Ev scenario="wp_filters_read_and_write"/>
+`$wp_filters` is a proxy object (`SpeedySpec\WpHooks\CountGlobal`) over the store's counts. Reading a count and setting one behave as in WordPress. <Ev scenario="wp_filters_read_and_write"/>
+
+## Limits
+
+An object, not an array: array functions throw a `TypeError`. Read counts with `did_filter()`. <Ev source="ss:compat/hooks/breaks.json#L31-L36" hash="54b93d5ce67537aac4a63b115152329265e083c37e3e600e441dc4f2b8368703"/>
 
 ## Porting
 

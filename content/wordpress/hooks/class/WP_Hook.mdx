@@ -6,9 +6,9 @@ symbol: "class:WP_Hook"
 
 One hook's callbacks, keyed by priority and then by callback id. `add_filter()` keeps one `WP_Hook` for each hook name in `$wp_filter`. <Ev scenario="wp_filter_set_new_hook_object"/> <Ev scenario="wp_hook_methods"/>
 
-It is also an array of its priorities (`ArrayAccess`), so core and plugins read and change `$wp_filter['init'][10]` directly. <Ev scenario="wp_hook_array_access"/> Iterating it visits its priorities in ascending order (`Iterator`). <Ev scenario="wp_hook_iterator"/>
+It is also an array of its priorities (`ArrayAccess`), so core and plugins read and change `$wp_filter['init'][10]` directly. <Ev scenario="wp_hook_array_access"/> Iterating it visits its priorities in ascending order (`Iterator`); a priority set directly with `$hook[ $priority ] =` is not re-sorted. <Ev scenario="wp_hook_iterator"/> <Ev source="wp:wp-includes/class-wp-hook.php#L524-L532" hash="3c6fc132f8e3e0fec56130d071e7d77d385f1d75ad637bbb8048a973ca9c4943"/>
 
-It keeps a run's position per nesting level, so a callback can add or remove callbacks on the hook it runs on, and nested runs of one hook don't disturb each other. <Ev scenario="add_during_run_at_later_priority"/> <Ev scenario="nested_filters"/>
+It keeps a run's position per nesting level, so a callback can add or remove callbacks on the hook it runs on, and nested runs of one hook don't disturb each other. <Ev scenario="add_during_run_at_later_priority"/> <Ev scenario="recursive_filter"/>
 
 ## Override
 

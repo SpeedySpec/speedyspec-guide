@@ -4,4 +4,4 @@ symbol: "function:remove_all_filters"
 
 ## Behaviour
 
-Removes every callback on a hook, or only those at one priority, and returns `true`. <Ev scenario="remove_all_filters"/> Removing during a run stops the remaining callbacks of that run. <Ev scenario="remove_all_during_run"/>
+Removes every callback on a hook, or only those at one priority, and returns `true`. When none are left, it removes the hook from `$wp_filter`. <Ev scenario="remove_all_filters"/> <Ev source="wp:wp-includes/plugin.php#L350-L358" hash="73280cc67b4f35aa8db33b555a47d48dc728b9249b1d0b759e74abe6f34027bb"/>

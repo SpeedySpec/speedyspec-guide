@@ -1,6 +1,8 @@
 ---
 ---
 
-Native: SpeedySpec answers the Hook API in Rust. Plugins call the same functions with the same arguments and get the same results; every recorded WordPress scenario replays unchanged except the documented breaks, which all concern replacing the hook globals wholesale. <Ev test="speedyspec-wp-hooks-php::php::replayed_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-hooks-php::wordpress::wordpress_hook_tests_pass"/>
+Native: SpeedySpec answers the Hook API in Rust. Plugins call the same functions with the same arguments and get the same results; every recorded WordPress scenario replays unchanged except the documented breaks, which concern replacing the hook globals wholesale or putting something other than a `WP_Hook` in `$wp_filter`. <Ev test="speedyspec-wp-hooks-php::php::replayed_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-hooks-php::wordpress::wordpress_hook_tests_pass"/>
 
-The four globals are proxies over the native store, so reading them, indexing them and iterating them work as in WordPress. A hook with no callbacks never enters PHP. <Ev test="speedyspec-wp-hooks-php::php::wp_filter_reads_and_iterates_like_wordpress"/> <Ev test="speedyspec-wp-hooks-php::php::empty_hooks_never_enter_php"/>
+Three of the globals, `$wp_filter`, `$wp_filters` and `$wp_actions`, are proxy objects over the native store: reading, indexing, isset, iterating and counting them work as in WordPress, but array functions such as `array_keys()` don't accept them. `$wp_current_filter` is a real array, kept equal to the store's stack. <Ev test="speedyspec-wp-hooks-php::php::wp_filter_reads_and_iterates_like_wordpress"/> <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L118-L131" hash="d6926b1d27bda0cf7d16eb5967e975f9a793f3eb379e5fbedf268fcfd3b74098"/> <Ev source="ss:compat/hooks/breaks.json#L31-L36" hash="54b93d5ce67537aac4a63b115152329265e083c37e3e600e441dc4f2b8368703"/>
+
+A hook with no callbacks never enters PHP. <Ev test="speedyspec-wp-hooks-php::php::empty_hooks_never_enter_php"/>

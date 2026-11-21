@@ -1,0 +1,33 @@
+# Hooks: findings for speedyspec-server
+
+What writing the Hooks seam's pages found in speedyspec-server at commit `8fc498313cd9` that its compat records
+(`compat/hooks/scenarios.json`, `compat/hooks/breaks.json`) don't capture. Each was run on WordPress 7.1.5 and on the
+runtime with the guide's runner. The guide documents each as it is today; when the server records or fixes one, update
+the page it names.
+
+## 1. Replacing `$wp_actions` doesn't reset `did_action()`
+
+```php
+do_action( 'guide_a' );
+$GLOBALS['wp_actions'] = array();
+return did_action( 'guide_a' );
+```
+
+WordPress returns `0`; the runtime returns `1`. `$wp_filters` has the same behaviour and a recorded break
+(`wp_filters_read_and_write`); `$wp_actions` has none. The example is
+`seams/hooks/examples/global--wp_actions/porting-reset-before.php` (WordPress only). Documented on
+`content/speedyspec/hooks/global/wp_actions.mdx` as a difference.
+
+## 2. SpeedySpec's `WP_Hook` is `Countable` and has members of its own
+
+`crates/speedyspec-wp-hooks-php/src/hooks.php` L140–141 declares
+`#[\AllowDynamicProperties] final class WP_Hook implements Iterator, ArrayAccess, Countable`, with `speedyspec_`-prefixed
+members (WordPress's is `final class WP_Hook implements Iterator, ArrayAccess`). `count( $wp_filter['x'] )` throws a
+`TypeError` on WordPress and returns the number of priorities on the runtime. Documented on
+`content/speedyspec/hooks/class/WP_Hook.mdx` as a difference.
+
+## 3. The `remove_all_during_run` scenario doesn't test a removal during a run
+
+Its name says it removes every callback while the hook runs, but its steps never call `remove_all_filters()`: a
+callback on `f` adds a callback to another hook, then `f` runs. The guide cites it nowhere for during-run behaviour; `remove_during_run_later_at_current_priority` covers
+`remove_filter()`, and no scenario covers `remove_all_filters()` during a run.

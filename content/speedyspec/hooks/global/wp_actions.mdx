@@ -1,8 +1,21 @@
 ---
 symbol: "global:wp_actions"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "Replacing $wp_actions wholesale does not reset the counts: did_action() keeps counting (found by the guide; no compat break is recorded yet)."
+    break: undefined
+  - summary: "Passing it to an array function (array_keys, array_key_exists, in_array, array_pop, …) throws a TypeError, and is_array() is false: it is an object. Reading, indexing, isset, iterating and counting work."
+    break: undefined
 ---
 
 ## Behaviour
 
-A proxy (`SpeedySpec\WpHooks\CountGlobal`) over the store's action counts; reading and writing it behave as in WordPress. <Ev scenario="wp_actions_read_and_write"/>
+A proxy object (`SpeedySpec\WpHooks\CountGlobal`) over the store's action counts; reading a count and setting one behave as in WordPress. <Ev scenario="wp_actions_read_and_write"/>
+
+## Limits
+
+An object, not an array: array functions throw a `TypeError`. Read counts with `did_action()`. <Ev source="ss:compat/hooks/breaks.json#L31-L36" hash="54b93d5ce67537aac4a63b115152329265e083c37e3e600e441dc4f2b8368703"/>
+
+## Porting
+
+Replacing `$wp_actions` doesn't reset the counts on SpeedySpec: the porting example below shows it. No compat scenario records it yet; it is listed in [the guide's findings](https://github.com/SpeedySpec/speedyspec-guide/blob/main/docs/hooks-findings.md) for speedyspec-server. Subtract an earlier `did_action()` instead.
