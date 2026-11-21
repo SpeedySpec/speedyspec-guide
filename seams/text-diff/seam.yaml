@@ -1,7 +1,6 @@
 name: "Text diff"
 job: "Compares texts and renders the differences."
 ported: false
-packages: [wp-text-diff]
 files:
   - 'wp-includes/Text/Diff.php'
   - 'wp-includes/Text/Diff/Engine/native.php'

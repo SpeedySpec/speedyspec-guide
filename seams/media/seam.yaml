@@ -1,7 +1,6 @@
 name: "Media"
 job: "Stores, sizes and describes attachments, reads media metadata through getID3, and renders galleries and players."
 ported: false
-packages: [wp-media]
 files:
   - 'wp-includes/ID3/getid3.lib.php'
   - 'wp-includes/ID3/getid3.php'

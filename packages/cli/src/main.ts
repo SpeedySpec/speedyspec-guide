@@ -52,9 +52,11 @@ async function main(argv: string[]): Promise<number> {
   const env = (name: string) => (process.env[name] ? resolve(process.env[name]!) : undefined);
 
   // WordPress is the pinned commit's src/, exported from a local git directory: GUIDE_WORDPRESS_GIT (any clone of
-  // wordpress-develop, read only), else the bare clone the history stage keeps.
-  const wordpressGit = env('GUIDE_WORDPRESS_GIT') ?? join(cache, 'wordpress-tags', 'repository.git');
-  const wordpressDir = async () => env('GUIDE_WORDPRESS_DIR') ?? new WordPressCommit(sources.wordpress, cache, wordpressGit).fetch(sources.wordpress.version);
+  // wordpress-develop, only read, never fetched into), else the guide's own .cache/wordpress-git, which it fetches into.
+  const givenGit = env('GUIDE_WORDPRESS_GIT');
+  const wordpressDir = async () =>
+    env('GUIDE_WORDPRESS_DIR') ??
+    new WordPressCommit(sources.wordpress, cache, givenGit ?? join(cache, 'wordpress-git'), undefined, { fetch: givenGit === undefined }).fetch(sources.wordpress.version);
   const serverDir = async () => env('GUIDE_SERVER_DIR') ?? checkout(cache, 'speedyspec-server', sources.server.repo, sources.server.commit);
 
   const seams = new SeamFiles(join(root, 'seams'));

@@ -42,6 +42,12 @@ describe('SeamFiles', () => {
     rmSync(dir, { recursive: true });
   });
 
+  test('packages_is_refused', async () => {
+    const dir = only('packaged');
+    await expect(new SeamFiles(dir).all()).rejects.toThrow("packaged/seam.yaml: packages is no longer supported; SpeedySpec doesn't ship the PHP packages/ tree");
+    rmSync(dir, { recursive: true });
+  });
+
   test('a seam missing its job is refused, naming the file and field', async () => {
     const dir = only('broken');
     await expect(new SeamFiles(dir).all()).rejects.toThrow(/broken\/seam\.yaml.*job/);

@@ -146,7 +146,7 @@ export function seamDiagram(view: SeamView, d: GuideData): string | null {
   return lines.join('\n');
 }
 
-/** A seam's WordPress packages and SpeedySpec crates, and the dependencies between those crates. */
+/** A seam's SpeedySpec crates and the dependencies between them. */
 export function architectureDiagram(seam: Seam, crates: CratesFile): string {
   const lines = ['flowchart TB'];
   const ids = new Map<string, string>();
@@ -155,7 +155,6 @@ export function architectureDiagram(seam: Seam, crates: CratesFile): string {
     ids.set(name, id);
     lines.push(`  ${id}${shape(escapeLabel(name))}`);
   };
-  for (const p of seam.packages ?? []) add(p, (l) => `[/${l}/]`);
   for (const c of seam.crates ?? []) add(c, (l) => `[${l}]`);
   for (const c of crates.crates) {
     if (!ids.has(c.name)) continue;

@@ -57,10 +57,11 @@ describe('seamDiagram', () => {
 });
 
 describe('architectureDiagram', () => {
-  test("draws the seam's packages and crates and the crates' dependencies", () => {
+  test("draws the seam's SpeedySpec crates and their dependencies, and no PHP packages", () => {
     const a = architectureDiagram(d.seams.find((s) => s.id === 'hooks')!, d.crates);
     expect(a.startsWith('flowchart TB')).toBe(true);
-    for (const n of ['wp-plugin', 'speedyspec-wp-hooks', 'speedyspec-wp-hooks-php']) expect(a).toContain(`"${n}"`);
+    for (const n of ['speedyspec-wp-hooks', 'speedyspec-wp-hooks-php']) expect(a).toContain(`"${n}"`);
+    expect(a).not.toContain('wp-plugin');
     expect(a).toMatch(/-->/);
   });
 });

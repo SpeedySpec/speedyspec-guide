@@ -1,7 +1,6 @@
 name: "Support"
 job: "Holds the general functions, loading helpers, pluggable functions, errors and constants the other seams share."
 ported: false
-packages: [wp-support]
 files:
   - 'wp-includes/class-wp-ajax-response.php'
   - 'wp-includes/class-wp-error.php'

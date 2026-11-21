@@ -1,7 +1,6 @@
 name: "Blocks"
 job: "Registers block types, parses and renders block markup, applies block supports, and serves block templates and patterns."
 ported: false
-packages: [wp-block]
 files:
   - 'wp-includes/blocks/**'
   - 'wp-includes/block-supports/**'

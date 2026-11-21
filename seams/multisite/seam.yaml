@@ -1,7 +1,6 @@
 name: "Multisite"
 job: "Manages networks and sites, switches between sites, and queries them."
 ported: false
-packages: [wp-multisite]
 files:
   - 'wp-includes/ms-default-filters.php'
   - 'wp-includes/ms-settings.php'

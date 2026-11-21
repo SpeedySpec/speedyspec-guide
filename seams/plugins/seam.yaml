@@ -1,7 +1,6 @@
 name: "Plugins"
 job: "Locates plugin files and URLs, records activation, deactivation and uninstall callbacks, and tracks plugin dependencies and paused extensions."
 ported: false
-packages: [wp-plugin]
 files:
   - 'wp-includes/default-filters.php'
   - 'wp-includes/class-wp-paused-extensions-storage.php'

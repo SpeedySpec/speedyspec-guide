@@ -4,7 +4,6 @@ ported: true
 files: [wp-includes/plugin.php, wp-includes/class-wp-hook.php]
 symbols: [global:wp_filter]
 wordpress: [wp-includes/plugin.php]
-packages: [wp-plugin]
 crates: [speedyspec-wp-hooks, speedyspec-wp-hooks-php]
 roles:
   register: [function:add_filter]

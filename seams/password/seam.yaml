@@ -1,7 +1,6 @@
 name: "Passwords and crypto"
 job: "Hashes and checks passwords, and provides sodium_compat's cryptography."
 ported: false
-packages: [wp-password]
 files:
   - 'wp-includes/sodium_compat/**'
   - 'wp-includes/class-phpass.php'

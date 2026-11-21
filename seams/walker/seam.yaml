@@ -1,7 +1,6 @@
 name: "Walkers"
 job: "Walks hierarchical items such as pages, categories, comments and menu items to render them."
 ported: false
-packages: [wp-walker]
 files:
   - 'wp-includes/class-walker-category-dropdown.php'
   - 'wp-includes/class-walker-category.php'

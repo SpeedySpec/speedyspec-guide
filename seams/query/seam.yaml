@@ -1,7 +1,6 @@
 name: "Query"
 job: "Parses requests into queries, queries posts, comments and metadata through wpdb, and holds the post and comment objects."
 ported: false
-packages: [wp-query]
 files:
   - 'wp-includes/bookmark.php'
   - 'wp-includes/class-wp-comment-query.php'

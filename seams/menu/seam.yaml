@@ -1,7 +1,6 @@
 name: "Navigation menus"
 job: "Registers, stores and renders navigation menus and their items."
 ported: false
-packages: [wp-menu]
 files:
   - 'wp-includes/class-wp-navigation-fallback.php'
   - 'wp-includes/nav-menu.php'

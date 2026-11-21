@@ -112,15 +112,11 @@ jobs:
           bun run guide examples
           bun run guide reflect
 
-      # The fork's packages/ commit must be pushed before CI can fetch it. Set the repository variable
-      # GUIDE_FORK_PUSHED to "true" once it is.
       - name: Build
-        if: vars.GUIDE_FORK_PUSHED == 'true'
         run: bun run guide all --offline
 
       # After the build, so the site gets the full data (inventory, assignment, graph, cycles), not a partial set.
       - name: Keep the generated data for the site
-        if: vars.GUIDE_FORK_PUSHED == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: generated
@@ -128,8 +124,7 @@ jobs:
 
   site:
     needs: examples
-    # The site needs the full generated data, which the examples job makes only once the fork commit is pushed.
-    if: vars.GUIDE_FORK_PUSHED == 'true'
+    # The site needs the full generated data, which the examples job uploads.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

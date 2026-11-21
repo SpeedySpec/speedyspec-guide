@@ -1,7 +1,0 @@
-name: "Public web"
-job: "Holds the public site's web entry code kept in the fork's wp-web-public package."
-ported: false
-packages: [wp-web-public]
-files:
-  - 'js/_enqueues/vendor/tinymce/wp-tinymce.php'
-wordpress: []

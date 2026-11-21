@@ -1,7 +1,6 @@
 name: "Feeds"
 job: "Fetches and parses remote feeds through SimplePie, and renders the site's own feeds."
 ported: false
-packages: [wp-feed]
 files:
   - 'wp-includes/SimplePie/**'
   - 'wp-includes/feed-*.php'

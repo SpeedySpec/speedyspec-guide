@@ -29,9 +29,10 @@ bun run typecheck
 
 Inputs are pinned in `sources.json`. Checkouts go to `.cache/`. For local runs, point at folders instead:
 
-- `GUIDE_WORDPRESS_GIT`: a local clone of `WordPress/wordpress-develop` to export the pinned commit's `src/` from, read
-  only (`git archive`; no checkout or branch is touched), e.g. `wordpress-develop-original`. Without it, the bare
-  clone the `history` stage keeps in `.cache/wordpress-tags/` is used, and fetched into when it lacks the commit;
+- `GUIDE_WORDPRESS_GIT`: a local clone of `WordPress/wordpress-develop` (its root, or a bare repository) to export
+  the pinned commit's `src/` from, e.g. `wordpress-develop-original`. It is only read (`git archive`; no checkout,
+  branch or fetch), so it must already have the commit. Without it, the guide fetches the commit into its own bare
+  repository, `.cache/wordpress-git/`;
 - `GUIDE_WORDPRESS_DIR`: an already exported WordPress `src/` folder, used as is;
 - `GUIDE_SERVER_DIR`: a speedyspec-server checkout.
 
@@ -136,8 +137,10 @@ The guide now documents upstream WordPress trunk, pinned in `sources.json`: `Wor
 only, so no checkout's working tree or branch is touched. SpeedySpec's PHP `packages/` tree is no longer read: it
 won't ship in SpeedySpec.
 
-- **Inventory:** 17,693 symbols (7.1.5 had 16,943), 70,530 edges, no parse errors, in 44 WordPress seams. The new
-  seam is **Entity fields and actions** (7.2's entity API). New trunk files joined their seams.
+- **Inventory:** 17,693 symbols (7.1.5 had 16,943), 70,530 edges, no parse errors, in 43 WordPress seams.
+  - The new seam is **Entity fields and actions** (7.2's entity API), and new trunk files joined their seams.
+  - `web-public` (one TinyMCE loader function) joined `editor`.
+  - Seams no longer name PHP packages (`packages:`); architecture diagrams show SpeedySpec's crates only.
 - **Seams:** each seam that used a fork package now lists its WordPress files (505 files). The 47 symbols whose file
   went to another seam are listed by id, so no symbol changed seam. An exact file beats a glob, and a seam may not
   name a file WordPress doesn't have (`SeamFilesExist`).
@@ -151,5 +154,5 @@ won't ship in SpeedySpec.
 - **Trunk against 7.1.5:**
   - All 167 example runs pass on trunk, so no Hooks behaviour the guide documents changed.
   - The 9 `wp:` citations moved with trunk's code and are re-hashed.
-- **Build:** 11,560 pages in about 5 minutes, 443 MB, 2.92 million internal links, 0 dead. The only pages over
+- **Build:** 11,553 pages in about 5 minutes, about 443 MB, 2.92 million internal links, 0 dead. The only pages over
   400 KB are WordPress seam pages with a diagram.

@@ -1,7 +1,6 @@
 name: "HTML API"
 job: "Tokenizes, walks and modifies HTML through the tag processor and the HTML processor."
 ported: false
-packages: [wp-html]
 files:
   - 'wp-includes/html-api/class-wp-html-active-formatting-elements.php'
   - 'wp-includes/html-api/class-wp-html-attribute-token.php'

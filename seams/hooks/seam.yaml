@@ -16,7 +16,6 @@ exclude:
 # Loaded before each example on the WordPress side (plugin.php loads class-wp-hook.php itself).
 wordpress:
   - wp-includes/plugin.php
-packages: [wp-plugin]
 crates: [speedyspec-wp-hooks, speedyspec-wp-hooks-memory, speedyspec-wp-hooks-php, speedyspec-container, speedyspec-container-php, speedyspec-php-ext]
 symbols:
   - "method:SpeedySpec\\WpHooks\\CountGlobal::__construct"

@@ -1,7 +1,6 @@
 name: "Scripts, styles and fonts"
 job: "Registers, enqueues and prints scripts, script modules and styles, generates CSS through the style engine, and manages fonts."
 ported: false
-packages: [wp-resources]
 files:
   - 'wp-includes/class-wp-dependencies.php'
   - 'wp-includes/class-wp-dependency.php'

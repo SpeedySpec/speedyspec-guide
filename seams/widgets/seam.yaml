@@ -1,7 +1,6 @@
 name: "Widgets"
 job: "Registers widgets and sidebars and renders them."
 ported: false
-packages: [wp-widgets]
 files:
   - 'wp-includes/class-wp-widget-factory.php'
   - 'wp-includes/class-wp-widget.php'

@@ -1,7 +1,6 @@
 name: "Shortcodes"
 job: "Registers shortcodes and replaces them in content."
 ported: false
-packages: [wp-shortcode]
 files:
   - 'wp-includes/shortcodes.php'
 wordpress: []

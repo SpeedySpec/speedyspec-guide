@@ -14,8 +14,6 @@ export interface Seam {
   edges: Edge[];
   /** WordPress files an example of this seam loads first, on the WordPress side (relative to the release). */
   wordpress: string[];
-  /** WordPress packages that implement the seam. */
-  packages?: string[];
   /** SpeedySpec crates that implement it. */
   crates?: string[];
   /** The SpeedySpec state of each cross-seam dependency, by target symbol id, with the evidence for it. */

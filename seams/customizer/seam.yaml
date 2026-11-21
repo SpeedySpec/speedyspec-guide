@@ -1,7 +1,6 @@
 name: "Customizer"
 job: "Defines the Customizer manager and its panels, sections, settings and controls."
 ported: false
-packages: [wp-customizer]
 files:
   - 'wp-includes/class-wp-customize-control.php'
   - 'wp-includes/class-wp-customize-manager.php'

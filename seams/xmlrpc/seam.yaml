@@ -1,7 +1,6 @@
 name: "XML-RPC"
 job: "Serves and calls XML-RPC through IXR and the WordPress XML-RPC server."
 ported: false
-packages: [wp-xmlrpc]
 files:
   - 'wp-includes/IXR/class-IXR-base64.php'
   - 'wp-includes/IXR/class-IXR-client.php'

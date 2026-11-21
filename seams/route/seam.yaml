@@ -1,7 +1,6 @@
 name: "Rewrite and canonical URLs"
 job: "Builds rewrite rules, matches request URLs against them, redirects to canonical URLs, and emits speculation rules."
 ported: false
-packages: [wp-route]
 files:
   - 'wp-includes/canonical.php'
   - 'wp-includes/class-wp-matchesmapregex.php'

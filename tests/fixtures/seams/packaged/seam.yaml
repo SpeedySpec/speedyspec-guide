@@ -1,0 +1,3 @@
+name: Packaged
+job: Names a PHP package.
+packages: [wp-x]

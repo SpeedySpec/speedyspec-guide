@@ -1,7 +1,6 @@
 name: "HTTP"
 job: "Sends HTTP requests through the Requests library and WordPress's HTTP API."
 ported: false
-packages: [wp-requests]
 files:
   - 'wp-includes/Requests/src/Utility/Trim.php'
   - 'wp-includes/Requests/src/Auth.php'

@@ -1,7 +1,6 @@
 name: "Mail"
 job: "Sends email through PHPMailer."
 ported: false
-packages: [wp-mailer]
 files:
   - 'wp-includes/PHPMailer/**'
   - 'wp-includes/class-pop3.php'

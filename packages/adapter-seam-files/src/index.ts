@@ -42,6 +42,7 @@ export class SeamFiles implements SeamRepository {
     for (const gone of ['forkPackages', 'inFork']) {
       if (gone in data) throw new Error(`${where}: ${gone} is no longer supported; list the seam's WordPress files`);
     }
+    if ('packages' in data) throw new Error(`${where}: packages is no longer supported; SpeedySpec doesn't ship the PHP packages/ tree`);
     const roles = (data.roles ?? {}) as Record<string, unknown>;
     for (const [role, members] of Object.entries(roles)) {
       if (!Array.isArray(members) || members.some((x) => typeof x !== 'string')) throw new Error(`${where}: role "${role}" must be a list of ids`);
@@ -76,7 +77,6 @@ export class SeamFiles implements SeamRepository {
       exclude: list('exclude'),
       roles: roles as Record<string, string[]>,
       wordpress: list('wordpress'),
-      packages: list('packages'),
       crates: list('crates'),
       dependencies: dependencies(),
       edges,

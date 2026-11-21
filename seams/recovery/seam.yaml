@@ -1,7 +1,6 @@
 name: "Recovery mode"
 job: "Detects fatal errors from extensions, emails a recovery link, and runs recovery-mode sessions."
 ported: false
-packages: [wp-recovery]
 files:
   - 'wp-includes/class-wp-recovery-mode-cookie-service.php'
   - 'wp-includes/class-wp-recovery-mode-email-service.php'

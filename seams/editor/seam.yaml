@@ -1,8 +1,8 @@
 name: "Editor and embeds"
 job: "Renders the classic editor, discovers and renders oEmbed content, and edits images through GD or Imagick."
 ported: false
-packages: [wp-editor]
 files:
+  - 'js/_enqueues/vendor/tinymce/wp-tinymce.php'
   - 'wp-includes/class-wp-editor.php'
   - 'wp-includes/class-wp-embed.php'
   - 'wp-includes/class-wp-image-editor-gd.php'
