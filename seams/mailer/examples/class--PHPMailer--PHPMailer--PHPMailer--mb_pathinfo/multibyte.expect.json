@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'dirname' => '/files',\n  'basename' => 'r\u00e9sum\u00e9.pdf',\n  'extension' => 'pdf',\n  'filename' => 'r\u00e9sum\u00e9',\n)",
+ "error": null
+}

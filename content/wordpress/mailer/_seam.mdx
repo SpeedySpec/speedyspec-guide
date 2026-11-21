@@ -1,0 +1,4 @@
+---
+---
+
+WordPress sends email through PHPMailer, the library it bundles in `wp-includes/PHPMailer/`: `wp_mail()` fills in a `WP_PHPMailer`, which builds the message and hands it to PHP's `mail()` by default, or to sendmail, qmail or an SMTP server. <Ev source="wp:wp-includes/class-wp-phpmailer.php#L1-L20" hash="0431ae84d0d804626adfc78b8c6a79fe9676f4163618e903444f2db96a161b3d"/> The seam holds that library (the mailer, its SMTP and POP3 clients, DSN and OAuth helpers) and WordPress's own older POP3 client, used to fetch posts sent by email. The examples on these pages build messages without sending them, and connect to no server.

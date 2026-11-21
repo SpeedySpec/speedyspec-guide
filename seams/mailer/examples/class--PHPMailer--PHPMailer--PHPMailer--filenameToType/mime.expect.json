@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'image/jpeg',\n  1 => 'application/pdf',\n  2 => 'application/octet-stream',\n)",
+ "error": null
+}
