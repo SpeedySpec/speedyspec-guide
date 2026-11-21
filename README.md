@@ -174,3 +174,23 @@ won't ship in SpeedySpec.
   - The 9 `wp:` citations moved with trunk's code and are re-hashed.
 - **Build:** 11,553 pages in about 5 minutes, about 443 MB, 2.92 million internal links, 0 dead. The only pages over
   400 KB are WordPress seam pages with a diagram.
+
+## Options, WordPress side (2026-11-21)
+
+The Options seam is documented on its WordPress side; its SpeedySpec side stays *Not in SpeedySpec yet* until
+speedyspec-server's worker boots its Options port.
+
+- **Pages:** all 106 Options symbols have a WordPress page: 47 functions, 4 globals, 27 filters and 28 actions.
+  `requireWordPressCoverage: ["options"]` in `guide.config.json` keeps it so (`DocumentedSeamCovered`).
+- **Examples:** 104, every one run on WordPress trunk against MySQL (see "Options examples need MySQL"), 21 of them
+  on a multisite install. `seams/options/setup.php` gives each one fresh tables.
+- **Evidence:** pages cite 78 of the 113 scenarios in speedyspec-server's `compat/options`, and trunk source where no
+  scenario covers a claim (the user settings, and what trunk changed). The evidence index and the compat release now
+  cover every seam with a compat area, ported or not.
+- **Trunk against 7.1.5:** `get_option()` also untrailingslashes `wp_random_base`, `wp_load_core_site_options()` no
+  longer primes `can_compress_scripts`, and `register_initial_settings()` exposes settings to the Abilities API and
+  registers `wp_page_for_privacy_policy`. Each page says what 7.1.5 did.
+- **Rust or PHP:** `/speedyspec/conversion/` says, for each WordPress function, class, method and constant, whether
+  it is Rust in the runtime, Rust in a server port the runtime doesn't load yet, or PHP (stage `conversion`, from the
+  runtime's Reflection and the ports' PHP facades). At the pinned server: Hooks 42 in the runtime; Options 38,
+  Object Cache 44 and wpdb 77 ported but not loaded.
