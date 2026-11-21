@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'wp' => 50,\n    'blogger' => 7,\n    'metaWeblog' => 8,\n    'mt' => 8,\n    'pingback' => 2,\n    'demo' => 1,\n    'guide' => 1,\n  ),\n  1 => 'this:mw_getCategories',\n  2 => 'this:mw_newMediaObject',\n  3 => false,\n  4 => 'guide_ping',\n)",
+ "error": null
+}

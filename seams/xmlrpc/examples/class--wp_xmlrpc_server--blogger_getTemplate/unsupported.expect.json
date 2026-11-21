@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Sorry, this method is not supported.',\n  1 => 403,\n)",
+ "error": null
+}

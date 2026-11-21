@@ -13,8 +13,8 @@ files:
   - 'wp-includes/IXR/class-IXR-server.php'
   - 'wp-includes/IXR/class-IXR-value.php'
   - 'wp-includes/class-wp-xmlrpc-server.php'
-# Loaded in this order before each example on the WordPress side. The IXR library needs only the hooks and WordPress's
-# translation and charset helpers.
+# Loaded in this order before each example on the WordPress side. There is no database: setup.php answers the options
+# the server reads, and nobody can log in.
 wordpress:
   - wp-includes/plugin.php
   - wp-includes/load.php
@@ -31,4 +31,18 @@ wordpress:
   - wp-includes/IXR/class-IXR-client.php
   - wp-includes/IXR/class-IXR-clientmulticall.php
   - wp-includes/IXR/class-IXR-base64.php
-setup: ../basic-setup.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-error.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/link-template.php
+  - wp-includes/general-template.php
+  - wp-includes/class-wp-role.php
+  - wp-includes/class-wp-roles.php
+  - wp-includes/class-wp-user.php
+  - wp-includes/capabilities.php
+  - wp-includes/user.php
+  - wp-includes/pluggable.php
+  - wp-includes/theme.php
+  - wp-includes/class-wp-xmlrpc-server.php
+setup: setup.php

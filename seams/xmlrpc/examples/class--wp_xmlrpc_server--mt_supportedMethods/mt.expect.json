@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "xmlrpc_call mt.supportedMethods\nxmlrpc_call mt.supportedTextFilters\n",
+ "return": "array (\n  0 => 77,\n  1 => \n  array (\n    0 => 'markdown',\n  ),\n)",
+ "error": null
+}

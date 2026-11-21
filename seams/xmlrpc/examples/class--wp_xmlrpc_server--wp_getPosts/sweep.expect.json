@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    403 => 69,\n    400 => \n    array (\n      0 => 'wp.getProfile',\n    ),\n  ),\n  1 => 400,\n  2 => 'Insufficient arguments passed to this XML-RPC method.',\n)",
+ "error": null
+}

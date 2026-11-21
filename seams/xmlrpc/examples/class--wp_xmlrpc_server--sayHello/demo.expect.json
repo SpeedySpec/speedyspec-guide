@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Hello!',\n  1 => 5,\n  2 => 400,\n  3 => 'Invalid arguments passed to this XML-RPC method. Requires two integers.',\n)",
+ "error": null
+}

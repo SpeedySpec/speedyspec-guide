@@ -1,0 +1,5 @@
+---
+symbol: "method:wp_xmlrpc_server::pingback_ping"
+---
+
+The `pingback.ping` method: registers a pingback from a source URL to a post on the site. It finds the target post, checks that pings are open and it isn't already registered, then fetches the source, which must have a title and a link to the target. Each failure is a pingback fault. It saves the pingback comment and fires `pingback_post`. <Ev source="wp:wp-includes/class-wp-xmlrpc-server.php#L7067-L7310" hash="8e10ee0beca20d33c3f1d82a14cc12d82dd9429f7d3a740b6a435075b8f82e0a"/>

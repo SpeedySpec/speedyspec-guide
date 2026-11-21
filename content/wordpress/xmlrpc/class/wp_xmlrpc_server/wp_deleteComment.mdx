@@ -1,0 +1,5 @@
+---
+symbol: "method:wp_xmlrpc_server::wp_deleteComment"
+---
+
+The `wp.deleteComment` method: moves a comment to the Trash (or deletes it), if the user may edit it, firing `xmlrpc_call_success_wp_deleteComment`. It logs the user in first, answering a 403 fault to wrong credentials. <Ev source="wp:wp-includes/class-wp-xmlrpc-server.php#L3853-L3891" hash="1bf2588741ac85cafb91aade864cff9b717c8e0d48777da97794d74acbc33714"/>

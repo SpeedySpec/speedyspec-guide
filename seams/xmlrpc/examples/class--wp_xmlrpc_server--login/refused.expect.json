@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => 'No: authentication_failed',\n  2 => 'No: login_prevented',\n  3 => 400,\n  4 => false,\n)",
+ "error": null
+}

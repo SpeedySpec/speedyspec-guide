@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => 'Insufficient arguments passed to this XML-RPC method.',\n  2 => false,\n  3 => 'The fields argument must be an array.',\n  4 => '20260102T03:04:05',\n  5 => '00000000T00:00:00Z',\n  6 => true,\n)",
+ "error": null
+}
