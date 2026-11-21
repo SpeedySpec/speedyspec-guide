@@ -26,7 +26,8 @@ final class Inventory {
 	}
 
 	/**
-	 * A function, class or method declaration, ranked 0 (in a stub file), 1 (empty body) or 2 (real). When the same id
+	 * A function, class or method declaration, ranked 0 (in a stub file), 1 (empty body),
+	 * 2 (inside a `function_exists` guard: a polyfill or pluggable) or 3 (real). When the same id
 	 * is declared again, a higher rank replaces the kept one; otherwise the first stays. The others are kept as `alternates`.
 	 *
 	 * @param array<string, mixed> $symbol

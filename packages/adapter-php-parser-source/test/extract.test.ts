@@ -152,3 +152,30 @@ describe('old WordPress syntax', () => {
     expect(old.errors?.some((e) => e.file === 'old.php')).toBe(false);
   });
 });
+
+describe('scopes and callbacks', () => {
+  const scope = () => run(join(fixtures, 'php-scope'));
+
+  test('$this, self::class, __CLASS__ and static:: callbacks resolve to the current class', () => {
+    const inv = scope();
+    const runs = (hook: string, to: string) => inv.edges.some((e) => e.from === hook && e.to === to && e.kind === 'runs');
+    expect(runs('action:init', 'method:Registers::on_init')).toBe(true);
+    expect(runs('filter:the_title', 'method:Registers::title')).toBe(true);
+    expect(runs('filter:the_excerpt', 'method:Registers::excerpt')).toBe(true);
+    expect(runs('filter:the_date', 'method:Registers::date')).toBe(true);
+  });
+
+  test('a closure registered on a hook is not charged to the function that registers it', () => {
+    const inv = scope();
+    expect(inv.edges.some((e) => e.from === 'function:a' && e.to === 'function:b')).toBe(false);
+    expect(inv.edges.some((e) => e.from === 'function:a' && e.to === 'global:wpdb')).toBe(false);
+  });
+
+  test('a closure used in place is still a dependency of its function', () => {
+    expect(scope().edges.some((e) => e.from === 'function:a' && e.to === 'function:c' && e.kind === 'calls')).toBe(true);
+  });
+
+  test('an unguarded declaration beats a function_exists polyfill', () => {
+    expect(scope().symbols.find((s) => s.id === 'function:wp_cache_add_multiple')).toMatchObject({ file: 'cache.php', alternates: ['a-cache-compat.php:3'], pluggable: true });
+  });
+});

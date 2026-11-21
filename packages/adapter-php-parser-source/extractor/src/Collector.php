@@ -46,6 +46,11 @@ final class Collector extends NodeVisitorAbstract {
 			$id   = "function:{$name}";
 			$this->addSymbol( $id, 'function', $name, $node, $name . $this->params( $node ), $node, $this->insideFunctionExists( $node ), array() === $node->stmts );
 			$this->scopes[] = array( 'id' => $id, 'globals' => array() );
+		} elseif ( $node instanceof Expr\Closure || $node instanceof Expr\ArrowFunction ) {
+			// A closure gets its own `global` names. One passed to add_filter/add_action runs later, from the hook, so it
+			// is not a dependency of the function registering it: it gets its own node.
+			$id             = $this->isHookCallback( $node ) ? "closure:{$this->file}:{$node->getStartLine()}" : $this->from();
+			$this->scopes[] = array( 'id' => $id, 'globals' => array() );
 		} elseif ( $node instanceof Stmt\Global_ ) {
 			$this->globalStatement( $node );
 		} elseif ( $node instanceof Stmt\Const_ && ! $this->classes ) {
@@ -72,7 +77,7 @@ final class Collector extends NodeVisitorAbstract {
 		if ( $node instanceof Stmt\ClassLike && null !== $node->name ) {
 			array_pop( $this->classes );
 			array_pop( $this->scopes );
-		} elseif ( ( $node instanceof Stmt\ClassMethod && $this->classes ) || $node instanceof Stmt\Function_ ) {
+		} elseif ( ( $node instanceof Stmt\ClassMethod && $this->classes ) || $node instanceof Stmt\Function_ || $node instanceof Expr\Closure || $node instanceof Expr\ArrowFunction ) {
 			array_pop( $this->scopes );
 		}
 		return null;
@@ -103,7 +108,8 @@ final class Collector extends NodeVisitorAbstract {
 		if ( null === $empty ) {
 			$this->inventory->addSymbol( $symbol );
 		} else {
-			$this->inventory->addDeclaration( $symbol, $this->stubFile ? 0 : ( $empty ? 1 : 2 ) );
+			$rank = $this->stubFile ? 0 : ( $empty ? 1 : ( $pluggable ? 2 : 3 ) );
+			$this->inventory->addDeclaration( $symbol, $rank );
 		}
 	}
 
@@ -301,17 +307,49 @@ final class Collector extends NodeVisitorAbstract {
 			$value = ltrim( $expr->value, '\\' );
 			if ( str_contains( $value, '::' ) ) {
 				[ $class, $method ] = explode( '::', $value, 2 );
+				if ( in_array( strtolower( $class ), array( 'self', 'static' ), true ) ) {
+					if ( ! $this->classes ) {
+						return null;
+					}
+					$class = end( $this->classes );
+				}
 				return "method:{$class}::{$method}";
 			}
 			return '' === $value ? null : "function:{$value}";
 		}
 		if ( $expr instanceof Expr\Array_ && 2 === count( $expr->items ) ) {
 			[ $first, $second ] = $expr->items;
-			if ( null !== $first && null !== $second && $first->value instanceof Node\Scalar\String_ && $second->value instanceof Node\Scalar\String_ ) {
-				return 'method:' . ltrim( $first->value->value, '\\' ) . "::{$second->value->value}";
+			if ( null !== $first && null !== $second && $second->value instanceof Node\Scalar\String_ ) {
+				$class = $this->callbackClass( $first->value );
+				return null === $class ? null : "method:{$class}::{$second->value->value}";
 			}
 		}
 		return null;
+	}
+
+	/** The class in a callback array: `'Class'`, `$this`, `self::class`, `static::class` or `__CLASS__`. */
+	private function callbackClass( Expr $expr ): ?string {
+		if ( $expr instanceof Node\Scalar\String_ ) {
+			return ltrim( $expr->value, '\\' );
+		}
+		$current = $this->classes ? end( $this->classes ) : null;
+		if ( $expr instanceof Expr\Variable && 'this' === $expr->name ) {
+			return $current;
+		}
+		if ( $expr instanceof Node\Scalar\MagicConst\Class_ ) {
+			return $current;
+		}
+		if ( $expr instanceof Expr\ClassConstFetch && $expr->class instanceof Name && $expr->name instanceof Node\Identifier && 'class' === $expr->name->toLowerString() ) {
+			return $this->className( $expr->class );
+		}
+		return null;
+	}
+
+	private function isHookCallback( Expr $closure ): bool {
+		$arg  = $closure->getAttribute( 'parent' );
+		$call = $arg instanceof Node\Arg ? $arg->getAttribute( 'parent' ) : null;
+		return $call instanceof Expr\FuncCall && $call->name instanceof Name
+			&& isset( self::REGISTRATIONS[ $call->name->toLowerString() ] );
 	}
 
 	// Names and signatures.
