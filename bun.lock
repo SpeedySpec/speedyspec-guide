@@ -9,6 +9,12 @@
         "typescript": "^5.9.0",
       },
     },
+    "packages/adapter-wordpress-release": {
+      "name": "@speedyspec-guide/adapter-wordpress-release",
+      "dependencies": {
+        "@speedyspec-guide/contracts": "workspace:*",
+      },
+    },
     "packages/contracts": {
       "name": "@speedyspec-guide/contracts",
       "dependencies": {
@@ -20,6 +26,8 @@
     },
   },
   "packages": {
+    "@speedyspec-guide/adapter-wordpress-release": ["@speedyspec-guide/adapter-wordpress-release@workspace:packages/adapter-wordpress-release"],
+
     "@speedyspec-guide/contracts": ["@speedyspec-guide/contracts@workspace:packages/contracts"],
 
     "@speedyspec-guide/domain": ["@speedyspec-guide/domain@workspace:packages/domain"],
