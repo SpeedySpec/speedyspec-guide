@@ -144,6 +144,17 @@ export function seamView(seamId: string, section: Section, d: GuideData): SeamVi
   return view;
 }
 
+/** A seam SpeedySpec adds, with no WordPress symbols: it exists only under /speedyspec/. */
+export function speedyspecOnly(seamId: string, d: GuideData): boolean {
+  const ix = indexOf(d);
+  return ix.wordpressMembers(seamId).length === 0 && ix.runtimeMembers(seamId).length > 0;
+}
+
+/** The seams the WordPress section shows. */
+export function wordpressSeams(d: GuideData): GuideData['seams'] {
+  return d.seams.filter((s) => !speedyspecOnly(s.id, d));
+}
+
 const KIND_GROUPS: [string, string[]][] = [
   ['functions', ['function']],
   ['classes', ['class']],

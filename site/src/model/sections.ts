@@ -184,3 +184,9 @@ export function compatGroups(seamId: string, d: GuideData): { role: string; rows
 export function seamIdByName(name: string, d: GuideData): string {
   return d.seams.find((s) => s.name === name)?.id ?? name;
 }
+
+/** What the runtime registers in PHP that WordPress doesn't have and no seam lists (methods go with their class). */
+export function unplacedRuntime(d: GuideData): GuideData['runtime'] {
+  const wordpress = new Set(d.inventory.symbols.map((s) => s.id));
+  return d.runtime.filter((s) => !wordpress.has(s.id) && d.assignment.seamOf[s.id] === undefined && d.runtimeSeamOf[s.id] === undefined);
+}

@@ -6,12 +6,12 @@ import VerdictPill from '../../../components/VerdictPill.astro';
 import Base from '../../../layouts/Base.astro';
 import { loadGuideData } from '../../../model/data.ts';
 import { seamDiagram } from '../../../model/mermaid.ts';
-import { seamView } from '../../../model/views.ts';
+import { seamView, wordpressSeams } from '../../../model/views.ts';
 import { roleLabel } from '../../../model/wording.ts';
 
 export async function getStaticPaths() {
   const d = await loadGuideData();
-  return d.seams.map((s) => ({ params: { seam: s.id } }));
+  return wordpressSeams(d).map((s) => ({ params: { seam: s.id } }));
 }
 
 const d = await loadGuideData();

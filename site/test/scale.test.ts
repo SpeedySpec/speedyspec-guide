@@ -153,3 +153,32 @@ describe('a recorded dependency state', () => {
     expect(row.cite).toEqual(cite);
   });
 });
+
+describe('a seam with only SpeedySpec symbols', () => {
+  const withContainer = (): GuideData => {
+    const id = 'class:SpeedySpec\\Container\\Container';
+    return {
+      ...d,
+      seams: [...d.seams, { ...d.seams[0]!, id: 'container', name: 'Container', ported: true, files: [], symbols: [id], roles: {}, edges: [], dependencies: {} }],
+      runtimeSeamOf: { ...d.runtimeSeamOf, [id]: 'container' },
+      runtime: [...d.runtime, { id, kind: 'class', name: 'SpeedySpec\\Container\\Container', file: '', line: 0 }],
+    };
+  };
+  test('speedyspec_only_seam_has_no_wordpress_page', async () => {
+    const { speedyspecOnly, wordpressSeams } = await import('../src/model/views.ts');
+    const { speedyspecPaths, wordpressPaths } = await import('../src/model/sections.ts');
+    const c = withContainer();
+    expect(speedyspecOnly('container', c)).toBe(true);
+    expect(speedyspecOnly('hooks', c)).toBe(false);
+    expect(wordpressSeams(c).map((s) => s.id)).not.toContain('container');
+    expect(wordpressPaths(c).some((p) => p.seam === 'container')).toBe(false);
+    expect(speedyspecPaths(c).some((p) => p.seam === 'container')).toBe(true);
+  });
+  test('runtime_page_is_empty_when_every_symbol_is_seamed', async () => {
+    const { unplacedRuntime } = await import('../src/model/sections.ts');
+    const wordpress = new Set(d.inventory.symbols.map((s) => s.id));
+    const all = Object.fromEntries(d.runtime.filter((s) => !wordpress.has(s.id)).map((s) => [s.id, 'hooks']));
+    expect(unplacedRuntime({ ...d, runtimeSeamOf: all })).toEqual([]);
+    expect(unplacedRuntime({ ...d, runtimeSeamOf: {} }).length).toBeGreaterThan(0);
+  });
+});

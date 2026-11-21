@@ -1,0 +1,18 @@
+---
+---
+
+## The domain and its adapter
+
+- **`speedyspec-container`** is the container in Rust, with no PHP in it: keys, bindings, lifetimes and resolution. <Ev test="speedyspec-container::container::singleton_is_shared"/>
+- **`speedyspec-container-php`** adds `SpeedySpec\Container\Container` to PHP. Each PHP method calls one native function over the Rust container. <Ev source="ss:crates/speedyspec-container-php/src/container.php#L16-L34" hash="337fbe47bea5d2a3e2c12fc6ef076ff89a23821a8344cfc89d5c4a199cef1a06"/> <Ev test="speedyspec-container-php::php::php_binds_and_makes"/>
+- The runtime worker builds one container per worker and registers its PHP area. It declares the hook store as a port that PHP may bind, and keeps that binding for the request. <Ev source="ss:crates/speedyspec-php-runtime/src/worker.rs#L199-L205" hash="ff6c42d3525cf1d21fea0cbfa20d7bcd2e75c51cc131c035bc3e7917c4801730"/>
+
+## Patterns
+
+- **Registry** (a dependency-injection container): services by key, with singleton, scoped and transient lifetimes.
+- **Facade**: the PHP class over the native functions.
+- **Adapter**: a PHP object bound to a port is wrapped so that Rust callers see that port. <Ev test="speedyspec-container::container::bridged_value_resolves_as_its_port"/>
+
+## How to change this
+
+Change the Rust container and keep `speedyspec-container`'s tests passing. The PHP side must still pass `speedyspec-container-php`'s checks.

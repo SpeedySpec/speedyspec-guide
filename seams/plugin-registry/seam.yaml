@@ -1,0 +1,15 @@
+name: "Plugin registry"
+job: "Registers and runs SpeedySpec's own hooks, shared by Rust and PHP plugins."
+ported: true
+files: []
+wordpress: []
+crates: [speedyspec-hooks, speedyspec-hooks-memory, speedyspec-php]
+symbols:
+  - "class:SpeedySpec\\Hooks\\Hook"
+  - "class:SpeedySpec\\Hooks\\HookException"
+  - "method:SpeedySpec\\Hooks\\Hook::add"
+  - "method:SpeedySpec\\Hooks\\Hook::filter"
+  - "method:SpeedySpec\\Hooks\\Hook::has"
+  - "method:SpeedySpec\\Hooks\\Hook::ran"
+  - "method:SpeedySpec\\Hooks\\Hook::remove"
+  - "method:SpeedySpec\\Hooks\\Hook::run"

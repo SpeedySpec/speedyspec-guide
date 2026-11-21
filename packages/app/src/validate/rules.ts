@@ -17,6 +17,11 @@ export const EverySymbolInOneSeam: Rule = {
   id: 'EverySymbolInOneSeam',
   async check(ctx) {
     const f: Failure[] = ctx.assignment.conflicts.map((c) => ({ rule: this.id, where: c.symbol, message: `claimed by seams ${c.seams.join(', ')}` }));
+    // The runtime's own symbols are placed by the seams that list them; one may list each.
+    const wordpress = new Set(ctx.inventory.symbols.map((s) => s.id));
+    const listers = new Map<string, string[]>();
+    for (const seam of ctx.seams) for (const id of seam.symbols) if (!wordpress.has(id)) listers.set(id, [...(listers.get(id) ?? []), seam.id]);
+    for (const [id, seams] of listers) if (seams.length > 1) f.push({ rule: this.id, where: id, message: `claimed by seams ${[...seams].sort().join(', ')}` });
     if (ctx.config.requireAllAssigned) {
       for (const id of ctx.assignment.unassigned) f.push({ rule: this.id, where: id, message: 'in no seam' });
     }
@@ -164,7 +169,7 @@ export const RuntimeMembersListed: Rule = {
     for (const id of ctx.runtimeIds) {
       if (!id.startsWith('method:') || wordpress.has(id) || listed.has(id)) continue;
       const cls = `class:${id.slice('method:'.length, id.lastIndexOf('::'))}`;
-      const seam = ctx.assignment.seamOf[cls];
+      const seam = ctx.assignment.seamOf[cls] ?? listed.get(cls);
       if (seam !== undefined) f.push({ rule: this.id, where: `seams/${seam}/seam.yaml`, message: `the runtime adds ${id} to ${cls}; list it in the seam` });
     }
     return f;

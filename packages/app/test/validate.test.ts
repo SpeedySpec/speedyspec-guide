@@ -220,3 +220,18 @@ describe('dependency states', () => {
     expect(f.filter((x) => x.rule === 'DependencyStateRecorded')).toEqual([]);
   });
 });
+
+describe('runtime symbols in two seams', () => {
+  test('runtime_symbol_in_two_seams_fails', async () => {
+    const seams = [{ ...hooks, symbols: ['class:SpeedySpec\\X'] }, { ...hooks, id: 'container', name: 'Container', symbols: ['class:SpeedySpec\\X'] }];
+    const f = await runRules(ALL_RULES, await ctx({}, { seams, runtimeIds: ['class:SpeedySpec\\X'] }));
+    expect(f.find((x) => x.rule === 'EverySymbolInOneSeam')?.message).toBe('claimed by seams container, hooks');
+  });
+});
+
+describe('runtime members of a runtime class a seam lists', () => {
+  test('a_method_of_a_listed_runtime_class_must_be_listed', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { seams: [{ ...hooks, symbols: ['class:SpeedySpec\\R'] }], runtimeIds: ['class:SpeedySpec\\R', 'method:SpeedySpec\\R::m'] }));
+    expect(f.find((x) => x.rule === 'RuntimeMembersListed')?.message).toContain('method:SpeedySpec\\R::m');
+  });
+});

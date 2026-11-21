@@ -1,11 +1,11 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { loadGuideData } from '../../model/data.ts';
+import { unplacedRuntime } from '../../model/sections.ts';
 import { speedyspecProvenance } from '../../model/verdict.ts';
 
 const d = await loadGuideData();
-const wordpress = new Set(d.inventory.symbols.map((s) => s.id));
-const unplaced = d.runtime.filter((s) => !wordpress.has(s.id) && d.assignment.seamOf[s.id] === undefined);
+const unplaced = unplacedRuntime(d);
 const kinds = [...new Set(unplaced.map((s) => s.kind))].sort();
 ---
 <Base title="The runtime's PHP API" section="speedyspec">
