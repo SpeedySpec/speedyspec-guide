@@ -11,6 +11,13 @@
         "typescript": "^5.9.0",
       },
     },
+    "packages/adapter-php-parser-source": {
+      "name": "@speedyspec-guide/adapter-php-parser-source",
+      "dependencies": {
+        "@speedyspec-guide/contracts": "workspace:*",
+        "@speedyspec-guide/domain": "workspace:*",
+      },
+    },
     "packages/adapter-wordpress-release": {
       "name": "@speedyspec-guide/adapter-wordpress-release",
       "dependencies": {
@@ -28,6 +35,8 @@
     },
   },
   "packages": {
+    "@speedyspec-guide/adapter-php-parser-source": ["@speedyspec-guide/adapter-php-parser-source@workspace:packages/adapter-php-parser-source"],
+
     "@speedyspec-guide/adapter-wordpress-release": ["@speedyspec-guide/adapter-wordpress-release@workspace:packages/adapter-wordpress-release"],
 
     "@speedyspec-guide/contracts": ["@speedyspec-guide/contracts@workspace:packages/contracts"],
