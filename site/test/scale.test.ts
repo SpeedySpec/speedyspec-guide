@@ -182,3 +182,13 @@ describe('a seam with only SpeedySpec symbols', () => {
     expect(unplacedRuntime({ ...d, runtimeSeamOf: {} }).length).toBeGreaterThan(0);
   });
 });
+
+describe("a seam's home page", () => {
+  test('seam_href_is_speedyspec_for_a_speedyspec_only_seam', async () => {
+    const { seamHref } = await import('../src/model/views.ts');
+    const id = 'class:SpeedySpec\\Container\\Container';
+    const c: GuideData = { ...d, seams: [...d.seams, { ...d.seams[0]!, id: 'container', name: 'Container', symbols: [id], roles: {}, edges: [], dependencies: {} }], runtimeSeamOf: { ...d.runtimeSeamOf, [id]: 'container' } };
+    expect(seamHref('container', c)).toBe('/speedyspec/container/');
+    expect(seamHref('hooks', c)).toBe('/wordpress/hooks/');
+  });
+});

@@ -96,3 +96,38 @@ Fully documented and enforced (`requirePortedCoverage`): all 29 WordPress member
 SpeedySpec page, `WP_Hook`'s 20 methods are documented on its class page, and SpeedySpec's own 47 Hooks symbols
 have SpeedySpec pages. 129 MDX pages; 76 examples, 148 runs (WordPress 7.1.5 and the runtime), all passing; every
 documented break has a porting before/after pair. Findings (incompatibilities the guide found that speedyspec-server doesn't record yet): four, in [docs/hooks-findings.md](docs/hooks-findings.md).
+
+## The seam map (2026-11-21)
+
+Every WordPress 7.1.5 symbol is in exactly one seam: 16,943 symbols in 43 WordPress seams, none unassigned and no
+conflicts (`requireAllAssigned` is on). Most seams are one per package of SpeedySpec's fork (`packages/wp-*`, via
+`forkPackages`). On top of those are `plugins` (split from Hooks' package), `admin`, `bundled` (wp-content), `entry-points` (the root
+PHP files) and `ai-client` (WordPress 7.1.5 code the fork doesn't have yet). A symbol the fork doesn't hold goes by
+its file; a hook or global used by several seams goes to the first in WordPress's load order (`wp-settings.php`).
+
+- **Outside the fork:** `admin` and `bundled` are `inFork: false`, because SpeedySpec's `packages/` tree doesn't
+  carry wp-admin or wp-content. Their symbols get no "removed" verdict, and their SpeedySpec seam pages say so
+  instead of listing every symbol.
+- **Largest seams:** admin (1,876), password (1,182), rest-api (1,106), theme (1,068), ai-client (1,042), block (908),
+  feed (884), app-upgrader (865), query (840), media (786).
+- **Ported seams:**
+  - Hooks is fully documented (30 of 30 members on both sides).
+  - Its one cross-seam dependency is `_deprecated_hook`, reached through the `DeprecatedHooks` port; its PHP adapter
+    calls WordPress's function (`DependencyStateRecorded`).
+  - `WP_Hook`'s ten runtime-only methods are listed and documented (`RuntimeMembersListed`).
+- **SpeedySpec-only seams:**
+  - **Container** (52 runtime symbols) and **Plugin registry** (8) exist only under `/speedyspec/`.
+  - Their seam and architecture pages are written. Their symbols have generated pages (signature, added in), not
+    written ones yet.
+  - Every symbol the runtime registers is now in a seam.
+- **Unported seams** have generated pages only. Their written coverage is 0, which is allowed.
+
+Build at full size: 12,227 pages in about 5 minutes (peak memory 1.1 GB, 453 MB of HTML, 2.85 million internal links).
+- **Page size:** the only pages over 400 KB are WordPress seam pages with an inline diagram.
+- **Diagrams:**
+  - A diagram over 150 nodes or 300 links, or one Mermaid can't lay out in 30 seconds, is shown as "too large to
+    draw".
+  - Past the link cap, each other seam's links collapse to one per direction.
+- **Dependency and cycle lists:** a seam page shows each list's top rows; the full lists have their own pages.
+- **`bun run guide all`:** about 70 minutes from an empty `generated/`, almost all of it the `history` stage walking
+  WordPress's release tags.

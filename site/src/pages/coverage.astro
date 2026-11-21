@@ -2,6 +2,7 @@
 import { computeCoverage } from '@speedyspec-guide/app';
 import Base from '../layouts/Base.astro';
 import { loadGuideData } from '../model/data.ts';
+import { seamHref } from '../model/views.ts';
 
 const d = await loadGuideData();
 const pages = d.content.map((c) => ({ page: c.file, section: c.section, seam: c.seam, ...(c.symbol ? { symbol: c.symbol } : {}) }));
@@ -23,7 +24,7 @@ const n = coverage.unassigned;
       <thead><tr><th>Seam</th><th>SpeedySpec</th><th>Members</th><th>WordPress pages</th><th>SpeedySpec pages</th><th>Missing</th></tr></thead>
       <tbody>
         {coverage.seams.map((s) => (
-          <tr><td><a href={`/wordpress/${s.id}/`}>{name(s.id)}</a></td><td>{s.ported ? 'ported' : 'unported'}</td><td>{s.members}</td><td>{s.wordpressPages}</td><td>{s.speedyspecPages}</td><td>{s.missing.length}</td></tr>
+          <tr><td><a href={seamHref(s.id, d)}>{name(s.id)}</a></td><td>{s.ported ? 'ported' : 'unported'}</td><td>{s.members}</td><td>{s.wordpressPages}</td><td>{s.speedyspecPages}</td><td>{s.missing.length}</td></tr>
         ))}
       </tbody>
     </table>

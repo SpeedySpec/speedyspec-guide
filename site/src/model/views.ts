@@ -150,6 +150,11 @@ export function speedyspecOnly(seamId: string, d: GuideData): boolean {
   return ix.wordpressMembers(seamId).length === 0 && ix.runtimeMembers(seamId).length > 0;
 }
 
+/** A seam's page: its WordPress page, or its SpeedySpec page when it has no WordPress symbols. */
+export function seamHref(seamId: string, d: GuideData): string {
+  return speedyspecOnly(seamId, d) ? `/speedyspec/${seamId}/` : `/wordpress/${seamId}/`;
+}
+
 /** The seams the WordPress section shows. */
 export function wordpressSeams(d: GuideData): GuideData['seams'] {
   return d.seams.filter((s) => !speedyspecOnly(s.id, d));
