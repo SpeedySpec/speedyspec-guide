@@ -1,0 +1,10 @@
+name: A
+job: Fixture seam A.
+ported: false
+files: ["a/*.php"]
+symbols: []
+exclude: [function:excluded]
+roles:
+  main: [function:in_a]
+edges:
+  - { from: function:in_a, to: global:g, kind: writes, at: { source: "wp:a/x.php#L3" } }

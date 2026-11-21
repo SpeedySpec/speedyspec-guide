@@ -1,0 +1,5 @@
+name: B
+job: Fixture seam B.
+ported: true
+files: ["b/*.php"]
+symbols: [function:shared]

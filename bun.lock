@@ -18,10 +18,25 @@
         "@speedyspec-guide/domain": "workspace:*",
       },
     },
+    "packages/adapter-seam-files": {
+      "name": "@speedyspec-guide/adapter-seam-files",
+      "dependencies": {
+        "@speedyspec-guide/contracts": "workspace:*",
+        "@speedyspec-guide/domain": "workspace:*",
+        "yaml": "^2.8.0",
+      },
+    },
     "packages/adapter-wordpress-release": {
       "name": "@speedyspec-guide/adapter-wordpress-release",
       "dependencies": {
         "@speedyspec-guide/contracts": "workspace:*",
+      },
+    },
+    "packages/app": {
+      "name": "@speedyspec-guide/app",
+      "dependencies": {
+        "@speedyspec-guide/contracts": "workspace:*",
+        "@speedyspec-guide/domain": "workspace:*",
       },
     },
     "packages/contracts": {
@@ -37,7 +52,11 @@
   "packages": {
     "@speedyspec-guide/adapter-php-parser-source": ["@speedyspec-guide/adapter-php-parser-source@workspace:packages/adapter-php-parser-source"],
 
+    "@speedyspec-guide/adapter-seam-files": ["@speedyspec-guide/adapter-seam-files@workspace:packages/adapter-seam-files"],
+
     "@speedyspec-guide/adapter-wordpress-release": ["@speedyspec-guide/adapter-wordpress-release@workspace:packages/adapter-wordpress-release"],
+
+    "@speedyspec-guide/app": ["@speedyspec-guide/app@workspace:packages/app"],
 
     "@speedyspec-guide/contracts": ["@speedyspec-guide/contracts@workspace:packages/contracts"],
 
@@ -52,6 +71,8 @@
     "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
     "undici-types": ["undici-types@6.21.0", "", {}, "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="],
+
+    "yaml": ["yaml@2.9.1", "", { "bin": { "yaml": "bin.mjs" } }, "sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw=="],
 
     "bun-types/@types/node": ["@types/node@26.6.6", "", { "dependencies": { "undici-types": "~8.9.0" } }, "sha512-MzQj+8Kx3XI40OmUAE6Qoh58ZMNstNNMwn2nfd3qWsfe7nDNSqJNzes4njhz6AHwrSHOffSLwXU6yb474Q4aog=="],
 
