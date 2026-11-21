@@ -44,7 +44,9 @@ fn runtime_areas() -> Vec<Rc<dyn NativeArea>> {
     let hooks = WpHooksArea::new(container.clone(), memory);
     let container_area = ContainerArea::new("guide", container)
         .port::<dyn HookStore>(HOOK_STORE, |object| Rc::new(PhpHookStore::new(object)))
-        .stateful(HOOK_STORE);
+        .stateful(HOOK_STORE)
+        // The worker binds the app's configured services here; examples run with none.
+        .bindings(Vec::new());
     vec![
         speedyspec_php_ext::twins_area(),
         Rc::new(container_area),
