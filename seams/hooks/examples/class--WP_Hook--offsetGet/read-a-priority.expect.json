@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress",
+  "runtime"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 1,\n  1 => NULL,\n)",
+ "error": null
+}

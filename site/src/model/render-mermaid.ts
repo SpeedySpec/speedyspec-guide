@@ -1,7 +1,16 @@
-/** Mermaid to SVG at build time, light and dark, cached by the diagram's text for the build. */
-import { createMermaidRenderer, type MermaidRenderer } from 'mermaid-isomorphic';
+/**
+ * Mermaid to SVG at build time, light and dark, cached by the diagram's text for the build. Each diagram is rendered
+ * in its own short-lived process (mermaid-cli.ts) with a time limit: Chromium inside the build process could stall
+ * the whole build.
+ */
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-let renderer: MermaidRenderer | null = null;
+// Next to this file in the sources; in a build this file is bundled into dist/, so fall back to the sources.
+const beside = fileURLToPath(new URL('./mermaid-cli.ts', import.meta.url));
+const CLI = existsSync(beside) ? beside : join(fileURLToPath(new URL('../../../', import.meta.url)), 'site', 'src', 'model', 'mermaid-cli.ts');
+const LIMIT_MS = 120_000;
 const cache = new Map<string, Promise<{ light: string; dark: string }>>();
 
 export function renderMermaid(code: string): Promise<{ light: string; dark: string }> {
@@ -15,11 +24,9 @@ export function renderMermaid(code: string): Promise<{ light: string; dark: stri
 }
 
 async function render(code: string, id: string): Promise<{ light: string; dark: string }> {
-  renderer ??= createMermaidRenderer();
-  const one = async (theme: 'default' | 'dark') => {
-    const [r] = await renderer!([code], { prefix: `m${id}-${theme}`, mermaidConfig: { theme, securityLevel: 'strict' } });
-    if (!r || r.status === 'rejected') throw new Error(`Mermaid could not render a diagram: ${r ? String(r.reason) : 'no result'}\n${code}`);
-    return r.value.svg;
-  };
-  return { light: await one('default'), dark: await one('dark') };
+  const proc = Bun.spawn(['bun', CLI, id], { stdin: new Blob([code]), stdout: 'pipe', stderr: 'pipe', env: { ...process.env } });
+  const timer = setTimeout(() => proc.kill('SIGKILL'), LIMIT_MS);
+  const [out, err, exit] = await Promise.all([new Response(proc.stdout).text(), new Response(proc.stderr).text(), proc.exited]).finally(() => clearTimeout(timer));
+  if (exit !== 0) throw new Error(`rendering a diagram failed (exit ${exit}): ${err.trim() || 'killed after the time limit'}\n${code}`);
+  return JSON.parse(out) as { light: string; dark: string };
 }

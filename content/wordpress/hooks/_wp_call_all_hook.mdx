@@ -1,0 +1,7 @@
+---
+symbol: "function:_wp_call_all_hook"
+---
+
+## Behaviour
+
+Internal: runs the `all` hook's callbacks with the hook name and its arguments. `apply_filters()`, `do_action()` and their variants call it first when `all` has callbacks. <Ev source="wp:wp-includes/plugin.php#L972-L976" hash="0ef612594dc683d744d6a321976f57adbf11f89baacf607cd8794a55bfe60fd7"/> <Ev scenario="all_hook_sees_every_hook"/>

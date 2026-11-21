@@ -1,0 +1,15 @@
+---
+symbol: "class:WP_Hook"
+---
+
+## Behaviour
+
+One hook's callbacks, keyed by priority and then by callback id. `add_filter()` keeps one `WP_Hook` for each hook name in `$wp_filter`. <Ev scenario="wp_filter_set_new_hook_object"/> <Ev scenario="wp_hook_methods"/>
+
+It is also an array of its priorities (`ArrayAccess`), so core and plugins read and change `$wp_filter['init'][10]` directly. <Ev scenario="wp_hook_array_access"/> Iterating it visits its priorities in ascending order (`Iterator`). <Ev scenario="wp_hook_iterator"/>
+
+It keeps a run's position per nesting level, so a callback can add or remove callbacks on the hook it runs on, and nested runs of one hook don't disturb each other. <Ev scenario="add_during_run_at_later_priority"/> <Ev scenario="nested_filters"/>
+
+## Override
+
+The class is final. To change what a hook does, add callbacks; to keep hooks elsewhere on SpeedySpec, see the SpeedySpec page.

@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress",
+  "runtime"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'strtoupper',\n  1 => 'Guide_Class::method',\n  2 => 'Guide_Class::method',\n)",
+ "error": null
+}

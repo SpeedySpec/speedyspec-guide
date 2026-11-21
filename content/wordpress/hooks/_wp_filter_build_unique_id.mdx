@@ -1,0 +1,7 @@
+---
+symbol: "function:_wp_filter_build_unique_id"
+---
+
+## Behaviour
+
+Internal: the key a callback is stored under. A function name is its own key; a static method is `Class::method` whether given as an array or a string; a closure or an object's method is keyed by the object, so two live objects are two callbacks. <Ev scenario="callback_kind_function"/> <Ev scenario="callback_kind_static"/> <Ev scenario="callback_kind_static_string"/> <Ev scenario="callback_kind_closure"/> <Ev scenario="same_fixture_different_closures"/>

@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress",
+  "runtime"
+ ],
+ "output": "guide_named",
+ "return": "NULL",
+ "error": null
+}

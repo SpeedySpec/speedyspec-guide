@@ -1,0 +1,19 @@
+---
+symbol: "class:WP_Hook"
+verdict: works-with-differences
+differences:
+  - summary: "Replacing $wp_filter with the result of build_preinitialized_hooks() is not seen by SpeedySpec's hook store; hooks set before the request's PHP runs are imported instead."
+    break: wp_hook_build_preinitialized_hooks
+---
+
+## Behaviour
+
+`WP_Hook` is SpeedySpec's own class with the same methods: each object is a handle on one hook in the native store, so `$wp_filter[$name]`, `ArrayAccess` and iteration behave as in WordPress. <Ev scenario="wp_hook_methods"/> <Ev scenario="wp_hook_array_access"/> <Ev scenario="wp_hook_iterator"/>
+
+## Override
+
+Hooks live in the hook store behind the `HookStore` port; bind another store to keep them elsewhere. See the architecture page.
+
+## Porting
+
+Set hooks before WordPress loads by putting arrays in `$wp_filter`, as WordPress allows; don't build `WP_Hook` objects and replace `$wp_filter` with them. <Ev scenario="wp_hook_build_preinitialized_hooks_keeps_hook_objects"/> <Ev break="wp_hook_build_preinitialized_hooks"/>

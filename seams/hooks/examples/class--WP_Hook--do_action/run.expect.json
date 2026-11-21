@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress",
+  "runtime"
+ ],
+ "output": "hi",
+ "return": "NULL",
+ "error": null
+}
