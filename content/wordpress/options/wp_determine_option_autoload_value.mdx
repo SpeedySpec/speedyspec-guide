@@ -1,0 +1,13 @@
+---
+symbol: "function:wp_determine_option_autoload_value"
+---
+
+## Behaviour
+
+Decides the autoload value `add_option()` and `update_option()` store. `true`, `'on'` and `'yes'` give `on`; `false`, `'off'` and `'no'` give `off`. <Ev scenario="determine_autoload_value_direct" area="options"/> <Ev scenario="autoload_requested_true" area="options"/> <Ev scenario="autoload_requested_no" area="options"/>
+
+Anything else, `null` included, is left to `wp_default_autoload_value`: `true` from it gives `auto-on`, `false` gives `auto-off`, and anything else `auto`. <Ev scenario="autoload_requested_none" area="options"/> <Ev scenario="autoload_requested_weird" area="options"/> WordPress hooks `wp_filter_default_autoload_value_via_option_size()` there, so a large value with no choice is stored `auto-off`. <Ev scenario="size_rule_at_limit" area="options"/> An explicit choice is kept whatever the size. <Ev scenario="size_rule_explicit_autoload_wins" area="options"/>
+
+## Override
+
+`wp_default_autoload_value` decides when no explicit value was given.

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_prime_network_option_caches"
+---
+
+## Behaviour
+
+On a single site it primes ordinary options with `wp_prime_option_caches()`. On multisite it loads the named network options of a network (the current one when the id is empty) from `sitemeta` in one query. It caches them as `<network id>:<name>` in the `site-options` group, and marks the missing ones in that network's `notoptions`. A network id that isn't numeric does nothing, as does running while installing. <Ev scenario="prime_network_option_caches" area="options"/>
+
+## Override
+
+Not overridable.

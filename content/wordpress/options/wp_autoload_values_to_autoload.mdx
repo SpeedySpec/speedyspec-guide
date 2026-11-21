@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_autoload_values_to_autoload"
+---
+
+## Behaviour
+
+Returns the autoload values whose options load with every request: `yes`, `on`, `auto-on` and `auto`. <Ev scenario="autoload_values_filtered_reorder" area="options"/>
+
+## Override
+
+`wp_autoload_values_to_autoload` can remove values or reorder them; a value it adds that isn't one of the four is dropped. <Ev scenario="autoload_values_filtered_remove" area="options"/> <Ev scenario="autoload_values_filtered_add" area="options"/> <Ev scenario="autoload_values_filtered_empty" area="options"/>

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_set_option_autoload_values"
+---
+
+## Behaviour
+
+Sets the autoload value of several stored options, given as name ⇒ value, in at most two queries. `false`, `'off'` and `'no'` store `off`; anything else stores `on`. It returns, per name, whether the stored value changed: an option already at that value, or not stored, is `false`. <Ev scenario="set_option_autoload_values" area="options"/> `alloptions` and `notoptions` stop it with `wp_die()`. <Ev scenario="protected_set_autoload_values" area="options"/>
+
+## Override
+
+Not overridable; it fires no hooks.

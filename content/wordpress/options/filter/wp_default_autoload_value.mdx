@@ -1,0 +1,7 @@
+---
+symbol: "filter:wp_default_autoload_value"
+---
+
+## Behaviour
+
+Fired by `wp_determine_option_autoload_value()` when no explicit autoload value was given, with `null`, the name, the value and the serialized value. `true` makes the option `auto-on`, `false` makes it `auto-off`, and anything else leaves it `auto`. <Ev scenario="autoload_requested_none" area="options"/> <Ev source="wp:wp-includes/option.php#L1335-L1335" hash="4c4a367055be1ad9a7ff3adcce460a565221c5f62cae9dbd16b839c4ce88309d"/> `default-filters.php` adds `wp_filter_default_autoload_value_via_option_size()` at priority 5.

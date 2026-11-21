@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_filter_default_autoload_value_via_option_size"
+---
+
+## Behaviour
+
+A `wp_default_autoload_value` callback, added at priority 5 by `default-filters.php`. It returns `false` when the serialized value is longer than `wp_max_autoloaded_option_size` bytes (150000 by default), and otherwise the `$autoload` it was given. <Ev scenario="size_filter_direct" area="options"/> <Ev scenario="size_rule_filtered" area="options"/>
+
+## Override
+
+`wp_max_autoloaded_option_size` sets the limit; removing the callback from `wp_default_autoload_value` turns the rule off.

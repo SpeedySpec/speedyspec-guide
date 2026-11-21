@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_prime_option_caches"
+---
+
+## Behaviour
+
+Loads the named options that aren't cached yet into the `options` cache group in one query. Names not stored are added to the `notoptions` cache. Autoloaded options, and names already in either cache, are skipped. <Ev scenario="prime_mixed_names" area="options"/>
+
+## Override
+
+Not overridable; the cache it fills is the object cache.

@@ -1,0 +1,7 @@
+---
+symbol: "filter:wp_max_autoloaded_option_size"
+---
+
+## Behaviour
+
+Fired by `wp_filter_default_autoload_value_via_option_size()`, with 150000 and the option name. Its result, as an integer, is the largest serialized value in bytes that is still autoloaded by default. <Ev scenario="size_rule_filtered" area="options"/> <Ev source="wp:wp-includes/option.php#L1364-L1364" hash="230a0de58ee09f5d254216c03cee75eb5f9b984caf149c7aa441fe941b42123d"/>

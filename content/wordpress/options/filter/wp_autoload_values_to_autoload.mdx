@@ -1,0 +1,7 @@
+---
+symbol: "filter:wp_autoload_values_to_autoload"
+---
+
+## Behaviour
+
+Fired by `wp_autoload_values_to_autoload()` with `array( 'yes', 'on', 'auto-on', 'auto' )`. Values it removes stop loading with every request; values it adds that aren't among the four are dropped. <Ev scenario="autoload_values_filtered_remove" area="options"/> <Ev scenario="autoload_values_filtered_add" area="options"/> <Ev source="wp:wp-includes/option.php#L3359-L3359" hash="e6f7dca9c90f633f044b0e7ded5180e45883e3b05b3b2314b2519b35add42d5e"/>

@@ -1,0 +1,13 @@
+---
+symbol: "function:wp_load_core_site_options"
+---
+
+## Behaviour
+
+On multisite, primes the network options WordPress reads on most requests, with `wp_prime_network_option_caches()`. They are `site_name`, `siteurl`, `active_sitewide_plugins`, the theme roots site transient and its timeout, `site_admins`, `global_terms_enabled`, `ms_files_rewriting` and `WPLANG`. On a single site, or while installing, it does nothing. <Ev source="wp:wp-includes/option.php#L801-L808" hash="82381a19027b7de1756270c59d126775a8ac0c81ab04ba90e97cef8b7dde162d"/>
+
+On trunk `can_compress_scripts` is no longer in the list; WordPress 7.1.5 primed it too. <Ev source="wp:wp-includes/option.php#L805-L805" hash="28730a6e7fe3723e953914761cd4079efb8d9225d7c42afc90363a475de70713"/>
+
+## Override
+
+Not overridable.
