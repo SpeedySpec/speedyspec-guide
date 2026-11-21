@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Abilities_Content::check_read_permission"
+---
+
+Whether the user may read a post, as the REST posts controller decides. A publicly viewable post of an exposed type may be read. A public but not viewable status needs `edit_post`, and any other status `read_post`. An `inherit` post follows its parent, refusing a missing parent or a loop. <Ev source="wp:wp-includes/abilities/class-wp-abilities-content.php#L321-L387" hash="0afecf1a474c77e5a9f0447414f4667afe7f869473503b7d2c90757764de655c"/>

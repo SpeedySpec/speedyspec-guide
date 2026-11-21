@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'The author filter must be an object with an id or a slug.',\n  1 => 'The author filter must be an object with an id or a slug.',\n  2 => 'The author ID must be a positive integer.',\n  3 => 'The author slug must be a non-empty string.',\n  4 => 'The parent filter must be a non-negative integer.',\n)",
+ "error": null
+}

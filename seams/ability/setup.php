@@ -17,6 +17,13 @@ add_action('doing_it_wrong_run', static function ($function, $message) {
 }, 10, 2);
 add_filter('doing_it_wrong_trigger_error', '__return_false');
 
+// class-wpdb.php's result types, which get_post() takes.
+foreach (['OBJECT', 'OBJECT_K', 'ARRAY_A', 'ARRAY_N'] as $guide_name)
+{
+    defined($guide_name) || define($guide_name, $guide_name);
+}
+unset($guide_name);
+
 // The one line of default-filters.php the schema validators rely on: %l lists in their messages.
 add_filter('wp_sprintf', 'wp_sprintf_l', 10, 2);
 add_filter('pre_option_home', static fn () => 'http://example.org');

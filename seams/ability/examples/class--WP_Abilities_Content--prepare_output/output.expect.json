@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'items' => \n    array (\n      0 => \n      array (\n        'id' => 1,\n      ),\n    ),\n    'pagination' => \n    array (\n      'total' => 1,\n      'total_pages' => 1,\n    ),\n  ),\n  1 => 'content_invalid_page_number',\n  2 => \n  array (\n    'status' => 404,\n  ),\n  3 => 'content_invalid_filter',\n  4 => \n  array (\n    'status' => 400,\n    'params' => \n    array (\n      'where[ids]' => 'Bad.',\n    ),\n  ),\n)",
+ "error": null
+}
