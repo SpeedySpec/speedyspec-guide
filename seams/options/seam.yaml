@@ -17,6 +17,15 @@ wordpress:
   - wp-includes/class-wp-object-cache.php
   - wp-includes/cache.php
   - wp-includes/class-wpdb.php
+  # For the user settings: a current user, user options and capabilities.
+  - wp-includes/meta.php
+  - wp-includes/user.php
+  - wp-includes/class-wp-user.php
+  - wp-includes/class-wp-role.php
+  - wp-includes/class-wp-roles.php
+  - wp-includes/capabilities.php
+  - wp-includes/pluggable.php
+  - wp-includes/link-template.php
 setup: setup.php
 roles:
   read: ["function:get_option", "function:get_options", "function:wp_load_alloptions", "function:form_option"]

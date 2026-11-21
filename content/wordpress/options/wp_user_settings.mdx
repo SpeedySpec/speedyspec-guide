@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_user_settings"
+---
+
+## Behaviour
+
+On an admin screen, for a logged-in member of the site, it keeps the `wp-settings-<user id>` cookie and the `user-settings` user option in step. A cookie newer than the saved value is saved into the user option. Otherwise the saved value is sent as the cookie, with `wp-settings-time-<user id>`. Outside the admin, during Ajax, or with no current user, it does nothing. <Ev source="wp:wp-includes/option.php#L1698-L1743" hash="e8f060e5387e3155cbc07b70323e07a4b01a2f80b0fb6970e315ad6e50ce10fe"/>
+
+## Override
+
+Not overridable; it fires no hooks of its own.

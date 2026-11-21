@@ -1,0 +1,11 @@
+---
+symbol: "function:get_registered_settings"
+---
+
+## Behaviour
+
+Returns `$wp_registered_settings`: each registered setting's arguments keyed by option name, or an empty array before any is registered. <Ev scenario="register_setting_defaults" area="options"/> <Ev source="wp:wp-includes/option.php#L3303-L3311" hash="c0701d2eb887f3c2ccd105da0d9a02201866fbc7be1d673f1b34efb4b8938fda"/>
+
+## Override
+
+Not overridable; filter the arguments with `register_setting_args` when they are registered.

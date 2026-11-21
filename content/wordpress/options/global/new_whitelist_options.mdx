@@ -1,0 +1,7 @@
+---
+symbol: "global:new_whitelist_options"
+---
+
+## Behaviour
+
+The name `$new_allowed_options` had before WordPress 5.5. `register_setting()` and `unregister_setting()` keep it as a reference to `$new_allowed_options`, so code still using the old name sees the same lists. <Ev source="wp:wp-includes/option.php#L3076-L3079" hash="281a51383c7d0413f98888782296a895e447227e4609e510e1ee62db5ed93429"/>

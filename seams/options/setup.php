@@ -11,7 +11,8 @@ declare(strict_types=1);
  *
  * Seeded options (autoload `on`): siteurl and home `http://example.org`, blogname `Guide`, blogdescription
  * `Just another guide`, admin_email `admin@example.org`. Seeded network options (multisite): site_name
- * `Guide Network`, siteurl `http://example.org/`, admin_email `admin@example.org`. User 1 is `admin`.
+ * `Guide Network`, siteurl `http://example.org/`, admin_email `admin@example.org`. User 1 is `admin`, an
+ *  administrator of site 1 (the `guide_user_roles` option and its `guide_capabilities` user meta).
  */
 
 $guide_url = getenv('GUIDE_MYSQL_URL');
@@ -31,6 +32,20 @@ foreach ([
     'DB_HOST' => ($guide_db['host'] ?? 'localhost') . (isset($guide_db['port']) ? ':' . $guide_db['port'] : ''),
     'DB_CHARSET' => 'utf8mb4',
     'DB_COLLATE' => '',
+] as $guide_name => $guide_value)
+{
+    defined($guide_name) || define($guide_name, $guide_value);
+}
+// default-constants.php: the time and cookie constants the user settings functions use.
+foreach ([
+    'MINUTE_IN_SECONDS' => 60,
+    'HOUR_IN_SECONDS' => 3600,
+    'DAY_IN_SECONDS' => 86400,
+    'WEEK_IN_SECONDS' => 604800,
+    'MONTH_IN_SECONDS' => 2592000,
+    'YEAR_IN_SECONDS' => 31536000,
+    'COOKIEPATH' => '/',
+    'SITECOOKIEPATH' => '/',
 ] as $guide_name => $guide_value)
 {
     defined($guide_name) || define($guide_name, $guide_value);
@@ -115,6 +130,9 @@ function guide_tables(): void
         $wpdb->insert('guide_options', ['option_name' => $name, 'option_value' => $value, 'autoload' => 'on']);
     }
     $wpdb->insert('guide_users', ['user_login' => 'admin', 'user_nicename' => 'admin', 'user_email' => 'admin@example.org', 'display_name' => 'admin', 'user_registered' => '2026-01-01 00:00:00']);
+    // User 1 is an administrator of site 1, so the user settings functions treat it as a member of the site.
+    $wpdb->insert('guide_options', ['option_name' => 'guide_user_roles', 'option_value' => serialize(['administrator' => ['name' => 'Administrator', 'capabilities' => ['read' => true]]]), 'autoload' => 'off']);
+    $wpdb->insert('guide_usermeta', ['user_id' => 1, 'meta_key' => 'guide_capabilities', 'meta_value' => serialize(['administrator' => true])]);
     if (GUIDE_MULTISITE)
     {
         foreach (['site_name' => 'Guide Network', 'siteurl' => 'http://example.org/', 'admin_email' => 'admin@example.org'] as $key => $value)

@@ -1,0 +1,11 @@
+---
+symbol: "function:delete_all_user_settings"
+---
+
+## Behaviour
+
+Empties the current user's `user-settings` user option and expires the `wp-settings-<user id>` cookie. With no current user it does nothing. <Ev source="wp:wp-includes/option.php#L1910-L1918" hash="cb9b7e567affad3db47bbce046fe9926437a91c1ee12b58321cb0f7651161039"/>
+
+## Override
+
+Not overridable; it fires no hooks of its own.

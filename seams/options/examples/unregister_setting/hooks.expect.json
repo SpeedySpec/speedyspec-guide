@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "register_setting guide guide_color unregister_setting guide guide_color ",
+ "return": "1",
+ "error": null
+}

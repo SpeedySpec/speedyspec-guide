@@ -1,0 +1,11 @@
+---
+symbol: "function:unregister_setting"
+---
+
+## Behaviour
+
+Undoes `register_setting()`: the name leaves its group in `$new_allowed_options`, the setting leaves `$wp_registered_settings`, and its `sanitize_callback` and `default` filters are removed. <Ev scenario="unregister_setting_removes_default" area="options"/> The removed groups `misc` and `privacy` are reported and become `general` and `reading`. <Ev scenario="register_setting_deprecated_groups" area="options"/> The third argument is deprecated: a callback passed there is reported and removed from `sanitize_option_{$option}`. <Ev source="wp:wp-includes/option.php#L3231-L3243" hash="d7e5ad6136466859128195eaf95a1e56853ad99c05efe10356f35467628ed25f"/>
+
+## Override
+
+It fires `unregister_setting` when the setting was registered, before removing it. <Ev source="wp:wp-includes/option.php#L3264-L3264" hash="84f2dc4a9b4739ca40e5afa1c5afaddec12c473b2b05344a83bba892dd23eb40"/>

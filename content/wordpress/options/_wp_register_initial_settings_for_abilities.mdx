@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_register_initial_settings_for_abilities"
+---
+
+## Behaviour
+
+New on trunk. WordPress hooks it to `wp_abilities_api_init`, so the Abilities API sees the core settings. It calls `register_initial_settings()`, then puts `$new_allowed_options` back as it was, so the settings screens don't start saving options they don't send. After `rest_api_init` has run, it does nothing, because the settings are already registered. <Ev source="wp:wp-includes/option.php#L3012-L3029" hash="42c8c780d6d4c2d035719f3ac0982b954855099b7ae15b8a370ea91ff482c041"/>
+
+## Override
+
+Not overridable; it is internal.

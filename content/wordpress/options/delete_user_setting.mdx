@@ -1,0 +1,11 @@
+---
+symbol: "function:delete_user_setting"
+---
+
+## Behaviour
+
+Deletes one or more of the current user's settings by name and saves the rest. It returns `false` when none of them was set, or once headers are sent. <Ev source="wp:wp-includes/option.php#L1798-L1819" hash="73b05b7e973c47ce0f8d135f61b038c0a5a30cbf7695cd1158b30d2a2e4bd923"/>
+
+## Override
+
+Not overridable; it fires no hooks of its own.

@@ -1,0 +1,11 @@
+---
+symbol: "function:filter_default_option"
+---
+
+## Behaviour
+
+The `default_option_{$option}` callback `register_setting()` adds when a setting has a `default`. It returns that default, unless the caller of `get_option()` passed one of its own, or the option isn't registered. <Ev scenario="filter_default_option_passed" area="options"/>
+
+## Override
+
+Unregistering the setting removes it.

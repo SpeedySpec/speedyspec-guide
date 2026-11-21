@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_set_all_user_settings"
+---
+
+## Behaviour
+
+Replaces every setting of the current user. Names and values keep only letters, digits, `-` and `_`. The result is saved in the `user-settings` user option, with the time in `user-settings-time`. With no current user it returns `false`; for a user who isn't a member of the site, `null`. <Ev source="wp:wp-includes/option.php#L1874-L1903" hash="38343af99e1950bfe7b5a5dfbe671da44803de791070ce7c210b8e7fe61badda"/>
+
+## Override
+
+Not overridable; it fires no hooks of its own.

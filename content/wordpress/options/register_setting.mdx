@@ -1,0 +1,13 @@
+---
+symbol: "function:register_setting"
+---
+
+## Behaviour
+
+Registers an option as a setting of a group. The name is added to `$new_allowed_options[ $group ]`, so the group's settings screen may save it, and its arguments are stored in `$wp_registered_settings`, with `type` `string`, `group`, `label`, `description`, `sanitize_callback`, `show_in_rest` and `show_in_abilities` filled in where missing. <Ev scenario="register_setting_defaults" area="options"/> A callable given in place of the arguments is the `sanitize_callback`. <Ev scenario="register_setting_callable" area="options"/>
+
+A `sanitize_callback` is added to `sanitize_option_{$option}`, and a `default` makes `filter_default_option()` serve it through `default_option_{$option}`. <Ev scenario="register_setting_defaults" area="options"/> The removed groups `misc` and `privacy` are reported through `_deprecated_argument()` and become `general` and `reading`. <Ev scenario="register_setting_deprecated_groups" area="options"/>
+
+## Override
+
+`register_setting_args` filters the arguments before the defaults are filled in. Afterwards it fires `register_setting`. <Ev scenario="register_setting_defaults" area="options"/>

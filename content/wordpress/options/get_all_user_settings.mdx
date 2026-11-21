@@ -1,0 +1,11 @@
+---
+symbol: "function:get_all_user_settings"
+---
+
+## Behaviour
+
+Returns every setting of the current user. They are parsed from the `wp-settings-<user id>` cookie when the browser sent one, and otherwise from the `user-settings` user option. With no current user it is an empty array. The result is kept in `$_updated_user_settings` for the rest of the request. <Ev source="wp:wp-includes/option.php#L1830-L1860" hash="1f2ecab9c94882e02efc04ab41761f0ae9adbd05647022ed92e1371ec39ae4d8"/>
+
+## Override
+
+Not overridable; it fires no hooks of its own.

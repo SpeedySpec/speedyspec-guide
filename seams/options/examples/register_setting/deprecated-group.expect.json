@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "register_setting 3.5.0 ",
+ "return": "array (\n  0 => 'guide_private',\n)",
+ "error": null
+}

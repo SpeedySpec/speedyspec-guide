@@ -1,0 +1,13 @@
+---
+symbol: "function:register_initial_settings"
+---
+
+## Behaviour
+
+Registers WordPress's own settings with `register_setting()`: the title and tagline, the site URL and admin email on a single site, the timezone, date and time formats and first day of the week, smilies, the default category and post format, posts per page, what the front page shows, and the default ping and comment status. Each gets the name the REST API shows it under, such as `title` for `blogname`. WordPress hooks it to `rest_api_init`. <Ev source="wp:wp-includes/option.php#L2745-L2995" hash="6fdcf03d47615ebb9a77f96a8a63cc75d97593541609a3e5a8b1db2a0cf8c37a"/>
+
+On trunk each of them also has `show_in_abilities` set, for the Abilities API, and `wp_page_for_privacy_policy` is registered, shown as `page_for_privacy_policy`. WordPress 7.1.5 had neither. <Ev source="wp:wp-includes/option.php#L2746-L2756" hash="01a953e68a46604dd26552997f01e2a69ea8656d69de2418d702061b306891fb"/> <Ev source="wp:wp-includes/option.php#L2952-L2962" hash="521b73317c6c673e4f2f5fefb9d8e314f03c491be75c164848dc51740d4b4ece"/>
+
+## Override
+
+Each registration passes through `register_setting_args`.
