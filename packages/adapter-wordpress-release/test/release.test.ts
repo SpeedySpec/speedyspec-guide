@@ -23,7 +23,7 @@ function serving(): { impl: typeof fetch; calls: () => number } {
   let n = 0;
   const impl = (async () => {
     n++;
-    return new Response(tarball);
+    return new Response(tarball as Uint8Array<ArrayBuffer>);
   }) as unknown as typeof fetch;
   return { impl, calls: () => n };
 }
