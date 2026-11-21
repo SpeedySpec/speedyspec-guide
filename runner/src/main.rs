@@ -14,6 +14,7 @@ mod sides;
 use manifest::{Manifest, RunResult};
 
 const DRIVER: &str = include_str!("driver.php");
+const REFLECT: &str = include_str!("reflect.php");
 
 const USAGE: &str = "usage: speedyspec-guide-examples run --side <wordpress|runtime> --manifest <file> | reflect --mode <baseline|runtime>";
 
@@ -77,7 +78,7 @@ fn main() -> ExitCode {
     };
     let result: Result<String, String> = match command {
         Command::Run { side, manifest } => run(side, &manifest),
-        Command::Reflect { .. } => Err("reflect is not implemented yet".to_string()),
+        Command::Reflect { runtime } => reflect(runtime),
     };
     match result {
         Ok(json) => {
@@ -140,5 +141,23 @@ fn run_one(
         },
         Ok(other) => failed(format!("fatal: the driver returned {other:?}")),
         Err(e) => failed(format!("fatal: {e}")),
+    }
+}
+
+/// Lists what PHP has declared: with no native areas (`baseline`), or with the runtime's (`runtime`).
+fn reflect(runtime: bool) -> Result<String, String> {
+    let php = sides::boot(if runtime {
+        Side::Runtime
+    } else {
+        Side::WordPress
+    })?;
+    php.restart_request()
+        .map_err(|e| format!("starting a request: {e}"))?;
+    php.eval("speedyspec://guide/reflect", REFLECT)
+        .map_err(|e| format!("loading the reflection driver: {e}"))?;
+    match php.call(&Value::Str("speedyspec_guide_reflect".into()), &[]) {
+        Ok(Value::Str(json)) => Ok(json),
+        Ok(other) => Err(format!("the reflection driver returned {other:?}")),
+        Err(e) => Err(format!("reflecting: {e}")),
     }
 }
