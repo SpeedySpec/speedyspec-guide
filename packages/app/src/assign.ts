@@ -2,7 +2,8 @@ import type { Assignment, Inventory, Seam } from '@speedyspec-guide/domain';
 
 /**
  * Assigns every symbol to one seam: an explicit listing first, then the seam whose files hold it, then a method's
- * class, then a hook's firing seam. A hook fired from several seams must be listed explicitly.
+ * class, then a hook's firing seam or a global's writing (else reading) seam. A hook or global used from several
+ * seams must be listed explicitly.
  */
 export function assign(inv: Inventory, seams: Seam[]): Assignment {
   const seamOf: Record<string, string> = {};
@@ -23,9 +24,10 @@ export function assign(inv: Inventory, seams: Seam[]): Assignment {
 
   const pending = inv.symbols.filter((s) => !claimed.has(s.id));
   const isHook = (kind: string) => kind === 'filter' || kind === 'action';
+  const byUse = (kind: string) => isHook(kind) || kind === 'global';
 
   for (const sym of pending) {
-    if (sym.kind === 'method' || isHook(sym.kind)) continue;
+    if (sym.kind === 'method' || byUse(sym.kind)) continue;
     place(sym.id, byFile(sym.file, sym.id));
   }
   for (const sym of pending) {
@@ -35,17 +37,24 @@ export function assign(inv: Inventory, seams: Seam[]): Assignment {
     if (owner && !seams.find((s) => s.id === owner)?.exclude.includes(sym.id)) seamOf[sym.id] = owner;
   }
 
-  const firers = new Map<string, Set<string>>();
-  for (const e of inv.edges) {
-    if (e.kind !== 'fires') continue;
-    const from = e.from.startsWith('file:') ? byFile(e.from.slice('file:'.length)) : seamOf[e.from] ? [seamOf[e.from]!] : [];
-    const set = firers.get(e.to) ?? new Set<string>();
-    for (const s of from) set.add(s);
-    firers.set(e.to, set);
-  }
+  // Hooks go to the seam that fires them; globals to the seam that writes them, or reads them when nothing does.
+  const seamsOf = (from: string): string[] => (from.startsWith('file:') ? byFile(from.slice('file:'.length)) : seamOf[from] ? [seamOf[from]!] : []);
+  const users = (kind: 'fires' | 'writes' | 'reads') => {
+    const out = new Map<string, Set<string>>();
+    for (const e of inv.edges) {
+      if (e.kind !== kind) continue;
+      const set = out.get(e.to) ?? new Set<string>();
+      for (const s of seamsOf(e.from)) set.add(s);
+      out.set(e.to, set);
+    }
+    return out;
+  };
+  const firers = users('fires');
+  const writers = users('writes');
+  const readers = users('reads');
   for (const sym of pending) {
-    if (!isHook(sym.kind)) continue;
-    place(sym.id, [...(firers.get(sym.id) ?? [])]);
+    if (isHook(sym.kind)) place(sym.id, [...(firers.get(sym.id) ?? [])]);
+    else if (sym.kind === 'global') place(sym.id, [...(writers.get(sym.id)?.size ? writers.get(sym.id)! : readers.get(sym.id) ?? [])]);
   }
 
   const unassigned = inv.symbols.map((s) => s.id).filter((id) => seamOf[id] === undefined && !conflicts.some((c) => c.symbol === id));

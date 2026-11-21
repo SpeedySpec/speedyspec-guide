@@ -44,3 +44,22 @@ describe('assign', () => {
     expect(assign(inv([s('function:lost', 'c/z.php')]), seams).unassigned).toEqual(['function:lost']);
   });
 });
+
+describe('globals', () => {
+  const w = (from: string, to: string): Edge => ({ from, to, kind: 'writes' });
+  const r = (from: string, to: string): Edge => ({ from, to, kind: 'reads' });
+
+  test('a global belongs to the seam that writes it, not the file that names it first', () => {
+    const res = assign(inv([s('function:x', 'a/x.php'), s('function:y', 'b/y.php'), s('global:g', 'a/x.php')], [r('function:x', 'global:g'), w('function:y', 'global:g')]), seams);
+    expect(res.seamOf['global:g']).toBe('b');
+  });
+
+  test('a global only read belongs to the seam that reads it', () => {
+    expect(assign(inv([s('function:y', 'b/y.php'), s('global:g', 'a/x.php')], [r('function:y', 'global:g')]), seams).seamOf['global:g']).toBe('b');
+  });
+
+  test('a global written from two seams and listed nowhere is a conflict', () => {
+    const res = assign(inv([s('function:x', 'a/x.php'), s('function:y', 'b/y.php'), s('global:g', 'a/x.php')], [w('function:x', 'global:g'), w('function:y', 'global:g')]), seams);
+    expect(res.conflicts).toEqual([{ symbol: 'global:g', seams: ['a', 'b'] }]);
+  });
+});
