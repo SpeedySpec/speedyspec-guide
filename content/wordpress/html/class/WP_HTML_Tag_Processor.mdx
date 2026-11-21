@@ -1,0 +1,5 @@
+---
+symbol: "class:WP_HTML_Tag_Processor"
+---
+
+Scans HTML one token at a time, without building a tree, and changes tags' attributes and classes and some text in place. It follows the HTML standard's tokenizer, so it finds tags as a browser would, but it doesn't track which elements are open: `WP_HTML_Processor` does that on top of it. Changes are queued and applied by `get_updated_html()`. <Ev source="wp:wp-includes/html-api/class-wp-html-tag-processor.php#L418-L5422" hash="91a13e7b3cc6978151b1cfd4cfea7133813662a0e5517d433115641de193a306"/>

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => '#comment',\n    1 => 'COMMENT_AS_HTML_COMMENT',\n  ),\n  1 => \n  array (\n    0 => '#comment',\n    1 => 'COMMENT_AS_CDATA_LOOKALIKE',\n  ),\n  2 => \n  array (\n    0 => '#processing-instruction',\n    1 => NULL,\n  ),\n)",
+ "error": null
+}

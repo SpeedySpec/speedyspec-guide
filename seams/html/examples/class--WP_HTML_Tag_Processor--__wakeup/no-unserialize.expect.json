@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'WP_HTML_Tag_Processor should never be unserialized'",
+ "error": null
+}
