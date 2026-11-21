@@ -1,0 +1,11 @@
+---
+symbol: "function:set_transient"
+---
+
+## Behaviour
+
+Stores a value under a name for `$expiration` seconds, `0` meaning no expiry, and returns whether it was stored. <Ev scenario="transient_basics" area="options"/> Without a persistent object cache it is the option `_transient_<name>`. With no expiry, that option is autoloaded. With an expiry, it isn't, and `_transient_timeout_<name>` holds the time it expires. <Ev scenario="transient_with_timeout" area="options"/> Setting an expiry on a transient stored without one re-adds it without autoload. <Ev scenario="transient_add_timeout_to_existing" area="options"/> With a persistent object cache, or while installing, it is set in the `transient` cache group. <Ev scenario="transient_ext_object_cache" area="options"/>
+
+## Override
+
+`pre_set_transient_{$transient}` filters the value and `expiration_of_transient_{$transient}` the expiry. Once stored, it fires `set_transient_{$transient}` and `set_transient`, then the deprecated `setted_transient`. <Ev scenario="transient_hooks_order" area="options"/>

@@ -1,0 +1,11 @@
+---
+symbol: "function:get_transient"
+---
+
+## Behaviour
+
+Returns a transient's value, or `false` when it isn't set or has expired. <Ev scenario="transient_basics" area="options"/> Without a persistent object cache, a transient is the option `_transient_<name>`. A transient that isn't autoloaded has a timeout in `_transient_timeout_<name>`, and once that time has passed, reading deletes both and returns `false`. <Ev scenario="transient_expired_read_deletes" area="options"/> With a persistent object cache, or while installing, it reads the `transient` cache group instead. <Ev scenario="transient_ext_object_cache" area="options"/> <Ev scenario="transient_installing" area="options"/>
+
+## Override
+
+A value other than `false` from `pre_transient_{$transient}` is returned without reading anything. <Ev scenario="transient_filters_change_values" area="options"/> `transient_{$transient}` filters the value read. <Ev scenario="transient_basics" area="options"/>

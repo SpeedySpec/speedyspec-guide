@@ -1,0 +1,11 @@
+---
+symbol: "function:delete_transient"
+---
+
+## Behaviour
+
+Deletes a transient and its timeout, and returns whether it was deleted; a transient that isn't set returns `false`. <Ev scenario="transient_basics" area="options"/> With a persistent object cache, or while installing, it deletes from the `transient` cache group. <Ev scenario="transient_ext_object_cache" area="options"/>
+
+## Override
+
+It fires `delete_transient_{$transient}` first, whether or not anything is deleted, and `deleted_transient` only after a delete. <Ev scenario="transient_hooks_order" area="options"/>

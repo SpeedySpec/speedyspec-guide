@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "delete_transient_guide_missing ",
+ "return": "false",
+ "error": null
+}

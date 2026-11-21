@@ -1,0 +1,7 @@
+---
+symbol: "filter:expiration_of_transient_{$transient}"
+---
+
+## Behaviour
+
+Fired by `set_transient()` after `pre_set_transient_{$transient}`, with the expiry in seconds, the value and the name. Its result is the expiry used; `0` means none. <Ev scenario="transient_hooks_order" area="options"/> <Ev source="wp:wp-includes/option.php#L1539-L1539" hash="7f718cb4a6a64ef79900d14a457f744f9aa14807900ecd1f0c5ea4f378ffd17c"/>

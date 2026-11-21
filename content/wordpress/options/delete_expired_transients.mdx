@@ -1,0 +1,11 @@
+---
+symbol: "function:delete_expired_transients"
+---
+
+## Behaviour
+
+Deletes, straight from the table, every expired transient and its timeout. On a single site that includes site transients, which are options there. On multisite, the main site of the main network also deletes expired site transients from `sitemeta`. <Ev scenario="delete_expired_transients_single" area="options"/> <Ev scenario="delete_expired_transients_multisite" area="options"/> With a persistent object cache it does nothing, unless `$force_db` is true. <Ev source="wp:wp-includes/option.php#L1641-L1643" hash="32e4b089629b7f7e8f44e0dfca20faef0a7de1162dce4246d63557d9f0489791"/> It doesn't touch the object cache, so a value already cached in this request stays there.
+
+## Override
+
+Not overridable; it fires no hooks.
