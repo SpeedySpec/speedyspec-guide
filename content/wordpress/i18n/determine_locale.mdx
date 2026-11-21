@@ -1,0 +1,11 @@
+---
+symbol: "function:determine_locale"
+---
+
+## Behaviour
+
+The locale to load translations for in this request. It is the requested one on `wp-login.php`, the user's in the admin or a user-locale JSON request, or the installer's language while installing; otherwise the site's. <Ev source="wp:wp-includes/l10n.php#L146-L207" hash="c80db9a36e9ff14ad019907fc572844bb9dff46cd0ffd1b612ea554627057638"/>
+
+## Override
+
+`pre_determine_locale` can answer first, skipping `determine_locale`, which otherwise filters the result.

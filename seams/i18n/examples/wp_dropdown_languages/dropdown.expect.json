@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<select name=\"locale\" id=\"locale\"><option value=\"\" lang=\"en\" data-installed=\"1\">English (United States)</option>\n<option value=\"fr_FR\" lang=\"fr\" selected=\\'selected\\' data-installed=\"1\">Fran\u00e7ais</option></select>'",
+ "error": null
+}

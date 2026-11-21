@@ -1,0 +1,11 @@
+---
+symbol: "function:load_textdomain"
+---
+
+## Behaviour
+
+Loads a translation file into a text domain for a locale. It prefers a `.l10n.php` file beside the `.mo`, then loads it into the translation controller and `$l10n`. It fires `load_textdomain`; returns whether a file loaded. <Ev source="wp:wp-includes/l10n.php#L834-L971" hash="399c5d539e021f7be8564fde8ca69d779d9a1876131a4e2940e5fa720e799a7d"/>
+
+## Override
+
+`pre_load_textdomain` can answer first, `override_load_textdomain` can take over, and `load_textdomain_mofile`, `translation_file_format` and `load_translation_file` choose the file.

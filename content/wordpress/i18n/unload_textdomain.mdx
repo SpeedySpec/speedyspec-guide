@@ -1,0 +1,11 @@
+---
+symbol: "function:unload_textdomain"
+---
+
+## Behaviour
+
+Unloads a text domain's translations, firing `unload_textdomain`. Unless it is about to be reloaded, it records the domain in `$l10n_unloaded`, so it isn't loaded again just in time. Returns whether it was loaded. <Ev source="wp:wp-includes/l10n.php#L986-L1044" hash="08c60283e6bfdb8bef53bb95236f2e110fda89be5656ea90b69c57237190a1e3"/>
+
+## Override
+
+`override_unload_textdomain` can take over.

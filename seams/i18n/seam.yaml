@@ -12,7 +12,8 @@ files:
   - 'wp-includes/compat.php'
   - 'wp-includes/l10n.php'
   - 'wp-includes/utf8.php'
-# Loaded in this order before each example on the WordPress side.
+# Loaded in this order before each example on the WordPress side. There is no database: setup.php answers the options
+# the locale functions read and writes French translation files to a languages folder.
 wordpress:
   - wp-includes/plugin.php
   - wp-includes/load.php
@@ -34,4 +35,24 @@ wordpress:
   - wp-includes/l10n/class-wp-translation-file.php
   - wp-includes/l10n/class-wp-translation-file-mo.php
   - wp-includes/l10n/class-wp-translation-file-php.php
-setup: ../basic-setup.php
+  - wp-includes/l10n.php
+  - wp-includes/class-wp-locale.php
+  - wp-includes/class-wp-locale-switcher.php
+  - wp-includes/class-wp-textdomain-registry.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-error.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/theme.php
+  - wp-includes/link-template.php
+  - wp-includes/http.php
+  # wp_dropdown_languages() marks the selected option with selected().
+  - wp-includes/general-template.php
+  # Script translations are found through the registered scripts and script modules.
+  - wp-includes/class-wp-dependency.php
+  - wp-includes/class-wp-dependencies.php
+  - wp-includes/class-wp-scripts.php
+  - wp-includes/functions.wp-scripts.php
+  - wp-includes/class-wp-script-modules.php
+  - wp-includes/script-modules.php
+setup: setup.php

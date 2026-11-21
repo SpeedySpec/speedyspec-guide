@@ -1,0 +1,11 @@
+---
+symbol: "function:load_script_translations"
+---
+
+## Behaviour
+
+The contents of a script translation JSON file, or `false` when it can't be read. <Ev source="wp:wp-includes/l10n.php#L1460-L1507" hash="a61f75b06a12b586860b374d2a1d58261dfee3ed17d6ff835695355ebe5b14f1"/>
+
+## Override
+
+`pre_load_script_translations` can answer first, `load_script_translation_file` chooses the file and `load_script_translations` filters the result.

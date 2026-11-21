@@ -1,0 +1,11 @@
+---
+symbol: "function:_load_script_textdomain_from_src"
+---
+
+## Behaviour
+
+Finds a script's translation file: first by its handle in the domain's path, then by the MD5 of its path relative to the plugins, themes or site folder in `WP_LANG_DIR`. Loads it, or `false`. <Ev source="wp:wp-includes/l10n.php#L1311-L1447" hash="6fe1b9267ccfb9e50cf97762352521cc2800d917ccc5ea39bf138a3029ff8d1e"/>
+
+## Override
+
+`load_script_textdomain_relative_path` filters the relative path.

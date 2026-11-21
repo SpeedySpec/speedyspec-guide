@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Editor',\n  1 => 'Shop Manager',\n)",
+ "error": null
+}

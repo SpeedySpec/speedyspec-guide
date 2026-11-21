@@ -1,0 +1,11 @@
+---
+symbol: "function:get_locale"
+---
+
+## Behaviour
+
+The site's locale, worked out once and kept in the `$locale` global: the `WPLANG` option (falling back to the network's on multisite), over the `WPLANG` constant and a localized package's locale; `en_US` when empty. A filter result that isn't a non-empty string is ignored. <Ev source="wp:wp-includes/l10n.php#L30-L99" hash="c81b3855563393b4ef7e8cd14c572ba85ff25e3371a4349a411d5e6d215fe6c8"/>
+
+## Override
+
+`locale` filters it; the locale switcher answers through it while switched.

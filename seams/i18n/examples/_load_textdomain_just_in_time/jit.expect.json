@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => 'Salut',\n  2 => true,\n  3 => 'WP_Translations',\n  4 => 'NOOP_Translations',\n  5 => false,\n)",
+ "error": null
+}
