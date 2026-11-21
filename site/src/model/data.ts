@@ -25,8 +25,15 @@ export interface ContentEntry {
   kind: ContentKind;
   symbol?: string;
   data: Record<string, unknown>;
+  /** The MDX after the front matter. */
+  body: string;
   /** The path relative to the content folder, as the content collection names it. */
   file: string;
+}
+
+/** An example and its PHP source. */
+export interface ExampleFile extends Example {
+  code: string;
 }
 
 export interface GuideData {
@@ -39,7 +46,7 @@ export interface GuideData {
   wordpressHistory: HistoryFile | null;
   speedyspecHistory: RuntimeHistoryFile | null;
   crates: CratesFile;
-  examples: { files: Example[]; results: ExamplesFile | null };
+  examples: { files: ExampleFile[]; results: ExamplesFile | null };
   seams: Seam[];
   content: ContentEntry[];
 }
@@ -70,7 +77,8 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
     return (await file.exists()) ? ((await file.json()) as T) : empty;
   };
   const seams = existsSync(dirs.seams) ? await new SeamFiles(dirs.seams).all() : [];
-  const examples = seams.length > 0 ? (await new ExampleFiles(dirs.seams, seams).all()).examples : [];
+  const found = seams.length > 0 ? (await new ExampleFiles(dirs.seams, seams).all()).examples : [];
+  const examples: ExampleFile[] = await Promise.all(found.map(async (e) => ({ ...e, code: await Bun.file(e.file).text() })));
   return {
     inventory: await json<Inventory>('inventory-wp', { base: 'wp', version: '', symbols: [], edges: [], unresolved: [] }),
     runtime: await json<GuideSymbol[]>('inventory-runtime', []),
@@ -97,9 +105,10 @@ async function readContent(dir: string): Promise<ContentEntry[]> {
       const rel = file.split(sep).join('/');
       const [, seam, name] = rel.split('/') as [string, string, string];
       const slug = name.slice(0, -'.mdx'.length);
-      const data = frontmatter(await Bun.file(join(dir, file)).text());
+      const text = await Bun.file(join(dir, file)).text();
+      const data = frontmatter(text);
       const kind = KINDS[slug] ?? 'symbol';
-      const entry: ContentEntry = { section, seam, slug, kind, data, file: rel };
+      const entry: ContentEntry = { section, seam, slug, kind, data, body: text.replace(/^---\r?\n[\s\S]*?\r?\n?---\r?\n?/, ''), file: rel };
       if (typeof data.symbol === 'string') entry.symbol = data.symbol;
       out.push(entry);
     }
