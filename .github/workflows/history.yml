@@ -1,0 +1,43 @@
+name: WordPress history
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  history:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.3"
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          tools: composer:v2
+
+      - name: Install
+        run: |
+          bun install --frozen-lockfile
+          composer install --no-interaction --no-progress --working-dir=packages/adapter-php-parser-source/extractor
+
+      - name: Compute history
+        run: bun run guide history
+
+      - name: Open a pull request when it changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          add-paths: generated/wordpress-history.json
+          branch: chore/wordpress-history
+          title: "chore: update WordPress history"
+          commit-message: "chore: update WordPress history"
+          body: "New WordPress release tags were parsed for since and removed."
