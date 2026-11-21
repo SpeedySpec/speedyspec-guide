@@ -32,7 +32,8 @@ jobs:
         run: bun run typecheck
 
       - name: Test
-        run: bun test
+        # The toolchain only; the site tests need Chromium and run in the site job.
+        run: bun run test
 
   examples:
     needs: test
@@ -145,5 +146,5 @@ jobs:
 
       - name: Test and build the site
         run: |
-          bun test site
+          bun run site:test
           bun run site:build
