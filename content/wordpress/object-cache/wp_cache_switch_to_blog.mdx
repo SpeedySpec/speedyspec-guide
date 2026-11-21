@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_switch_to_blog"
+---
+
+## Behaviour
+
+Switches the site whose keys the cache reads and writes. On multisite, keys outside the global groups are prefixed with the site id. On a single site it changes nothing. <Ev scenario="switch_to_blog_multisite" area="object-cache"/> <Ev scenario="switch_to_blog_single_site_ignored" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

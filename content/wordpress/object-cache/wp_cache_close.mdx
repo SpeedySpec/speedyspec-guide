@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_close"
+---
+
+## Behaviour
+
+Closes the cache's connection, which the built-in cache doesn't have: it returns `true`. <Ev scenario="close_is_true" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

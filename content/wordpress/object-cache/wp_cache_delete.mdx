@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_delete"
+---
+
+## Behaviour
+
+Deletes a key from a group and returns whether something was deleted. <Ev scenario="delete_existing_and_missing" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

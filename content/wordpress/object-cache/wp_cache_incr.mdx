@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_incr"
+---
+
+## Behaviour
+
+Adds `$offset` (1 by default, cast to an integer) to a cached number and returns the new value. A key that isn't cached returns `false`. <Ev scenario="incr_numeric" area="object-cache"/> <Ev scenario="incr_offset_cast" area="object-cache"/> A value that isn't numeric counts from 0, and the result never goes below 0. <Ev scenario="incr_non_numeric_resets" area="object-cache"/> <Ev scenario="incr_float_and_numeric_string" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

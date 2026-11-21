@@ -1,0 +1,6 @@
+---
+---
+
+The object cache keeps values in memory by **group** and **key**, so code can skip repeating work within a request: `wp_cache_set()` **stores**, `wp_cache_get()` **reads**, and `wp_cache_delete()` and the flush functions **delete**. <Ev scenario="add_get" area="object-cache"/> <Ev scenario="flush" area="object-cache"/> The built-in cache is a `WP_Object_Cache` in `$wp_object_cache`, and lives only for the request; a persistent cache replaces it with a drop-in, `wp-content/object-cache.php`, that defines the same functions. <Ev scenario="instances_separate" area="object-cache"/>
+
+On multisite each site's keys are kept apart by a site-id prefix, except in the **global groups**, which every site shares. <Ev scenario="global_groups_on_multisite" area="object-cache"/> <Ev scenario="switch_to_blog_multisite" area="object-cache"/> The examples on these pages each start a fresh cache with WordPress's global groups; the multisite ones run as site 1.

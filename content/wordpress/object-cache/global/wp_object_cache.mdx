@@ -1,0 +1,7 @@
+---
+symbol: "global:wp_object_cache"
+---
+
+## Behaviour
+
+The cache every `wp_cache_*()` function works on: a `WP_Object_Cache`, unless a drop-in puts its own object there. `wp_cache_init()` creates it. <Ev source="wp:wp-includes/cache.php#L21-L23" hash="5b03872b1920503d0b32e9a05e9850fb38fcf03dea86b10e9594a2542bfe9afa"/>

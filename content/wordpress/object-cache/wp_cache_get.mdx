@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_get"
+---
+
+## Behaviour
+
+Returns the value cached under a key in a group, or `false` when it isn't cached. <Ev scenario="add_get" area="object-cache"/> `$found` is set to whether it was, which tells a stored `false` from a miss. <Ev scenario="found_flag" area="object-cache"/> Each hit and miss is counted in the cache's `cache_hits` and `cache_misses`. <Ev scenario="get_miss_counts" area="object-cache"/> `$force` changes nothing in the built-in cache. <Ev source="wp:wp-includes/cache.php#L151-L155" hash="bafe59fac37a09157bc5f03258c69420699b611db2858728ba8aaa73def49ddf"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

@@ -1,0 +1,5 @@
+---
+symbol: "class:WP_Object_Cache"
+---
+
+The built-in object cache: values in memory, by group and key, for one request. The `wp_cache_*()` functions call the `$wp_object_cache` instance's methods. <Ev scenario="instances_separate" area="object-cache"/> It counts hits and misses in `cache_hits` and `cache_misses`. <Ev scenario="hit_miss_properties" area="object-cache"/> Its private `cache` and other properties are readable and writable from outside through its magic methods, as older code expects. It also allows dynamic properties. <Ev scenario="dynamic_property" area="object-cache"/> <Ev scenario="cache_property_shape" area="object-cache"/>

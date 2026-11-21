@@ -27,6 +27,7 @@ wordpress:
   - wp-includes/pluggable.php
   - wp-includes/link-template.php
 setup: setup.php
+mysql: true
 roles:
   read: ["function:get_option", "function:get_options", "function:wp_load_alloptions", "function:form_option"]
   write: ["function:add_option", "function:update_option", "function:delete_option"]

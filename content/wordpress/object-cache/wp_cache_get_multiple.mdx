@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_get_multiple"
+---
+
+## Behaviour
+
+Reads several keys from one group, each as `wp_cache_get()` would, keyed by key; a missing one is `false`. <Ev scenario="multiple_ops" area="object-cache"/> <Ev scenario="get_multiple_with_invalid_key" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

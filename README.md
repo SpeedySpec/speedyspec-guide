@@ -65,7 +65,8 @@ Examples live in `seams/<seam>/examples/<symbol>/<name>.php`, each with `<name>.
 `runtime` is allowed only in a ported seam.
 
 A seam's `seam.yaml` may name a `setup` file, run after its `wordpress` files and before each example on the WordPress
-side; it sees `GUIDE_MULTISITE`, which an example sets with `"multisite": true` (WordPress side only).
+side; it sees `GUIDE_MULTISITE`, which an example sets with `"multisite": true` (WordPress side only). A seam whose
+examples need the database says `mysql: true`.
 
 ### Options examples need MySQL
 

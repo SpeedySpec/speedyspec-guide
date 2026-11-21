@@ -5,4 +5,25 @@ files:
   - 'wp-includes/cache-compat.php'
   - 'wp-includes/cache.php'
   - 'wp-includes/class-wp-object-cache.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side, then setup.php starts a fresh cache.
+# cache-compat.php defines only what cache.php doesn't: the *_salted functions.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/cache-compat.php
+setup: setup.php
+roles:
+  store: [function:wp_cache_add, function:wp_cache_add_multiple, function:wp_cache_replace, function:wp_cache_set, function:wp_cache_set_multiple, function:wp_cache_set_salted, function:wp_cache_set_multiple_salted, function:wp_cache_incr, function:wp_cache_decr]
+  read: [function:wp_cache_get, function:wp_cache_get_multiple, function:wp_cache_get_salted, function:wp_cache_get_multiple_salted]
+  delete: [function:wp_cache_delete, function:wp_cache_delete_multiple, function:wp_cache_flush, function:wp_cache_flush_runtime, function:wp_cache_flush_group]
+  groups-and-sites: [function:wp_cache_add_global_groups, function:wp_cache_add_non_persistent_groups, function:wp_cache_switch_to_blog, function:wp_cache_reset]
+  lifecycle: [function:wp_cache_init, function:wp_cache_close, function:wp_cache_supports]
+  classes-and-state: [class:WP_Object_Cache, global:wp_object_cache]
+edges:
+  - { from: function:wp_cache_set, to: function:wp_cache_delete, kind: undone-by, at: { area: object-cache, scenario: delete_existing_and_missing } }
+  - { from: function:wp_cache_incr, to: function:wp_cache_decr, kind: undone-by, at: { area: object-cache, scenario: decr_clamps_at_zero } }

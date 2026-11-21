@@ -87,6 +87,7 @@ export class SeamFiles implements SeamRepository {
       dependencies: dependencies(),
       edges,
       ...(setup === undefined ? {} : { setup }),
+      ...(data.mysql === true ? { mysql: true } : {}),
     };
   }
 }

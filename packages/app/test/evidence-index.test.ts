@@ -35,6 +35,13 @@ describe('buildEvidenceIndex', () => {
   });
 });
 
+describe('a kept object in the object cache area', () => {
+  test('is_a_WP_Object_Cache', () => {
+    const index = buildEvidenceIndex('object-cache', { scenarios: [{ name: 'own', steps: [{ call: '$c->get' }] }], breaks: [] });
+    expect(index['method:WP_Object_Cache::get']?.scenarios).toEqual(['own']);
+  });
+});
+
 describe('a scenario step that hooks a name', () => {
   const hooks = [
     { id: 'filter:pre_option_{$option}', name: 'pre_option_{$option}' },

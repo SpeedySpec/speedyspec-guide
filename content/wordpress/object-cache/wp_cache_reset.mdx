@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_reset"
+---
+
+## Behaviour
+
+Deprecated since 3.5.0: use `wp_cache_switch_to_blog()`. It empties every group except the global ones, and reports itself and `WP_Object_Cache::reset()` through `_deprecated_function()`. <Ev scenario="reset_is_deprecated" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

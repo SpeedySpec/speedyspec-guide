@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_flush_group"
+---
+
+## Behaviour
+
+Empties one group and returns `true`; other groups are kept. The group name is used as given, without the multisite prefix. <Ev scenario="flush_group_raw_group" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

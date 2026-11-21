@@ -16,6 +16,8 @@ export interface Seam {
   wordpress: string[];
   /** A PHP file run after `wordpress` and before each example on the WordPress side (absolute), such as a fresh database. */
   setup?: string;
+  /** Whether its examples need the MySQL database in `GUIDE_MYSQL_URL` (seam.yaml `mysql: true`). */
+  mysql?: boolean;
   /** SpeedySpec crates that implement it. */
   crates?: string[];
   /** The SpeedySpec state of each cross-seam dependency, by target symbol id, with the evidence for it. */

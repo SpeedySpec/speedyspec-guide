@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_set"
+---
+
+## Behaviour
+
+Stores a value under a key in a group, replacing any value there, and returns `true`. <Ev scenario="set_overwrites" area="object-cache"/> `null`, `false` and `0` are stored like any other value. <Ev scenario="stores_null_false_zero" area="object-cache"/> An empty group, or `'0'`, means `default`. <Ev scenario="empty_group_is_default" area="object-cache"/> <Ev scenario="zero_string_group_is_default" area="object-cache"/> An object is cloned on the way in and on the way out, so changing it afterwards doesn't change the cache. An array holding an object keeps sharing that object. <Ev scenario="object_cloned_on_set_and_get" area="object-cache"/> <Ev scenario="array_holding_object_shares_it" area="object-cache"/> A key must be an integer or a non-empty string; anything else is reported through `_doing_it_wrong()` and not stored. <Ev scenario="invalid_keys_doing_it_wrong" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

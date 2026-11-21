@@ -46,6 +46,7 @@ describe('SeamFiles', () => {
     const dir = only('setup');
     const [s] = await new SeamFiles(dir).all();
     expect(s?.setup).toBe(join(dir, 'setup', 'setup.php'));
+    expect(s?.mysql).toBe(true);
     rmSync(dir, { recursive: true });
   });
 
