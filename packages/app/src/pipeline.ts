@@ -65,7 +65,8 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
     case 'history':
       if (!opts.offline) {
         const cache = (await store.read<HistoryFile>('wordpress-history')) ?? EMPTY_HISTORY;
-        await store.write('wordpress-history', await computeHistory(deps.history, deps.source, cache));
+        const save = (h: HistoryFile) => store.write('wordpress-history', h);
+        await save(await computeHistory(deps.history, deps.source, cache, save));
       }
       break;
     case 'validate': {

@@ -46,3 +46,17 @@ describe('a tag with files that do not parse', () => {
     expect(h.errors?.['1.1']).toEqual([expect.stringContaining('a.php')]);
   });
 });
+
+describe('progress', () => {
+  test('the history is handed over after every tag, so a run that stops keeps what it parsed', async () => {
+    const r = makeRepo();
+    const dir = mkdtempSync(join(tmpdir(), 'history-progress-'));
+    const seen: string[][] = [];
+    await computeHistory(new GitTagHistory(r.url, dir), new PhpParserSource(), { tags: [], symbols: {} }, async (h) => {
+      seen.push([...h.tags]);
+    });
+    r.cleanup();
+    rmSync(dir, { recursive: true, force: true });
+    expect(seen).toEqual([['1.0'], ['1.0', '3.7.0'], ['1.0', '3.7.0', '3.7.1']]);
+  });
+});

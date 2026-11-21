@@ -3,9 +3,10 @@ import { Version } from '@speedyspec-guide/domain';
 import { existsSync, mkdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
-/** Release tags of a git repository, read through one blobless clone kept in a cache. */
+/** Release tags of a git repository, read through one full bare clone kept in a cache and fetched once per run. */
 export class GitTagHistory implements ReleaseHistory {
   private readonly clone: string;
+  private fetched = false;
 
   constructor(private readonly remote: string, private readonly cacheDir: string) {
     this.clone = join(cacheDir, 'repository.git');
@@ -34,12 +35,14 @@ export class GitTagHistory implements ReleaseHistory {
   }
 
   private ensureClone(): void {
+    if (this.fetched) return;
     if (!existsSync(this.clone)) {
       mkdirSync(this.cacheDir, { recursive: true });
-      run(['git', 'clone', '--quiet', '--bare', '--filter=blob:none', this.remote, this.clone]);
+      run(['git', 'clone', '--quiet', '--bare', this.remote, this.clone]);
     } else {
       run(['git', '-C', this.clone, 'fetch', '--quiet', '--tags', '--force', 'origin']);
     }
+    this.fetched = true;
   }
 }
 

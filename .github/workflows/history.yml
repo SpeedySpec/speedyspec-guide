@@ -30,7 +30,17 @@ jobs:
           bun install --frozen-lockfile
           composer install --no-interaction --no-progress --working-dir=packages/adapter-php-parser-source/extractor
 
+      - name: Cache the WordPress clone
+        uses: actions/cache@v4
+        with:
+          path: .cache/wordpress-tags/repository.git
+          key: wordpress-tags-${{ github.run_id }}
+          restore-keys: wordpress-tags-
+
+      # Saves generated/wordpress-history.json after every tag, so a run cut short by the timeout keeps its progress.
       - name: Compute history
+        timeout-minutes: 280
+        continue-on-error: true
         run: bun run guide history
 
       - name: Open a pull request when it changed

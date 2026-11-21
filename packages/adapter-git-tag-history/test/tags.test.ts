@@ -28,3 +28,11 @@ describe('GitTagHistory', () => {
     expect(existsSync(join(dir, 'a.php'))).toBe(true);
   });
 });
+
+describe('the clone', () => {
+  test('is a full clone, so archiving a tag never fetches blobs one by one', async () => {
+    await new GitTagHistory(repo.url, cache).checkout('3.7.0');
+    const filter = Bun.spawnSync(['git', '-C', join(cache, 'repository.git'), 'config', '--get', 'remote.origin.partialclonefilter']);
+    expect(filter.stdout.toString().trim()).toBe('');
+  });
+});

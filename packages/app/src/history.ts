@@ -11,9 +11,15 @@ export interface HistoryFile {
 
 /**
  * Works out each symbol's first release and the first later release without it, parsing only tags not yet in the
- * cache. New tags are taken in version order after the cached ones.
+ * cache. New tags are taken in version order after the cached ones. `onProgress` receives the history after each tag,
+ * so a long first run can be saved as it goes.
  */
-export async function computeHistory(history: ReleaseHistory, source: SymbolSource, cache: HistoryFile): Promise<HistoryFile> {
+export async function computeHistory(
+  history: ReleaseHistory,
+  source: SymbolSource,
+  cache: HistoryFile,
+  onProgress?: (h: HistoryFile) => Promise<void>,
+): Promise<HistoryFile> {
   const done = new Set(cache.tags);
   const symbols: HistoryFile['symbols'] = structuredClone(cache.symbols);
   const errors: Record<string, string[]> = structuredClone(cache.errors ?? {});
@@ -38,6 +44,11 @@ export async function computeHistory(history: ReleaseHistory, source: SymbolSour
       }
     }
     tags.push(tag);
+    if (onProgress) await onProgress(snapshot());
   }
-  return Object.keys(errors).length > 0 ? { tags, symbols, errors } : { tags, symbols };
+  return snapshot();
+
+  function snapshot(): HistoryFile {
+    return Object.keys(errors).length > 0 ? { tags: [...tags], symbols, errors } : { tags: [...tags], symbols };
+  }
 }
