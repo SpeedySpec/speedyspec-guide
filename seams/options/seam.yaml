@@ -3,4 +3,37 @@ job: "Reads, adds, updates and deletes options, site options and transients."
 ported: false
 files:
   - 'wp-includes/option.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side (functions.php loads option.php), then setup.php
+# gives the example fresh tables.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-network.php
+  - wp-includes/ms-network.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/class-wpdb.php
+setup: setup.php
+roles:
+  read: ["function:get_option", "function:get_options", "function:wp_load_alloptions", "function:form_option"]
+  write: ["function:add_option", "function:update_option", "function:delete_option"]
+  autoload: ["function:wp_set_option_autoload_values", "function:wp_set_options_autoload", "function:wp_set_option_autoload", "function:wp_determine_option_autoload_value", "function:wp_filter_default_autoload_value_via_option_size", "function:wp_autoload_values_to_autoload"]
+  caches: ["function:wp_prime_option_caches", "function:wp_prime_option_caches_by_group", "function:wp_prime_site_option_caches", "function:wp_prime_network_option_caches", "function:wp_load_core_site_options"]
+  transients: ["function:get_transient", "function:set_transient", "function:delete_transient", "function:delete_expired_transients"]
+  network: ["function:get_network_option", "function:add_network_option", "function:update_network_option", "function:delete_network_option", "function:get_site_option", "function:add_site_option", "function:update_site_option", "function:delete_site_option", "function:get_site_transient", "function:set_site_transient", "function:delete_site_transient"]
+  settings: ["function:register_setting", "function:unregister_setting", "function:get_registered_settings", "function:register_initial_settings", "function:_wp_register_initial_settings_for_abilities", "function:filter_default_option", "global:wp_registered_settings", "global:new_allowed_options", "global:new_whitelist_options"]
+  user-settings: ["function:wp_user_settings", "function:get_user_setting", "function:set_user_setting", "function:delete_user_setting", "function:get_all_user_settings", "function:wp_set_all_user_settings", "function:delete_all_user_settings", "global:_updated_user_settings"]
+  internals: ["function:wp_protect_special_option"]
+  filters: ["filter:pre_option_{$option}", "filter:pre_option", "filter:default_option_{$option}", "filter:option_{$option}", "filter:wp_default_autoload_value", "filter:pre_wp_load_alloptions", "filter:pre_cache_alloptions", "filter:alloptions", "filter:pre_update_option_{$option}", "filter:wp_max_autoloaded_option_size", "filter:pre_transient_{$transient}", "filter:transient_{$transient}", "filter:pre_set_transient_{$transient}", "filter:expiration_of_transient_{$transient}", "filter:pre_site_option_{$option}", "filter:pre_site_option", "filter:default_site_option_{$option}", "filter:pre_update_option", "filter:site_option_{$option}", "filter:pre_add_site_option_{$option}", "filter:pre_update_site_option_{$option}", "filter:pre_site_transient_{$transient}", "filter:site_transient_{$transient}", "filter:pre_set_site_transient_{$transient}", "filter:expiration_of_site_transient_{$transient}", "filter:register_setting_args", "filter:wp_autoload_values_to_autoload"]
+  actions: ["action:update_option", "action:update_option_{$option}", "action:updated_option", "action:add_option", "action:add_option_{$option}", "action:added_option", "action:delete_option", "action:delete_option_{$option}", "action:deleted_option", "action:delete_transient_{$transient}", "action:deleted_transient", "action:set_transient_{$transient}", "action:set_transient", "action:setted_transient", "action:add_site_option_{$option}", "action:add_site_option", "action:pre_delete_site_option_{$option}", "action:delete_site_option_{$option}", "action:delete_site_option", "action:update_site_option_{$option}", "action:update_site_option", "action:delete_site_transient_{$transient}", "action:deleted_site_transient", "action:set_site_transient_{$transient}", "action:set_site_transient", "action:setted_site_transient", "action:register_setting", "action:unregister_setting"]
+edges:
+  - { from: function:add_option, to: function:delete_option, kind: undone-by, at: { area: options, scenario: delete_option } }
+  - { from: function:set_transient, to: function:delete_transient, kind: undone-by, at: { area: options, scenario: transient_basics } }
+  - { from: function:set_site_transient, to: function:delete_site_transient, kind: undone-by, at: { area: options, scenario: site_transient_single_site } }
+  - { from: function:register_setting, to: function:unregister_setting, kind: undone-by, at: { area: options, scenario: unregister_setting_removes_default } }
+  - { from: function:get_site_option, to: function:get_network_option, kind: alias, at: { area: options, scenario: network_option_per_network } }
+  - { from: function:add_site_option, to: function:add_network_option, kind: alias, at: { area: options, scenario: network_option_per_network } }
