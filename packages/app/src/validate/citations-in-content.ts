@@ -1,4 +1,5 @@
 import { type Citation, parseCitation } from '@speedyspec-guide/domain';
+import { existsSync } from 'node:fs';
 import { join, sep } from 'node:path';
 
 export interface PageCitation {
@@ -34,6 +35,7 @@ async function pages(dir: string): Promise<{ page: string; section: 'wordpress' 
 
 /** Every `<Ev …/>` citation in `content/<section>/<seam>/**\/*.mdx`. */
 export async function citationsIn(contentDir: string): Promise<PageCitation[]> {
+  if (!existsSync(contentDir)) return [];
   const out: PageCitation[] = [];
   for (const p of await pages(contentDir)) {
     for (const m of p.text.matchAll(TAG('Ev'))) {
@@ -45,6 +47,7 @@ export async function citationsIn(contentDir: string): Promise<PageCitation[]> {
 
 /** Every version a page names in `<Changed>`, `<Deprecated>` or `<Removed>` (`base` defaults to `ss`). */
 export async function versionsIn(contentDir: string): Promise<PageVersion[]> {
+  if (!existsSync(contentDir)) return [];
   const out: PageVersion[] = [];
   for (const p of await pages(contentDir)) {
     for (const tag of ['Changed', 'Deprecated', 'Removed']) {

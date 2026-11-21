@@ -10,6 +10,8 @@ export interface GuideSymbol {
   signature?: string;
   pluggable?: boolean;
   dynamic?: boolean;
+  /** Other declarations of the same id, as `file:line`. */
+  alternates?: string[];
   /** sha256 of the symbol's syntax tree with comments stripped. */
   hash?: string;
 }

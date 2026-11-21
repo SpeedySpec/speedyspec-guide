@@ -52,6 +52,19 @@
         "@speedyspec-guide/domain": "workspace:*",
       },
     },
+    "packages/cli": {
+      "name": "@speedyspec-guide/cli",
+      "dependencies": {
+        "@speedyspec-guide/adapter-compat-files-evidence": "workspace:*",
+        "@speedyspec-guide/adapter-git-tag-history": "workspace:*",
+        "@speedyspec-guide/adapter-php-parser-source": "workspace:*",
+        "@speedyspec-guide/adapter-seam-files": "workspace:*",
+        "@speedyspec-guide/adapter-wordpress-release": "workspace:*",
+        "@speedyspec-guide/app": "workspace:*",
+        "@speedyspec-guide/contracts": "workspace:*",
+        "@speedyspec-guide/domain": "workspace:*",
+      },
+    },
     "packages/contracts": {
       "name": "@speedyspec-guide/contracts",
       "dependencies": {
@@ -74,6 +87,8 @@
     "@speedyspec-guide/adapter-wordpress-release": ["@speedyspec-guide/adapter-wordpress-release@workspace:packages/adapter-wordpress-release"],
 
     "@speedyspec-guide/app": ["@speedyspec-guide/app@workspace:packages/app"],
+
+    "@speedyspec-guide/cli": ["@speedyspec-guide/cli@workspace:packages/cli"],
 
     "@speedyspec-guide/contracts": ["@speedyspec-guide/contracts@workspace:packages/contracts"],
 

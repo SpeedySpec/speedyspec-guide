@@ -1,1 +1,1 @@
-{ "requireAllAssigned": false }
+{ "requireAllAssigned": false, "stubFiles": ["wp-admin/includes/noop.php"] }

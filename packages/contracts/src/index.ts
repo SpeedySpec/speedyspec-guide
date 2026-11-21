@@ -31,3 +31,9 @@ export interface ReleaseHistory {
   /** Returns a directory holding the tag's PHP. */
   checkout(tag: string): Promise<string>;
 }
+
+/** Where pipeline stages read and write their outputs (`generated/*.json`). */
+export interface GeneratedStore {
+  read<T>(name: string): Promise<T | null>;
+  write(name: string, data: unknown): Promise<void>;
+}

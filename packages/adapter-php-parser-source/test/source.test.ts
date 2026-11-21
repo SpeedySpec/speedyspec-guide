@@ -19,3 +19,10 @@ describe('PhpParserSource', () => {
     await expect(new PhpParserSource().extract(root, 'wp', '7.1.5')).rejects.toThrow(/no-such-dir[\s\S]*not a directory/);
   });
 });
+
+describe('PhpParserSource with stub files', () => {
+  test('passes the stub files to the extractor', async () => {
+    const inv = await new PhpParserSource('php', ['noop.php']).extract(join(fixtures, 'php'), 'wp', '7.1.5');
+    expect(inv.symbols.find((s) => s.id === 'function:apply_filters')?.file).toBe('plugin.php');
+  });
+});

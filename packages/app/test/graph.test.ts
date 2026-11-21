@@ -29,3 +29,17 @@ describe('buildGraph', () => {
     expect(g.crossSeam).toEqual([]);
   });
 });
+
+describe('a hook name that is only a variable', () => {
+  test('matches nothing, because it passes any hook through rather than naming one', () => {
+    const g = buildGraph(inv([sym('action:{$hook_name}', true), sym('action:init')], []), asg({}));
+    expect(g.edges.filter((x) => x.kind === 'matches')).toEqual([]);
+  });
+});
+
+describe('a hook name with no literal text but separators', () => {
+  test('matches nothing, since `{$a}_{$b}` would match almost any hook', () => {
+    const g = buildGraph(inv([sym('filter:{$taxonomy}_{$field}', true), sym('filter:wp_insert_post_parent'), sym('filter:pre_{$x}', true), sym('filter:pre_y')], []), asg({}));
+    expect(g.edges.filter((x) => x.kind === 'matches')).toEqual([{ from: 'filter:pre_{$x}', to: 'filter:pre_y', kind: 'matches' }]);
+  });
+});

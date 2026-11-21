@@ -8,6 +8,8 @@ namespace Guide\Extractor;
 final class Inventory {
 	/** @var array<string, array<string, mixed>> */
 	private array $symbols = array();
+	/** @var array<string, int> The rank of the kept declaration of each id. */
+	private array $rank = array();
 	/** @var array<string, array<string, mixed>> */
 	private array $edges = array();
 	/** @var list<array<string, mixed>> */
@@ -19,16 +21,40 @@ final class Inventory {
 		return isset( $this->symbols[ $id ] );
 	}
 
+	/**
+	 * A function, class or method declaration, ranked 0 (in a stub file), 1 (empty body) or 2 (real). When the same id
+	 * is declared again, a higher rank replaces the kept one; otherwise the first stays. The others are kept as `alternates`.
+	 *
+	 * @param array<string, mixed> $symbol
+	 */
+	public function addDeclaration( array $symbol, int $rank ): void {
+		$id = $symbol['id'];
+		if ( ! isset( $this->symbols[ $id ] ) ) {
+			$this->symbols[ $id ] = $symbol;
+			$this->rank[ $id ]    = $rank;
+			return;
+		}
+		$kept       = $this->symbols[ $id ];
+		$alternates = $kept['alternates'] ?? array();
+		$pluggable  = ! empty( $kept['pluggable'] ) || ! empty( $symbol['pluggable'] );
+		if ( $rank > $this->rank[ $id ] ) {
+			$alternates[]          = "{$kept['file']}:{$kept['line']}";
+			$kept                  = $symbol;
+			$this->rank[ $id ]   = $rank;
+		} else {
+			$alternates[] = "{$symbol['file']}:{$symbol['line']}";
+		}
+		$kept['alternates'] = $alternates;
+		if ( $pluggable ) {
+			$kept['pluggable'] = true;
+		}
+		$this->symbols[ $id ] = $kept;
+	}
+
 	/** @param array<string, mixed> $symbol */
 	public function addSymbol( array $symbol ): void {
 		if ( ! isset( $this->symbols[ $symbol['id'] ] ) ) {
 			$this->symbols[ $symbol['id'] ] = $symbol;
-		}
-	}
-
-	public function markPluggable( string $id ): void {
-		if ( isset( $this->symbols[ $id ] ) ) {
-			$this->symbols[ $id ]['pluggable'] = true;
 		}
 	}
 

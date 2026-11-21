@@ -1,0 +1,4 @@
+name: Hooks
+job: Fixture Hook API.
+ported: true
+files: [plugin.php, class-hook.php]

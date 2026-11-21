@@ -12,7 +12,8 @@ use PhpParser\ParserFactory;
 
 /** Parses every PHP file under a root and collects its inventory. */
 final class Extractor {
-	public function __construct( private readonly string $base ) {}
+	/** @param list<string> $stubs Files whose declarations are stubs. */
+	public function __construct( private readonly string $base, private readonly array $stubs = array() ) {}
 
 	/** @return array<string, mixed> */
 	public function extract( string $root ): array {
@@ -35,7 +36,7 @@ final class Extractor {
 			$traverser = new NodeTraverser(
 				new NameResolver( null, array( 'replaceNodes' => false ) ),
 				new ParentConnectingVisitor(),
-				new Collector( $relative, $inventory, $printer, new HookName( $printer ), new Hasher( $printer ) )
+				new Collector( $relative, $inventory, in_array( $relative, $this->stubs, true ), $printer, new HookName( $printer ), new Hasher( $printer ) )
 			);
 			$traverser->traverse( $ast );
 		}

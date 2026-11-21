@@ -104,3 +104,17 @@ describe('extract.php', () => {
     expect(a?.hash).toBe(b?.hash);
   });
 });
+
+describe('a function declared in more than one file', () => {
+  test('the declaration with a body wins over an empty stub, and the others are listed', () => {
+    expect(sym('function:add_filter')).toMatchObject({ file: 'plugin.php', line: 5, alternates: ['noop.php:3'] });
+  });
+});
+
+describe('stub files', () => {
+  test('a declaration in a named stub file never beats a real one, even with a body', () => {
+    const p = Bun.spawnSync(['php', extractor, join(fixtures, 'php'), 'wp', '7.1.5', '--stubs=noop.php']);
+    const withStubs: Inventory = JSON.parse(p.stdout.toString());
+    expect(withStubs.symbols.find((s) => s.id === 'function:apply_filters')).toMatchObject({ file: 'plugin.php', alternates: ['noop.php:4'] });
+  });
+});

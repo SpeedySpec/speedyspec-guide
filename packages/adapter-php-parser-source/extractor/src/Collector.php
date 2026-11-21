@@ -24,6 +24,7 @@ final class Collector extends NodeVisitorAbstract {
 	public function __construct(
 		private readonly string $file,
 		private readonly Inventory $inventory,
+		private readonly bool $stubFile,
 		private readonly Printer $printer,
 		private readonly HookName $hookName,
 		private readonly Hasher $hasher,
@@ -33,24 +34,17 @@ final class Collector extends NodeVisitorAbstract {
 		if ( $node instanceof Stmt\ClassLike && null !== $node->name ) {
 			$name = $this->declaredName( $node );
 			$this->classes[] = $name;
-			$this->addSymbol( "class:{$name}", 'class', $name, $node, $this->classSignature( $node, $name ), $node );
+			$this->addSymbol( "class:{$name}", 'class', $name, $node, $this->classSignature( $node, $name ), $node, false, array() === $node->stmts );
 			$this->scopes[] = array( 'id' => "class:{$name}", 'globals' => array() );
 		} elseif ( $node instanceof Stmt\ClassMethod && $this->classes ) {
 			$class = end( $this->classes );
 			$id    = "method:{$class}::{$node->name->toString()}";
-			$this->addSymbol( $id, 'method', $node->name->toString(), $node, $this->methodSignature( $node ), $node );
+			$this->addSymbol( $id, 'method', $node->name->toString(), $node, $this->methodSignature( $node ), $node, false, empty( $node->stmts ) );
 			$this->scopes[] = array( 'id' => $id, 'globals' => array() );
 		} elseif ( $node instanceof Stmt\Function_ ) {
 			$name = $this->declaredName( $node );
 			$id   = "function:{$name}";
-			$pluggable = $this->insideFunctionExists( $node );
-			if ( $this->inventory->has( $id ) ) {
-				if ( $pluggable ) {
-					$this->inventory->markPluggable( $id );
-				}
-			} else {
-				$this->addSymbol( $id, 'function', $name, $node, $name . $this->params( $node ), $node, $pluggable );
-			}
+			$this->addSymbol( $id, 'function', $name, $node, $name . $this->params( $node ), $node, $this->insideFunctionExists( $node ), array() === $node->stmts );
 			$this->scopes[] = array( 'id' => $id, 'globals' => array() );
 		} elseif ( $node instanceof Stmt\Global_ ) {
 			$this->globalStatement( $node );
@@ -89,7 +83,7 @@ final class Collector extends NodeVisitorAbstract {
 		return false === $scope ? "file:{$this->file}" : $scope['id'];
 	}
 
-	private function addSymbol( string $id, string $kind, string $name, Node $at, ?string $signature = null, ?Node $hashed = null, bool $pluggable = false ): void {
+	private function addSymbol( string $id, string $kind, string $name, Node $at, ?string $signature = null, ?Node $hashed = null, bool $pluggable = false, ?bool $empty = null ): void {
 		$symbol = array(
 			'id'   => $id,
 			'kind' => $kind,
@@ -106,7 +100,11 @@ final class Collector extends NodeVisitorAbstract {
 		if ( null !== $hashed ) {
 			$symbol['hash'] = $this->hasher->hash( $hashed );
 		}
-		$this->inventory->addSymbol( $symbol );
+		if ( null === $empty ) {
+			$this->inventory->addSymbol( $symbol );
+		} else {
+			$this->inventory->addDeclaration( $symbol, $this->stubFile ? 0 : ( $empty ? 1 : 2 ) );
+		}
 	}
 
 	private function edge( string $to, string $kind, Node $at ): void {
