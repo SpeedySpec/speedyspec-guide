@@ -4,6 +4,9 @@ ported: true
 files:
   - wp-includes/plugin.php
   - wp-includes/class-wp-hook.php
+# Loaded before each example on the WordPress side (plugin.php loads class-wp-hook.php itself).
+wordpress:
+  - wp-includes/plugin.php
 exclude:
   - function:plugin_basename
   - function:wp_register_plugin_realpath

@@ -54,6 +54,7 @@ export class SeamFiles implements SeamRepository {
       symbols: list('symbols'),
       exclude: list('exclude'),
       roles: roles as Record<string, string[]>,
+      wordpress: list('wordpress'),
       edges,
     };
   }

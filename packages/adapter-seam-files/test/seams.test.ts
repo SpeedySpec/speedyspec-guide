@@ -20,7 +20,7 @@ describe('SeamFiles', () => {
     expect(seams.map((s) => s.id)).toEqual(['a', 'b']);
     expect(seams[0]).toMatchObject({ name: 'A', ported: false, files: ['a/*.php'], exclude: ['function:excluded'], roles: { main: ['function:in_a'] } });
     expect(seams[0]?.edges[0]).toEqual({ from: 'function:in_a', to: 'global:g', kind: 'writes', at: { kind: 'source', base: 'wp', file: 'a/x.php', from: 3, to: 3 } });
-    expect(seams[1]).toMatchObject({ ported: true, symbols: ['function:shared'], exclude: [], roles: {}, edges: [] });
+    expect(seams[1]).toMatchObject({ ported: true, symbols: ['function:shared'], exclude: [], roles: {}, edges: [], wordpress: [] });
   });
 
   test('a seam missing its job is refused, naming the file and field', async () => {

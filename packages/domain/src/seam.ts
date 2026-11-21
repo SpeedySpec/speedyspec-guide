@@ -11,6 +11,8 @@ export interface Seam {
   exclude: string[];
   roles: Record<string, string[]>;
   edges: Edge[];
+  /** WordPress files an example of this seam loads first, on the WordPress side (relative to the release). */
+  wordpress: string[];
 }
 
 /** Which seam each symbol belongs to. */

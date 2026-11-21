@@ -24,6 +24,13 @@
         "@speedyspec-guide/domain": "workspace:*",
       },
     },
+    "packages/adapter-example-files": {
+      "name": "@speedyspec-guide/adapter-example-files",
+      "dependencies": {
+        "@speedyspec-guide/contracts": "workspace:*",
+        "@speedyspec-guide/domain": "workspace:*",
+      },
+    },
     "packages/adapter-git-tag-history": {
       "name": "@speedyspec-guide/adapter-git-tag-history",
       "dependencies": {
@@ -87,6 +94,8 @@
     "@speedyspec-guide/adapter-compat-files-evidence": ["@speedyspec-guide/adapter-compat-files-evidence@workspace:packages/adapter-compat-files-evidence"],
 
     "@speedyspec-guide/adapter-content-files": ["@speedyspec-guide/adapter-content-files@workspace:packages/adapter-content-files"],
+
+    "@speedyspec-guide/adapter-example-files": ["@speedyspec-guide/adapter-example-files@workspace:packages/adapter-example-files"],
 
     "@speedyspec-guide/adapter-git-tag-history": ["@speedyspec-guide/adapter-git-tag-history@workspace:packages/adapter-git-tag-history"],
 

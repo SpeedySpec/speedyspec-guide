@@ -1,0 +1,5 @@
+name: Hooks
+job: Fixture.
+ported: true
+files: []
+wordpress: [wp-includes/plugin.php]
