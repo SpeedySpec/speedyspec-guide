@@ -1,0 +1,7 @@
+# ext-php-rs finds PHP through these before PATH, and speedyspec-php refuses to build if they point anywhere but the
+# server's static build. `server` is the symlink made by `bun run runner:link`.
+[env]
+PHP = { value = "server/.php-build/buildroot/bin/php", relative = true }
+PHP_CONFIG = { value = "server/.php-build/buildroot/bin/php-config", relative = true }
+SPEEDYSPEC_PHP_PREFIX = { value = "server/.php-build/buildroot", relative = true }
+MACOSX_DEPLOYMENT_TARGET = "12.0"

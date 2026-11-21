@@ -1,0 +1,34 @@
+[package]
+name = "speedyspec-guide-examples"
+version = "0.1.0"
+description = "Runs the SpeedySpec Guide's examples on WordPress and on the SpeedySpec runtime, and lists the runtime's PHP API."
+edition = "2024"
+rust-version = "1.99"
+license = "MIT"
+publish = false
+
+# Its own workspace: the speedyspec-server crates below are path dependencies through `server`, a symlink to a
+# pinned checkout (bun run runner:link).
+[workspace]
+
+# What the server crates inherit, as in speedyspec-server's own Cargo.toml.
+[workspace.package]
+edition = "2024"
+rust-version = "1.99"
+license = "MIT"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+speedyspec-container = { path = "server/crates/speedyspec-container" }
+speedyspec-container-php = { path = "server/crates/speedyspec-container-php" }
+speedyspec-hooks = { path = "server/crates/speedyspec-hooks" }
+speedyspec-hooks-memory = { path = "server/crates/speedyspec-hooks-memory" }
+speedyspec-php = { path = "server/crates/speedyspec-php" }
+speedyspec-php-ext = { path = "server/crates/speedyspec-php-ext" }
+speedyspec-wp-hooks = { path = "server/crates/speedyspec-wp-hooks" }
+speedyspec-wp-hooks-memory = { path = "server/crates/speedyspec-wp-hooks-memory" }
+speedyspec-wp-hooks-php = { path = "server/crates/speedyspec-wp-hooks-php" }
+
+[dev-dependencies]
+tempfile = "3"

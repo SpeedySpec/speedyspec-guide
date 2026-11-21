@@ -4,3 +4,5 @@ node_modules/
 generated/*
 !generated/wordpress-history.json
 vendor/
+runner/server
+runner/target/
