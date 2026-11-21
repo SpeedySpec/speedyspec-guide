@@ -1,0 +1,7 @@
+---
+symbol: "filter:pre_site_option"
+---
+
+## Behaviour
+
+Fired by `get_network_option()` for every network option, after `pre_site_option_{$option}`, with that result, the name, the network id and the default. A value other than `false` is returned without reading anything. <Ev scenario="network_option_hooks_order" area="options"/> <Ev source="wp:wp-includes/option.php#L2059-L2059" hash="23fd65faa4b044fefa8ed49ca653e76517a9b95543cf3dadd3974fcbca259842"/>

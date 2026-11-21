@@ -1,1 +1,9 @@
-{ "sides": ["wordpress"], "multisite": true, "output": "", "return": "'Guide Network'", "error": null }
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'Guide Network'",
+ "error": null
+}

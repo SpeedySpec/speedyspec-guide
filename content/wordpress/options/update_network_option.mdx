@@ -1,0 +1,11 @@
+---
+symbol: "function:update_network_option"
+---
+
+## Behaviour
+
+Saves a new value for a network option and returns `true`. A value equal to the stored one, compared serialized, returns `false`; a network option that isn't stored is added with `add_network_option()`. <Ev scenario="network_option_update_same_object" area="options"/> <Ev scenario="network_option_per_network" area="options"/> On a single site it updates the ordinary option, without autoload. A network id that isn't numeric returns `false`. <Ev scenario="network_option_bad_network_id" area="options"/>
+
+## Override
+
+`pre_update_site_option_{$option}` filters the value before it is compared. After a change it fires `update_site_option_{$option}` and then `update_site_option`. <Ev scenario="network_option_hooks_order" area="options"/>

@@ -1,0 +1,13 @@
+---
+symbol: "function:get_network_option"
+---
+
+## Behaviour
+
+Returns a network option of a network, the current network when `$network_id` is empty. A network id that isn't numeric returns `false`. <Ev scenario="network_option_bad_network_id" area="options"/> On a single site it reads the ordinary option of that name. On multisite it reads the network's row in `sitemeta`, cached as `<network id>:<name>` in the `site-options` group. <Ev scenario="network_option_per_network" area="options"/>
+
+A network option that isn't stored returns `$default_value`, passed through `default_site_option_{$option}`, and its name is remembered in that network's `notoptions` cache. <Ev scenario="network_option_per_network" area="options"/> <Ev scenario="network_option_notoptions" area="options"/>
+
+## Override
+
+A value other than `false` from `pre_site_option_{$option}` or `pre_site_option` is returned without reading anything; `site_option_{$option}` filters the value read. <Ev scenario="network_option_hooks_order" area="options"/>

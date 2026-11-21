@@ -1,0 +1,11 @@
+---
+symbol: "function:add_network_option"
+---
+
+## Behaviour
+
+Adds a network option to a network and returns `true`; one already stored is left as it is, and it returns `false`. On a single site it adds an ordinary option that isn't autoloaded; on multisite it inserts a `sitemeta` row for the network. <Ev scenario="network_option_per_network" area="options"/> A network id that isn't numeric returns `false`. <Ev scenario="network_option_bad_network_id" area="options"/>
+
+## Override
+
+`pre_add_site_option_{$option}` filters the value first. Once added, it fires `add_site_option_{$option}` and then `add_site_option`. <Ev scenario="network_option_hooks_order" area="options"/>

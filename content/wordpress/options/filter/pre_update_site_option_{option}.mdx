@@ -1,0 +1,7 @@
+---
+symbol: "filter:pre_update_site_option_{$option}"
+---
+
+## Behaviour
+
+Fired by `update_network_option()`, with the new value, the old value, the name and the network id, before the two are compared. Its result is what is saved. <Ev scenario="network_option_hooks_order" area="options"/> <Ev source="wp:wp-includes/option.php#L2420-L2420" hash="358fb6c405a0775780727f746f5f53d4c578d91b4fe655d22a67a6418a2629bd"/>

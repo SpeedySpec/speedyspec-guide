@@ -1,0 +1,11 @@
+---
+symbol: "function:delete_network_option"
+---
+
+## Behaviour
+
+Deletes a network option and returns `true`; one that isn't stored returns `false`. On a single site it deletes the ordinary option; on multisite, the network's `sitemeta` row, and it adds the name to that network's `notoptions` cache. <Ev scenario="network_option_per_network" area="options"/> <Ev scenario="network_option_notoptions" area="options"/>
+
+## Override
+
+It fires `pre_delete_site_option_{$option}` first, whether or not anything is deleted. After a delete it fires `delete_site_option_{$option}` and then `delete_site_option`. <Ev scenario="network_option_hooks_order" area="options"/>

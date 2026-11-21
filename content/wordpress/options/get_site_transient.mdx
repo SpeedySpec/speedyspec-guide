@@ -1,0 +1,11 @@
+---
+symbol: "function:get_site_transient"
+---
+
+## Behaviour
+
+Returns a site transient, or `false` when it isn't set or has expired. Without a persistent object cache it is the network option `_site_transient_<name>`, with its timeout in `_site_transient_timeout_<name>`. Reading an expired one deletes both. <Ev scenario="site_transient_single_site" area="options"/> <Ev scenario="site_transient_multisite" area="options"/> The timeouts of `update_core`, `update_plugins` and `update_themes` are not checked on read. <Ev scenario="site_transient_core_no_timeout" area="options"/> With a persistent object cache, or while installing, it reads the `site-transient` cache group. <Ev scenario="transient_ext_object_cache" area="options"/>
+
+## Override
+
+A value other than `false` from `pre_site_transient_{$transient}` is returned without reading anything; `site_transient_{$transient}` filters the value read. <Ev scenario="site_transient_single_site" area="options"/>

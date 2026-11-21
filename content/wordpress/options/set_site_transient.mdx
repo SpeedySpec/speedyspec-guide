@@ -1,0 +1,11 @@
+---
+symbol: "function:set_site_transient"
+---
+
+## Behaviour
+
+Stores a site transient for `$expiration` seconds, `0` meaning no expiry, and returns whether it was stored. Without a persistent object cache it is the network option `_site_transient_<name>`, plus `_site_transient_timeout_<name>` when it expires. On a single site those are options; on multisite, the network's `sitemeta` rows. <Ev scenario="site_transient_single_site" area="options"/> <Ev scenario="site_transient_multisite" area="options"/> With a persistent object cache, or while installing, it is set in the `site-transient` cache group. <Ev scenario="transient_ext_object_cache" area="options"/>
+
+## Override
+
+`pre_set_site_transient_{$transient}` filters the value and `expiration_of_site_transient_{$transient}` the expiry. Once stored, it fires `set_site_transient_{$transient}` and `set_site_transient`, then the deprecated `setted_site_transient`. <Ev scenario="site_transient_single_site" area="options"/>

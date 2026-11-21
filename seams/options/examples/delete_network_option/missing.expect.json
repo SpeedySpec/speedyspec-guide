@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "pre_delete_site_option_guide_missing ",
+ "return": "false",
+ "error": null
+}
