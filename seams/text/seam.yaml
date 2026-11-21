@@ -16,6 +16,8 @@ wordpress:
   - wp-includes/functions.php
   - wp-includes/kses.php
   - wp-includes/http.php
+  # links_add_base_url() makes URLs absolute with WP_Http.
+  - wp-includes/class-wp-http.php
   - wp-includes/link-template.php
   - wp-includes/shortcodes.php
   # kses's default pre_kses hook reaches filter_block_content().
@@ -28,6 +30,8 @@ wordpress:
   - wp-includes/cache.php
   # WordPress's default hooks, such as sanitize_title_with_dashes() on sanitize_title.
   - wp-includes/default-filters.php
+  # addslashes_gpc() and wp_kses_html_error(), deprecated.
+  - wp-includes/deprecated.php
   - wp-includes/html-api/html5-named-character-references.php
   - wp-includes/html-api/class-wp-html-attribute-token.php
   - wp-includes/html-api/class-wp-html-span.php

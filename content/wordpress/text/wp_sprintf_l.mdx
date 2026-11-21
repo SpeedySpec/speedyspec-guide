@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_sprintf_l"
+---
+
+## Behaviour
+
+Formats `%l` as a list: one item as it is, two joined with "and", more with commas and ", and"; text after `%l` is kept. A fragment not starting with `%l` is returned as it is, and an empty list gives `''`. <Ev source="wp:wp-includes/formatting.php#L5468-L5521" hash="bd4bf0f330d27a66d823f3d12fe52df1c91bf47f4343327eef5cad4a0a2389d8"/>
+
+## Override
+
+`wp_sprintf_l` filters the separators.

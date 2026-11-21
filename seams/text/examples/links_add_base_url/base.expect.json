@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"http://example.org/dir/page\">p</a><img src=\"http://example.org/i.png\"><a href=\"https://example.com/\">e</a>'",
+ "error": null
+}

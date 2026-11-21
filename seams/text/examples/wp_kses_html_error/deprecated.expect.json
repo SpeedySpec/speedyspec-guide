@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "wp_kses_html_error 7.2.0",
+ "return": "'class=c'",
+ "error": null
+}

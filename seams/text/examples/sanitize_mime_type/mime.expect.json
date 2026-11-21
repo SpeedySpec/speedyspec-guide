@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'image/pngx1|image/png; x=\"1\"'",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:format_for_editor"
+---
+
+## Behaviour
+
+Escapes `<`, `>` and `&` (not quotes) with `htmlspecialchars()`, for text put in a textarea for an editor. Empty text is left as it is. <Ev source="wp:wp-includes/formatting.php#L4507-L4522" hash="ba3668890ac63e2092025935dee5ede47f71fa79dc2070b2c26f3925baf99bf6"/>
+
+## Override
+
+`format_for_editor` filters the result.

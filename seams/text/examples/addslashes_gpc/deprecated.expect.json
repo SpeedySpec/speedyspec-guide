@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "addslashes_gpc 7.0.0 wp_slash()",
+ "return": "'it\\\\\\'s'",
+ "error": null
+}

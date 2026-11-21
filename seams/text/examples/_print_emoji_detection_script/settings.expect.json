@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": null,
+ "error": "RuntimeException: emoji_url=https://s.w.org/images/core/emoji/17.0.2/72x72/ emoji_ext=.png emoji_svg_url=https://s.w.org/images/core/emoji/17.0.2/svg/ emoji_svg_ext=.svg"
+}

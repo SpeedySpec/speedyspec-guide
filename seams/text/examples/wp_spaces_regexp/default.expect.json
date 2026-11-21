@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'[\\\\r\\\\n\\\\t ]|\\\\xC2\\\\xA0|&nbsp;'",
+ "error": null
+}

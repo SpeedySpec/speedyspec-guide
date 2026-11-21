@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'Hi <img src=\"https://s.w.org/images/core/emoji/17.0.2/72x72/1f642.png\" alt=\"\ud83d\ude42\" class=\"wp-smiley\" style=\"height: 1em; max-height: 1em;\" /> <code>&#x1f642;</code>'",
+ "error": null
+}

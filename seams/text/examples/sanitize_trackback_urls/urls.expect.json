@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'[https://example.com/a\nhttp://example.com/b]'",
+ "error": null
+}
