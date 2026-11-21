@@ -1,0 +1,7 @@
+name: "Walkers"
+job: "Walks hierarchical items such as pages, categories, comments and menu items to render them."
+ported: false
+packages: [wp-walker]
+forkPackages: [wp-walker]
+files: []
+wordpress: []

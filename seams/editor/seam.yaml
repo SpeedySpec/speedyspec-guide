@@ -1,0 +1,7 @@
+name: "Editor and embeds"
+job: "Renders the classic editor, discovers and renders oEmbed content, and edits images through GD or Imagick."
+ported: false
+packages: [wp-editor]
+forkPackages: [wp-editor]
+files: []
+wordpress: []

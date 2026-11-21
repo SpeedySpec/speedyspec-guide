@@ -1,0 +1,7 @@
+name: "Admin bar"
+job: "Builds and renders the toolbar shown above logged-in pages."
+ported: false
+packages: [wp-admin-bar]
+forkPackages: [wp-admin-bar]
+files: []
+wordpress: []

@@ -1,0 +1,7 @@
+name: "Widgets"
+job: "Registers widgets and sidebars and renders them."
+ported: false
+packages: [wp-widgets]
+forkPackages: [wp-widgets]
+files: []
+wordpress: []

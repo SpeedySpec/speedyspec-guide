@@ -1,0 +1,11 @@
+name: "REST API"
+job: "Registers REST routes and serves them through the REST server and its controllers."
+ported: false
+packages: [wp-rest-api]
+forkPackages: [wp-rest-api]
+files:
+  - 'wp-includes/rest-api/endpoints/class-wp-rest-icons-controller.php'
+  - 'wp-includes/rest-api/endpoints/class-wp-rest-icon-collections-controller.php'
+  - 'wp-includes/json-schema.php'
+  - 'wp-includes/rest-api/endpoints/class-wp-rest-view-config-controller.php'
+wordpress: []

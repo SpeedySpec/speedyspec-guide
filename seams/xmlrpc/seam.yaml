@@ -1,0 +1,7 @@
+name: "XML-RPC"
+job: "Serves and calls XML-RPC through IXR and the WordPress XML-RPC server."
+ported: false
+packages: [wp-xmlrpc]
+forkPackages: [wp-xmlrpc]
+files: []
+wordpress: []

@@ -53,6 +53,8 @@ export function evidenceLink(c: Citation, s: Sources | null): string | null {
       return `${server}/compat/${c.area}/scenarios.json`;
     case 'break':
       return `${server}/compat/${c.area}/breaks.json`;
+    case 'example':
+      return null;
     case 'test': {
       const [crate, stem] = c.path.split('::');
       return crate && stem ? `${server}/crates/${crate}/tests/${stem}.rs` : null;

@@ -4,6 +4,7 @@ ported: true
 files:
   - wp-includes/plugin.php
   - wp-includes/class-wp-hook.php
+  - wp-includes/class-wp-filter-sentinel.php
 exclude:
   - function:plugin_basename
   - function:wp_register_plugin_realpath

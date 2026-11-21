@@ -1,0 +1,7 @@
+name: "Cron"
+job: "Schedules, reschedules and runs events stored in the cron option."
+ported: false
+packages: [wp-cron]
+forkPackages: [wp-cron]
+files: []
+wordpress: []

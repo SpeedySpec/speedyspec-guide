@@ -1,0 +1,7 @@
+name: "Object Cache"
+job: "Stores and fetches values in the object cache by key and group."
+ported: false
+packages: [wp-object-cache]
+forkPackages: [wp-object-cache]
+files: []
+wordpress: []

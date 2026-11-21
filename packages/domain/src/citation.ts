@@ -3,6 +3,8 @@ export type Citation =
   | { kind: 'scenario'; area: string; name: string }
   | { kind: 'break'; area: string; scenario: string; step?: number }
   | { kind: 'test'; path: string }
+  /** One of the guide's own examples, run in CI (on the runtime, when it backs a SpeedySpec claim). */
+  | { kind: 'example'; id: string }
   | { kind: 'source'; base: 'wp' | 'ss'; file: string; from: number; to: number; hash?: string };
 
 /** Parses the attributes of an `<Ev …/>` citation, or a seam edge's `at`. */
@@ -19,6 +21,7 @@ export function parseCitation(attrs: Record<string, string>): Citation {
     return c;
   }
   if (attrs.test !== undefined) return { kind: 'test', path: attrs.test };
+  if (attrs.example !== undefined) return { kind: 'example', id: attrs.example };
   if (attrs.source !== undefined) {
     const m = /^(wp|ss):([^#]+)#L(\d+)(?:-L(\d+))?$/.exec(attrs.source);
     if (!m) throw new Error(`bad source citation: ${attrs.source}`);
@@ -38,6 +41,7 @@ export function citationText(c: Citation): string {
     case 'scenario': return `scenario ${c.area}/${c.name}`;
     case 'break': return `break ${c.area}/${c.scenario}${c.step === undefined ? '' : `#${c.step}`}`;
     case 'test': return `test ${c.path}`;
+    case 'example': return `example ${c.id}`;
     case 'source': return `${c.base}:${c.file}#L${c.from}${c.to === c.from ? '' : `-L${c.to}`}`;
   }
 }

@@ -31,3 +31,11 @@ members (WordPress's is `final class WP_Hook implements Iterator, ArrayAccess`).
 Its name says it removes every callback while the hook runs, but its steps never call `remove_all_filters()`: a
 callback on `f` adds a callback to another hook, then `f` runs. The guide cites it nowhere for during-run behaviour; `remove_during_run_later_at_current_priority` covers
 `remove_filter()`, and no scenario covers `remove_all_filters()` during a run.
+
+## 4. SpeedySpec doesn't declare `WP_Filter_Sentinel`
+
+WordPress 7.1.5's `plugin.php` requires `class-wp-filter-sentinel.php` (L26), which declares
+`final class WP_Filter_Sentinel {}`. The runtime answers `plugin.php` natively and declares no such class:
+`class_exists( 'WP_Filter_Sentinel' )` is false (`seams/hooks/examples/class--WP_Filter_Sentinel/not-declared-on-speedyspec.php`).
+WordPress 7.1.5's `WP_Ability::execute()` creates one as the default of `wp_pre_execute_ability`, so that code fails
+with an Error on the runtime. Documented on `content/speedyspec/hooks/class/WP_Filter_Sentinel.mdx` as *breaks*.

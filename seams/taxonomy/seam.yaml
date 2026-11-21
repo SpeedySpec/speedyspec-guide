@@ -1,0 +1,7 @@
+name: "Taxonomies and metadata"
+job: "Registers taxonomies, stores and queries terms, and reads and writes object metadata."
+ported: false
+packages: [wp-taxonomy]
+forkPackages: [wp-taxonomy]
+files: []
+wordpress: []

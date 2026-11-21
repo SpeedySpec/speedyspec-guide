@@ -95,4 +95,4 @@ First real build (2026-11-20): 61 pages in 4 seconds, 57 of them indexed for sea
 Fully documented and enforced (`requirePortedCoverage`): all 29 WordPress members have a WordPress page and a
 SpeedySpec page, `WP_Hook`'s 20 methods are documented on its class page, and SpeedySpec's own 47 Hooks symbols
 have SpeedySpec pages. 129 MDX pages; 76 examples, 148 runs (WordPress 7.1.5 and the runtime), all passing; every
-documented break has a porting before/after pair. Findings (incompatibilities the guide found that speedyspec-server doesn't record yet): three, in [docs/hooks-findings.md](docs/hooks-findings.md).
+documented break has a porting before/after pair. Findings (incompatibilities the guide found that speedyspec-server doesn't record yet): four, in [docs/hooks-findings.md](docs/hooks-findings.md).

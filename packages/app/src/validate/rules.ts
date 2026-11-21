@@ -28,6 +28,14 @@ export const CitationExists: Rule = {
   async check(ctx) {
     const f: Failure[] = [];
     for (const { where, citation: c } of allCitations(ctx)) {
+      if (c.kind === 'example') {
+        const declared = ctx.declaredExamples.find((e) => e.id === c.id);
+        if (!declared) f.push({ rule: this.id, where, message: `${citationText(c)} does not exist in seams/*/examples` });
+        else if (where.startsWith('wordpress/')) {
+          if (!declared.sides.includes('wordpress')) f.push({ rule: this.id, where, message: `${citationText(c)} does not run on WordPress, so it can't back a WordPress claim` });
+        } else if (!declared.sides.includes('runtime')) f.push({ rule: this.id, where, message: `${citationText(c)} does not run on the runtime, so it can't back a SpeedySpec claim` });
+        continue;
+      }
       const ok =
         c.kind === 'scenario' ? await ctx.evidence.scenarioExists(c.area, c.name)
         : c.kind === 'break' ? await ctx.evidence.breakExists(c.area, c.scenario, c.step)

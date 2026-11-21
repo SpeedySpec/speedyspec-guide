@@ -1,0 +1,7 @@
+name: "Users and roles"
+job: "Creates, queries and authenticates users, and checks roles and capabilities."
+ported: false
+packages: [wp-identity]
+forkPackages: [wp-identity]
+files: []
+wordpress: []

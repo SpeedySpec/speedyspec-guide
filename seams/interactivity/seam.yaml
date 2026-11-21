@@ -1,0 +1,7 @@
+name: "Interactivity API"
+job: "Processes Interactivity API directives in rendered markup and holds its state and configuration."
+ported: false
+packages: [wp-interactivity]
+forkPackages: [wp-interactivity]
+files: []
+wordpress: []

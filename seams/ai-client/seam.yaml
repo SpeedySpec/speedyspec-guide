@@ -1,0 +1,10 @@
+name: "AI client"
+job: "Builds prompts for AI models and sends them through providers registered as connectors."
+ported: false
+files:
+  - 'wp-includes/ai-client.php'
+  - 'wp-includes/ai-client/**'
+  - 'wp-includes/php-ai-client/**'
+  - 'wp-includes/connectors.php'
+  - 'wp-includes/class-wp-connector-registry.php'
+wordpress: []

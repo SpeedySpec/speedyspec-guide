@@ -1,0 +1,7 @@
+name: "Support"
+job: "Holds the general functions, loading helpers, pluggable functions, errors and constants the other seams share."
+ported: false
+packages: [wp-support]
+forkPackages: [wp-support]
+files: []
+wordpress: []

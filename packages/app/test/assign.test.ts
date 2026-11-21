@@ -82,9 +82,9 @@ describe('fork packages and load order', () => {
     const r = assign(inv([s('function:get_option', 'wp-includes/option.php')]), [seam('options', { forkPackages: ['wp-option'] })], ss('function:get_option', 'wp-option/wp-option-legacy/functions/option.php'), []);
     expect(r.seamOf['function:get_option']).toBe('options');
   });
-  test('files_glob_wins_over_fork_package', () => {
+  test('fork_package_wins_over_a_files_glob', () => {
     const r = assign(inv([s('function:f', 'a/f.php')]), [seam('a', { files: ['a/*.php'] }), seam('b', { forkPackages: ['wp-b'] })], ss('function:f', 'wp-b/f.php'), []);
-    expect(r.seamOf['function:f']).toBe('a');
+    expect(r.seamOf['function:f']).toBe('b');
     expect(r.conflicts).toEqual([]);
   });
   test('fork_package_respects_exclude', () => {
@@ -128,5 +128,39 @@ describe('fork packages and load order', () => {
       ['early.php', 'late.php'],
     );
     expect(r.seamOf['global:g']).toBe('B');
+  });
+});
+
+describe('the seam of a symbol\'s file', () => {
+  const none: Inventory = { base: 'ss', version: 'x', symbols: [], edges: [], unresolved: [] };
+  const ss = (...pairs: [string, string][]): Inventory => ({ base: 'ss', version: 'x', symbols: pairs.map(([id, f]) => s(id, f)), edges: [], unresolved: [] });
+
+  test('a_symbol_the_fork_lacks_goes_to_the_seam_of_most_of_its_file', () => {
+    const r = assign(
+      inv([s('function:old1', 'wp-includes/c.php'), s('function:old2', 'wp-includes/c.php'), s('function:new', 'wp-includes/c.php')]),
+      [seam('q', { forkPackages: ['wp-q'] })],
+      ss(['function:old1', 'wp-q/c.php'], ['function:old2', 'wp-q/c.php']),
+      [],
+    );
+    expect(r.seamOf['function:new']).toBe('q');
+  });
+  test('a_hook_nothing_fires_goes_to_the_seam_of_most_of_its_file', () => {
+    const r = assign(inv([s('function:f', 'wp-includes/d.php'), s('filter:only_registered', 'wp-includes/d.php')]), [seam('q', { forkPackages: ['wp-q'] })], ss(['function:f', 'wp-q/d.php']), []);
+    expect(r.seamOf['filter:only_registered']).toBe('q');
+  });
+  test('a_file_fired_hook_goes_to_the_seam_of_most_of_that_file', () => {
+    const r = assign(inv([s('function:f', 'wp-includes/e.php'), s('action:top', 'wp-includes/e.php')], [fires('file:wp-includes/e.php', 'action:top')]), [seam('q', { forkPackages: ['wp-q'] })], ss(['function:f', 'wp-q/e.php']), []);
+    expect(r.seamOf['action:top']).toBe('q');
+  });
+  test('a_file_with_no_placed_symbols_places_nothing', () => {
+    expect(assign(inv([s('function:lone', 'wp-includes/z.php')]), [seam('q', { forkPackages: ['wp-q'] })], none, []).unassigned).toEqual(['function:lone']);
+  });
+});
+
+describe('a hook nothing fires', () => {
+  test('a_hook_nothing_fires_in_a_globbed_file_goes_to_that_seam', () => {
+    const none: Inventory = { base: 'ss', version: 'x', symbols: [], edges: [], unresolved: [] };
+    const r = assign(inv([s('filter:registered_only', 'wp-admin/includes/admin-filters.php')]), [seam('admin', { files: ['wp-admin/**'] })], none, []);
+    expect(r.seamOf['filter:registered_only']).toBe('admin');
   });
 });

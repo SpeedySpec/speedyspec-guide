@@ -1,1 +1,1 @@
-{ "requireAllAssigned": false, "requirePortedCoverage": true, "stubFiles": ["wp-admin/includes/noop.php"] }
+{ "requireAllAssigned": true, "requirePortedCoverage": true, "stubFiles": ["wp-admin/includes/noop.php"] }

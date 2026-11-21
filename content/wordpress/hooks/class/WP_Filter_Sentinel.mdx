@@ -1,0 +1,11 @@
+---
+symbol: "class:WP_Filter_Sentinel"
+---
+
+## Behaviour
+
+An empty final class, declared when `plugin.php` loads. <Ev source="wp:wp-includes/plugin.php#L26-L26" hash="4511cd2021bd8a188cf08a6bb9d187bf1665a04700a4bc0e11a3b2d1ebe4ef1e"/> <Ev source="wp:wp-includes/class-wp-filter-sentinel.php#L25-L25" hash="16256881650042617eca34354cb0cb9a6c64935ddf3756bf2784f542d9fcdb4a"/>
+
+Each instance is a distinct object, so `===` tells it apart from any other value. Passed as a filter's value, it comes back as the same object when no callback replaces it. <Ev example="hooks/class--WP_Filter_Sentinel/identity"/>
+
+WordPress 7.1.5 uses one as the default of `wp_pre_execute_ability`: `WP_Ability::execute()` continues only when the filter returns that same instance. <Ev source="wp:wp-includes/abilities-api/class-wp-ability.php#L785-L811" hash="3bc0ced96f782cf62092bc6de3d45cc089d959f6f92e0ab63cb5ec3d2395721e"/>

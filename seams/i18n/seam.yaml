@@ -1,0 +1,9 @@
+name: "Internationalization"
+job: "Loads translation files, translates strings, switches locales and holds locale data."
+ported: false
+packages: [wp-i18n]
+forkPackages: [wp-i18n]
+files:
+  - 'wp-includes/pomo/**'
+  - 'wp-includes/l10n/**'
+wordpress: []

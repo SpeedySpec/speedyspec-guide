@@ -1,0 +1,8 @@
+name: "Deprecated"
+job: "Holds deprecated functions kept for backward compatibility."
+ported: false
+packages: [wp-deprecated]
+forkPackages: [wp-deprecated]
+files:
+  - 'wp-includes/class-json.php'
+wordpress: []

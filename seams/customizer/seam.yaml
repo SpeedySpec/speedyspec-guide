@@ -1,0 +1,7 @@
+name: "Customizer"
+job: "Defines the Customizer manager and its panels, sections, settings and controls."
+ported: false
+packages: [wp-customizer]
+forkPackages: [wp-customizer]
+files: []
+wordpress: []

@@ -1,0 +1,7 @@
+name: "Admin"
+job: "Renders and handles the WordPress admin screens and the functions they include."
+ported: false
+files:
+  - wp-admin/**
+inFork: false
+wordpress: []

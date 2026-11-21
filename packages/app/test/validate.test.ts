@@ -166,3 +166,25 @@ describe('SeamSymbolsExist', () => {
     expect(await rulesOf(await ctx({}, { seams, runtimeIds: null }))).toEqual([]);
   });
 });
+
+describe('example citations', () => {
+  const runs = (sides: ('wordpress' | 'runtime')[]) => ({ declaredExamples: [{ id: 'hooks/x/declared', sides }] });
+  test('an_example_citation_must_name_a_declared_example', async () => {
+    const f = await runRules(ALL_RULES, await ctx({ 'speedyspec/hooks/a.mdx': '<Ev example="hooks/x/missing"/>' }, runs(['wordpress', 'runtime'])));
+    expect(f.find((x) => x.rule === 'CitationExists')?.message).toContain('example hooks/x/missing');
+  });
+  test('an_example_citation_must_run_on_the_runtime', async () => {
+    const f = await runRules(ALL_RULES, await ctx({ 'speedyspec/hooks/a.mdx': '<Ev example="hooks/x/declared"/>' }, runs(['wordpress'])));
+    expect(f.find((x) => x.rule === 'CitationExists')?.message).toContain('does not run on the runtime');
+  });
+  test('a_wordpress_page_cites_an_example_that_runs_on_wordpress', async () => {
+    const ok = await runRules(ALL_RULES, await ctx({ 'wordpress/hooks/a.mdx': '<Ev example="hooks/x/declared"/>' }, runs(['wordpress'])));
+    expect(ok.filter((x) => x.rule === 'CitationExists')).toEqual([]);
+    const bad = await runRules(ALL_RULES, await ctx({ 'wordpress/hooks/a.mdx': '<Ev example="hooks/x/declared"/>' }, runs(['runtime'])));
+    expect(bad.find((x) => x.rule === 'CitationExists')?.message).toContain('does not run on WordPress');
+  });
+  test('an_example_that_runs_on_the_runtime_is_verified_evidence', async () => {
+    const f = await runRules(ALL_RULES, await ctx({ 'speedyspec/hooks/a.mdx': '<Ev example="hooks/x/declared"/>' }, runs(['wordpress', 'runtime'])));
+    expect(f.filter((x) => x.rule === 'CitationExists' || x.rule === 'PortedSeamVerified')).toEqual([]);
+  });
+});

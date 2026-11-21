@@ -1,0 +1,7 @@
+name: "Sitemaps"
+job: "Registers sitemap providers and renders the sitemap index and sitemaps."
+ported: false
+packages: [wp-sitemap]
+forkPackages: [wp-sitemap]
+files: []
+wordpress: []

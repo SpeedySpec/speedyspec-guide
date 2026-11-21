@@ -1,0 +1,8 @@
+name: "Mail"
+job: "Sends email through PHPMailer."
+ported: false
+packages: [wp-mailer]
+forkPackages: [wp-mailer]
+files:
+  - 'wp-includes/PHPMailer/**'
+wordpress: []

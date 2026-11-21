@@ -1,0 +1,6 @@
+name: "Entry points"
+job: "Holds the top-level PHP files that load WordPress and serve its requests."
+ported: false
+files:
+  - '*.php'
+wordpress: []

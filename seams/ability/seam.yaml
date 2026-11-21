@@ -1,0 +1,7 @@
+name: "Abilities"
+job: "Registers abilities and ability categories, and looks them up from their registries."
+ported: false
+packages: [wp-ability]
+forkPackages: [wp-ability]
+files: []
+wordpress: []

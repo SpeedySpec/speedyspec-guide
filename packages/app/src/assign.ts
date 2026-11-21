@@ -4,8 +4,8 @@ import { loadPositions } from './load-order.ts';
 const NO_FORK: Inventory = { base: 'ss', version: '', symbols: [], edges: [], unresolved: [] };
 
 /**
- * Assigns every symbol to one seam: an explicit listing first, then the seam whose files hold it, then the seam that
- * owns the fork package SpeedySpec keeps it in, then a method's class, then a hook's firing seam or a global's writing
+ * Assigns every symbol to one seam: an explicit listing first, then the seam that owns the fork package SpeedySpec
+ * keeps it in, then the seam whose files hold it, then a method's class, then a hook's firing seam or a global's writing
  * (else reading) seam. A hook or global used from several seams goes to the seam whose use comes first in WordPress's
  * load order (`order`, from wp-settings.php), and within one file the earlier line.
  */
@@ -42,8 +42,32 @@ export function assign(inv: Inventory, seams: Seam[], fork: Inventory = NO_FORK,
 
   for (const sym of pending) {
     if (sym.kind === 'method' || byUse(sym.kind)) continue;
-    const files = byFile(sym.file, sym.id);
-    place(sym.id, files.length > 0 ? files : byPackage(sym.id));
+    const kept = byPackage(sym.id);
+    place(sym.id, kept.length > 0 ? kept : byFile(sym.file, sym.id));
+  }
+
+  // A symbol neither rule places (one WordPress added after the fork's code) goes to the seam that holds most of the
+  // symbols defined in its file; a file whose symbols no rule placed places nothing.
+  const fileSeam = (() => {
+    const counts = new Map<string, Map<string, number>>();
+    for (const sym of inv.symbols) {
+      const seam = seamOf[sym.id];
+      if (seam === undefined) continue;
+      const c = counts.get(sym.file) ?? new Map<string, number>();
+      c.set(seam, (c.get(seam) ?? 0) + 1);
+      counts.set(sym.file, c);
+    }
+    const out = new Map<string, string>();
+    for (const [file, c] of counts) out.set(file, [...c].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))[0]![0]);
+    return out;
+  })();
+  const byMajority = (sym: { id: string; file: string }): string[] => {
+    const seam = fileSeam.get(sym.file);
+    return seam !== undefined && !seams.find((s) => s.id === seam)?.exclude.includes(sym.id) ? [seam] : [];
+  };
+  for (const sym of pending) {
+    if (sym.kind === 'method' || byUse(sym.kind) || seamOf[sym.id] !== undefined || conflicts.some((c) => c.symbol === sym.id)) continue;
+    place(sym.id, byMajority(sym));
   }
   for (const sym of pending) {
     if (sym.kind !== 'method') continue;
@@ -61,7 +85,14 @@ export function assign(inv: Inventory, seams: Seam[], fork: Inventory = NO_FORK,
     return { file: fileOf.get(e.from) ?? '', line: 0 };
   };
   const positions = loadPositions(order, inv.edges.map((e) => siteOf(e).file));
-  const seamsOf = (from: string): string[] => (from.startsWith('file:') ? byFile(from.slice('file:'.length)) : seamOf[from] ? [seamOf[from]!] : []);
+  const seamsOf = (from: string): string[] => {
+    if (!from.startsWith('file:')) return seamOf[from] ? [seamOf[from]!] : [];
+    const file = from.slice('file:'.length);
+    const globbed = byFile(file);
+    if (globbed.length > 0) return globbed;
+    const seam = fileSeam.get(file);
+    return seam === undefined ? [] : [seam];
+  };
   const users = (kind: 'fires' | 'writes' | 'reads') => {
     const out = new Map<string, { seam: string; pos: number; line: number }[]>();
     for (const e of inv.edges) {
@@ -82,8 +113,12 @@ export function assign(inv: Inventory, seams: Seam[], fork: Inventory = NO_FORK,
   const writers = users('writes');
   const readers = users('reads');
   for (const sym of pending) {
-    if (isHook(sym.kind)) place(sym.id, first(firers.get(sym.id)));
-    else if (sym.kind === 'global') place(sym.id, first(writers.get(sym.id)?.length ? writers.get(sym.id) : readers.get(sym.id)));
+    let owners: string[] = [];
+    if (isHook(sym.kind)) owners = first(firers.get(sym.id));
+    else if (sym.kind === 'global') owners = first(writers.get(sym.id)?.length ? writers.get(sym.id) : readers.get(sym.id));
+    else continue;
+    if (owners.length === 0) owners = byFile(sym.file, sym.id);
+    place(sym.id, owners.length > 0 ? owners : byMajority(sym));
   }
 
   const unassigned = inv.symbols.map((s) => s.id).filter((id) => seamOf[id] === undefined && !conflicts.some((c) => c.symbol === id));

@@ -1,0 +1,11 @@
+name: "Themes and templates"
+job: "Loads themes and theme.json, resolves templates, and provides the template tags themes call."
+ported: false
+packages: [wp-theme]
+forkPackages: [wp-theme]
+files:
+  - 'wp-includes/robots-template.php'
+  - 'wp-includes/template-loader.php'
+  - 'wp-includes/theme-compat/**'
+  - 'wp-includes/view-transitions.php'
+wordpress: []

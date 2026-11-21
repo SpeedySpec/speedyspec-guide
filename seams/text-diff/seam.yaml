@@ -1,0 +1,7 @@
+name: "Text diff"
+job: "Compares texts and renders the differences."
+ported: false
+packages: [wp-text-diff]
+forkPackages: [wp-text-diff]
+files: []
+wordpress: []

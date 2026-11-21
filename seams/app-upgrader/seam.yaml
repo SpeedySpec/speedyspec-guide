@@ -1,0 +1,7 @@
+name: "Upgrader"
+job: "Downloads, unpacks and installs core, plugin, theme and language-pack updates, with the skins that report progress."
+ported: false
+packages: [wp-app-upgrader]
+forkPackages: [wp-app-upgrader]
+files: []
+wordpress: []

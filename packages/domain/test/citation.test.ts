@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { parseCitation } from '../src/index.ts';
+import { citationText, parseCitation } from '../src/index.ts';
 
 describe('parseCitation', () => {
   test('a WordPress source range', () => {
@@ -29,5 +29,12 @@ describe('parseCitation', () => {
   });
   test('a source without lines is rejected', () => {
     expect(() => parseCitation({ source: 'wp:a.php' })).toThrow();
+  });
+});
+
+describe('an example citation', () => {
+  test('names one of the guide\'s examples by id', () => {
+    expect(parseCitation({ example: 'hooks/class--WP_Filter_Sentinel/declared' })).toEqual({ kind: 'example', id: 'hooks/class--WP_Filter_Sentinel/declared' });
+    expect(citationText(parseCitation({ example: 'hooks/a/b' }))).toBe('example hooks/a/b');
   });
 });

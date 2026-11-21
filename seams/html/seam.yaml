@@ -1,0 +1,7 @@
+name: "HTML API"
+job: "Tokenizes, walks and modifies HTML through the tag processor and the HTML processor."
+ported: false
+packages: [wp-html]
+forkPackages: [wp-html]
+files: []
+wordpress: []

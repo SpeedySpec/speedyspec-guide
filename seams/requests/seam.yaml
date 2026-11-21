@@ -1,0 +1,7 @@
+name: "HTTP"
+job: "Sends HTTP requests through the Requests library and WordPress's HTTP API."
+ported: false
+packages: [wp-requests]
+forkPackages: [wp-requests]
+files: []
+wordpress: []

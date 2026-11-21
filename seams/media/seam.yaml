@@ -1,0 +1,7 @@
+name: "Media"
+job: "Stores, sizes and describes attachments, reads media metadata through getID3, and renders galleries and players."
+ported: false
+packages: [wp-media]
+forkPackages: [wp-media]
+files: []
+wordpress: []

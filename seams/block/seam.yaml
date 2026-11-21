@@ -1,0 +1,16 @@
+name: "Blocks"
+job: "Registers block types, parses and renders block markup, applies block supports, and serves block templates and patterns."
+ported: false
+packages: [wp-block]
+forkPackages: [wp-block]
+files:
+  - 'wp-includes/blocks/**'
+  - 'wp-includes/block-supports/**'
+  - 'wp-includes/class-wp-block-parser*.php'
+  - 'wp-includes/build/**'
+  - 'wp-includes/view-config.php'
+  - 'wp-includes/class-wp-view-config-data.php'
+  - 'wp-includes/icons.php'
+  - 'wp-includes/class-wp-icons-registry.php'
+  - 'wp-includes/class-wp-icon-collections-registry.php'
+wordpress: []

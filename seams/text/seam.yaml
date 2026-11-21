@@ -1,0 +1,7 @@
+name: "Formatting and kses"
+job: "Formats, escapes and sanitizes text, and filters HTML through kses."
+ported: false
+packages: [wp-text]
+forkPackages: [wp-text]
+files: []
+wordpress: []

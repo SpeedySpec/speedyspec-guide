@@ -1,0 +1,14 @@
+---
+symbol: "class:WP_Filter_Sentinel"
+verdict: "breaks"
+differences:
+  - summary: "SpeedySpec doesn't declare WP_Filter_Sentinel: WordPress declares it from plugin.php, which SpeedySpec answers natively. Code that creates one fails with an Error (found by the guide; no compat break is recorded yet)."
+---
+
+## Behaviour
+
+SpeedySpec doesn't declare the class: `class_exists( 'WP_Filter_Sentinel' )` is false on the runtime. <Ev example="hooks/class--WP_Filter_Sentinel/not-declared-on-speedyspec"/>
+
+## Porting
+
+Use a fresh `stdClass` where the class doesn't exist: any new object is unique by identity, which is all a sentinel needs. The porting example below runs on both. <Ev example="hooks/class--WP_Filter_Sentinel/porting-after"/> It is listed in [the guide's findings](https://github.com/SpeedySpec/speedyspec-guide/blob/main/docs/hooks-findings.md) for speedyspec-server.

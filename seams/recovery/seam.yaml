@@ -1,0 +1,7 @@
+name: "Recovery mode"
+job: "Detects fatal errors from extensions, emails a recovery link, and runs recovery-mode sessions."
+ported: false
+packages: [wp-recovery]
+forkPackages: [wp-recovery]
+files: []
+wordpress: []
