@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Get Design Guide',\n  1 => \n  array (\n    'readonly' => true,\n    'destructive' => false,\n    'idempotent' => true,\n  ),\n)",
+ "error": null
+}

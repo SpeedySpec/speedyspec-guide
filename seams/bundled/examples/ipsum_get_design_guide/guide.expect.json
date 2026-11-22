@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'theme',\n    1 => 'colorScheme',\n    2 => 'colors',\n    3 => 'gradients',\n    4 => 'duotone',\n    5 => 'typography',\n    6 => 'spacing',\n    7 => 'layout',\n    8 => 'guidelines',\n  ),\n  1 => \n  array (\n    'name' => 'Ipsum',\n    'stylesheet' => 'ipsum',\n  ),\n  2 => \n  array (\n    'theme' => \n    array (\n      'name' => 'Ipsum',\n      'stylesheet' => 'ipsum',\n    ),\n    'layout' => \n    array (\n      'contentSize' => '640px',\n      'wideSize' => '1280px',\n    ),\n  ),\n)",
+ "error": null
+}

@@ -3,4 +3,8 @@ job: "Holds the plugins and themes WordPress ships in wp-content."
 ported: false
 files:
   - wp-content/**
-wordpress: []
+# WordPress is booted by the setup (see boot.php); the runner needs one file to load first.
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'manrope',\n  1 => 'fira-code',\n  2 => 'Georgia, serif',\n  3 => NULL,\n)",
+ "error": null
+}
