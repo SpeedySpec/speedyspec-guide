@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_dashboard_right_now"
+---
+
+## Behaviour
+
+Prints the At a Glance widget: counts of posts, pages and comments, the WordPress version and theme, and the search engines notice. <Ev source="wp:wp-admin/includes/dashboard.php#L332-L483" hash="291111813dd663050ca8b7b172b05c8edba24ac18f6374b8d82738c3b21b39ac"/>
+
+## Override
+
+`dashboard_glance_items`, `privacy_on_link_title`, `privacy_on_link_text` filter it; `rightnow_end`, `activity_box_end` fire.
