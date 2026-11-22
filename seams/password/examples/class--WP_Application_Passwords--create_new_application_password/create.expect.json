@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "email to admin@example.org: [Guide] Application Password Created\n",
+ "return": "array (\n  0 => 24,\n  1 => \n  array (\n    0 => 'uuid',\n    1 => 'app_id',\n    2 => 'name',\n    3 => 'password',\n    4 => 'created',\n    5 => 'last_used',\n    6 => 'last_ip',\n  ),\n  2 => true,\n  3 => true,\n  4 => 'application_password_empty_name',\n)",
+ "error": null
+}
