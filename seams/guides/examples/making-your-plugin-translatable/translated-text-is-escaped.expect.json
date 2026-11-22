@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'esc_html__()' => 'Enregistré &lt;script&gt;alert(1)&lt;/script&gt;',\n  'with a value' => 'Bienvenue, Ana &lt;3 !',\n)",
+ "error": null
+}
