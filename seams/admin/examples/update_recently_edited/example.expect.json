@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'functions.php',\n  1 => 'style.css',\n  2 => '',\n)",
+ "error": null
+}

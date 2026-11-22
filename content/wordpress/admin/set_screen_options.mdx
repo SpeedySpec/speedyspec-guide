@@ -1,0 +1,11 @@
+---
+symbol: "function:set_screen_options"
+---
+
+## Behaviour
+
+Saves a Screen Options value the user submitted, such as items per page, after checking its nonce, then redirects back; does nothing when the form wasn't submitted. <Ev source="wp:wp-admin/includes/misc.php#L699-L816" hash="ef17582781727fc09073803d7b22ae90ad0fe86a6ac96a512a4d294e024a3dd8"/>
+
+## Override
+
+`set-screen-option`, `set_screen_option_{$option}` filter it.
