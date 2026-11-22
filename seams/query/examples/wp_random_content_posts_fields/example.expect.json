@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'guide_posts.ID',\n  1 => 'guide_posts.*',\n)",
+ "error": null
+}

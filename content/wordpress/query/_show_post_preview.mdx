@@ -1,0 +1,11 @@
+---
+symbol: "function:_show_post_preview"
+---
+
+## Behaviour
+
+When a preview request carries a valid nonce, hooks _set_preview into the_preview so the autosave shows; wp_die() with a 403 for a bad nonce. <Ev source="wp:wp-includes/revision.php#L899-L909" hash="d77ebec35d323a121b989bc7e257fdca058d437159f4f08d6d885940d8d5c71b"/>
+
+## Override
+
+Not overridable.

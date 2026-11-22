@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => ' AND 1=1 AND guide_posts.ID IN (2,5)',\n  1 => ' AND 1=1',\n)",
+ "error": null
+}

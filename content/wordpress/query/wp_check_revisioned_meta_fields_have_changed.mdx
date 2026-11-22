@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_check_revisioned_meta_fields_have_changed"
+---
+
+## Behaviour
+
+Hooked to wp_save_post_revision_post_has_changed: a post also counts as changed when a revisioned meta value differs from the last revision's. <Ev source="wp:wp-includes/revision.php#L615-L623" hash="9ac8ce2bd5d9e670ba7d17379fbb819cfe6dd3a04e6c0d186c24a8aed9315286"/>
+
+## Override
+
+Not overridable.

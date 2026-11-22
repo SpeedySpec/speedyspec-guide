@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'standard',\n  1 => 'aside',\n  2 => 'chat',\n  3 => 'gallery',\n  4 => 'link',\n  5 => 'image',\n  6 => 'quote',\n  7 => 'status',\n  8 => 'video',\n  9 => 'audio',\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_random_content_posts_pre_query"
+---
+
+## Behaviour
+
+Hooked to posts_pre_query while a random request runs: picks one eligible post among the sampled IDs (up to three samples), else from a cached pool of up to 1,000 eligible posts; never writes to the database. <Ev source="wp:wp-includes/query.php#L1640-L1798" hash="24ea4771c6542c83a42c88e583a9723ab090aebdde0a3fff6278814cf55fe734"/>
+
+## Override
+
+Not overridable.

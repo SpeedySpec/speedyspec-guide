@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_old_slug_redirect"
+---
+
+## Behaviour
+
+On a 404 for a post slug, redirects to the post that had that slug or date (stored as _wp_old_slug and _wp_old_date), and stops; old_slug_redirect_url filters the URL. <Ev source="wp:wp-includes/query.php#L1104-L1172" hash="404429351405f65f6fe1c150769ef70cc3cb86c14fd75bf1ca3f6687e59deee8"/>
+
+## Override
+
+`old_slug_redirect_post_id`, `old_slug_redirect_url` filter it.

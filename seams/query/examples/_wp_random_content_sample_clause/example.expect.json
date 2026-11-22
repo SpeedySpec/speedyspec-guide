@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'guide_posts.ID IN (3,7,9)'",
+ "error": null
+}

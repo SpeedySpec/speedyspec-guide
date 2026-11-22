@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_save_post_revision_on_insert"
+---
+
+## Behaviour
+
+Hooked to wp_after_insert_post: saves a revision when a post is updated, so it holds the post's terms and meta as saved. <Ev source="wp:wp-includes/revision.php#L109-L119" hash="55c0546a489ff780a657c8c064dbb28ad0e47c50c39e6a97f788e06825b78b11"/>
+
+## Override
+
+Not overridable.

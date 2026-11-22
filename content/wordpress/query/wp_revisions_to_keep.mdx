@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_revisions_to_keep"
+---
+
+## Behaviour
+
+How many revisions to keep for a post: WP_POST_REVISIONS (-1, all, by default), 0 when the type doesn't support them; filtered by wp_revisions_to_keep and `wp_{$post_type}_revisions_to_keep`. <Ev source="wp:wp-includes/revision.php#L818-L864" hash="205d13234aa77288a927a7c28d5291bacf28aec5867a0b5f9cc2b14a4fe8c526"/>
+
+## Override
+
+`wp_revisions_to_keep`, `wp_{$post->post_type}_revisions_to_keep` filter it.
