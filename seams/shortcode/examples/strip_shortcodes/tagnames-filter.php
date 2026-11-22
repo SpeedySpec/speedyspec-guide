@@ -1,7 +1,13 @@
 <?php
 // strip_shortcodes_tagnames chooses which registered tags are stripped.
-add_shortcode( 'a', fn() => 'A' );
-add_shortcode( 'b', fn() => 'B' );
+function guide_a_shortcode() {
+	return 'A';
+}
+function guide_b_shortcode() {
+	return 'B';
+}
+add_shortcode( 'a', 'guide_a_shortcode' );
+add_shortcode( 'b', 'guide_b_shortcode' );
 function guide_strip_only_a( $tags_to_remove ) {
 	return array( 'a' );
 }

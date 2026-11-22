@@ -1,6 +1,9 @@
 <?php
 // do_shortcode_tag filters the callback's output.
-add_shortcode( 'greet', fn() => 'Hello' );
+function guide_hello_shortcode() {
+	return 'Hello';
+}
+add_shortcode( 'greet', 'guide_hello_shortcode' );
 function guide_bold_shortcode_output( $output ) {
 	return "<b>$output</b>";
 }

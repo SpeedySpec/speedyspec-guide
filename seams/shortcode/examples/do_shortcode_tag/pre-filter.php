@@ -1,6 +1,10 @@
 <?php
 // A value other than false from pre_do_shortcode_tag replaces the shortcode without running its callback.
-add_shortcode( 'greet', function () { echo 'ran '; return 'Hello'; } );
+function guide_noisy_hello_shortcode() {
+	echo 'ran ';
+	return 'Hello';
+}
+add_shortcode( 'greet', 'guide_noisy_hello_shortcode' );
 function guide_skip_greet_shortcode( $return, $tag ) {
 	return 'greet' === $tag ? 'Skipped' : $return;
 }
