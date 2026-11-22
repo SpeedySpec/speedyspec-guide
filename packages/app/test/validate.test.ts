@@ -81,6 +81,21 @@ describe('guide rules', () => {
     expect(await callbackFindings("<?php\nadd_shortcode( 'x', 'guide_x_shortcode' );\n")).toEqual([]);
   });
 
+  test('example_new_object_and_first_class_callables_fail', async () => {
+    expect(await callbackFindings("<?php\nadd_action( 'x', new Guide_Invokable() );\n")).toHaveLength(1);
+    expect(await callbackFindings("<?php\nadd_filter( 'x', guide_up(...) );\n")).toHaveLength(1);
+    expect(await callbackFindings("<?php\nadd_filter( 'x', $kept->up( ... ) );\n")).toHaveLength(1);
+    expect(await callbackFindings("<?php\nadd_filter( 'x', Closure::fromCallable( 'guide_up' ) );\n")).toHaveLength(1);
+  });
+
+  test('example_comments_and_strings_are_not_code', async () => {
+    expect(await callbackFindings("<?php\nadd_filter(\n\t'x', // it's the hook\n\t'guide_up'\n);\n")).toEqual([]);
+    expect(await callbackFindings("<?php\n// Don't write add_filter( 'x', fn() => 1 ); like this.\nadd_filter( 'x', 'guide_up' );\n")).toEqual([]);
+    expect(await callbackFindings("<?php\n/* add_action( 'x', function () {} ); */\nadd_action( 'x', 'guide_up' );\n")).toEqual([]);
+    expect(await callbackFindings("<?php\n$doc = <<<'PHP'\nadd_filter( 'x', fn() => 1 );\nPHP;\nadd_filter( 'x', 'guide_up' );\n")).toEqual([]);
+    expect(await callbackFindings("<?php\n$doc = <<<EOT\nadd_filter( 'x', fn() => 1 );\nEOT;\nadd_filter( 'y', fn() => 2 );\n")).toHaveLength(1);
+  });
+
   test('example_named_callback_passes', async () => {
     expect(await callbackFindings("<?php\nadd_filter( 'x', 'guide_up' );\nadd_filter( 'x', array( $kept, 'm' ), 10, 2 );\n$hook->add_filter( 'x', 'trim', 10, 1 );\n")).toEqual([]);
   });

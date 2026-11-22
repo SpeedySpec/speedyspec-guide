@@ -263,8 +263,54 @@ export const SeamSymbolsExist: Rule = {
 
 /** The PHP calls that add a callback: `add_filter(`, `add_action(`, `add_shortcode(` and `WP_Hook`'s `->add_filter(`. */
 const ADDS_CALLBACK = /(?:\badd_(?:filter|action|shortcode)|->add_filter)\s*\(/g;
-/** A callback argument nothing can name again: a closure, an arrow function or a method of a new object. */
-const UNREMOVABLE = /^(?:static\s+)?(?:function\b|fn\b)|^array\s*\(\s*new\b|^\[\s*new\b/;
+/**
+ * A callback argument nothing can name again: a closure or arrow function, a new object or a method of one, a closure
+ *  made by Closure::fromCallable(), or a first-class callable `f(...)`, which makes a new closure each time.
+ */
+const UNREMOVABLE = /^(?:static\s+)?(?:function\b|fn\b)|^(?:array\s*\(|\[)?\s*new\b|^\\?Closure::fromCallable\b|\(\s*\.\.\.\s*\)$/;
+
+/**
+ * PHP source reduced to its code: comments removed and every string literal (quoted, heredoc or nowdoc) emptied, its
+ *  quotes kept, so text inside them is never read as a call.
+ */
+export function phpCodeOnly(code: string): string {
+  let out = '';
+  let i = 0;
+  while (i < code.length) {
+    const ch = code[i]!;
+    const two = code.slice(i, i + 2);
+    if (two === '//' || (ch === '#' && code[i + 1] !== '[')) {
+      const end = code.indexOf('\n', i);
+      i = end < 0 ? code.length : end;
+      continue;
+    }
+    if (two === '/*') {
+      const end = code.indexOf('*/', i + 2);
+      i = end < 0 ? code.length : end + 2;
+      out += ' ';
+      continue;
+    }
+    const doc = /^<<<[ \t]*(['"]?)([A-Za-z_][A-Za-z0-9_]*)\1\r?\n/.exec(code.slice(i, i + 80));
+    if (doc) {
+      const close = new RegExp(`^[ \\t]*${doc[2]}\\b`, 'm');
+      const rest = code.slice(i + doc[0].length);
+      const m = close.exec(rest);
+      out += "''";
+      i = m ? i + doc[0].length + m.index + m[0].length : code.length;
+      continue;
+    }
+    if (ch === "'" || ch === '"') {
+      let j = i + 1;
+      while (j < code.length && code[j] !== ch) j += code[j] === '\\' ? 2 : 1;
+      out += ch + ch;
+      i = j + 1;
+      continue;
+    }
+    out += ch;
+    i++;
+  }
+  return out;
+}
 /** Marks an example whose point is an unremovable callback, such as one showing why not to add one. */
 const DELIBERATE = '// guide: closure on purpose';
 
@@ -302,8 +348,9 @@ export const ExampleCallbackRemovable: Rule = {
   id: 'ExampleCallbackRemovable',
   async check(ctx) {
     const f: Failure[] = [];
-    for (const { id, code } of ctx.declaredExamples) {
-      if (code === undefined || code.includes(DELIBERATE)) continue;
+    for (const { id, code: source } of ctx.declaredExamples) {
+      if (source === undefined || source.includes(DELIBERATE)) continue;
+      const code = phpCodeOnly(source);
       const bad = [...code.matchAll(ADDS_CALLBACK)].some((m) => {
         const arg = secondArgument(code, m.index! + m[0].length);
         return arg !== null && UNREMOVABLE.test(arg);
