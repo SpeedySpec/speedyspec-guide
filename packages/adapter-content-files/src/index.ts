@@ -14,11 +14,28 @@ function attrs(text: string): Record<string, string> {
 /**
  * The text with its fenced code blocks and inline code spans removed, so a tag shown as code (`<Ev …/>` written out in
  *  a guide that explains it) is never read as a real one.
+ *
+ *  A fence is three or more backticks or tildes at any indent (list items indent theirs), and only a line holding just
+ *  a fence of the same character, at least as long, closes it. An inline span starts at a backtick that isn't escaped
+ *  and ends at the next run of as many, within its paragraph.
  */
 export function withoutCode(text: string): string {
-  return text
-    .replace(/^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[^\n]*$/gm, '')
-    .replace(/(`+)(?!`)(?:(?!\n\s*\n)[\s\S])*?[^`]\1(?!`)/g, '');
+  const kept: string[] = [];
+  let fence: { char: string; length: number } | null = null;
+  for (const line of text.split('\n')) {
+    if (fence) {
+      const close = /^\s*([`~]+)\s*$/.exec(line);
+      if (close && close[1]![0] === fence.char && close[1]!.length >= fence.length && !close[1]!.includes(fence.char === '`' ? '~' : '`')) fence = null;
+      continue;
+    }
+    const open = /^\s*(`{3,}|~{3,})/.exec(line);
+    if (open) {
+      fence = { char: open[1]![0]!, length: open[1]!.length };
+      continue;
+    }
+    kept.push(line);
+  }
+  return kept.join('\n').replace(/(?<!\\)(`+)(?!`)(?:(?!\n\s*\n)[\s\S])*?[^`]\1(?!`)/g, '');
 }
 
 /** Pages under `content/wordpress/<seam>/` and `content/speedyspec/<seam>/`, read from MDX files. */

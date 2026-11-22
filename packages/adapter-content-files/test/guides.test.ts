@@ -56,6 +56,16 @@ describe('GuideFiles', () => {
     expect(guide!.citations).toEqual([]);
   });
 
+  test('test_code_edge_cases_are_skipped_without_hiding_real_tags', async () => {
+    const [guide] = await new GuideFiles(content({
+      'guides/path/01-edges.mdx': front('Edges')
+        + '````md\n```php\n<Sym id="function:inside_fence" />\n```\n````\n\n'
+        + '1. A step:\n\n   ```php\n   <Sym id="function:indented_fence" />\n   ```\n\n'
+        + 'An escaped \\` backtick, then a real <Sym id="function:get_option" />, and `code`.\n',
+    })).guides();
+    expect(guide!.symbols).toEqual(['function:get_option']);
+  });
+
   test('test_speedyspec_note_ids_are_symbols', async () => {
     const [guide] = await new GuideFiles(content({
       'guides/path/01-first.mdx': front('First') + 'It works there too. <OnSpeedySpecNote id="function:add_filter" />\n',
