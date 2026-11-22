@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'id' => 'my-plugin',\n  'label' => 'My Plugin',\n  'to' => '/my-plugin',\n  'parent' => 'tools',\n  'parent_type' => 'dropdown',\n)",
+ "error": null
+}

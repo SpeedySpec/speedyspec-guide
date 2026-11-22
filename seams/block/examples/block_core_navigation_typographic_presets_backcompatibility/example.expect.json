@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'fontWeight' => '700',\n  'textDecoration' => 'line-through',\n)",
+ "error": null
+}

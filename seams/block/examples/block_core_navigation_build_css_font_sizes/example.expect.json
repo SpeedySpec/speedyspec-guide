@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'css_classes' => \n  array (\n    0 => 'has-medium-font-size',\n  ),\n  'inline_styles' => '',\n)",
+ "error": null
+}

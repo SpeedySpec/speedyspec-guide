@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'css_classes' => \n  array (\n    0 => 'has-text-color',\n    1 => 'has-contrast-color',\n  ),\n  'inline_styles' => '',\n  'overlay_css_classes' => \n  array (\n    0 => 'has-background',\n    1 => 'has-base-background-color',\n  ),\n  'overlay_inline_styles' => '',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'color:#ffffff;background-color:#000000;'",
+ "error": null
+}

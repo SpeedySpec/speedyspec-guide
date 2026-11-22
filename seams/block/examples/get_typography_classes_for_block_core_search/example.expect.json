@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'has-large-font-size has-heading-font-family'",
+ "error": null
+}

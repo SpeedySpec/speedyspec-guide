@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'get_entity_view_config_posttype_page'",
+ "error": null
+}

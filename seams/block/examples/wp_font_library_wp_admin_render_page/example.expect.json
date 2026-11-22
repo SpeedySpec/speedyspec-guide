@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "' <div class=\"wrap hide-if-js\"> <h1 class=\"wp-heading-inline\"></h1> <div class=\"notice notice-error\"><p>This screen requires JavaScript. Enable JavaScript in your browser settings and reload the page.</p></div> </div> <div id=\"font-library-wp-admin-app\" class=\"boot-layout-container\"></div>'",
+ "error": null
+}

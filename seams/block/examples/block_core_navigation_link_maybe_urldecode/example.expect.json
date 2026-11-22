@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'https://example.org/caf%C3%A9/',\n  1 => 'https://example.org/caf\u00e9/',\n)",
+ "error": null
+}

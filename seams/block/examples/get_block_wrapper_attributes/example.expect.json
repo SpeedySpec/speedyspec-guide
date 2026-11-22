@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"wp-block-guide-box has-background has-contrast-background-color\" id=\"box\">Box</div>'",
+ "error": null
+}
