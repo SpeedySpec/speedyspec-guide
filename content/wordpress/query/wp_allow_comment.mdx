@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_allow_comment"
+---
+
+## Behaviour
+
+Decides a new comment's approval: an error or wp_die() for a duplicate, flooding or disallowed words; 1, 0 or spam from the moderation checks; filtered by pre_comment_approved. <Ev source="wp:wp-includes/comment.php#L768-L891" hash="21ef46cd57fc26ee7959c698c46c94ab46217357852803a8c7ef84313b3592d0"/>
+
+## Override
+
+`duplicate_comment_id`, `comment_duplicate_message`, `wp_is_comment_flood`, `comment_flood_message` filter it; `comment_duplicate_trigger`, `check_comment_flood` fire.

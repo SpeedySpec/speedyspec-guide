@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'approved' => 1,\n  'awaiting_moderation' => 0,\n  'spam' => 1,\n  'trash' => 0,\n  'post-trashed' => 0,\n  'all' => 1,\n  'total_comments' => 2,\n)",
+ "error": null
+}

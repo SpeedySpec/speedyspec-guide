@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_handle_comment_submission"
+---
+
+## Behaviour
+
+Handles a comment form submission: checks the post is open and readable, the fields required and their lengths, then wp_new_comment(); the comment or an error. <Ev source="wp:wp-includes/comment.php#L4051-L4272" hash="4c0ac6cd4466394654a1f31527363320d907a5826b50f38ad03d72aa59c21bc8"/>
+
+## Override
+
+`allow_empty_comment` filters it; `comment_reply_to_unapproved_comment`, `comment_id_not_found`, `comment_closed`, `comment_on_trash`, `comment_on_draft`, `comment_on_password_protected`, `pre_comment_on_post` fire.

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_notify_note_mentions"
+---
+
+## Behaviour
+
+Hooked to rest_insert_comment: when a note is created, emails each mentioned user who can see it, except its author and the post author. <Ev source="wp:wp-includes/comment.php#L2758-L2815" hash="4722c12cdcb608732359a45caaff8d8c5a603bfde787997fd1e801ef17cd9cdd"/>
+
+## Override
+
+Not overridable.

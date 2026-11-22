@@ -1,0 +1,11 @@
+---
+symbol: "function:_close_comments_for_old_post"
+---
+
+## Behaviour
+
+Hooked to comments_open and pings_open: false for posts older than close_comments_days_old when close_comments_for_old_posts is on. <Ev source="wp:wp-includes/comment.php#L3996-L4028" hash="40c2f1f9506a748eac384b5ca1ee1645b954db4bda5007466306b039df66f03b"/>
+
+## Override
+
+`close_comments_for_post_types` filters it.

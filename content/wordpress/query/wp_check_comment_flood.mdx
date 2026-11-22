@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_check_comment_flood"
+---
+
+## Behaviour
+
+Whether a commenter's new comment comes too soon after their last (15 seconds by default, comment_flood_filter); users who can moderate are never flooding. <Ev source="wp:wp-includes/comment.php#L925-L1005" hash="b6092c8419752cf7d0917bc73b5bedb5a56f024ee13393f70dd3e4feb4decbb0"/>
+
+## Override
+
+`comment_flood_filter`, `comment_flood_message` filter it; `comment_flood_trigger` fires.

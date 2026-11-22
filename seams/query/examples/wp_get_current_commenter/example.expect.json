@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'comment_author' => 'Ada',\n  'comment_author_email' => 'ada@example.org',\n  'comment_author_url' => '',\n)",
+ "error": null
+}

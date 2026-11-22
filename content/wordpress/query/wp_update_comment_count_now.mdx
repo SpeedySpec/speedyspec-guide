@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_update_comment_count_now"
+---
+
+## Behaviour
+
+Recounts a post's approved comments and stores the count; fires wp_update_comment_count. <Ev source="wp:wp-includes/comment.php#L3219-L3278" hash="e2d8a82d512d978bba83ea1f157b6c845fa21764ccb08511247482bfb66b7f50"/>
+
+## Override
+
+`pre_wp_update_comment_count_now` filters it; `wp_update_comment_count`, `edit_post_{$post->post_type}`, `edit_post` fire.

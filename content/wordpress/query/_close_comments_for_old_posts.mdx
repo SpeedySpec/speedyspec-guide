@@ -1,0 +1,11 @@
+---
+symbol: "function:_close_comments_for_old_posts"
+---
+
+## Behaviour
+
+Hooked to the_posts: on a single view, shows comments and pings closed on posts older than close_comments_days_old when close_comments_for_old_posts is on. <Ev source="wp:wp-includes/comment.php#L3956-L3984" hash="696e19f8c6bba75f5fce761a3ac699dafb82262365d4a58def291a8c854dc11d"/>
+
+## Override
+
+`close_comments_for_post_types` filters it.

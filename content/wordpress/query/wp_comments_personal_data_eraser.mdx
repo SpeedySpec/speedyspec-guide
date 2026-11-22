@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_comments_personal_data_eraser"
+---
+
+## Behaviour
+
+Anonymizes the comments left with an email for a privacy request, 500 a page: author Anonymous, email, URL, IP and agent cleared. <Ev source="wp:wp-includes/comment.php#L4424-L4515" hash="77dbca4209cf8cd42d4f4c4229183046f1cac510cbc070570305b66def4793db"/>
+
+## Override
+
+`wp_anonymize_comment` filters it.

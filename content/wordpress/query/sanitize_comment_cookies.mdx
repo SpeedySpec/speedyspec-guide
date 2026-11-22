@@ -1,0 +1,11 @@
+---
+symbol: "function:sanitize_comment_cookies"
+---
+
+## Behaviour
+
+Sanitizes the commenter cookies of the request in place, through the pre_comment_author_* filters. <Ev source="wp:wp-includes/comment.php#L695-L748" hash="d4b333973bdf668b9a43ed234c7a821a177f5a6debeb1821ba39ceac76884965"/>
+
+## Override
+
+`pre_comment_author_name`, `pre_comment_author_email`, `pre_comment_author_url` filter it.

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_check_comment_data"
+---
+
+## Behaviour
+
+Decides a comment's approval from the moderation and disallowed checks only: 1, 0, spam or trash; used when a comment is edited. <Ev source="wp:wp-includes/comment.php#L1366-L1422" hash="82657da4d4ca70ade6aa5cce9075bbb93edd6080c3a53a3b9d2d4ad4354d1edf"/>
+
+## Override
+
+`pre_comment_approved` filters it.
