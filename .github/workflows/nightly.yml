@@ -61,6 +61,12 @@ jobs:
         with:
           toolchain: "1.99"
 
+      # ubuntu-latest ships clang 20, 21 and 22. bindgen (ext-php-rs) loads the newest libclang, 22, but takes its
+      # builtin headers from the default clang, 21, whose SSE intrinsics call builtins that clang 22 removed. Point
+      # bindgen at the libclang of the default clang so the two agree.
+      - name: Use the libclang that matches clang
+        run: echo "LIBCLANG_PATH=$(dirname "$(dirname "$(clang -print-resource-dir)")")" >> "$GITHUB_ENV"
+
       - name: Cache the runner build
         uses: actions/cache@v4
         with:
