@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"https://ada.example\" rel=\"external\">Website</a>'",
+ "error": null
+}

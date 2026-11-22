@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'[<a href=\"mailto:ada@example.org\">Email</a>]'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'News \u00bb Local \u00bb '",
+ "error": null
+}

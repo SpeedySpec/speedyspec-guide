@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a rel=\"nofollow\" class=\"comment-reply-link\" href=\"http://example.org/?p=1&#038;replytocom=1#respond\" data-commentid=\"1\" data-postid=\"1\" data-belowelement=\"comment-1\" data-respondelement=\"respond\" data-replyto=\"Reply to Ada\" aria-label=\"Reply to Ada\">Reply</a>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"http://example.org/?tag=blue\" class=\"tag-cloud-link tag-link-5 tag-link-position-1\" style=\"font-size: 8pt;\" aria-label=\"blue (1 item)\">blue</a>\n<a href=\"http://example.org/?tag=red\" class=\"tag-cloud-link tag-link-4 tag-link-position-2\" style=\"font-size: 8pt;\" aria-label=\"red (1 item)\">red</a>'",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:comment_form"
+---
+
+## Behaviour
+
+Prints the comment form: its fields (author, email, url, cookies consent), textarea, notes and submit button, or a log in prompt, with comment_form_before/after and many filters. <Ev source="wp:wp-includes/comment-template.php#L2524-L2942" hash="d45711927ea44da2cf86dd87593360e64763be9c23c159f07701431273696e52"/>
+
+## Override
+
+`comment_form_default_fields`, `the_permalink`, `comment_form_defaults`, `comment_form_logged_in`, `comment_form_fields`, `comment_form_field_comment`, `comment_form_field_{$name}`, `comment_form_submit_button`, `comment_form_submit_field` filter it; `comment_form_comments_closed`, `comment_form_before`, `comment_form_must_log_in_after`, `comment_form_top`, `comment_form_logged_in_after`, `comment_form_before_fields`, `comment_form_after_fields`, `comment_form`, `comment_form_after` fire.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'News > Local > ',\n  1 => '<a href=\"http://example.org/?cat=2\">News</a> / <a href=\"http://example.org/?cat=3\">Local</a> / ',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"https://ada.example\" class=\"url\" rel=\"ugc external nofollow\">Ada</a>'",
+ "error": null
+}

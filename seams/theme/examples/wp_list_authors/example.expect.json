@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<li><a href=\"http://example.org/?author=1\">Admin</a> (1)</li>'",
+ "error": null
+}
