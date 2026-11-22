@@ -1,4 +1,4 @@
-import { type Citation, citationText } from '@speedyspec-guide/domain';
+import { type Citation, citationText, type Guide } from '@speedyspec-guide/domain';
 import { exampleFailures } from '../examples.ts';
 import type { Failure, Rule, ValidationContext } from './rule.ts';
 
@@ -252,6 +252,56 @@ export const SeamSymbolsExist: Rule = {
         // Without the runtime's inventory, SpeedySpec's own ids can't be checked.
         if (runtime === null ? id.slice(id.indexOf(':') + 1).startsWith('SpeedySpec\\') : runtime.has(id)) continue;
         f.push({ rule: this.id, where: `seams/${seam.id}/seam.yaml`, message: `lists ${id}, which neither WordPress nor the runtime has` });
+      }
+    }
+    return f;
+  },
+};
+
+/** Every example a guide embeds is an example file. Whether it ran and passed is ExampleHasRun's to say. */
+export const GuideExampleExists: Rule = {
+  id: 'GuideExampleExists',
+  async check(ctx) {
+    const known = new Set(ctx.declaredExamples.map((e) => e.id));
+    return ctx.guides.flatMap((g) => g.examples.filter((id) => !known.has(id)).map((id) => ({ rule: this.id, where: g.file, message: `embeds ${id}, which is no example` })));
+  },
+};
+
+/** Every symbol a guide links is a WordPress symbol, or a SpeedySpec one when the runtime's are known. */
+export const GuideSymbolResolves: Rule = {
+  id: 'GuideSymbolResolves',
+  async check(ctx) {
+    const known = new Set([...ctx.inventory.symbols.map((s) => s.id), ...(ctx.runtimeIds ?? [])]);
+    return ctx.guides.flatMap((g) => g.symbols.filter((id) => !known.has(id)).map((id) => ({ rule: this.id, where: g.file, message: `links ${id}, which is no symbol` })));
+  },
+};
+
+/** A topic guide explains a seam that exists. */
+export const GuideTopicSeamExists: Rule = {
+  id: 'GuideTopicSeamExists',
+  async check(ctx) {
+    const seams = new Set(ctx.seams.map((s) => s.id));
+    return ctx.guides
+      .filter((g) => g.kind === 'topic' && !seams.has(g.seam ?? ''))
+      .map((g) => ({ rule: this.id, where: g.file, message: `is a topic guide for ${g.seam}, which is no seam` }));
+  },
+};
+
+/** A guide has a title and a summary; a numbered track's files have an nn- prefix and no two share a number. */
+export const GuideFrontAndOrder: Rule = {
+  id: 'GuideFrontAndOrder',
+  async check(ctx) {
+    const track = (g: Guide) => `${g.kind}/${g.part ?? ''}`;
+    const f: Failure[] = [];
+    for (const g of ctx.guides) {
+      if (g.title === '' || g.summary === '') f.push({ rule: this.id, where: g.file, message: 'needs a title and a summary' });
+      if (g.kind === 'topic') continue;
+      if (g.order === undefined) {
+        f.push({ rule: this.id, where: g.file, message: 'needs an nn- number prefix' });
+        continue;
+      }
+      for (const other of ctx.guides) {
+        if (other !== g && track(other) === track(g) && other.order === g.order) f.push({ rule: this.id, where: g.file, message: `shares number ${g.order} with ${other.file}` });
       }
     }
     return f;

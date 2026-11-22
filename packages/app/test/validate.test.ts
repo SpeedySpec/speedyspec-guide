@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import type { EvidenceSource } from '@speedyspec-guide/contracts';
-import type { Assignment, Inventory, Seam } from '@speedyspec-guide/domain';
+import type { Assignment, Guide, Inventory, Seam } from '@speedyspec-guide/domain';
 import { ContentFiles } from '../../adapter-content-files/src/index.ts';
 import { ALL_RULES, runRules } from '../src/validate/run.ts';
 import type { ValidationContext } from '../src/validate/rule.ts';
@@ -50,11 +50,55 @@ async function ctx(pages: Record<string, string>, over: Partial<ValidationContex
     evidenceIndex: {},
     runtimeIds: null,
     crossSeam: [],
+    guides: [],
     ...over,
   };
 }
 
 const rulesOf = async (c: ValidationContext) => (await runRules(ALL_RULES, c)).map((f) => f.rule);
+
+const guide = (over: Partial<Guide>): Guide => ({ file: 'guides/path/01-first.mdx', kind: 'path', slug: 'first', order: 1, title: 'First', summary: 'S.', examples: [], symbols: [], ...over });
+const withSymbol: Inventory = { ...inventory, symbols: [{ id: 'function:get_option', kind: 'function', name: 'get_option', file: 'wp-includes/option.php', line: 1 } as Inventory['symbols'][number]] };
+
+describe('guide rules', () => {
+  test('guide_rules_pass_for_good_guides', async () => {
+    const guides = [guide({ examples: ['hooks/add_filter/a'], symbols: ['function:get_option'] }), guide({ file: 'guides/topics/hooks.mdx', kind: 'topic', slug: 'hooks', seam: 'hooks', order: undefined })];
+    expect(await rulesOf(await ctx({}, { guides, inventory: withSymbol, declaredExamples: [{ id: 'hooks/add_filter/a', sides: ['wordpress'] }], examples: { results: [], problems: [], declared: [] } }))).not.toContain('GuideExampleExists');
+    const f = await runRules(ALL_RULES, await ctx({}, { guides, inventory: withSymbol, declaredExamples: [{ id: 'hooks/add_filter/a', sides: ['wordpress'] }] }));
+    expect(f.filter((x) => x.rule.startsWith('Guide'))).toEqual([]);
+  });
+
+  test('guide_example_exists_reports_missing_ids', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { guides: [guide({ examples: ['options/nope/x'] })] }));
+    expect(f.filter((x) => x.rule === 'GuideExampleExists')).toEqual([{ rule: 'GuideExampleExists', where: 'guides/path/01-first.mdx', message: 'embeds options/nope/x, which is no example' }]);
+  });
+
+  test('guide_symbol_resolves_reports_unknown_ids', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { inventory: withSymbol, guides: [guide({ symbols: ['function:get_option', 'function:nope'] })] }));
+    expect(f.filter((x) => x.rule === 'GuideSymbolResolves')).toEqual([{ rule: 'GuideSymbolResolves', where: 'guides/path/01-first.mdx', message: 'links function:nope, which is no symbol' }]);
+  });
+
+  test('guide_topic_seam_exists', async () => {
+    const f = await runRules(ALL_RULES, await ctx({}, { guides: [guide({ file: 'guides/topics/nope.mdx', kind: 'topic', slug: 'nope', seam: 'nope', order: undefined })] }));
+    expect(f.filter((x) => x.rule === 'GuideTopicSeamExists')).toEqual([{ rule: 'GuideTopicSeamExists', where: 'guides/topics/nope.mdx', message: 'is a topic guide for nope, which is no seam' }]);
+  });
+
+  test('guide_front_and_order_reports_duplicates_on_both', async () => {
+    const guides = [
+      guide({}),
+      guide({ file: 'guides/path/01-again.mdx', slug: 'again' }),
+      guide({ file: 'guides/path/plain.mdx', slug: 'plain', order: undefined, title: '' }),
+      guide({ file: 'guides/contributing/wordpress/01-change.mdx', kind: 'contributing', part: 'wordpress', slug: 'change' }),
+    ];
+    const f = (await runRules(ALL_RULES, await ctx({}, { guides }))).filter((x) => x.rule === 'GuideFrontAndOrder');
+    expect(f).toEqual([
+      { rule: 'GuideFrontAndOrder', where: 'guides/path/01-first.mdx', message: 'shares number 1 with guides/path/01-again.mdx' },
+      { rule: 'GuideFrontAndOrder', where: 'guides/path/01-again.mdx', message: 'shares number 1 with guides/path/01-first.mdx' },
+      { rule: 'GuideFrontAndOrder', where: 'guides/path/plain.mdx', message: 'needs a title and a summary' },
+      { rule: 'GuideFrontAndOrder', where: 'guides/path/plain.mdx', message: 'needs an nn- number prefix' },
+    ]);
+  });
+});
 
 describe('rules', () => {
   test('a clean page passes', async () => {

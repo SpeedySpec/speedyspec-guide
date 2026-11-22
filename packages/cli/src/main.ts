@@ -6,7 +6,7 @@
  * GUIDE_SERVER_DIR. Composition root.
  */
 import { CompatFilesEvidence } from '@speedyspec-guide/adapter-compat-files-evidence';
-import { ContentFiles } from '@speedyspec-guide/adapter-content-files';
+import { ContentFiles, GuideFiles } from '@speedyspec-guide/adapter-content-files';
 import { ExampleFiles } from '@speedyspec-guide/adapter-example-files';
 import { RunnerCrate } from '@speedyspec-guide/adapter-runner-crate';
 import { GitTagHistory } from '@speedyspec-guide/adapter-git-tag-history';
@@ -88,6 +88,7 @@ async function main(argv: string[]): Promise<number> {
     wordpressFile: async (rel: string) => Bun.file(join(await wordpressDir(), rel)).text(),
     evidence: async () => new CompatFilesEvidence(await serverDir(), await wordpressDir()),
     content: new ContentFiles(join(root, 'content')),
+    guides: new GuideFiles(join(root, 'content')),
     crates: {
       manifests: async () => {
         const dir = join(await serverDir(), 'crates');
