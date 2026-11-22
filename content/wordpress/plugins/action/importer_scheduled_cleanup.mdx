@@ -1,0 +1,7 @@
+---
+symbol: "action:importer_scheduled_cleanup"
+---
+
+## Behaviour
+
+The cron event an importer schedules a day after an upload; WordPress attaches `wp_delete_attachment()`, which deletes the uploaded file. <Ev source="wp:wp-includes/default-filters.php#L473-L473" hash="d51846c7db82f62bcb81fcc8cd9630dc2b909e7e183cd406e15c03a808b3d2b3"/>

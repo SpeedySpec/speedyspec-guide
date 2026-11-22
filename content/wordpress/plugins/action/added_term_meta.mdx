@@ -1,0 +1,7 @@
+---
+symbol: "action:added_term_meta"
+---
+
+## Behaviour
+
+Fired by `add_metadata()` after term meta is added; WordPress attaches `wp_cache_set_terms_last_changed()`, so cached term queries go stale. <Ev source="wp:wp-includes/default-filters.php#L138-L138" hash="265f2023172d42ff053b3512f5bb2951c3b43bb4084ff66cd1fd705936f5958e"/>

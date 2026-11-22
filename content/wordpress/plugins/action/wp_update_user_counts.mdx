@@ -1,0 +1,7 @@
+---
+symbol: "action:wp_update_user_counts"
+---
+
+## Behaviour
+
+The twice-daily cron event for the user count; WordPress attaches `wp_schedule_update_user_counts()`, which schedules it on the main site when it isn't. Multisite removes that. <Ev source="wp:wp-includes/default-filters.php#L119-L119" hash="c5aa291e3ed3b6f61aaa541d137c39c43410c4a8138184f0b26d0c5cb43cd5ea"/>

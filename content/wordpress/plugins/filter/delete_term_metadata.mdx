@@ -1,0 +1,7 @@
+---
+symbol: "filter:delete_term_metadata"
+---
+
+## Behaviour
+
+Fired by `delete_metadata()` before term meta is deleted; WordPress attaches `wp_check_term_meta_support_prefilter()`, which refuses it before database version 34370. <Ev source="wp:wp-includes/default-filters.php#L144-L144" hash="e948bd597035ebff2395b3a9d518eca3f6f37d42f342de81266c37a5f8caf672"/>

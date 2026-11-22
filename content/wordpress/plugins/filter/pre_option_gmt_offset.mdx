@@ -1,0 +1,7 @@
+---
+symbol: "filter:pre_option_gmt_offset"
+---
+
+## Behaviour
+
+Fired by `get_option()` (as `pre_option_{$option}`) before the GMT offset is read; WordPress attaches `wp_timezone_override_offset()`, which answers with the current offset of the `timezone_string` option when one is set. <Ev source="wp:wp-includes/default-filters.php#L513-L513" hash="4eb20cf42616a43f0b294a26a258e28259200e5ae472534dc95e82de505b220a"/>

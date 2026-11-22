@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Plugin_Dependencies::sanitize_dependency_slugs"
+---
+
+Splits a `Requires Plugins` header at commas, trims each slug and passes it through `wp_plugin_dependencies_slug`, keeps the valid ones (lowercase letters and digits joined by single hyphens), and sorts them without duplicates. <Ev source="wp:wp-includes/class-wp-plugin-dependencies.php#L579-L607" hash="9fcaeeb93ca4409cf545d2b83076ceef814385d22910a40070a95ca5595c7805"/>

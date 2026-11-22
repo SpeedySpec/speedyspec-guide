@@ -1,0 +1,7 @@
+---
+symbol: "filter:theme_wp_navigation_templates"
+---
+
+## Behaviour
+
+Fired by `WP_Theme::get_page_templates()` (as `theme_{$post_type}_templates`) for Navigation posts; WordPress attaches `__return_empty_array`, so they have no templates. <Ev source="wp:wp-includes/default-filters.php#L696-L696" hash="d7492258c0145daa6c864f086d0a57c8c94876ba3c829ad53842ae68544b7ab4"/>

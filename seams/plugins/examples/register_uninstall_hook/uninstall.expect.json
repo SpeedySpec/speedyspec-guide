@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "doing_it_wrong_run register_uninstall_hook\n",
+ "return": "array (\n  0 => false,\n  'shop/shop.php' => 'guide_uninstall',\n  'payments/payments.php' => \n  array (\n    0 => 'Guide_Payments',\n    1 => 'uninstall',\n  ),\n)",
+ "error": null
+}

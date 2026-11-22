@@ -1,0 +1,7 @@
+---
+symbol: "filter:rest_pre_insert_wp_template"
+---
+
+## Behaviour
+
+Fired by the REST posts controller (as `rest_pre_insert_{$post_type}`) before a template is saved; WordPress attaches `inject_ignored_hooked_blocks_metadata_attributes()`, which records the hooked blocks the user removed. <Ev source="wp:wp-includes/default-filters.php#L841-L841" hash="a9b594f36a1cc2e295ebb560d188b5adb1cbcc017791b27a0b5f46f750dc8dfc"/>

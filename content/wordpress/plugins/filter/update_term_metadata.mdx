@@ -1,0 +1,7 @@
+---
+symbol: "filter:update_term_metadata"
+---
+
+## Behaviour
+
+Fired by `update_metadata()` before term meta is updated; WordPress attaches `wp_check_term_meta_support_prefilter()`, which refuses it before database version 34370. <Ev source="wp:wp-includes/default-filters.php#L143-L143" hash="ce8bb5b95b7f87e156f101e3cb18613941448d349106549f82b14743b9b6c0e9"/>

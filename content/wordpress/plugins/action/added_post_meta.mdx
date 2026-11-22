@@ -1,0 +1,7 @@
+---
+symbol: "action:added_post_meta"
+---
+
+## Behaviour
+
+Fired by `add_metadata()` (as `added_{$meta_type}_meta`) after post meta is added; WordPress attaches `wp_cache_set_posts_last_changed()`, so cached post queries go stale. <Ev source="wp:wp-includes/default-filters.php#L125-L125" hash="d6120e5cab7405df971354a51bc58b76fcc6dff755b7bc8c052f43a1e2470e95"/>

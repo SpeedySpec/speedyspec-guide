@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_register_plugin_realpath"
+---
+
+## Behaviour
+
+Records a plugin folder whose real path differs (a symlink) in `wp_plugin_paths`, so `plugin_basename()` can map its files back. Returns `false` for a file directly in the plugins or must-use plugins folder, else `true`. <Ev source="wp:wp-includes/plugin.php#L827-L850" hash="65e1f3435626ff20e6791f58bdd7c05ebb8131f0de399440d7a6e896ef1522b9"/>
+
+## Override
+
+Not overridable.

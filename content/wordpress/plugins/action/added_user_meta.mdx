@@ -1,0 +1,7 @@
+---
+symbol: "action:added_user_meta"
+---
+
+## Behaviour
+
+Fired by `add_metadata()` after user meta is added; WordPress attaches `wp_cache_set_users_last_changed()`, so cached user queries go stale. <Ev source="wp:wp-includes/default-filters.php#L130-L130" hash="156e00bdeb930439ed2d2463f3bbb055c463ca4a0b6b563ae406a2f4f68dcf80"/>

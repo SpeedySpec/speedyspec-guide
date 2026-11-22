@@ -1,0 +1,7 @@
+---
+symbol: "action:added_comment_meta"
+---
+
+## Behaviour
+
+Fired by `add_metadata()` after comment meta is added; WordPress attaches `wp_cache_set_comments_last_changed()`, so cached comment queries go stale. <Ev source="wp:wp-includes/default-filters.php#L151-L151" hash="c66f81677bede1b9cee1ca45a99810d5c412fd6cb831f4af15a137ad47e6eec5"/>

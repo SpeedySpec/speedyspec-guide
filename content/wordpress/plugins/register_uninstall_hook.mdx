@@ -1,0 +1,11 @@
+---
+symbol: "function:register_uninstall_hook"
+---
+
+## Behaviour
+
+Stores a plugin's uninstall callback by its basename in the `uninstall_plugins` option, saving only when it changed; the callback runs when the plugin is deleted. An object's method is refused with `_doing_it_wrong()`, as it can't be stored. A missing option is read as an array holding `false`, which stays in the saved option. <Ev source="wp:wp-includes/plugin.php#L954-L972" hash="5d0e430e77cce57e27c17952de3a1f13ba13f4a99912ca790c9e8879e0b59c16"/>
+
+## Override
+
+Not overridable.

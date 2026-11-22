@@ -1,0 +1,7 @@
+---
+symbol: "filter:get_term_metadata"
+---
+
+## Behaviour
+
+Fired by `get_metadata_raw()` (as `get_{$meta_type}_metadata`) before term meta is read; WordPress attaches `wp_check_term_meta_support_prefilter()`, which stops the read before database version 34370, when term meta arrived. <Ev source="wp:wp-includes/default-filters.php#L141-L141" hash="d66dbba7cecf61c740247e15b808d973b969f2a45f991b2bbd3afbd41bdb9e1f"/>

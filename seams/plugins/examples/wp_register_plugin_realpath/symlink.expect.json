@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => true,\n  2 => false,\n  3 => \n  array (\n    'payments-link' => 'payments',\n  ),\n  4 => 'payments-link/payments.php',\n)",
+ "error": null
+}

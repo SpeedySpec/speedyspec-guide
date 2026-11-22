@@ -1,0 +1,7 @@
+---
+symbol: "action:save_post_wp_template_part"
+---
+
+## Behaviour
+
+Fired by `wp_insert_post()` (as `save_post_{$post->post_type}`) when a template part is saved; WordPress attaches `wp_set_unique_slug_on_create_template_part()`, which gives an auto-draft without a slug a unique `custom_slug_` one. <Ev source="wp:wp-includes/default-filters.php#L797-L797" hash="decd58c07a6b07d2cfed3a30f7b6052b716327caed91d9f44744806e5bbd242e"/>

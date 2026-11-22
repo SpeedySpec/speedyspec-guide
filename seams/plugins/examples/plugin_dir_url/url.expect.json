@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/wp-content/plugins/shop/',\n  1 => 'http://example.org/wp-content/mu-plugins/',\n)",
+ "error": null
+}

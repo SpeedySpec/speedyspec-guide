@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => false,\n  2 => \n  array (\n    0 => 'payments',\n  ),\n  3 => true,\n  4 => \n  array (\n    0 => 'shop/shop.php',\n  ),\n  5 => 'shop/shop.php',\n  6 => 'payments/payments.php',\n  7 => false,\n  8 => 'hello-dolly',\n  9 => 'single',\n)",
+ "error": null
+}
