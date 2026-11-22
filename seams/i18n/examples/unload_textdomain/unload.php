@@ -3,6 +3,9 @@
 switch_to_locale( 'fr_FR' );
 load_plugin_textdomain( 'guide' );
 __( 'Hello', 'guide' );
-add_action( 'unload_textdomain', fn( $d, $reload ) => print( "unload_textdomain $d\n" ), 10, 2 );
+function guide_print_unloaded_textdomain( $domain, $reloadable ) {
+	echo "unload_textdomain $domain\n";
+}
+add_action( 'unload_textdomain', 'guide_print_unloaded_textdomain', 10, 2 );
 $ok = unload_textdomain( 'guide' );
 return array( $ok, is_textdomain_loaded( 'guide' ), isset( $GLOBALS['l10n_unloaded']['guide'] ), __( 'Hello', 'guide' ) );
