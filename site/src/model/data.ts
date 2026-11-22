@@ -2,10 +2,11 @@
  * Everything the site shows, loaded once: generated JSON, the seam map, example files and the MDX content.
  * The only module of the site that reads files.
  */
+import { GuideFiles } from '@speedyspec-guide/adapter-content-files';
 import { ExampleFiles } from '@speedyspec-guide/adapter-example-files';
 import { SeamFiles } from '@speedyspec-guide/adapter-seam-files';
 import type { CratesFile, Cycles, ExamplesFile, Graph, HistoryFile, RuntimeHistoryFile } from '@speedyspec-guide/app';
-import type { Assignment, Example, GuideSymbol, Inventory, Seam } from '@speedyspec-guide/domain';
+import type { Assignment, Example, Guide, GuideSymbol, Inventory, Seam } from '@speedyspec-guide/domain';
 
 import { existsSync } from 'node:fs';
 import { join, sep } from 'node:path';
@@ -63,6 +64,8 @@ export interface GuideData {
   examples: { files: ExampleFile[]; results: ExamplesFile | null };
   seams: Seam[];
   content: ContentEntry[];
+  /** The developer guides under content/guides/. */
+  guides: Guide[];
   /** sources.json: what the evidence links point at. */
   sources: Sources | null;
 }
@@ -129,6 +132,7 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
     examples: { files: examples, results: await json<ExamplesFile | null>('examples', null) },
     seams,
     content: await readContent(dirs.content),
+    guides: await new GuideFiles(dirs.content).guides(),
     sources: (await Bun.file(dirs.sources).exists()) ? ((await Bun.file(dirs.sources).json()) as Sources) : null,
   };
 }

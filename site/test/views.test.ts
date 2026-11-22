@@ -90,7 +90,7 @@ describe('symbolView', () => {
 describe('example order', () => {
   test('a porting "before" comes just above its "after"', () => {
     const pair = structuredClone(d);
-    const base = pair.examples.files[0]!;
+    const base = pair.examples.files.find((e) => e.seam === 'hooks')!;
     pair.examples.files = ['porting-x-after', 'porting-x-before', 'a-plain-one'].map((name) => ({ ...base, id: `hooks/add_filter/${name}`, name }));
     expect(symbolView('function:add_filter', 'wordpress', pair).examples.map((e) => e.name)).toEqual(['a-plain-one', 'porting-x-before', 'porting-x-after']);
   });

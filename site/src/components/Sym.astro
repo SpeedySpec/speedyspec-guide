@@ -1,0 +1,13 @@
+---
+// A symbol named in a guide, linked to its reference page when it has one.
+import { loadGuideData } from '../model/data.ts';
+import { symbolHref } from '../model/guides.ts';
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const href = symbolHref(id, await loadGuideData());
+const name = id.slice(id.indexOf(':') + 1);
+---
+{href ? <a class="sym" href={href}><code>{name}</code></a> : <code class="sym">{name}</code>}

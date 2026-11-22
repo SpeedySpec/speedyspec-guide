@@ -1,0 +1,18 @@
+---
+// A developer guide's MDX body, with the guide components available in it.
+import { getEntry, render } from 'astro:content';
+import type { Guide } from '@speedyspec-guide/domain';
+import Ev from './Ev.astro';
+import Example from './Example.astro';
+import OnSpeedySpecNote from './OnSpeedySpecNote.astro';
+import Sym from './Sym.astro';
+
+interface Props {
+  guide: Guide;
+}
+const { guide } = Astro.props;
+const entry = await getEntry('guides', guide.file.replace(/\.mdx$/, ''));
+if (!entry) throw new Error(`no guides entry for ${guide.file}`);
+const { Content } = await render(entry);
+---
+<div class="prose guide-prose"><Content components={{ Ev, Example, OnSpeedySpecNote, Sym }} /></div>

@@ -3,7 +3,7 @@
  * doesn't exist has `href: null`, and is shown as text.
  */
 import type { GuideSymbol, Side } from '@speedyspec-guide/domain';
-import type { ContentEntry, GuideData } from './data.ts';
+import type { ContentEntry, ExampleFile, GuideData } from './data.ts';
 import { indexOf } from './index-of.ts';
 import { methodAnchor, symbolSlug } from './slug.ts';
 import { type SpeedySpecVerdict, speedyspecProvenance, speedyspecVerdict, wordpressProvenance } from './verdict.ts';
@@ -63,6 +63,22 @@ export interface SymbolView {
 
 const OUT: Record<string, string> = { reads: 'reads', writes: 'writes', calls: 'calls', runs: 'runs', 'undone-by': 'undone by', alias: 'alias of', matches: 'matches' };
 const IN: Record<string, string> = { reads: 'read by', writes: 'written by', calls: 'called by', runs: 'run by', 'undone-by': 'undoes', alias: 'aliased by', matches: 'matched by' };
+
+/** An example as a page shows it: its title (the code's first comment), code and how it ran on each side. */
+export function exampleView(e: ExampleFile, d: GuideData): ExampleView {
+  const { title, code } = splitTitle(e.code);
+  return {
+    id: e.id,
+    name: e.name,
+    title: title ?? e.name,
+    code,
+    sides: e.sides.map((side) => {
+      const r = d.examples.results?.results.find((x) => x.id === e.id && x.side === side);
+      if (!r) return { side, status: 'not-run' as const };
+      return r.passed ? { side, status: 'passed' as const } : { side, status: 'failed' as const, detail: difference(r.expected, r.actual) };
+    }),
+  };
+}
 
 /** The folder under `seams/<seam>/examples/` holding a symbol's examples. */
 export function exampleFolder(id: string): string {
@@ -241,20 +257,7 @@ export function symbolView(id: string, section: Section, d: GuideData): SymbolVi
     .filter((e) => e.seam === seamId && e.symbol === folder)
     // A porting pair reads before, then after.
     .sort((a, b) => (order(a.name) < order(b.name) ? -1 : order(a.name) > order(b.name) ? 1 : 0))
-    .map((e) => {
-      const { title, code } = splitTitle(e.code);
-      return {
-        id: e.id,
-        name: e.name,
-        title: title ?? e.name,
-        code,
-        sides: e.sides.map((side) => {
-          const r = d.examples.results?.results.find((x) => x.id === e.id && x.side === side);
-          if (!r) return { side, status: 'not-run' as const };
-          return r.passed ? { side, status: 'passed' as const } : { side, status: 'failed' as const, detail: difference(r.expected, r.actual) };
-        }),
-      };
-    });
+    .map((e) => exampleView(e, d));
 
   const view: SymbolView = {
     id,

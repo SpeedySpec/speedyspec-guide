@@ -3,7 +3,7 @@ import '../styles/guide.css';
 
 interface Props {
   title: string;
-  section?: 'wordpress' | 'speedyspec';
+  section?: 'guides' | 'wordpress' | 'speedyspec';
 }
 const { title, section } = Astro.props;
 ---
@@ -17,6 +17,7 @@ const { title, section } = Astro.props;
   <body>
     <header class="topbar">
       <a class="brand" href="/">SpeedySpec Guide</a>
+      <a href="/guides/" aria-current={section === 'guides' ? 'page' : undefined}>Guides</a>
       <a href="/wordpress/" aria-current={section === 'wordpress' ? 'page' : undefined}>WordPress API</a>
       <a href="/speedyspec/" aria-current={section === 'speedyspec' ? 'page' : undefined}>SpeedySpec API</a>
       <a href="/coverage/">Coverage</a>

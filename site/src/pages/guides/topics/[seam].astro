@@ -1,0 +1,18 @@
+---
+import GuidePage from '../../../components/GuidePage.astro';
+import { loadGuideData } from '../../../model/data.ts';
+import { guideTracks } from '../../../model/guides.ts';
+
+export async function getStaticPaths() {
+  return guideTracks(await loadGuideData()).topics.map((guide) => ({ params: { seam: guide.seam }, props: { guide } }));
+}
+const { guide } = Astro.props;
+const d = await loadGuideData();
+const seam = d.seams.find((s) => s.id === guide.seam);
+---
+<GuidePage guide={guide}>
+  <aside class="guide-reference" slot="before">
+    Reference: <a href={`/wordpress/${guide.seam}/`}>{seam?.name ?? guide.seam} in the WordPress API</a>
+    {seam?.ported && <> · <a href={`/speedyspec/${guide.seam}/`}>in the SpeedySpec API</a></>}
+  </aside>
+</GuidePage>

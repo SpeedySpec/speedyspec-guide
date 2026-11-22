@@ -19,7 +19,7 @@ describe('the WordPress API section', () => {
   test('test_guides_seam_hidden_from_seam_lists', async () => {
     expect((await html(dist, '/wordpress/')).text('.seam-list a')).not.toContain('Guides');
     expect((await html(dist, '/speedyspec/')).raw).not.toContain('/speedyspec/guides/');
-    expect((await html(dist, '/coverage/')).raw).not.toContain('Guides');
+    expect((await html(dist, '/coverage/')).text('table.coverage a')).not.toContain('Guides');
     expect((await html(dist, '/')).raw).not.toContain('/speedyspec/porting/guides/');
   });
 

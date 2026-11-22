@@ -14,4 +14,10 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { pages };
+/** The developer guides: content/guides/<track>/…/<file>.mdx. The id is the path without .mdx, unchanged. */
+const guides = defineCollection({
+  loader: glob({ pattern: 'guides/**/*.mdx', base: guideDirs().content, generateId: ({ entry }) => entry.replace(/\.mdx$/, '') }),
+  schema: z.object({ title: z.string(), summary: z.string() }),
+});
+
+export const collections = { pages, guides };

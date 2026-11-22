@@ -1,0 +1,30 @@
+---
+// A guide's page: its title and summary, its prose, and where to go next.
+import type { Guide } from '@speedyspec-guide/domain';
+import GuideProse from './GuideProse.astro';
+import Base from '../layouts/Base.astro';
+import { loadGuideData } from '../model/data.ts';
+import { guidePath, neighbours } from '../model/guides.ts';
+
+interface Props {
+  guide: Guide;
+}
+const { guide } = Astro.props;
+const { prev, next } = neighbours(guide, await loadGuideData());
+---
+<Base title={guide.title} section="guides">
+  <main class="page guide">
+    <p class="crumbs"><a href="/guides/">Guides</a></p>
+    <h1>{guide.title}</h1>
+    <p class="summary">{guide.summary}</p>
+    <slot name="before" />
+    <GuideProse guide={guide} />
+    <slot />
+    {(prev || next) && (
+      <nav class="guide-nav">
+        {prev && <span class="guide-prev"><a href={guidePath(prev)}>← {prev.title}</a></span>}
+        {next && <span class="guide-next"><a href={guidePath(next)}>{next.title} →</a></span>}
+      </nav>
+    )}
+  </main>
+</Base>

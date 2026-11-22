@@ -1,0 +1,35 @@
+---
+import Base from '../../layouts/Base.astro';
+import { loadGuideData } from '../../model/data.ts';
+import { guidePath, guideTracks } from '../../model/guides.ts';
+
+const t = guideTracks(await loadGuideData());
+const list = (cls: string, guides: typeof t.path) => ({ cls, guides });
+const contributing = [
+  { name: 'WordPress core', ...list('guide-contributing-wordpress', t.contributing.wordpress) },
+  { name: 'SpeedySpec', ...list('guide-contributing-speedyspec', t.contributing.speedyspec) },
+];
+---
+<Base title="Guides" section="guides">
+  <main class="page guides">
+    <h1>Guides</h1>
+    <p>Learn to write WordPress plugins, how WordPress's functions work together, and how SpeedySpec runs them. Every code example is run and checked on WordPress.</p>
+    <h2>Learning path</h2>
+    <ol class="guide-path">
+      {t.path.map((g) => <li><a href={guidePath(g)}>{g.title}</a> <span class="muted">{g.summary}</span></li>)}
+    </ol>
+    <h2>Topics</h2>
+    <ul class="guide-topics">
+      {t.topics.map((g) => <li><a href={guidePath(g)}>{g.title}</a> <span class="muted">{g.summary}</span></li>)}
+    </ul>
+    <h2>Contributing</h2>
+    {contributing.map((c) => (
+      <section>
+        <h3>{c.name}</h3>
+        <ol class={c.cls}>
+          {c.guides.map((g) => <li><a href={guidePath(g)}>{g.title}</a> <span class="muted">{g.summary}</span></li>)}
+        </ol>
+      </section>
+    ))}
+  </main>
+</Base>
