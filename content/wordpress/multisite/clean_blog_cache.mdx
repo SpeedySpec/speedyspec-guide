@@ -1,0 +1,11 @@
+---
+symbol: "function:clean_blog_cache"
+---
+
+## Behaviour
+
+Clears a site's caches (by ID, domain and path, its details and meta) and fires clean_site_cache; nothing while cache invalidation is suspended. <Ev source="wp:wp-includes/ms-site.php#L967-L1028" hash="8a3a8f3010942153a4d7d1d2ef8c953b08b9a13f25b0211653635eb4c3dd0f69"/>
+
+## Override
+
+`clean_site_cache`, `refresh_blog_details` fire.

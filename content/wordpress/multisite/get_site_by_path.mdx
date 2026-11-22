@@ -1,0 +1,11 @@
+---
+symbol: "function:get_site_by_path"
+---
+
+## Behaviour
+
+The site best matching a domain and path: the longest path match, checking www and non-www domains, segments limited by site_by_path_segments_count; pre_get_site_by_path can answer. <Ev source="wp:wp-includes/ms-load.php#L163-L265" hash="67ce50632f79d30914c800b66440b20860fcd306900b0f9f7053b7e69ceaa9e8"/>
+
+## Override
+
+`site_by_path_segments_count`, `pre_get_site_by_path` filter it.

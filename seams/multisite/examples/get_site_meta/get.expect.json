@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => 'blue',\n  1 => \n  array (\n    0 => 'blue',\n  ),\n  2 => \n  array (\n    0 => 'color',\n  ),\n)",
+ "error": null
+}

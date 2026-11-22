@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "get_current_site_name is deprecated\n",
+ "return": "'Guide Network'",
+ "error": null
+}

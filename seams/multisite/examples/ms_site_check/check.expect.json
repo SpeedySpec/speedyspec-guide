@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'This site has been archived or suspended.',\n)",
+ "error": null
+}

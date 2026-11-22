@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  'all' => 2,\n  'public' => 2,\n  'archived' => 1,\n  'mature' => 0,\n  'spam' => 0,\n  'deleted' => 0,\n)",
+ "error": null
+}

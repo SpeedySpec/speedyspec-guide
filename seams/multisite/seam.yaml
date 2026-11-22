@@ -20,7 +20,11 @@ files:
   - 'wp-includes/ms-load.php'
   - 'wp-includes/ms-network.php'
   - 'wp-includes/ms-site.php'
-wordpress: []
+# WordPress is booted by the setup (see boot.php), as a network; the runner needs one file to load first.
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true
 # Symbols whose file belongs to another seam.
 symbols:
   - "constant:ADMIN_COOKIE_PATH"

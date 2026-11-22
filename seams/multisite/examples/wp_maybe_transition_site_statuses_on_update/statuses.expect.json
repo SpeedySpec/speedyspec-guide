@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "make_spam_blog 2\narchive_blog 2\n",
+ "return": "'done'",
+ "error": null
+}

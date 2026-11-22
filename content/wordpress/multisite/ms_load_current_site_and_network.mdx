@@ -1,0 +1,11 @@
+---
+symbol: "function:ms_load_current_site_and_network"
+---
+
+## Behaviour
+
+Works out the network and site of a request from its domain and path, filling $current_site and $current_blog; a redirect or false when none matches. <Ev source="wp:wp-includes/ms-load.php#L297-L453" hash="3a4598b9b498739fb28f0c05a12857d08aab43b288aea0a2103b602934edf17a"/>
+
+## Override
+
+`network_site_url` filters it; `ms_network_not_found`, `ms_site_not_found` fire.

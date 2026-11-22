@@ -1,0 +1,11 @@
+---
+symbol: "function:get_blog_option"
+---
+
+## Behaviour
+
+An option of another site, switching to it to read; the current site's is read directly. <Ev source="wp:wp-includes/ms-blogs.php#L357-L383" hash="85d457bca9dd0a24a22cf0b707b21b2ca629c1a47976e052b3b9d6b16cb077a2"/>
+
+## Override
+
+`blog_option_{$option}` filters it.

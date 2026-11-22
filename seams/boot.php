@@ -17,6 +17,9 @@ declare(strict_types=1);
  *
  *  Options: siteurl and home `http://example.org`, blogname `Guide`, admin_email `admin@example.org`, plain
  *  permalinks, and the theme `guide`, which isn't installed, so no theme code runs.
+ *
+ *  With `GUIDE_MULTISITE`, the site is the main site of a subdirectory network instead: network 1 at `example.org/`,
+ *  named `Guide Network`, with the network's default options and `admin` as its super admin.
  */
 
 $guide_url = getenv('GUIDE_MYSQL_URL');
@@ -48,6 +51,20 @@ foreach ([
 {
     defined($guide_name) || define($guide_name, $guide_value);
 }
+if (GUIDE_MULTISITE)
+{
+    foreach ([
+        'MULTISITE' => true,
+        'SUBDOMAIN_INSTALL' => false,
+        'DOMAIN_CURRENT_SITE' => 'example.org',
+        'PATH_CURRENT_SITE' => '/',
+        'SITE_ID_CURRENT_SITE' => 1,
+        'BLOG_ID_CURRENT_SITE' => 1,
+    ] as $guide_name => $guide_value)
+    {
+        defined($guide_name) || define($guide_name, $guide_value);
+    }
+}
 $GLOBALS['table_prefix'] = 'guide_';
 $_SERVER['HTTP_HOST'] = 'example.org';
 $_SERVER['REQUEST_URI'] = '/';
@@ -70,7 +87,7 @@ if ($guide_tables)
 {
     mysqli_query($guide_mysqli, 'DROP TABLE ' . implode(', ', array_column($guide_tables, 0)));
 }
-$guide_schema = (require __DIR__ . '/wordpress-schema.php')['single'];
+$guide_schema = (require __DIR__ . '/wordpress-schema.php')[GUIDE_MULTISITE ? 'multisite' : 'single'];
 foreach (preg_split('/;\s*\n/', $guide_schema) as $guide_statement)
 {
     if ('' !== trim($guide_statement))
@@ -100,6 +117,21 @@ foreach ([
     mysqli_stmt_bind_param($guide_insert, 'ss', $guide_name, $guide_value);
     mysqli_stmt_execute($guide_insert);
 }
+if (GUIDE_MULTISITE)
+{
+    // The network and its main site, as the network installer writes them.
+    mysqli_query($guide_mysqli, "INSERT INTO guide_site (id, domain, path) VALUES (1, 'example.org', '/')");
+    mysqli_query(
+        $guide_mysqli,
+        "INSERT INTO guide_blogs (blog_id, site_id, domain, path, registered, last_updated, public)"
+        . " VALUES (1, 1, 'example.org', '/', '2026-03-01 09:00:00', '2026-03-01 09:00:00', 1)"
+    );
+    mysqli_query(
+        $guide_mysqli,
+        "INSERT INTO guide_sitemeta (site_id, meta_key, meta_value) VALUES (1, 'siteurl', 'http://example.org/'),"
+        . " (1, 'site_name', 'Guide Network'), (1, 'admin_email', 'admin@example.org')"
+    );
+}
 mysqli_close($guide_mysqli);
 unset($guide_url, $guide_db, $guide_name, $guide_value, $guide_tables, $guide_schema, $guide_statement, $guide_insert);
 unset($guide_mysqli);
@@ -115,6 +147,10 @@ add_filter('pre_http_request', static function ($response)
 require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 populate_options();
 populate_roles();
+if (GUIDE_MULTISITE)
+{
+    populate_network_meta(1, ['admin_email' => 'admin@example.org', 'subdomain_install' => 0]);
+}
 wp_cache_flush();
 wp_insert_term('Uncategorized', 'category');
 wp_set_current_user(wp_insert_user([
@@ -124,3 +160,7 @@ wp_set_current_user(wp_insert_user([
     'display_name' => 'Admin',
     'role' => 'administrator',
 ]));
+if (GUIDE_MULTISITE)
+{
+    update_site_option('site_admins', ['admin']);
+}

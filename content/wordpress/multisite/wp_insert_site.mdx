@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_insert_site"
+---
+
+## Behaviour
+
+Adds a site to the network: its data normalized and validated (domain, path, network, dates, flags), cleaned from the cache, then wp_insert_site and, unless told not to, wp_initialize_site, which makes its tables and options. Gives the ID or an error. <Ev source="wp:wp-includes/ms-site.php#L44-L146" hash="f2009cd0f1fe3cd10c50e389b04e4c0977adf9898cda3c75f6bc93b217b273de"/>
+
+## Override
+
+`wp_insert_site`, `wp_initialize_site`, `wpmu_new_blog` fire.

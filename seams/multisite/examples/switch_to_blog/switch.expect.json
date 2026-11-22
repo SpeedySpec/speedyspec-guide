@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "switch_blog 1 to 2 (switch)\nswitch_blog 2 to 1 (restore)\n",
+ "return": "array (\n  0 => 2,\n  1 => 'Second',\n  2 => 'guide_2_',\n)",
+ "error": null
+}
