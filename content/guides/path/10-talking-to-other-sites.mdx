@@ -1,0 +1,83 @@
+---
+title: Talking to other sites
+summary: Call other services with WordPress's HTTP API, check every answer before trusting it, refuse unsafe addresses, and cache what you get.
+---
+
+Plugins often fetch from or send to another service: a book catalogue, a payment provider, a weather feed. Use
+WordPress's **HTTP API** for that, not `curl_*` or `file_get_contents()` directly. It works on every host, whatever
+PHP extensions are installed. It follows the site's proxy settings, and lets other code watch, adjust or block
+requests through filters. Testing gets easier too: every example on this page answers its requests with a stand-in
+for the remote service, through the <Sym id="filter:pre_http_request" /> filter, so nothing leaves the machine.
+
+## Asking, then checking in order
+
+<Sym id="function:wp_remote_get" /> sends a GET request and <Sym id="function:wp_remote_post" /> a POST. Both take
+the address and an array of options. Set a `timeout` in seconds every time, as short as you can afford. The default
+is 5 seconds, and while your plugin waits, the visitor's page waits too.
+
+The answer comes back in one of two shapes, so check three things, in this order:
+
+1. Whether the request failed outright, with <Sym id="function:is_wp_error" />.
+2. The status code, with <Sym id="function:wp_remote_retrieve_response_code" />. Only `200` (or whichever success
+   code the service documents) means what you asked for.
+3. Only then the body, with <Sym id="function:wp_remote_retrieve_body" />.
+
+<Example id="guides/talking-to-other-sites/get-and-check" />
+
+The address was built with `rawurlencode()`, so whatever is in the ISBN can't change the path or add a query.
+<OnSpeedySpecNote id="function:wp_remote_get" />
+
+## When the request fails
+
+When there is no answer at all, because the service is down, the network is slow or the name doesn't resolve,
+`wp_remote_get()` returns a `WP_Error` instead of a response:
+
+<Example id="guides/talking-to-other-sites/handle-an-error" />
+
+Your plugin should keep working when that happens. Show a message, use an older cached value, or skip the feature
+for now, but never let the page fail because another site did.
+
+## An answer is not a success
+
+A response that arrived may still be a refusal: `404 Not Found`, `401 Unauthorized`, `500` when the service is
+broken. Those responses have bodies too, so a plugin that reads the body without checking the code ends up showing an
+error page's HTML as if it were data.
+
+<Example id="guides/talking-to-other-sites/non-200-is-an-error-too" />
+
+## Treat what comes back as untrusted
+
+The other service is outside your control. Its answer may change shape, be cut short, or come from someone who has
+taken it over. Decode it defensively: check that it is the type you expect and has the fields you use, and sanitize
+values before storing or printing them, as you would a form's input.
+
+<Example id="guides/talking-to-other-sites/decode-json-safely" />
+
+The maintenance page wasn't JSON, so `json_decode()` gave nothing usable and the function returned `null` instead of
+failing later. The title was sanitized before being returned.
+
+## Addresses someone else gave you
+
+When the address itself comes from a person, such as a feed URL typed into your settings, use
+<Sym id="function:wp_safe_remote_get" /> (or <Sym id="function:wp_safe_remote_post" />). Otherwise anyone who can
+set that address could make your site request pages inside its own network: an admin panel on the same machine, a
+router, or a cloud server's metadata service that hands out credentials. The safe functions check the address with
+<Sym id="function:wp_http_validate_url" /> before sending, and refuse it if it points inside:
+
+<Example id="guides/talking-to-other-sites/safe-get-refuses-internal" />
+
+Only the public address passed. WordPress refused the loopback, private and link-local addresses, and the `file:`
+address. For an address your own code builds, like the books service above, `wp_remote_get()` is fine.
+
+## Cache the answers
+
+A remote request is slow and may be limited by the service, so don't repeat it on every page load. Keep the answer
+in a transient for as long as it stays true, as [Options](/guides/topics/options/) explains:
+
+<Example id="guides/talking-to-other-sites/cache-in-a-transient" />
+
+Two reads sent one request. A failure isn't cached, so the next page load tries again. When the service is down for
+a long time, consider keeping a second, longer-lived copy of the last good answer to show instead.
+
+The Requests seam, which holds the HTTP API, isn't ported to SpeedySpec yet, so this guide makes no promise about how
+it behaves there.

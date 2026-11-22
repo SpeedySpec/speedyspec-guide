@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'wp_remote_get checks' => false,\n  'wp_safe_remote_get checks' => true,\n  'a public address' => true,\n  'this machine' => false,\n  'the private network' => false,\n  'cloud metadata' => false,\n  'not http' => false,\n)",
+ "error": null
+}
