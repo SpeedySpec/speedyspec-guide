@@ -1,0 +1,140 @@
+---
+title: Formatting and kses
+summary: How escaping, sanitizing, kses and the content formatters fit together, and where each runs in a request.
+---
+
+The Text seam holds the functions that change strings: escaping them for output, sanitizing them for storage,
+filtering their HTML through **kses**, and formatting post content for display. They look alike, and many take a
+string and return a string, but they answer different questions at different moments. Using the wrong one for the
+moment is the most common way plugins go wrong. This guide sorts them out. Each function's reference page has the
+details.
+
+## Three jobs, three moments
+
+- **Sanitizing** happens on the way in, before a value is stored. It makes the value fit its field: plain text, a
+  key, a slug, a file name. It changes the value.
+- **Escaping** happens on the way out, at the moment of printing. It makes the value harmless for one place in the
+  page, such as text, an attribute, a URL or a script string. It never changes what is stored.
+- **Kses** sits between them. It filters HTML down to a list of allowed tags, attributes and protocols, so
+  people can use some markup and no more. WordPress runs it when content is saved, and plugins run it whenever they
+  print HTML they didn't write.
+
+[Keeping your plugin safe](/guides/path/keeping-your-plugin-safe/) puts these to work in a plugin. Here is how the
+pieces of each family differ.
+
+## Escaping: one function per place
+
+Every place in a page has its own rules, so each has its own escaping function. Pick the one for where the value
+goes, at the last moment:
+
+<Example id="guides/text/escape-attributes-and-textareas" />
+
+<Sym id="function:esc_html" /> and <Sym id="function:esc_attr" /> encode the characters that mean something in HTML,
+but leave entities already in the text alone, so `&amp;` stays one ampersand. <Sym id="function:esc_textarea" />
+encodes them again, so a text area shows exactly what was typed, `&amp;` included.
+
+<Example id="text/esc_html/escape" />
+
+URLs need more than encoding. <Sym id="function:esc_url" /> removes characters a URL can't hold, encodes `&` for
+HTML, and refuses protocols that aren't allowed, so `javascript:` becomes an empty string:
+
+<Example id="text/esc_url/display" />
+
+To store a URL or send it in a request, rather than print it, use <Sym id="function:esc_url_raw" />. It cleans the
+URL the same way, without the HTML encoding:
+
+<Example id="text/esc_url_raw/db" />
+
+<Sym id="function:esc_js" /> escapes a string for a JavaScript string inside an HTML attribute. To pass data to a
+script, `wp_json_encode()` with `wp_add_inline_script()` is the better tool, as
+[Loading scripts and styles](/guides/path/loading-scripts-and-styles/) shows. <OnSpeedySpecNote id="function:esc_html" />
+
+## Sanitizing: one function per kind of value
+
+Sanitizers are named for the kind of value they produce. <Sym id="function:sanitize_text_field" /> gives one line of
+plain text. It removes tags, line breaks, extra spaces and percent-encoded bytes, and an array gives an empty string:
+
+<Example id="text/sanitize_text_field/clean" />
+
+<Sym id="function:sanitize_textarea_field" /> does the same but keeps line breaks, for longer text:
+
+<Example id="text/sanitize_textarea_field/lines" />
+
+The others make identifiers:
+
+- <Sym id="function:sanitize_key" /> makes lowercase keys for options and internal names.
+- <Sym id="function:sanitize_title" /> makes slugs for addresses.
+- <Sym id="function:sanitize_file_name" /> makes names that are safe on any file system.
+
+<Example id="text/sanitize_key/key" />
+
+<Example id="text/sanitize_title/slug" />
+
+<Example id="text/sanitize_file_name/file" />
+
+Request data arrives slashed, a habit WordPress keeps for backward compatibility. Remove the slashes with
+<Sym id="function:wp_unslash" /> before sanitizing, or the slashes become part of the value:
+
+<Example id="text/wp_unslash/unslash" />
+
+## Kses: allowed HTML only
+
+<Sym id="function:wp_kses" /> takes HTML and a list of what is allowed, and drops the rest. A `<script>` goes
+together with its contents, and attributes that aren't on the list, like `onclick`, are removed:
+
+<Example id="text/wp_kses/allowed" />
+
+Kses checks link protocols too. A `javascript:` link loses its protocol and becomes harmless:
+
+<Example id="text/wp_kses/protocols" />
+
+You rarely write the list yourself. WordPress keeps named lists, which <Sym id="function:wp_kses_allowed_html" />
+returns: `post` for what a post may hold, `data` for the small set comments may use, and `strip` for none.
+
+<Example id="text/wp_kses_allowed_html/contexts" />
+
+<Sym id="function:wp_kses_post" /> and <Sym id="function:wp_kses_data" /> are the shortcuts for the two common lists:
+
+<Example id="text/wp_kses_post/post" />
+
+<Example id="text/wp_kses_data/data" />
+
+To remove all markup instead, <Sym id="function:wp_strip_all_tags" /> drops every tag, and the contents of scripts
+and styles:
+
+<Example id="text/wp_strip_all_tags/strip" />
+
+### When WordPress runs kses itself
+
+WordPress applies kses to posts, excerpts and comments as they are saved, through filters such as `content_save_pre`.
+It does this only for people without the `unfiltered_html` capability, which on a single site means everyone except
+administrators and editors:
+
+<Example id="guides/text/kses-on-save" />
+
+The author's script and `onclick` were removed when the post was saved. The administrator's were kept, on purpose:
+administrators may embed anything. That is why your plugin still escapes or filters post content it prints in a new
+context. Content was cleaned for the person who wrote it, not for the place you are putting it.
+
+## Formatting post content
+
+Post content is stored as written and formatted each time it is shown, by the filters on the `the_content` hook. In
+order: blocks are rendered, <Sym id="function:wptexturize" /> turns straight quotes and dashes into typographic ones,
+<Sym id="function:wpautop" /> turns blank lines into paragraphs, and shortcodes run after that.
+
+<Example id="guides/text/the-content-filters" />
+
+Each formatter is also a function you can call on your own text:
+
+<Example id="text/wptexturize/quotes" />
+
+<Example id="text/wpautop/paragraphs" />
+
+<Sym id="function:wp_trim_words" /> shortens text to a number of words for excerpts and previews, removing tags first:
+
+<Example id="text/wp_trim_words/trim" />
+
+Run your own output through `the_content` only when it really is post content. Applying the filter to anything else
+runs every plugin's content callbacks on it too.
+
+The Text seam isn't ported to SpeedySpec yet, so this guide makes no promise about how these functions behave there.

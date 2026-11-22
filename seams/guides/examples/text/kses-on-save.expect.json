@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'author has unfiltered_html' => false,\n  'saved by the author' => '<p>Hello <strong>there</strong></p>',\n  'saved by the administrator' => '<p onclick=\"steal()\">Hello <strong>there</strong></p><script>steal()</script>',\n)",
+ "error": null
+}
