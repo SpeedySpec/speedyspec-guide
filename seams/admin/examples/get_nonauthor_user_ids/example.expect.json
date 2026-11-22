@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n  ),\n  1 => 'deprecated get_nonauthor_user_ids since 3.1.0, use get_users()',\n)",
+ "error": null
+}

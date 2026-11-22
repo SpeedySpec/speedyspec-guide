@@ -25,7 +25,6 @@ require_once ABSPATH . 'wp-admin/includes/theme-install.php';
 require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 require_once ABSPATH . 'wp-admin/includes/update-core.php';
-require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 require_once ABSPATH . 'wp-admin/includes/ajax-actions.php';
 
 /** Runs a function that prints and gives back what it printed, each run of whitespace collapsed to one space. */
@@ -125,4 +124,23 @@ function guide_ajax(callable $handler, array $request = [], $nonce_action = -1):
     remove_filter('wp_die_ajax_handler', 'guide_ajax_die_handler');
     remove_filter('wp_doing_ajax', '__return_true');
     return $sent;
+}
+
+/**
+ * Calls a deprecated function, printing the notice WordPress reports for it, and gives back what it returned and
+ * printed.
+ *
+ * @return array{0: mixed, 1: string}
+ *   The return value and the output, with each run of whitespace collapsed.
+ */
+function guide_deprecated(string $function, mixed ...$args): array
+{
+    add_action('deprecated_function_run', static function ($name, $replacement, $version): void
+    {
+        echo "deprecated {$name} since {$version}", $replacement ? ", use {$replacement}" : '', "\n";
+    }, 10, 3);
+    ob_start();
+    $result = $function(...$args);
+    $printed = trim(preg_replace('/\s+/', ' ', ob_get_clean()));
+    return [$result, $printed];
 }

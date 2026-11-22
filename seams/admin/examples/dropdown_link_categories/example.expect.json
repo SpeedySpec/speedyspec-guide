@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated dropdown_link_categories since 2.6.0, use wp_link_category_checklist()',\n)",
+ "error": null
+}

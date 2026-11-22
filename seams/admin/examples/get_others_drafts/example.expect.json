@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n  ),\n  1 => 'deprecated get_others_drafts since 3.1.0 deprecated get_others_unpublished_posts since 3.1.0 deprecated get_editable_user_ids since 3.1.0, use get_users()',\n)",
+ "error": null
+}

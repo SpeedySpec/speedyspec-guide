@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  \\WP_Error::__set_state(array(\n     'errors' => \n    array (\n      'up_to_date' => \n      array (\n        0 => 'WordPress is at the latest version.',\n      ),\n    ),\n     'error_data' => \n    array (\n    ),\n     'additional_data' => \n    array (\n    ),\n  )),\n  1 => 'deprecated wp_update_core since 3.7.0, use new Core_Upgrader();',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated screen_icon since 3.8.0 deprecated get_screen_icon since 3.8.0 <!-- Screen icons are no longer used as of WordPress 3.8. -->',\n)",
+ "error": null
+}

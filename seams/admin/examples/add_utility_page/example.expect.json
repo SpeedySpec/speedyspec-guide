@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'toplevel_page_tea',\n  1 => 'deprecated add_utility_page since 4.5.0, use add_menu_page()',\n)",
+ "error": null
+}

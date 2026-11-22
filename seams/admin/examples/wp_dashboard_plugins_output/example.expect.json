@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_dashboard_plugins_output since 4.8.0 <ul></ul>',\n)",
+ "error": null
+}

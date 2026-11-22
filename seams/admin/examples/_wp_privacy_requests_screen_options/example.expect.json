@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated _wp_privacy_requests_screen_options since 5.3.0',\n)",
+ "error": null
+}

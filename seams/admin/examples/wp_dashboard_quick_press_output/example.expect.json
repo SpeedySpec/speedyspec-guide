@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'deprecated wp_dashboard_quick_press_output since 3.2.0, use wp_dashboard_quick_press() ',\n  1 => true,\n)",
+ "error": null
+}
