@@ -13,7 +13,6 @@ files:
   - 'wp-admin/includes/class-ftp.php'
   - 'wp-admin/includes/class-language-pack-upgrader-skin.php'
   - 'wp-admin/includes/class-language-pack-upgrader.php'
-  - 'wp-admin/includes/class-pclzip.php'
   - 'wp-admin/includes/class-plugin-installer-skin.php'
   - 'wp-admin/includes/class-plugin-upgrader-skin.php'
   - 'wp-admin/includes/class-plugin-upgrader.php'
@@ -41,4 +40,9 @@ files:
   - 'wp-admin/includes/update.php'
   - 'wp-admin/includes/upgrade.php'
   - 'wp-includes/update.php'
+elsewhere:
+  - name: "PclZip"
+    docs: "https://www.phpconcept.net/pclzip/"
+    files: ["wp-admin/includes/class-pclzip.php"]
+    note: "WordPress bundles PclZip to unpack and check ZIP archives when the ZipArchive extension is missing; _unzip_file_pclzip() and wp_zip_file_is_valid() use it."
 wordpress: []
