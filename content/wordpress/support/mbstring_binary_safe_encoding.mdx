@@ -1,0 +1,11 @@
+---
+symbol: "function:mbstring_binary_safe_encoding"
+---
+
+## Behaviour
+
+Switches mbstring's internal encoding to ISO-8859-1 while mbstring overloads the string functions (PHP before 8), so strlen() counts bytes; calls nest, and reset_mbstring_encoding() switches back. Without overloading, as here, nothing changes. <Ev source="wp:wp-includes/functions.php#L7932-L7960" hash="ff57cadfbf1fe18d84fbb6b5685f4fca8f4728385942a03940063455cbf796db"/>
+
+## Override
+
+Not overridable.

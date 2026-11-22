@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'deleted@site.invalid',\n  1 => 'https://site.invalid',\n  2 => '1.2.3.0',\n  3 => '0000-00-00 00:00:00',\n  4 => '[deleted]',\n)",
+ "error": null
+}

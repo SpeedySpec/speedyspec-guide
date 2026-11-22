@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "old.php is deprecated since 5.0.0 for new.php\n",
+ "return": "'reported'",
+ "error": null
+}

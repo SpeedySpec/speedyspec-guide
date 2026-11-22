@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "Old_Widget constructor is deprecated since 4.3.0\n",
+ "return": "'reported'",
+ "error": null
+}

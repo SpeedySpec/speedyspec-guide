@@ -1,0 +1,11 @@
+---
+symbol: "function:_deprecated_file"
+---
+
+## Behaviour
+
+Reports a deprecated file being included: fires deprecated_file_included, then raises a notice when debugging allows it. <Ev source="wp:wp-includes/functions.php#L5998-L6058" hash="ee9e546cf09663950ad129a2f87d35caea3208f33b865c9642635b8c53c2bd9b"/>
+
+## Override
+
+`deprecated_file_trigger_error` filters it; `deprecated_file_included` fires.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'UPLOADS/wp-personal-data-exports/'",
+ "error": null
+}

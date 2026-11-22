@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "some_function: The second argument is unused. (5.5.0)\n",
+ "return": "'reported'",
+ "error": null
+}

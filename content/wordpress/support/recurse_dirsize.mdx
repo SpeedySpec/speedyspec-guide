@@ -1,0 +1,11 @@
+---
+symbol: "function:recurse_dirsize"
+---
+
+## Behaviour
+
+A folder's size in bytes, adding up its files and subfolders, skipping excluded paths, and stopping past a time limit; sizes are cached in dirsize_cache, and pre_recurse_dirsize can answer. <Ev source="wp:wp-includes/functions.php#L9116-L9210" hash="5ca1000795a0d73a1b40d089c4d3900002227863f92b6d4ac52c957a4dd02618"/>
+
+## Override
+
+`pre_recurse_dirsize` filters it.

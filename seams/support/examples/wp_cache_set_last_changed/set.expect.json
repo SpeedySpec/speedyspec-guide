@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "guide changed\nguide changed\n",
+ "return": "true",
+ "error": null
+}

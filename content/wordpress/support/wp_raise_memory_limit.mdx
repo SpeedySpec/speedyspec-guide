@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_raise_memory_limit"
+---
+
+## Behaviour
+
+Raises PHP's memory limit for a context (admin, image or cron) to WP_MAX_MEMORY_LIMIT, or to the limit {context}_memory_limit gives when that is higher; never lowers it. Gives the new limit, or false. <Ev source="wp:wp-includes/functions.php#L8124-L8231" hash="a6bf874c2b8c967c9214bd2a4e57d51a91fa524e05d693fa767f49034053f57e"/>
+
+## Override
+
+`admin_memory_limit`, `image_memory_limit`, `cron_memory_limit`, `{$context}_memory_limit` filter it.

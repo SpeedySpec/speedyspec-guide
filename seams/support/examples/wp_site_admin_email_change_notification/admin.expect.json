@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "email to old@example.org: [Guide] Admin Email Changed\n",
+ "return": "'done'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "old_thing is deprecated since 6.0.0\n",
+ "return": "'reported'",
+ "error": null
+}

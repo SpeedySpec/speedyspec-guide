@@ -1,0 +1,11 @@
+---
+symbol: "function:_doing_it_wrong"
+---
+
+## Behaviour
+
+Reports a function used the wrong way: fires doing_it_wrong_run, then raises a notice when debugging allows it. <Ev source="wp:wp-includes/functions.php#L6225-L6289" hash="0736d0101b5c62a826c29c68eddc1ba81eb3a19342878a04789bfb0f27e26cd8"/>
+
+## Override
+
+`doing_it_wrong_trigger_error` filters it; `doing_it_wrong_run` fires.

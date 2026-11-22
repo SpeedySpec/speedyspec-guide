@@ -1,0 +1,11 @@
+---
+symbol: "function:_deprecated_hook"
+---
+
+## Behaviour
+
+Reports a deprecated hook that has callbacks: fires deprecated_hook_run, then raises a notice when debugging allows it. <Ev source="wp:wp-includes/functions.php#L6165-L6208" hash="21f22821c872498f9e8bae99a6ecf8d97da82265929b8a5a1f2ee90dff1490a1"/>
+
+## Override
+
+`deprecated_hook_trigger_error` filters it; `deprecated_hook_run` fires.

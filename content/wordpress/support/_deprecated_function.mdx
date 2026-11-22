@@ -1,0 +1,11 @@
+---
+symbol: "function:_deprecated_function"
+---
+
+## Behaviour
+
+Reports a deprecated function: fires deprecated_function_run, then raises a notice when WP_DEBUG is on and deprecated_function_trigger_error allows it. <Ev source="wp:wp-includes/functions.php#L5756-L5813" hash="2132589fbe61e5724cb2b8d2856466dcdf9d0073830f47eb6e5cfe7c97c91e0f"/>
+
+## Override
+
+`deprecated_function_trigger_error` filters it; `deprecated_function_run` fires.
