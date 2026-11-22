@@ -79,7 +79,12 @@ function guide_queue_http(array $bodies): void
         $body = array_shift($bodies);
         if (null === $body)
         {
-            return ['headers' => [], 'body' => '', 'response' => ['code' => 404, 'message' => 'Not Found'], 'cookies' => []];
+            return [
+                'headers' => [],
+                'body' => '',
+                'response' => ['code' => 404, 'message' => 'Not Found'],
+                'cookies' => [],
+            ];
         }
         return [
             'headers' => ['content-type' => is_array($body) ? 'application/json' : 'text/html'],
