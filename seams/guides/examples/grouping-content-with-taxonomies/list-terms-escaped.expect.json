@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "array (\n  'with a genre' => '<a href=\"http://example.org/?my_genre=sci-fi-fantasy\">Sci-fi &amp; fantasy</a>',\n  'without' => '',\n)",
+ "return": "array (\n  'stored name' => 'Sci-fi &amp; fantasy',\n  'with a genre' => '<a href=\"http://example.org/?my_genre=sci-fi-fantasy\">Sci-fi &amp; fantasy</a>',\n  'without' => '',\n)",
  "error": null
 }

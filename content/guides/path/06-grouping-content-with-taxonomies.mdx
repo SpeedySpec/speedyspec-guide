@@ -63,8 +63,9 @@ doesn't exist, so check before looping. <Sym id="function:get_term_link" /> give
 
 <Example id="guides/grouping-content-with-taxonomies/list-terms-escaped" />
 
-When the term was saved, WordPress stripped the tags out of its name, but the `&` is still there. Escape every name
-with `esc_html()` and every link with `esc_url()` as you print them. Terms are typed by people, and may come from an
+When the term was saved, WordPress stripped the tags out of its name and stored the `&` as the entity `&amp;`.
+`esc_html()` leaves an entity that is already there as it is, and escapes anything else. Escape every name with
+`esc_html()` and every link with `esc_url()` as you print them. Terms are typed by people, and may come from an
 import that didn't clean them.
 
 The Taxonomy seam isn't ported to SpeedySpec yet, so this guide makes no promise about how taxonomies behave there.

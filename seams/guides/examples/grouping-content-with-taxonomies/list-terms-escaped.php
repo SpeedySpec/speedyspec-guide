@@ -34,4 +34,4 @@ function my_plugin_genre_links( $post_id ) {
 
 $book = wp_insert_post( array( 'post_type' => 'my_book', 'post_title' => 'Dune', 'post_status' => 'publish' ) );
 wp_set_object_terms( $book, array( 'Sci-fi & <b>fantasy</b>' ), 'my_genre' );
-return array( 'with a genre' => my_plugin_genre_links( $book ), 'without' => my_plugin_genre_links( wp_insert_post( array( 'post_type' => 'my_book', 'post_title' => 'Emma', 'post_status' => 'publish' ) ) ) );
+return array( 'stored name' => get_the_terms( $book, 'my_genre' )[0]->name, 'with a genre' => my_plugin_genre_links( $book ), 'without' => my_plugin_genre_links( wp_insert_post( array( 'post_type' => 'my_book', 'post_title' => 'Emma', 'post_status' => 'publish' ) ) ) );

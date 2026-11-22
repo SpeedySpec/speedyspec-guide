@@ -55,8 +55,9 @@ screens that list schedules:
 
 <Example id="guides/running-tasks-on-a-schedule/custom-interval" />
 
-Add the filter on every request, not only on activation, because WordPress needs to know the interval each time it
-reschedules the event. <Sym id="function:wp_get_schedule" /> tells you which recurrence an event uses.
+Add the filter on every request, not only on activation. `wp_schedule_event()` refuses a recurrence it doesn't know,
+so the name must exist whenever your plugin schedules, and screens that list scheduled events show it by its label.
+<Sym id="function:wp_get_schedule" /> tells you which recurrence an event uses.
 
 ## Doing the work
 
@@ -65,9 +66,10 @@ to that action, like any other hook:
 
 <Example id="guides/running-tasks-on-a-schedule/event-runs-its-action" />
 
-The example does by hand what `wp-cron.php` does on a page load after the event's time. Keep the work short, or split
-a long job into batches that each scheduled run continues, because the background request has a time limit like any
-other. For work that should happen once, later, rather than on repeat, use
+The example does by hand what `wp-cron.php` does for each due event: it schedules a recurring event's next run,
+removes the run that is due, and fires the action. Afterwards the next run is scheduled for later and nothing is due.
+Keep the work short, or split a long job into batches that each scheduled run continues, because the background request
+has a time limit like any other. For work that should happen once, later, rather than on repeat, use
 <Sym id="function:wp_schedule_single_event" />.
 
 The Cron seam isn't ported to SpeedySpec yet, so this guide makes no promise about how scheduled events behave there.
