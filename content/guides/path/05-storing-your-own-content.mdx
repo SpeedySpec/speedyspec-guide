@@ -1,0 +1,85 @@
+---
+title: Storing your own content
+summary: Register a post type for your plugin's content, attach registered meta to it, query it, and set up its links on activation.
+---
+
+Options suit settings: a handful of values for the whole site. When your plugin manages many things of one kind,
+such as books, events, recipes or testimonials, each with a title, some text and a few details, they are content. Content
+belongs in a **post type**. Posts and pages are post types too. A post type of your own gets the editor, revisions,
+trash, search, the REST API and the admin list screen for free, and your plugin stores nothing it would have to
+manage by hand.
+
+Reach for a custom database table only when the data isn't content at all, such as a log of events or a queue of
+jobs, or when there is far more of it than posts are meant for.
+
+## Registering a post type
+
+Call <Sym id="function:register_post_type" /> on the <Sym id="action:init" /> action, on every request. WordPress
+doesn't store post types: each request learns them again from the code that registers them. The name is your
+plugin's prefix plus a singular noun, at most 20 characters.
+
+<Example id="guides/storing-your-own-content/register-a-post-type" />
+
+The arguments that matter most:
+
+- `labels` name the type in the admin, translatable like every string your plugin shows.
+- `public` makes its posts visible on the site and in the admin.
+- `show_in_rest` puts it in the REST API, which the block editor needs to edit it.
+- `rewrite` sets the slug in its links, here `books`, and `has_archive` gives it a page listing every book.
+- `supports` lists the editing features it gets.
+
+Unless you say otherwise, a post type uses the same capabilities as posts: anyone who may edit posts may edit books.
+The example shows the capability for editing, `edit_posts`. <OnSpeedySpecNote id="function:register_post_type" />
+
+## Storing and querying it
+
+Posts of your type are ordinary posts with a different `post_type`, so the functions you would use for posts work.
+<Sym id="function:wp_insert_post" /> creates one. <Sym id="class:WP_Query" /> finds them, and
+<Sym id="function:get_posts" /> is a shortcut for the common cases:
+
+<Example id="guides/storing-your-own-content/insert-and-query" />
+
+Name the post type in every query, or you get ordinary posts: the "Not a book" post isn't in the results. Ask for a
+limit with `posts_per_page`, and pass `no_found_rows` when you don't need to know how many pages of results there
+are, which saves WordPress a query.
+
+## Details as registered meta
+
+A book's ISBN is a detail of one post: post **meta**, a named value attached to the post. Register each meta key with
+<Sym id="function:register_post_meta" />, on `init` as well, before using it. Registering gives the key a type, says
+whether it holds one value or several, and attaches a sanitize callback that runs on every save:
+
+<Example id="guides/storing-your-own-content/register-meta" />
+
+The spaces and dashes are gone and the `x` is now `X`: <Sym id="function:update_post_meta" /> ran the sanitize
+callback before saving. <Sym id="function:get_post_meta" /> reads the value back. Pass `true` as its last argument to
+get the single value instead of a list.
+
+## Who may change the meta
+
+The `auth_callback` decides who may change the key through the editor and the REST API. WordPress first checks that
+the person may edit the post itself, then asks your callback. Here the callback asks the same question again, which
+is the safe choice for a value that belongs to the post:
+
+<Example id="guides/storing-your-own-content/meta-auth" />
+
+Without an auth callback, WordPress allows any key that doesn't start with an underscore and refuses those that do.
+Keys starting with `_` are hidden from the custom fields box, which is why plugins use them for values people
+shouldn't edit by hand. Give every key you expose an auth callback rather than relying on that rule.
+
+## Links: flush on activation only
+
+A public post type needs rewrite rules, so `/books/dune/` finds the book. WordPress builds those rules once and
+stores them, so a new post type's links don't work until the rules are rebuilt. <Sym id="function:flush_rewrite_rules" />
+rebuilds them. It is slow, so call it only when your post types change: on activation, after registering the type,
+and on deactivation, after removing it.
+
+<Example id="guides/storing-your-own-content/flush-on-activation-only" />
+
+Hook those two functions to <Sym id="function:register_activation_hook" /> and
+<Sym id="function:register_deactivation_hook" />. Never flush on `init` or on every page load. Your post type's
+posts stay in the database when the plugin is deactivated. Remove them in `uninstall.php` only if your plugin's users
+expect that, because content is the hardest thing for them to recreate.
+
+The Query seam, where post types and meta live, isn't ported to SpeedySpec yet, so this guide makes no promise about
+how they behave there.
