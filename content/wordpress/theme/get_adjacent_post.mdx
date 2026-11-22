@@ -1,0 +1,11 @@
+---
+symbol: "function:get_adjacent_post"
+---
+
+## Behaviour
+
+The post before or after the current one by date, optionally in the same term or excluding terms; '' when there is none, null without a current post. Filtered by `get_{$adjacent}_post_join`, _where and _sort. <Ev source="wp:wp-includes/link-template.php#L1839-L2052" hash="8b0e1528fd3b40b6a18d8f523881b369538e912919e954b328c0a48068ea91e0"/>
+
+## Override
+
+`get_{$adjacent}_post_excluded_terms`, `get_{$adjacent}_post_join`, `get_{$adjacent}_post_where`, `get_{$adjacent}_post_sort` filter it.

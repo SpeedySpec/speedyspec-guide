@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/wp-admin/profile.php',\n  1 => 'http://example.org/wp-admin/user-edit.php?user_id=2',\n)",
+ "error": null
+}

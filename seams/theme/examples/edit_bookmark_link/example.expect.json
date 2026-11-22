@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '',\n  1 => '<a href=\"http://example.org/wp-admin/link.php?action=edit&#038;link_id=1\">Edit</a>',\n)",
+ "error": null
+}

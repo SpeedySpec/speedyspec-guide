@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a class=\"comment-edit-link\" href=\"http://example.org/wp-admin/comment.php?action=editcomment&#038;c=1\">Edit</a>'",
+ "error": null
+}
