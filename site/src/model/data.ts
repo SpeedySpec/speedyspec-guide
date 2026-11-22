@@ -15,6 +15,12 @@ import type { Sources } from './wording.ts';
 
 export type { CratesFile } from '@speedyspec-guide/app';
 
+/**
+ * The pseudo-seam holding the developer guides' examples: they run on a fully booted WordPress, but it documents no
+ * symbols, so the site lists it as no seam.
+ */
+export const GUIDES_SEAM = 'guides';
+
 export type ContentKind = 'symbol' | 'seam' | 'porting' | 'architecture';
 
 /** One MDX file under content/: `<section>/<seam>/<slug>.mdx`. */
@@ -95,8 +101,9 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
       }
     }
   }
-  const seams = existsSync(dirs.seams) ? await new SeamFiles(dirs.seams).all() : [];
-  const found = seams.length > 0 ? (await new ExampleFiles(dirs.seams, seams).all()).examples : [];
+  const allSeams = existsSync(dirs.seams) ? await new SeamFiles(dirs.seams).all() : [];
+  const found = allSeams.length > 0 ? (await new ExampleFiles(dirs.seams, allSeams).all()).examples : [];
+  const seams = allSeams.filter((s) => s.id !== GUIDES_SEAM);
   const examples: ExampleFile[] = await Promise.all(found.map(async (e) => ({ ...e, code: await Bun.file(e.file).text() })));
   const assignment = await json<Assignment>('assignment', { seamOf: {}, unassigned: [], conflicts: [] });
   const runtime = await json<GuideSymbol[]>('inventory-runtime', []);

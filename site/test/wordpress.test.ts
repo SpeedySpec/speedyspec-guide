@@ -16,6 +16,13 @@ describe('the WordPress API section', () => {
     expect(p.text('.seam-list .count')).toEqual(['2 of 5 documented', '0 of 2 documented']);
   });
 
+  test('test_guides_seam_hidden_from_seam_lists', async () => {
+    expect((await html(dist, '/wordpress/')).text('.seam-list a')).not.toContain('Guides');
+    expect((await html(dist, '/speedyspec/')).raw).not.toContain('/speedyspec/guides/');
+    expect((await html(dist, '/coverage/')).raw).not.toContain('Guides');
+    expect((await html(dist, '/')).raw).not.toContain('/speedyspec/porting/guides/');
+  });
+
   test('a seam page has its introduction, diagram and members by role', async () => {
     const p = await html(dist, '/wordpress/hooks/');
     expect(p.text('h1')).toEqual(['Hooks']);

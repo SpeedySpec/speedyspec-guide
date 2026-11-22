@@ -15,13 +15,19 @@ describe('readGuideData', () => {
     const hooks = d.seams.find((s) => s.id === 'hooks')!;
     expect(hooks).toMatchObject({ crates: ['speedyspec-wp-hooks', 'speedyspec-wp-hooks-php'], dependencies: {} });
     expect(d.seams.find((s) => s.id === 'options')?.dependencies).toEqual({ 'function:add_filter': { state: 'php', cite: { kind: 'scenario', area: 'hooks', name: 'add_filter_returns_true' } } });
-    expect(d.examples.files.map((e) => e.id)).toEqual(['hooks/add_filter/change-a-value']);
+    expect(d.examples.files.map((e) => e.id)).toEqual(['guides/first/hello', 'hooks/add_filter/change-a-value']);
     expect(d.examples.results?.results).toHaveLength(2);
     expect(d.content.find((c) => c.section === 'wordpress' && c.slug === 'add_filter')).toMatchObject({ seam: 'hooks', kind: 'symbol', symbol: 'function:add_filter' });
     expect(d.content.find((c) => c.slug === '_seam')).toMatchObject({ kind: 'seam', seam: 'hooks' });
     expect(d.content.find((c) => c.symbol === 'class:WP_Hook')).toMatchObject({ section: 'speedyspec', seam: 'hooks', slug: 'class/WP_Hook', kind: 'symbol' });
     expect(d.content.find((c) => c.section === 'speedyspec')?.data).toMatchObject({ verdict: 'works-with-differences' });
     expect(d.cycles.components).toEqual([['function:add_filter', 'function:get_option']]);
+  });
+
+  test('test_guides_seam_examples_load_but_seam_hidden', async () => {
+    const d = await readGuideData(env);
+    expect(d.seams.map((s) => s.id)).not.toContain('guides');
+    expect(d.examples.files.some((e) => e.id.startsWith('guides/'))).toBe(true);
   });
 
   test('missing data gives empty values', async () => {

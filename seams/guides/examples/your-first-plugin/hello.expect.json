@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"notice notice-info\"><p>Hello from my first plugin!</p></div>'",
+ "error": null
+}
