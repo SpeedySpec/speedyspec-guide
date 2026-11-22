@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_ajax_send_link_to_editor"
+---
+
+## Behaviour
+
+Ajax handler for inserting a URL from the media modal: sends an embed shortcode or a link to put in the classic editor. <Ev source="wp:wp-admin/includes/ajax-actions.php#L3385-L3440" hash="e5f6d522aa01a305461029ea84e4355ea0e919c0dfa0ded8783f25403aa78ded"/>
+
+## Override
+
+`{$type}_send_to_editor_url` filters it.

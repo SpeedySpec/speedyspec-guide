@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_ajax_save_attachment_compat"
+---
+
+## Behaviour
+
+Ajax handler for the extra attachment fields plugins add to the media modal with attachment_fields_to_edit; saves them through attachment_fields_to_save. <Ev source="wp:wp-admin/includes/ajax-actions.php#L3187-L3241" hash="e8db3317cb38838fd8988d52d09478dce6b6d101e4ccc55a5104943ef549fc59"/>
+
+## Override
+
+`attachment_fields_to_save` filters it.

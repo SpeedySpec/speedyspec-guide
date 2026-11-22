@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_ajax_crop_image"
+---
+
+## Behaviour
+
+Ajax handler for cropping an image in the media modal, such as a site icon or header: makes the cropped copy as a new attachment and sends its data. <Ev source="wp:wp-admin/includes/ajax-actions.php#L4004-L4099" hash="34ea004cb3afc40e0d8c19dbc43a4131e9f5a93d744b4bb84e1f03a3693cb27f"/>
+
+## Override
+
+`wp_create_file_in_uploads`, `wp_ajax_cropped_attachment_metadata`, `wp_ajax_cropped_attachment_id` filter it; `wp_ajax_crop_image_pre_save` fires.

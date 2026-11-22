@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'postcustom',\n    1 => 'commentsdiv',\n  ),\n  1 => \n  array (\n    0 => 'slugdiv',\n  ),\n)",
+ "error": null
+}

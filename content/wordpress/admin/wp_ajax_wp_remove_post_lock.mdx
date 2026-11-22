@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_ajax_wp_remove_post_lock"
+---
+
+## Behaviour
+
+Ajax handler that releases the user's edit lock on a post when they leave the editor, so others can edit it. <Ev source="wp:wp-admin/includes/ajax-actions.php#L2902-L2937" hash="45fad3604f8563270ec5470361d2c40fa9ae044d625285a27ae61e3049ab0f1f"/>
+
+## Override
+
+`wp_check_post_lock_window` filters it.

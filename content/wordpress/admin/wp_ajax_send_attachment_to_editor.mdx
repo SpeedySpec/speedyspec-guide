@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_ajax_send_attachment_to_editor"
+---
+
+## Behaviour
+
+Ajax handler for the media modal's Insert into post: sends the HTML for an attachment (an image tag, or a link) to put in the classic editor. <Ev source="wp:wp-admin/includes/ajax-actions.php#L3305-L3368" hash="8082480c920964d9116a2596f437f0d52307915dd6e7c6f119af51ad92dc9f8b"/>
+
+## Override
+
+`media_send_to_editor` filters it.

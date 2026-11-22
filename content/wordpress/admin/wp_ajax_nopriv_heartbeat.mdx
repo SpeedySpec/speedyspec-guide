@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_ajax_nopriv_heartbeat"
+---
+
+## Behaviour
+
+Ajax handler for the Heartbeat API for logged-out visitors: passes the data through heartbeat_nopriv_received and heartbeat_nopriv_send. <Ev source="wp:wp-admin/includes/ajax-actions.php#L21-L72" hash="2828b2c92e7e3fc180d425130389828befc28d20edfd7b12936535345e943cd8"/>
+
+## Override
+
+`heartbeat_nopriv_received`, `heartbeat_nopriv_send` filter it; `heartbeat_nopriv_tick` fires.

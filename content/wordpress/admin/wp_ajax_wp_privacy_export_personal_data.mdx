@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_ajax_wp_privacy_export_personal_data"
+---
+
+## Behaviour
+
+Ajax handler for exporting a user's personal data: runs a page of one exporter for the request and sends the data, then builds the export file when all are done. <Ev source="wp:wp-admin/includes/ajax-actions.php#L4928-L5111" hash="045d9cea2e908f38d85827842d37a3d4caef54887c4d6121579618a077f7f2a3"/>
+
+## Override
+
+`wp_privacy_personal_data_exporters`, `wp_privacy_personal_data_export_page` filter it.

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_ajax_ajax_tag_search"
+---
+
+## Behaviour
+
+Ajax handler for the tag box's suggestions: prints the names of a taxonomy's terms that match the typed text, one per line. <Ev source="wp:wp-admin/includes/ajax-actions.php#L106-L178" hash="2b7ecdb9a38d3546058d2eb59117ddbe719160e6940f0909ad08be8c1732e9c6"/>
+
+## Override
+
+`term_search_min_chars`, `ajax_term_search_results` filter it.
