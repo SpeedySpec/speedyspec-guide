@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'guide/hello',\n  1 => \n  array (\n    'type' => 'string',\n    'default' => 'world',\n  ),\n  2 => true,\n  3 => '<p>Hello REST</p>',\n)",
+ "error": null
+}

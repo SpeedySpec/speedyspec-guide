@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'page',\n    1 => 'post',\n  ),\n  1 => \n  array (\n    0 => 'Garden page',\n  ),\n  2 => 'rest_invalid_param',\n)",
+ "error": null
+}
