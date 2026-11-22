@@ -1,4 +1,7 @@
 <?php
 // sanitize_text_field gets the result and the original.
-add_filter( 'sanitize_text_field', fn( $filtered, $str ) => "[$filtered]", 10, 2 );
+function guide_bracket_text_field( $filtered, $str ) {
+	return "[$filtered]";
+}
+add_filter( 'sanitize_text_field', 'guide_bracket_text_field', 10, 2 );
 return sanitize_text_field( ' a ' );
