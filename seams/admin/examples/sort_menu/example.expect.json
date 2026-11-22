@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'index.php',\n  1 => 'upload.php',\n  2 => 'edit.php',\n)",
+ "error": null
+}

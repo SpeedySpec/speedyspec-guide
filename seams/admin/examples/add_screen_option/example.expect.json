@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'teas_per_page'",
+ "error": null
+}

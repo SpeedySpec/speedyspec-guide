@@ -1,0 +1,11 @@
+---
+symbol: "function:core_auto_updates_settings"
+---
+
+## Behaviour
+
+Prints the Updates screen's automatic core update settings: minor updates only, or all versions; defined in wp-admin/update-core.php, which runs the screen when loaded. <Ev source="wp:wp-admin/update-core.php#L306-L455" hash="eff3e4522489bec5961a54fb1f71434d24bd44233fe3c698989c612f59a759d9"/>
+
+## Override
+
+`allow_dev_auto_core_updates`, `allow_minor_auto_core_updates`, `allow_major_auto_core_updates` filter it; `after_core_auto_updates_settings` fires.

@@ -31,6 +31,10 @@ require_once ABSPATH . 'wp-admin/includes/meta-boxes.php';
 require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
 require_once ABSPATH . 'wp-admin/includes/export.php';
 require_once ABSPATH . 'wp-admin/includes/image-edit.php';
+require_once ABSPATH . 'wp-admin/includes/credits.php';
+require_once ABSPATH . 'wp-admin/includes/widgets.php';
+require_once ABSPATH . 'wp-admin/includes/revision.php';
+require_once ABSPATH . 'wp-admin/includes/class-wp-importer.php';
 
 /** Runs a function that prints and gives back what it printed, each run of whitespace collapsed to one space. */
 function guide_render(callable $print): string

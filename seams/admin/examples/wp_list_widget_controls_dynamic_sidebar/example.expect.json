@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div id=\\'widget-1_search-2\\' class=\\'widget\\'>'",
+ "error": null
+}

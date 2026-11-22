@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_privacy_generate_personal_data_export_file"
+---
+
+## Behaviour
+
+Builds a personal data export as a ZIP of an HTML and a JSON file in the exports folder, from the data the exporters gathered, and stores its name on the request. <Ev source="wp:wp-admin/includes/privacy-tools.php#L316-L584" hash="a2dc43bff3fb13296298f8912a1d41267e174d1d11d9df66071bc0a52d58dad1"/>
+
+## Override
+
+`wp_privacy_personal_data_export_file_created` fires.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'blogger',\n  1 => 'wpcat2tag',\n  2 => 'livejournal',\n  3 => 'movabletype',\n  4 => 'rss',\n  5 => 'tumblr',\n  6 => 'wordpress',\n)",
+ "error": null
+}

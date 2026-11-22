@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_privacy_process_personal_data_erasure_page"
+---
+
+## Behaviour
+
+Hooked to wp_privacy_personal_data_erasure_page: marks the request completed once the last eraser's last page is done. <Ev source="wp:wp-admin/includes/privacy-tools.php#L926-L980" hash="60c3866c0cce54c7a6928411fddbe1cea87dd69cf6da6a2ed140178b1ff32db3"/>
+
+## Override
+
+`wp_privacy_personal_data_erasers` filters it; `wp_privacy_personal_data_erased` fires.
