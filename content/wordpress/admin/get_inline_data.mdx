@@ -1,0 +1,11 @@
+---
+symbol: "function:get_inline_data"
+---
+
+## Behaviour
+
+Prints the hidden data Quick Edit reads for a post: its title, slug, date, status, terms and other fields. <Ev source="wp:wp-admin/includes/template.php#L311-L400" hash="d5f200466264669f60814aa2abf47ebbbfb76ab333456e45a47a2716dcb75c49"/>
+
+## Override
+
+`editable_slug` filters it; `add_inline_data` fires.
