@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'singular',\n  1 => 'enable-search-modal',\n  2 => 'missing-post-thumbnail',\n  3 => 'has-no-pagination',\n  4 => 'showing-comments',\n  5 => 'show-avatars',\n  6 => 'footer-top-hidden',\n)",
+ "error": null
+}

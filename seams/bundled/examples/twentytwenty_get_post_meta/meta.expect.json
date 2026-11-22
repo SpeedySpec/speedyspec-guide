@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'post-author',\n    1 => 'post-date',\n    2 => 'post-comment-link',\n  ),\n  1 => NULL,\n  2 => NULL,\n)",
+ "error": null
+}

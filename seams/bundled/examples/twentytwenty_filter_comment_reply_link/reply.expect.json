@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a class=\\'do-not-scroll comment-reply-link\\' href=\\'#\\'>Reply</a>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'widgets',\n    1 => 'attachments',\n    2 => 'posts',\n    3 => 'options',\n    4 => 'nav_menus',\n  ),\n  1 => \n  array (\n    0 => 'primary',\n    1 => 'expanded',\n    2 => 'social',\n  ),\n)",
+ "error": null
+}

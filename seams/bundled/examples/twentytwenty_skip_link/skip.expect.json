@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a class=\"skip-link screen-reader-text\" href=\"#site-content\">Skip to the content</a>'",
+ "error": null
+}

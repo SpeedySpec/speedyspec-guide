@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<h1 class=\"site-title\"><a href=\"http://example.org/\" aria-current=\"page\" rel=\"home\">Guide</a></h1>'",
+ "error": null
+}

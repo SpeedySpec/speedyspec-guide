@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'editor-style-classic.css',\n  1 => 'font-inter.css',\n)",
+ "error": null
+}

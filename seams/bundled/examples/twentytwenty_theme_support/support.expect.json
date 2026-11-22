@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'f5efe0',\n  1 => \n  array (\n    'width' => 1980,\n    'height' => 9999,\n    'crop' => false,\n  ),\n  2 => true,\n  3 => 580,\n)",
+ "error": null
+}

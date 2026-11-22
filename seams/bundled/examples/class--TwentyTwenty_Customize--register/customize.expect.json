@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'retina_logo',\n    1 => 'header_footer_background_color',\n    2 => 'accent_hue_active',\n    3 => 'enable_header_search',\n    4 => 'show_author_bio',\n    5 => 'blog_content',\n    6 => 'cover_template_fixed_background',\n    7 => 'cover_template_overlay_opacity',\n  ),\n  1 => \n  array (\n    'content' => \n    array (\n      'text' => NULL,\n      'accent' => '#00f',\n    ),\n  ),\n  2 => 'full',\n  3 => false,\n)",
+ "error": null
+}

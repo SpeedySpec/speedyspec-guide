@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '.a { color: #fff; }',\n  1 => '',\n  2 => '.b { margin: 2rem; }',\n)",
+ "error": null
+}

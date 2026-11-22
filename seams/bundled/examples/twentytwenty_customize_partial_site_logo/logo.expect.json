@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"site-title faux-heading\"><a href=\"http://example.org/\" rel=\"home\">Guide</a></div>'",
+ "error": null
+}
