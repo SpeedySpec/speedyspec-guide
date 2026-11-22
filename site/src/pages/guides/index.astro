@@ -1,7 +1,8 @@
 ---
-import Base from '../../layouts/Base.astro';
+import Page from '../../layouts/Page.astro';
 import { loadGuideData } from '../../model/data.ts';
 import { guidePath, guideTracks } from '../../model/guides.ts';
+import { guideSidebar } from '../../model/starlight.ts';
 
 const t = guideTracks(await loadGuideData());
 const list = (cls: string, guides: typeof t.path) => ({ cls, guides });
@@ -10,9 +11,8 @@ const contributing = [
   { name: 'SpeedySpec', ...list('guide-contributing-speedyspec', t.contributing.speedyspec) },
 ];
 ---
-<Base title="Guides" section="guides">
-  <main class="page guides">
-    <h1>Guides</h1>
+<Page title="Guides" sidebar={guideSidebar(t)}>
+  <div class="guides">
     <p>Learn to write WordPress plugins, how WordPress's functions work together, and how SpeedySpec runs them. Every code example is run and checked on WordPress.</p>
     <h2>Learning path</h2>
     {t.path.length > 0 ? (
@@ -37,5 +37,5 @@ const contributing = [
         ) : <p class="guide-empty">No guides for contributing to {c.name} yet.</p>}
       </section>
     ))}
-  </main>
-</Base>
+  </div>
+</Page>

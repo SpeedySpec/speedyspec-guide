@@ -17,6 +17,9 @@ export default defineConfig({
       components: {
         SiteTitle: './src/components/starlight/SiteTitle.astro',
         MobileMenuFooter: './src/components/starlight/MobileMenuFooter.astro',
+        Sidebar: './src/components/starlight/Sidebar.astro',
+        PageTitle: './src/components/starlight/PageTitle.astro',
+        Pagination: './src/components/starlight/Pagination.astro',
       },
     }),
     mdx(),

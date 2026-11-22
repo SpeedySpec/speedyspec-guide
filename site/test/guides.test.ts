@@ -62,10 +62,65 @@ describe('the developer guides', () => {
 
   test('test_path_orders_by_number_then_slug', async () => {
     const first = await html(dist, '/guides/path/first/');
-    expect(first.attr('.guide-next a', 'href')).toEqual(['/guides/path/second/']);
-    expect(first.count('.guide-prev a')).toBe(0);
+    expect(first.attr('.pagination-links a[rel="next"]', 'href')).toEqual(['/guides/path/second/']);
+    expect(first.count('.pagination-links a[rel="prev"]')).toBe(0);
     const second = await html(dist, '/guides/path/second/');
-    expect(second.attr('.guide-prev a', 'href')).toEqual(['/guides/path/first/']);
+    expect(second.attr('.pagination-links a[rel="prev"]', 'href')).toEqual(['/guides/path/first/']);
+  });
+
+  test('test_guide_sidebar_lists_every_track', async () => {
+    const p = await html(dist, '/guides/path/first/');
+    expect(p.attr('#starlight__sidebar a[data-guide-track="path"]', 'href')).toEqual(['/guides/path/first/', '/guides/path/second/']);
+    expect(p.attr('#starlight__sidebar a[data-guide-track="topics"]', 'href')).toEqual(['/guides/topics/hooks/', '/guides/topics/options/']);
+    expect(p.attr('#starlight__sidebar a[data-guide-track="contributing-wordpress"]', 'href')).toEqual(['/guides/contributing/wordpress/change/']);
+    expect(p.attr('#starlight__sidebar a[aria-current="page"]', 'href')).toEqual(['/guides/path/first/']);
+  });
+
+  test('test_guide_sidebar_shows_progress_per_ordered_track', async () => {
+    for (const path of ['/guides/path/first/', '/guides/topics/hooks/']) {
+      const p = await html(dist, path);
+      expect(p.attr('[data-progress-track]', 'data-progress-track')).toEqual(['path', 'contributing-wordpress']);
+    }
+  });
+
+  test('test_guide_sidebar_has_mobile_menu_links', async () => {
+    const p = await html(dist, '/guides/path/first/');
+    expect(p.attr('.mobile-site-links a', 'href')).toEqual(['/guides/', '/reference/', '/install/']);
+    expect(p.count('.site-links.always')).toBe(0);
+  });
+
+  test('test_path_guide_shows_its_chapter', async () => {
+    expect((await html(dist, '/guides/path/second/')).text('.chapter-label')).toEqual(['Chapter 2']);
+    expect((await html(dist, '/guides/topics/hooks/')).count('.chapter-label')).toBe(0);
+  });
+
+  test('test_guide_title_weighted_for_search', async () => {
+    const p = await html(dist, '/guides/path/first/');
+    expect(p.attr('h1#_top', 'data-pagefind-weight')).toEqual(['10']);
+    expect(p.count('[data-pagefind-body]')).toBe(1);
+  });
+
+  test('test_edge_arrows_follow_prev_and_next', async () => {
+    const first = await html(dist, '/guides/path/first/');
+    expect(first.attr('a.edge-next', 'href')).toEqual(['/guides/path/second/']);
+    expect(first.count('a.edge-prev')).toBe(0);
+    const topic = await html(dist, '/guides/topics/hooks/');
+    expect(topic.count('a.edge-prev, a.edge-next')).toBe(0);
+  });
+
+  test('test_guide_end_marker_and_read_script', async () => {
+    const p = await html(dist, '/guides/path/first/');
+    expect(p.count('.guide-end')).toBe(1);
+    expect(p.count('[data-read-progress]')).toBe(1);
+    expect(p.count('script[type="module"]')).toBeGreaterThanOrEqual(1);
+    expect((await html(dist, '/reference/')).count('[data-read-progress]')).toBe(0);
+  });
+
+  test('test_guide_lists_its_headings_on_the_right', async () => {
+    const p = await html(dist, '/guides/path/first/');
+    const ids = p.attr('.guide-prose h2[id]', 'id');
+    expect(ids.length).toBeGreaterThan(0);
+    expect(p.attr('starlight-toc a', 'href')).toEqual(expect.arrayContaining(ids.map((id) => `#${id}`)));
   });
 
   test('test_embed_renders_code_and_result', async () => {

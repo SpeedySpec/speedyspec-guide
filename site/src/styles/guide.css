@@ -168,3 +168,23 @@ table.conversion td + td { text-align: right; }
 .home-cards h2 { font-size: var(--sl-text-h5, 1.125rem); margin: 0 0 0.35rem; color: var(--accent); }
 .home-cards p { margin: 0; color: var(--muted); font-size: var(--sl-text-sm, 0.9375rem); }
 .home-popular { color: var(--muted); font-size: var(--sl-text-sm, 0.875rem); }
+
+/* Page titles (the PageTitle override replaces Starlight's, so it carries Starlight's title look). */
+h1.page-title { margin-top: 1rem; font-size: var(--sl-text-h1); line-height: var(--sl-line-height-headings); font-weight: 600; color: var(--sl-color-white); }
+
+/* Guide pages: chapter label, progress per track, read ticks in the sidebar, and arrows at the page edges. */
+.chapter-label { margin: 1rem 0 -0.75rem; font-size: var(--sl-text-xs); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.guide-progress { display: grid; gap: 0.6rem; margin-bottom: 1rem; }
+.progress { display: grid; grid-template-columns: 1fr auto; gap: 0.15rem 0.5rem; font-size: var(--sl-text-xs); }
+.progress-name { font-weight: 600; color: var(--sl-color-white); }
+.progress-label { color: var(--muted); }
+.progress-bar { grid-column: 1 / -1; height: 0.25rem; border-radius: 999px; background: var(--sl-color-gray-5); overflow: hidden; }
+.progress-bar i { display: block; height: 100%; width: var(--progress, 0%); background: var(--ok); transition: width 0.3s; }
+#starlight__sidebar a[data-read]::after { content: '✓'; margin-inline-start: auto; padding-inline-start: 0.5rem; color: var(--ok); font-weight: 700; }
+.edge-prev, .edge-next { display: none; }
+@media (min-width: 72rem) {
+  .edge-prev, .edge-next { display: flex; align-items: center; justify-content: center; position: fixed; top: 50%; transform: translateY(-50%); width: 2.5rem; height: 5rem; font-size: 2.5rem; line-height: 1; color: var(--sl-color-gray-4); text-decoration: none; border-radius: 0.5rem; z-index: 2; }
+  .edge-prev { inset-inline-start: calc(var(--sl-sidebar-width, 18.75rem) + 0.25rem); }
+  .edge-next { inset-inline-end: 0.25rem; }
+  .edge-prev:hover, .edge-next:hover { color: var(--accent); background: var(--surface-2); }
+}

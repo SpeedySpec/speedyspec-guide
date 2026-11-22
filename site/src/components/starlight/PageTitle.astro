@@ -1,0 +1,8 @@
+---
+// The page title, weighted for search; on a learning-path guide, its chapter above it (Decorator in effect: Starlight's
+// own title is an <h1 id="_top"> alone, which this keeps).
+const { entry } = Astro.locals.starlightRoute;
+const chapter = (entry.data as { chapter?: number }).chapter;
+---
+{chapter !== undefined && <p class="chapter-label">Chapter {chapter}</p>}
+<h1 id="_top" class="page-title" data-pagefind-weight="10">{entry.data.title}</h1>
