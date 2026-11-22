@@ -5,7 +5,10 @@ import { join } from 'node:path';
 const siteDir = join(import.meta.dir, '..');
 const builds = new Map<string, { dist: string; exitCode: number; output: string }>();
 
-/** Builds the site with the given environment into a temporary folder, once per distinct environment. */
+/**
+ * Builds the site with the given environment into a temporary folder, once per distinct environment. It is the same
+ * build as `bun run build`: Starlight indexes the pages for search itself, so the search tests cover that step.
+ */
 export function buildSite(env: Record<string, string>): { dist: string; exitCode: number; output: string } {
   const key = JSON.stringify(Object.entries(env).sort());
   const cached = builds.get(key);
@@ -15,14 +18,7 @@ export function buildSite(env: Record<string, string>): { dist: string; exitCode
     cwd: siteDir,
     env: { ...process.env, ...env },
   });
-  let output = p.stdout.toString() + p.stderr.toString();
-  let exitCode = p.exitCode ?? 1;
-  if (exitCode === 0) {
-    const search = Bun.spawnSync(['bunx', '--bun', 'pagefind', '--site', dist], { cwd: siteDir });
-    output += search.stdout.toString() + search.stderr.toString();
-    exitCode = search.exitCode ?? 1;
-  }
-  const result = { dist, exitCode, output };
+  const result = { dist, exitCode: p.exitCode ?? 1, output: p.stdout.toString() + p.stderr.toString() };
   builds.set(key, result);
   return result;
 }

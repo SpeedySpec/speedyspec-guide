@@ -55,14 +55,14 @@ describe('the WordPress API section', () => {
 
   test('a class page has a section per method, with its anchor', async () => {
     const p = await html(dist, '/wordpress/hooks/class/WP_Hook/');
-    expect(p.text('.rail-methods .rail-member')).toEqual(['::add_filter', '::apply_filters']);
-    expect(p.attr('.method h2', 'id')).toEqual(['add_filter', 'apply_filters']);
+    expect(p.text('#starlight__sidebar a').filter((t) => t.startsWith('::'))).toEqual(['::add_filter', '::apply_filters']);
+    expect(p.attr('.method > h2', 'id')).toEqual(['add_filter', 'apply_filters']);
     expect(p.text('.not-documented')).toEqual(['Not yet documented. Signature and relationships are generated from WordPress 7.2-RC1.']);
   });
 
   test('a hook page names who fires it', async () => {
     const p = await html(dist, '/wordpress/options/filter/pre_option_{option}/');
-    expect(p.text('.rail-member')).toContain('filter pre_option_{$option}');
+    expect(p.text('#starlight__sidebar a')).toContain('filter pre_option_{$option}');
     expect(p.text('h1')).toEqual(['pre_option_{$option}']);
     expect(p.text('.fired-by a')).toEqual(['get_option']);
   });
@@ -74,5 +74,27 @@ describe('the WordPress API section', () => {
   test('no page for an unassigned symbol, and none for a method', () => {
     expect(existsSync(join(dist, 'wordpress', 'unassigned'))).toBe(false);
     expect(existsSync(join(dist, 'wordpress', 'hooks', 'class', 'WP_Hook#apply_filters'))).toBe(false);
+  });
+
+  test('a symbol page has its seam in the sidebar, its own role open', async () => {
+    const p = await html(dist, '/wordpress/hooks/add_filter/');
+    expect(p.attr('#starlight__sidebar a', 'href')[0]).toBe('/wordpress/hooks/');
+    expect(p.text('#starlight__sidebar a[aria-current="page"]')).toEqual(['add_filter ↻']);
+    expect(p.text('#starlight__sidebar a.circular')).toEqual(['add_filter ↻']);
+    expect(p.attr('#starlight__sidebar a', 'href')).toEqual(expect.arrayContaining(['/wordpress/hooks/#role-run', '/wordpress/hooks/#role-classes-and-state', '/wordpress/hooks/#role-other']));
+  });
+
+  test('a symbol page lists its headings on the right', async () => {
+    const p = await html(dist, '/wordpress/hooks/add_filter/');
+    const ids = p.attr('.sl-markdown-content h2[id]', 'id');
+    expect(ids.length).toBeGreaterThan(0);
+    expect(p.attr('starlight-toc a', 'href')).toEqual(expect.arrayContaining(ids.map((id) => `#${id}`)));
+    expect(p.count('[data-pagefind-body]')).toBe(1);
+  });
+
+  test('a seam page has the seam and its roles in the sidebar', async () => {
+    const p = await html(dist, '/wordpress/hooks/');
+    expect(p.text('h1')).toEqual(['Hooks']);
+    expect(p.attr('#starlight__sidebar a', 'href')).toEqual(expect.arrayContaining(['/wordpress/hooks/', '/wordpress/hooks/#role-run']));
   });
 });

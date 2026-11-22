@@ -3,7 +3,8 @@ import CompatTable from '../../../components/CompatTable.astro';
 import DependencyList from '../../../components/DependencyList.astro';
 import SeamCycles from '../../../components/SeamCycles.astro';
 import Prose from '../../../components/Prose.astro';
-import Base from '../../../layouts/Base.astro';
+import Reference from '../../../layouts/Reference.astro';
+import { seamRailView } from '../../../model/views.ts';
 import { loadGuideData } from '../../../model/data.ts';
 import { guidePath, guideTracks } from '../../../model/guides.ts';
 import { compatGroups, dependencies, seamCycles } from '../../../model/sections.ts';
@@ -23,10 +24,8 @@ const { dependsOn, dependedOnBy } = dependencies(view.id, d);
 const cycles = seamCycles(view.id, d);
 const topicGuide = guideTracks(d).topics.find((g) => g.seam === view.id);
 ---
-<Base title={`${view.name} · SpeedySpec API`} section="speedyspec">
-  <main class="page" data-pagefind-body>
+<Reference title={`${view.name}`} rail={seamRailView(view.id, 'speedyspec', d)} section="speedyspec">
     <div class="crumbs"><a href="/speedyspec/">SpeedySpec API</a> › seam</div>
-    <h1>{view.name}</h1>
     {topicGuide && <p class="seam-guide">Guide: <a href={guidePath(topicGuide)}>{topicGuide.title}</a></p>}
     <p class="muted">{view.ported ? 'Native (Rust): SpeedySpec answers this seam in Rust.' : 'Not in SpeedySpec yet: SpeedySpec provides this seam once it is ported. Until then this page lists its WordPress symbols.'}</p>
     {intro && <Prose entry={intro} />}
@@ -44,5 +43,4 @@ const topicGuide = guideTracks(d).topics.find((g) => g.seam === view.id);
     <DependencyList title="Depended on by" kind="depended-on-by" groups={dependedOnBy} data={d} limit={5} allHref={`/speedyspec/${view.id}/depended-on-by/`} />
 
     <SeamCycles cycles={cycles} data={d} limit={10} allHref={`/speedyspec/${view.id}/cycles/`} />
-  </main>
-</Base>
+</Reference>

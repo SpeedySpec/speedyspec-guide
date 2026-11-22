@@ -13,6 +13,7 @@ import { join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
 import { type InstallPage, inReadingOrder, installPage } from './install.ts';
+import { guideRoot } from './root.ts';
 import type { Sources } from './wording.ts';
 
 export type { CratesFile } from '@speedyspec-guide/app';
@@ -73,7 +74,7 @@ export interface GuideData {
   sources: Sources | null;
 }
 
-const root = fileURLToPath(new URL('../../../', import.meta.url));
+const root = guideRoot(fileURLToPath(import.meta.url));
 
 export function guideDirs(env: Record<string, string | undefined> = process.env) {
   return {

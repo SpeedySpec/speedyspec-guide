@@ -3,11 +3,11 @@ import MaybeLink from '../../../components/MaybeLink.astro';
 import Diagram from '../../../components/Diagram.astro';
 import Prose from '../../../components/Prose.astro';
 import VerdictPill from '../../../components/VerdictPill.astro';
-import Base from '../../../layouts/Base.astro';
+import Reference from '../../../layouts/Reference.astro';
 import { loadGuideData } from '../../../model/data.ts';
 import { guidePath, guideTracks } from '../../../model/guides.ts';
 import { seamDiagram } from '../../../model/mermaid.ts';
-import { seamView, wordpressSeams } from '../../../model/views.ts';
+import { seamRailView, seamView, wordpressSeams } from '../../../model/views.ts';
 import { roleLabel } from '../../../model/wording.ts';
 
 export async function getStaticPaths() {
@@ -24,10 +24,8 @@ const elsewhere = d.seams.find((s) => s.id === view.id)?.elsewhere ?? [];
 const written = new Set(d.content.filter((c) => c.section === 'wordpress' && c.kind === 'symbol').map((c) => c.symbol));
 const topicGuide = guideTracks(d).topics.find((g) => g.seam === view.id);
 ---
-<Base title={`${view.name} · WordPress API`} section="wordpress">
-  <main class="page" data-pagefind-body>
+<Reference title={view.name} description={view.job} rail={seamRailView(view.id, 'wordpress', d)} section="wordpress">
     <div class="crumbs"><a href="/wordpress/">WordPress API</a> › seam</div>
-    <h1>{view.name}</h1>
     {topicGuide && <p class="seam-guide">Guide: <a href={guidePath(topicGuide)}>{topicGuide.title}</a></p>}
     <p class="muted">{view.job}</p>
     {intro && <Prose entry={intro} />}
@@ -59,5 +57,4 @@ const topicGuide = guideTracks(d).topics.find((g) => g.seam === view.id);
         </section>
       ))}
     </div>
-  </main>
-</Base>
+</Reference>

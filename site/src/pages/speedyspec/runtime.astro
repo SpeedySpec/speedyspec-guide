@@ -1,5 +1,6 @@
 ---
-import Base from '../../layouts/Base.astro';
+import Page from '../../layouts/Page.astro';
+import { REFERENCE_SIDEBAR } from '../../model/starlight.ts';
 import { loadGuideData } from '../../model/data.ts';
 import { unplacedRuntime } from '../../model/sections.ts';
 import { speedyspecProvenance } from '../../model/verdict.ts';
@@ -8,10 +9,8 @@ const d = await loadGuideData();
 const unplaced = unplacedRuntime(d);
 const kinds = [...new Set(unplaced.map((s) => s.kind))].sort();
 ---
-<Base title="The runtime's PHP API" section="speedyspec">
-  <main class="page" data-pagefind-body>
+<Page title={"The runtime's PHP API, not yet in a seam"} sidebar={REFERENCE_SIDEBAR}>
     <div class="crumbs"><a href="/speedyspec/">SpeedySpec API</a></div>
-    <h1>The runtime's PHP API, not yet in a seam</h1>
     <p class="muted">What the SpeedySpec runtime registers in PHP that WordPress doesn't have, and that no seam lists yet.</p>
     {unplaced.length === 0 && <p class="muted">Everything the runtime registers is in a seam.</p>}
     {kinds.map((k) => (
@@ -24,5 +23,4 @@ const kinds = [...new Set(unplaced.map((s) => s.kind))].sort();
         </ul>
       </section>
     ))}
-  </main>
-</Base>
+</Page>

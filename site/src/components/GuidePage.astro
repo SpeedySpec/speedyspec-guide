@@ -1,30 +1,30 @@
 ---
-// A guide's page: its title and summary, its prose, and where to go next.
+// A guide's page: its summary and prose inside the guide shell, with every guide in the sidebar, the learning-path
+// chapter, previous/next guides, and a marker at the end that counts the guide as read once it's seen.
+import { getEntry, render } from 'astro:content';
 import type { Guide } from '@speedyspec-guide/domain';
 import GuideProse from './GuideProse.astro';
-import Base from '../layouts/Base.astro';
+import Page from '../layouts/Page.astro';
 import { loadGuideData } from '../model/data.ts';
-import { guidePath, neighbours } from '../model/guides.ts';
+import { guideTracks } from '../model/guides.ts';
+import { chapterOf, guidePrevNext, guideSidebar } from '../model/starlight.ts';
 
 interface Props {
   guide: Guide;
 }
 const { guide } = Astro.props;
-const { prev, next } = neighbours(guide, await loadGuideData());
+const d = await loadGuideData();
+const tracks = guideTracks(d);
+const { prev, next } = guidePrevNext(guide, d);
+const entry = await getEntry('guides', guide.file.replace(/\.mdx$/, ''));
+const headings = entry ? (await render(entry)).headings.filter((h) => h.depth === 2 || h.depth === 3) : [];
 ---
-<Base title={guide.title} section="guides">
-  <main class="page guide">
-    <p class="crumbs"><a href="/guides/">Guides</a></p>
-    <h1>{guide.title}</h1>
+<Page title={guide.title} description={guide.summary} sidebar={guideSidebar(tracks)} headings={headings} prev={prev} next={next} chapter={chapterOf(guide, tracks)}>
+  <div class="guide">
     <p class="summary">{guide.summary}</p>
     <slot name="before" />
     <GuideProse guide={guide} />
     <slot />
-    {(prev || next) && (
-      <nav class="guide-nav">
-        {prev && <span class="guide-prev"><a href={guidePath(prev)}>← {prev.title}</a></span>}
-        {next && <span class="guide-next"><a href={guidePath(next)}>{next.title} →</a></span>}
-      </nav>
-    )}
-  </main>
-</Base>
+    <div class="guide-end" aria-hidden="true"></div>
+  </div>
+</Page>

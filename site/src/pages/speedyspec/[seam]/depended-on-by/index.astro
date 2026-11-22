@@ -1,6 +1,7 @@
 ---
 // The seams this seam's "Depended on by" list reaches, each with its count, linking a page of every row for that seam.
-import Base from '../../../../layouts/Base.astro';
+import Reference from '../../../../layouts/Reference.astro';
+import { seamRailView } from '../../../../model/views.ts';
 import { loadGuideData } from '../../../../model/data.ts';
 import { dependencies, seamIdByName } from '../../../../model/sections.ts';
 
@@ -13,15 +14,12 @@ const d = await loadGuideData();
 const seam = d.seams.find((s) => s.id === Astro.params.seam)!;
 const groups = [...dependencies(seam.id, d).dependedOnBy];
 ---
-<Base title={`Depended on by · ${seam.name} · SpeedySpec API`} section="speedyspec">
-  <main class="page" data-pagefind-body>
+<Reference title={`${seam.name}: Depended on by`} rail={seamRailView(seam.id, 'speedyspec', d)} section="speedyspec">
     <div class="crumbs"><a href="/speedyspec/">SpeedySpec API</a> › <a href={`/speedyspec/${seam.id}/`}>{seam.name}</a> › Depended on by</div>
-    <h1>{seam.name}: Depended on by</h1>
     {groups.length === 0 && <p class="muted">Nothing.</p>}
     <ul class="other-seams">
       {groups.map(([name, rows]) => (
         <li><a href={`/speedyspec/${seam.id}/depended-on-by/${seamIdByName(name, d)}/`}>{name}</a> <span class="muted">{rows.length} {rows.length === 1 ? 'symbol' : 'symbols'}</span></li>
       ))}
     </ul>
-  </main>
-</Base>
+</Reference>

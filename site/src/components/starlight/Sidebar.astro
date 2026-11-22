@@ -1,0 +1,29 @@
+---
+// Starlight's sidebar; on guide pages, a progress bar for each ordered track above it, and the script that ticks the
+// guides the reader has finished (Decorator).
+import Default from '@astrojs/starlight/components/Sidebar.astro';
+import { loadGuideData } from '../../model/data.ts';
+import { guideTracks } from '../../model/guides.ts';
+import { progressBars } from '../../model/starlight.ts';
+
+const onGuide = Astro.url.pathname.startsWith('/guides/');
+const bars = onGuide ? progressBars(guideTracks(await loadGuideData())) : [];
+---
+{onGuide && bars.length > 0 && (
+  <div class="guide-progress" data-read-progress>
+    {bars.map((b) => (
+      <div class="progress" data-progress-track={b.track}>
+        <span class="progress-name">{b.label}</span>
+        <span class="progress-label">0 of {b.total} read</span>
+        <span class="progress-bar" aria-hidden="true"><i></i></span>
+      </div>
+    ))}
+  </div>
+)}
+<Default><slot /></Default>
+{onGuide && (
+  <script>
+    import { browserStore, mount } from '../../scripts/read-progress.ts';
+    mount(document, browserStore());
+  </script>
+)}

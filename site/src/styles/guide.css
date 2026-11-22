@@ -1,11 +1,12 @@
+/* The site's colours follow Starlight's theme (light, dark or auto, from its theme selector). */
 :root {
-  --text: #1d1f23;
-  --muted: #6b7280;
-  --line: #e3e5e8;
-  --surface: #ffffff;
-  --surface-2: #f6f7f9;
-  --accent: #1f45b5;
-  --accent-soft: #eef2ff;
+  --text: var(--sl-color-white);
+  --muted: var(--sl-color-gray-3);
+  --line: var(--sl-color-hairline);
+  --surface: var(--sl-color-black);
+  --surface-2: var(--sl-color-gray-6);
+  --accent: var(--sl-color-text-accent);
+  --accent-soft: var(--sl-color-accent-low);
   --ok: #17673a;
   --ok-soft: #e7f6ec;
   --warn: #8a5a00;
@@ -18,64 +19,31 @@
   --code-text: #e6e6e6;
   --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: ui-monospace, 'SF Mono', Menlo, monospace;
-  --column: 46rem;
-  --rail: 13rem;
-  color-scheme: light dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #e6e7ea;
-    --muted: #9aa0ab;
-    --line: #2a2e35;
-    --surface: #121418;
-    --surface-2: #1a1d22;
-    --accent: #8ea8ff;
-    --accent-soft: #1c2440;
-    --ok: #6fd39a;
-    --ok-soft: #12291c;
-    --warn: #f0c060;
-    --warn-soft: #2d2410;
-    --bad: #ff8f8f;
-    --bad-soft: #3a1414;
-    --new: #8ea8ff;
-    --new-soft: #1c2440;
-    --code-bg: #0b0d10;
-  }
+:root[data-theme='dark'] {
+  --ok: #6fd39a;
+  --ok-soft: #12291c;
+  --warn: #f0c060;
+  --warn-soft: #2d2410;
+  --bad: #ff8f8f;
+  --bad-soft: #3a1414;
+  --new: #8ea8ff;
+  --new-soft: #1c2440;
+  --code-bg: #0b0d10;
 }
 
 * { box-sizing: border-box; }
-html { background: var(--surface); color: var(--text); font: 16px/1.6 var(--font); }
-body { margin: 0; }
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
 code, pre, .mono { font-family: var(--mono); font-size: 0.875em; }
 pre { background: var(--code-bg); color: var(--code-text); border-radius: 6px; padding: 0.75rem 1rem; overflow: auto; line-height: 1.5; tab-size: 4; }
 h1, h2, h3 { line-height: 1.25; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-.topbar { display: flex; gap: 1.25rem; align-items: center; padding: 0.6rem 1.25rem; border-bottom: 1px solid var(--line); font-size: 0.875rem; }
-.topbar .brand { font-weight: 600; color: var(--text); }
-.topbar .search { margin-left: auto; }
-.page { max-width: var(--column); margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
 
 .muted { color: var(--muted); }
-.reference { display: grid; grid-template-columns: var(--rail) minmax(0, var(--column)); gap: 2rem; max-width: calc(var(--rail) + var(--column) + 4rem); margin: 0 auto; padding: 1.25rem; }
 .content { min-width: 0; }
-@media (max-width: 52rem) { .reference { grid-template-columns: 1fr; } .rail { border-right: 0; border-bottom: 1px solid var(--line); } }
-
-.rail { border-right: 1px solid var(--line); padding-right: 0.75rem; font-size: 0.8125rem; position: sticky; top: 0; align-self: start; max-height: 100vh; overflow: auto; }
-.rail-seam { display: block; color: var(--muted); margin-bottom: 0.5rem; }
-.rail-seam b { color: var(--text); }
-.rail-role { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0.9rem 0 0.2rem; }
-/* A role whose members aren't listed here is a link to them on the seam page: one per line, like the expanded ones. */
-.rail-role-link { display: block; padding: 0.1rem 0; }
-.rail-role-link + .rail-role-link { margin-top: 0.35rem; }
-.rail-role-link:hover { color: var(--accent); }
-.rail-member { display: block; font-family: var(--mono); padding: 0.1rem 0.4rem; border-radius: 4px; color: var(--text); overflow-wrap: anywhere; }
-.rail-member[aria-current='page'] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
-.rail-member.circular { background: var(--bad-soft); color: var(--bad); }
-.rail-methods { padding-left: 0.6rem; }
+/* A seam member in a dependency cycle, in the reference sidebar. */
+#starlight__sidebar a.circular { background: var(--bad-soft); color: var(--bad); }
 .cycle-mark { margin-left: 0.3rem; }
 
 .head h1 { font-size: 1.5rem; margin: 0.1rem 0 0.4rem; }
@@ -91,6 +59,9 @@ h1, h2, h3 { line-height: 1.25; }
 .panel { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; margin: 1rem 0; padding: 0.75rem 0.9rem; border: 1px solid var(--line); border-radius: 8px; }
 .panel dt { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .panel dd { margin: 0.15rem 0 0; display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.panel-group { min-width: 0; }
+.panel .chip { overflow-wrap: anywhere; }
+@media (max-width: 50rem) { .panel { grid-template-columns: minmax(0, 1fr); } }
 .chip { font-family: var(--mono); font-size: 0.75rem; border: 1px solid var(--line); border-radius: 6px; padding: 0.1rem 0.45rem; color: var(--text); background: var(--surface); }
 .chip.circular, tr.circular td:first-child { background: var(--bad-soft); color: var(--bad); border-color: var(--bad); }
 .chip-note { font-family: var(--font); font-size: 0.6875rem; font-weight: 600; }
@@ -121,7 +92,6 @@ h1, h2, h3 { line-height: 1.25; }
 .seam-list { list-style: none; padding: 0; }
 .seam-list li { padding: 0.5rem 0; border-top: 1px solid var(--line); display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: baseline; }
 .seam-list .count, .seam-list .deps { margin-left: auto; font-size: 0.8125rem; }
-.search-open { font: inherit; font-size: 0.8125rem; color: var(--muted); background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 0.2rem 0.7rem; cursor: pointer; }
 .names { columns: 3; font-size: 0.8125rem; }
 /* Circular dependencies: red background wherever they are listed (the text "circular" is always there too). */
 li.circular, .member.circular, p.path.circular { background: var(--bad-soft); color: var(--bad); border-radius: 4px; padding: 0.1rem 0.4rem; }
@@ -141,15 +111,69 @@ table.conversion td + td { text-align: right; }
 .guide-example figcaption .result { min-width: 0; max-width: 100%; color: var(--muted); }
 .guide-example figcaption .result code { color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; }
 .guide-example figcaption .result-error { color: var(--bad); }
-.guide-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.9375rem; }
-.guide-nav .guide-next { margin-left: auto; text-align: right; }
 .guide-reference, .seam-guide { border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 6px; padding: 0.5rem 0.9rem; margin: 1rem 0; font-size: 0.875rem; background: var(--accent-soft); }
 .speedyspec-note { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8125rem; color: var(--muted); white-space: nowrap; }
 .guide-empty { color: var(--muted); font-style: italic; }
 .guide-prose h2 { margin-top: 2rem; }
 .guide .summary { font-size: 1.0625rem; color: var(--muted); margin-top: -0.25rem; }
 .guide-prose .ev { white-space: normal; overflow-wrap: anywhere; }
+/* On a phone a long scenario name would push the page sideways, so evidence chips wrap there too. */
+@media (max-width: 50rem) { .ev { white-space: normal; overflow-wrap: anywhere; } }
 /* The installation guide. */
 .install-contents ol { padding-left: 1.25rem; }
 .install-contents li { margin: 0.25rem 0; }
-.install-pager { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.875rem; }
+
+/* The header's section links; below Starlight's 50rem breakpoint they live in the mobile menu instead. */
+.site-links { display: none; gap: 1.25rem; margin-inline-start: 1.5rem; align-items: center; font-size: var(--sl-text-sm, 0.875rem); }
+.site-links a { color: var(--sl-color-gray-2, var(--muted)); text-decoration: none; }
+.site-links a:hover, .site-links a[aria-current='page'] { color: var(--sl-color-white, var(--text)); }
+@media (min-width: 50rem) { .site-links { display: flex; } }
+/* Pages without a sidebar have no mobile menu: on phones their sections sit in a strip at the top of the page, and the
+ * header shows Starlight's theme selector (normally only in the mobile menu) beside the title and search. */
+.page-site-links { display: flex; gap: 1.25rem; justify-content: center; margin-bottom: 1.5rem; font-size: var(--sl-text-sm); }
+.page-site-links a { color: var(--sl-color-gray-2); text-decoration: none; font-weight: 600; }
+@media (min-width: 50rem) { .page-site-links { display: none; } }
+@media (max-width: 50rem) {
+  html:not([data-has-sidebar]) header .right-group { display: flex; }
+  /* No social icons, so no divider after them: the title keeps its room. */
+  html:not([data-has-sidebar]) header .social-icons { display: none; }
+}
+/* On a phone the selector shrinks to its theme icon and caret (its label stays for screen readers). */
+@media (max-width: 30rem) {
+  html:not([data-has-sidebar]) header starlight-theme-select label { --sl-select-width: 0px !important; }
+  html:not([data-has-sidebar]) header starlight-theme-select select { color: transparent; }
+}
+.mobile-site-links { display: flex; flex-direction: column; gap: 0.5rem; padding-block: 1rem; border-top: 1px solid var(--sl-color-gray-6, var(--line)); }
+.mobile-site-links a { color: var(--sl-color-white, var(--text)); text-decoration: none; font-weight: 600; }
+
+/* Home: the tagline, a search button, four goal cards and the popular guides. */
+.home { max-width: 60rem; margin: 0 auto; text-align: center; }
+.home-tagline { font-size: var(--sl-text-lg, 1.125rem); color: var(--muted); max-width: 42rem; margin: 0 auto 1.25rem; }
+.home-search { font: inherit; color: var(--muted); background: var(--surface-2); border: 1px solid var(--line); border-radius: 0.5rem; padding: 0.6rem 1rem; width: min(100%, 28rem); text-align: start; cursor: pointer; }
+.home-cards { list-style: none; padding: 0; margin: 2rem 0 1rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; text-align: start; }
+.home-cards li { margin: 0; }
+.home-cards a { display: block; height: 100%; border: 1px solid var(--line); border-radius: 0.75rem; padding: 1rem 1.1rem; color: var(--text); text-decoration: none; background: var(--surface); }
+.home-cards a:hover { border-color: var(--accent); }
+.home-cards h2 { font-size: var(--sl-text-h5, 1.125rem); margin: 0 0 0.35rem; color: var(--accent); }
+.home-cards p { margin: 0; color: var(--muted); font-size: var(--sl-text-sm, 0.9375rem); }
+.home-popular { color: var(--muted); font-size: var(--sl-text-sm, 0.875rem); }
+
+/* Page titles (the PageTitle override replaces Starlight's, so it carries Starlight's title look). */
+h1.page-title { margin-top: 1rem; font-size: var(--sl-text-h1); line-height: var(--sl-line-height-headings); font-weight: 600; color: var(--sl-color-white); }
+
+/* Guide pages: chapter label, progress per track, read ticks in the sidebar, and arrows at the page edges. */
+.chapter-label { margin: 1rem 0 -0.75rem; font-size: var(--sl-text-xs); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.guide-progress { display: grid; gap: 0.6rem; margin-bottom: 1rem; }
+.progress { display: grid; grid-template-columns: 1fr auto; gap: 0.15rem 0.5rem; font-size: var(--sl-text-xs); }
+.progress-name { font-weight: 600; color: var(--sl-color-white); }
+.progress-label { color: var(--muted); }
+.progress-bar { grid-column: 1 / -1; height: 0.25rem; border-radius: 999px; background: var(--sl-color-gray-5); overflow: hidden; }
+.progress-bar i { display: block; height: 100%; width: var(--progress, 0%); background: var(--ok); transition: width 0.3s; }
+#starlight__sidebar a[data-read]::after { content: '✓'; margin-inline-start: auto; padding-inline-start: 0.5rem; color: var(--ok); font-weight: 700; }
+.edge-prev, .edge-next { display: none; }
+@media (min-width: 72rem) {
+  .edge-prev, .edge-next { display: flex; align-items: center; justify-content: center; position: fixed; top: 50%; transform: translateY(-50%); width: 2.5rem; height: 5rem; font-size: 2.5rem; line-height: 1; color: var(--sl-color-gray-4); text-decoration: none; border-radius: 0.5rem; z-index: 2; }
+  .edge-prev { inset-inline-start: calc(var(--sl-sidebar-width, 18.75rem) + 0.25rem); }
+  .edge-next { inset-inline-end: 0.25rem; }
+  .edge-prev:hover, .edge-next:hover { color: var(--accent); background: var(--surface-2); }
+}

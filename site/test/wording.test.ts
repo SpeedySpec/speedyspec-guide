@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test } from 'bun:test';
 import { join } from 'node:path';
 import { type GuideData, readGuideData } from '../src/model/data.ts';
-import { evidenceLink, notDocumentedText, provenanceText, roleLabel, verdictLabel, verdictTone } from '../src/model/wording.ts';
+import { evidenceLink, notDocumentedText, provenanceText, roleLabel, symbolTitle, verdictLabel, verdictTone } from '../src/model/wording.ts';
 import { symbolView } from '../src/model/views.ts';
 
 const fixtures = join(import.meta.dir, 'fixtures');
@@ -63,5 +63,15 @@ describe('notDocumentedText', () => {
     expect(notDocumentedText('seam', '7.2-RC1')).toBe('Not in SpeedySpec yet: SpeedySpec provides this when its seam is ported.');
     expect(notDocumentedText('none', '7.1.5')).toBe('Not yet documented, and not yet compared with WordPress.');
     expect(notDocumentedText('page', '7.1.5')).toBe('Not yet documented.');
+  });
+});
+
+describe('symbolTitle', () => {
+  test('test_symbol_title_by_kind', () => {
+    expect(symbolTitle({ kind: 'function', name: 'add_filter' })).toBe('add_filter()');
+    expect(symbolTitle({ kind: 'method', name: 'apply_filters' })).toBe('apply_filters()');
+    expect(symbolTitle({ kind: 'global', name: 'wp_filter' })).toBe('$wp_filter');
+    expect(symbolTitle({ kind: 'class', name: 'WP_Hook' })).toBe('WP_Hook');
+    expect(symbolTitle({ kind: 'filter', name: 'the_content' })).toBe('the_content');
   });
 });

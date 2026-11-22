@@ -22,6 +22,19 @@ export function roleLabel(role: string): string {
   return words.charAt(0).toUpperCase() + words.slice(1);
 }
 
+/**
+ * A symbol's page title: functions and methods with parentheses, globals with their dollar sign.
+ *
+ * @param s
+ *     The symbol's kind and name.
+ * @return
+ *     The title as the page shows it.
+ */
+export function symbolTitle(s: { kind: string; name: string }): string {
+  if (s.kind === 'function' || s.kind === 'method') return `${s.name}()`;
+  return s.kind === 'global' ? `$${s.name}` : s.name;
+}
+
 /** The one line under a page's name saying how its facts were established and when the symbol arrived. */
 export function provenanceText(view: SymbolView, section: Section): string {
   if (section === 'wordpress') {
