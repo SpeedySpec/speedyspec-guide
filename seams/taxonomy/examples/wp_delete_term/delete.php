@@ -4,6 +4,9 @@ $default = wp_insert_term( 'Uncategorized', 'category' )['term_id'];
 $news = wp_insert_term( 'News', 'category' );
 $local = wp_insert_term( 'Local', 'category', array( 'parent' => $news['term_id'] ) );
 $post = wp_insert_post( array( 'post_title' => 'A', 'post_status' => 'publish', 'post_category' => array( $local['term_id'] ), 'tags_input' => array( 'alpha' ) ) );
-add_action( 'delete_category', fn( $id ) => print( "delete_category $id\n" ) );
+function guide_report_deleted_category( $id ) {
+	echo "delete_category $id\n";
+}
+add_action( 'delete_category', 'guide_report_deleted_category' );
 $deleted = wp_delete_term( $news['term_id'], 'category' );
 return array( $deleted, get_term( $local['term_id'] )->parent, wp_delete_term( $default, 'category' ), wp_delete_term( 999, 'category' ) );
