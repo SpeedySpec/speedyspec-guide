@@ -4,5 +4,8 @@ $page = get_post( wp_insert_post( array( 'post_type' => 'page', 'post_title' => 
 $category = get_term( wp_insert_term( 'News', 'category' )['term_id'] );
 $from_page = wp_setup_nav_menu_item( $page );
 $from_term = wp_setup_nav_menu_item( $category );
-add_filter( 'pre_wp_setup_nav_menu_item', fn( $pre, $item ) => isset( $item->guide ) ? 'answered' : $pre, 10, 2 );
+function guide_answer_menu_item_setup( $pre, $item ) {
+	return isset( $item->guide ) ? 'answered' : $pre;
+}
+add_filter( 'pre_wp_setup_nav_menu_item', 'guide_answer_menu_item_setup', 10, 2 );
 return array( array( $from_page->db_id, $from_page->type, $from_page->object, $from_page->type_label, $from_page->title, $from_page->url ), array( $from_term->type, $from_term->object, $from_term->title, $from_term->url ), wp_setup_nav_menu_item( (object) array( 'guide' => 1 ) ) );
