@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '1b2c3d4e-0000-4000-8000-000000000001',\n  1 => true,\n  2 => 'Renamed',\n  3 => 'trash',\n)",
+ "error": null
+}

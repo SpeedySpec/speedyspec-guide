@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WP_Customize_Partial',\n  1 => '.site-title',\n  2 => 'Guide',\n  3 => \n  array (\n    0 => 'blogname',\n  ),\n)",
+ "error": null
+}
