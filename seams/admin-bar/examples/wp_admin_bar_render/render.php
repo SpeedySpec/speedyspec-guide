@@ -3,9 +3,18 @@
 guide_log_in( array( 'read' => true ) );
 _wp_admin_bar_init();
 remove_all_actions( 'admin_bar_menu' );
-add_action( 'admin_bar_menu', function ( $bar ) { $bar->add_node( array( 'id' => 'guide', 'title' => 'Guide', 'href' => '/x' ) ); } );
-add_action( 'wp_before_admin_bar_render', fn() => print( "before\n" ) );
-add_action( 'wp_after_admin_bar_render', fn() => print( "after\n" ) );
+function guide_add_guide_node( $bar ) {
+	$bar->add_node( array( 'id' => 'guide', 'title' => 'Guide', 'href' => '/x' ) );
+}
+add_action( 'admin_bar_menu', 'guide_add_guide_node' );
+function guide_print_before() {
+	echo "before\n";
+}
+add_action( 'wp_before_admin_bar_render', 'guide_print_before' );
+function guide_print_after() {
+	echo "after\n";
+}
+add_action( 'wp_after_admin_bar_render', 'guide_print_after' );
 ob_start();
 wp_admin_bar_render();
 wp_admin_bar_render();
