@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'guide-style',\n  ),\n  1 => '<link rel=\\'stylesheet\\' id=\\'guide-style-css\\' href=\\'https://cdn.example/style.css?ver=2.0\\' media=\\'all\\' />',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'https://cdn.example/app.js',\n  1 => \n  array (\n    0 => 'jquery',\n  ),\n  2 => '1.2',\n  3 => false,\n)",
+ "error": null
+}

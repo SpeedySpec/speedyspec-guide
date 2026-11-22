@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'_print_scripts is deprecated since 7.2.0 <script>/* x */</script>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "wp_sanitize_script_attributes is deprecated since 7.0.0\n",
+ "return": "' async src=\"a.js?x=1&amp;y=2\"'",
+ "error": null
+}

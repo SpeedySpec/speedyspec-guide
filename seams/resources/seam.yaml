@@ -24,7 +24,11 @@ files:
   - 'wp-includes/style-engine/class-wp-style-engine-css-rules-store.php'
   - 'wp-includes/style-engine/class-wp-style-engine-processor.php'
   - 'wp-includes/style-engine/class-wp-style-engine.php'
-wordpress: []
+# WordPress is booted by the setup (see boot.php); the runner needs one file to load first.
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true
 # Symbols whose file belongs to another seam.
 symbols:
   - "constant:SCRIPT_DEBUG"

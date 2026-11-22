@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'css' => '.guide{color:var(--wp--preset--color--primary);padding:10px;}',\n  'declarations' => \n  array (\n    'color' => 'var(--wp--preset--color--primary)',\n    'padding' => '10px',\n  ),\n  'classnames' => 'has-text-color has-primary-color',\n)",
+ "error": null
+}

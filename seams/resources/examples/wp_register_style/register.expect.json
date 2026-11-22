@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'https://cdn.example/style.css',\n  1 => '2.0',\n  2 => 'all',\n  3 => false,\n)",
+ "error": null
+}

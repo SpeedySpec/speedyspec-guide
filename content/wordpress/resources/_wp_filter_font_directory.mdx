@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_filter_font_directory"
+---
+
+## Behaviour
+
+Turns the uploads folder into the fonts folder (basedir/fonts, no subdir), then filters it with font_dir; attached to upload_dir while font folders are worked out. <Ev source="wp:wp-includes/fonts.php#L172-L206" hash="bc42f709262b7518bc4116f0f9b2ba119702e3268013483264244a20f17dfd5d"/>
+
+## Override
+
+`font_dir` filters it.
