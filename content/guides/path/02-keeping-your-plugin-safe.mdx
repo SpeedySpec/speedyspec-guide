@@ -1,0 +1,130 @@
+---
+title: Keeping your plugin safe
+summary: Validate what comes in, sanitize it, escape what goes out, and check nonces and capabilities before acting.
+---
+
+Your plugin's code runs with the whole site's power: it can read every option, change every post and act as whoever
+is logged in. Whatever arrives with a request (a form field, a query string, a cookie, a value another site sent
+back) was written by someone you don't know. Most plugin vulnerabilities come down to trusting one of those values
+too early. This guide gives you the habits that stop that, each with a checked example.
+
+The habits fit together like this:
+
+- **On the way in:** validate the value, and refuse it if it isn't what you expect. Sanitize what you keep. Check a
+  nonce and a capability before acting on the request.
+- **On the way out:** escape every value, for the place you print it.
+
+## Validate what you expect
+
+Validating asks a yes-or-no question: is this an email address, a number in range, one of the choices you offered?
+When the answer is no, refuse the value and say why. Don't quietly turn it into something else, because then the
+person never learns their input was wrong.
+
+<Example id="guides/keeping-your-plugin-safe/validate-then-reject" />
+
+<Sym id="function:is_email" /> answers the email question. The example returns a `WP_Error`, WordPress's usual way
+of saying what went wrong, and its caller checks for one with <Sym id="function:is_wp_error" />.
+
+## Sanitize on the way in
+
+Sanitizing cleans a value so it is safe to store: it drops the parts that don't belong. WordPress has one sanitizer
+per kind of value, and the right choice depends on what the field should hold.
+
+<Example id="guides/keeping-your-plugin-safe/sanitize-by-kind" />
+
+- <Sym id="function:sanitize_text_field" /> keeps one line of plain text. Tags are removed, a script's content
+  with them, and so are line breaks and surrounding space.
+- <Sym id="function:sanitize_email" /> keeps only the characters an address may have. It does not check that what is
+  left is an address: that is `is_email()`'s job.
+- <Sym id="function:sanitize_key" /> makes a lowercase identifier, for slugs and keys.
+- <Sym id="function:absint" /> makes a whole number of zero or more. Notice that `-12 apples` became `12`: sanitizing
+  never tells you the input was nonsense. Validate first when a wrong value matters.
+
+Values from `$_POST` and `$_GET` arrive with slashes added, so pass them through <Sym id="function:wp_unslash" />
+before sanitizing. <OnSpeedySpecNote id="function:sanitize_text_field" />
+
+## Escape on the way out
+
+Escaping makes a value harmless for the exact place it is printed, so the browser reads it as text and never as
+markup or code. The rule is **escape late**: at the moment of output, every time, even for values you sanitized when
+you saved them. A value in the database may have been written by another plugin, an import or an older version of
+your own code.
+
+<Example id="guides/keeping-your-plugin-safe/escape-by-context" />
+
+Each place has its own function:
+
+- <Sym id="function:esc_html" /> for text between tags.
+- <Sym id="function:esc_attr" /> for an attribute's value, always inside quotes.
+- <Sym id="function:esc_url" /> for a link or a `src`. It also refuses protocols such as `javascript:`.
+- <Sym id="function:wp_kses_post" /> for content that may hold the tags a post may hold, and nothing else.
+
+Escaping is safe to repeat on text that already holds entities, because it leaves them as they are:
+
+<Example id="text/esc_html/escape" />
+
+Here a stored value is escaped at the last moment. The `javascript:` link is dropped, so it can't run:
+
+<Example id="guides/keeping-your-plugin-safe/escape-late" />
+
+Strings you translate need escaping too, because a translation is text you didn't write. Use the combined functions,
+such as `esc_html__()`, which [Your first plugin](/guides/path/your-first-plugin/) introduced.
+
+## Nonces: was this request meant?
+
+Imagine a page elsewhere on the web that quietly submits a form to your plugin's settings screen. If a logged-in
+administrator visits it, their browser sends their cookies along, and without a check your plugin would obey. A
+**nonce** stops that. It is a token your own form includes, made by <Sym id="function:wp_create_nonce" /> for one
+action and the current user, and it is valid for a limited time (about a day by default). The handler checks it with
+<Sym id="function:wp_verify_nonce" />.
+
+<Example id="guides/keeping-your-plugin-safe/nonce-checks" />
+
+Name the action as precisely as the request: `my_plugin_delete_item_7`, not just `delete`, so a nonce for one item
+can't be replayed against another. In a form, <Sym id="function:wp_nonce_field" /> prints the hidden field, and on
+an admin screen <Sym id="function:check_admin_referer" /> verifies it and stops the request when it fails.
+
+A nonce proves that a request came from your form. It doesn't prove the person may do what they asked: that takes a
+capability check.
+
+## Capabilities: may this person do it?
+
+Every logged-in person has a role, and every role grants **capabilities**, such as `manage_options` for site
+settings or `edit_posts` for writing. Before your plugin acts for someone, ask whether they have the capability the
+action needs, with <Sym id="function:current_user_can" />. Check a capability, never a role name: sites change what
+roles may do, and capability checks follow those changes.
+
+<Example id="guides/keeping-your-plugin-safe/capability-checks" />
+
+Check on every request that changes something, including the request that saves a form, not only on the page that
+shows the form. Hiding a button is not a permission check. <OnSpeedySpecNote id="function:current_user_can" />
+
+## Redirect only where you meant to
+
+After saving, plugins often send the browser somewhere, sometimes to a URL the request named. An unchecked target
+lets anyone build a link to your site that bounces visitors to a site of their choosing.
+<Sym id="function:wp_validate_redirect" /> keeps a target on your own site and replaces any other with a fallback you
+choose:
+
+<Example id="guides/keeping-your-plugin-safe/safe-redirect" />
+
+<Sym id="function:wp_safe_redirect" /> does the same check and sends the redirect. Call `exit` straight after it, so
+nothing else runs.
+
+## Putting it together
+
+A request handler applies the habits in order: the nonce, then the capability, then validation and sanitizing, and
+only then the change.
+
+<Example id="guides/keeping-your-plugin-safe/handle-a-form" />
+
+The first request has no nonce, and the second has an address that isn't one. The third is saved, with its surrounding
+spaces gone. The last comes from a subscriber with their own valid nonce, and the capability check refuses it.
+
+None of the seams used here is ported to SpeedySpec yet, so this guide makes no promise about how these functions
+behave there.
+
+## Where to go next
+
+Every value that passes through a hook, including one your own plugin filters, deserves the same care. The
+[Hooks topic guide](/guides/topics/hooks/) explains how hooks pass values around.

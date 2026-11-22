@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'refused: bad nonce',\n  1 => 'refused: invalid email',\n  2 => 'saved ana@example.org',\n  3 => 'refused: not allowed',\n)",
+ "error": null
+}

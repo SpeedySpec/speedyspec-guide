@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'html text' => '&quot;&gt;&lt;img src=x onerror=alert(1)&gt; Tom &amp; Jerry',\n  'html attribute' => '&quot;&gt;&lt;img src=x onerror=alert(1)&gt; Tom &amp; Jerry',\n  'url' => 'https://example.org/?q=Tom%20%26%20Jerry',\n  'allowed tags' => '<p>Fine <strong>bold</strong> text</p>',\n)",
+ "error": null
+}

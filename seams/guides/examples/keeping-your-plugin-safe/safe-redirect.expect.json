@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'same site' => 'http://example.org/wp-admin/edit.php',\n  'off site' => 'http://example.org/wp-admin/options-general.php',\n)",
+ "error": null
+}

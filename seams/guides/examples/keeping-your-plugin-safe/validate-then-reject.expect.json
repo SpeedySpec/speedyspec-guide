@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'email' => 'ana@example.org',\n    'seats' => 2,\n  ),\n  1 => 'my_plugin_bad_email',\n  2 => 'my_plugin_bad_seats',\n)",
+ "error": null
+}
