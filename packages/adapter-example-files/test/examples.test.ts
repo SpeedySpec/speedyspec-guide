@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'bun:test';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { SeamFiles } from '../../adapter-seam-files/src/index.ts';
 import { ExampleFiles } from '../src/index.ts';
@@ -18,12 +19,14 @@ describe('ExampleFiles', () => {
       sides: ['wordpress', 'runtime'],
       multisite: false,
       expect: { output: '', return: '20', error: null },
+      code: readFileSync(join(dir, 'hooks/examples/add_filter/a.php'), 'utf8'),
     }, {
       id: 'options/get_option/ms', seam: 'options', symbol: 'get_option', name: 'ms',
       file: join(dir, 'options/examples/get_option/ms.php'),
       sides: ['wordpress'],
       multisite: true,
       expect: { output: '', return: '1', error: null },
+      code: readFileSync(join(dir, 'options/examples/get_option/ms.php'), 'utf8'),
     }]);
   });
 

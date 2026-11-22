@@ -22,8 +22,8 @@ export interface ValidationContext {
   config: { requireAllAssigned: boolean; requirePortedCoverage?: boolean; requireWordPressCoverage?: string[] };
   /** `generated/examples.json`, or null when the runner stages did not run. */
   examples: ExamplesFile | null;
-  /** Every example file on disk and the sides it declares: what must have run. */
-  declaredExamples: { id: string; sides: Side[] }[];
+  /** Every example file on disk, the sides it declares (what must have run) and its PHP. */
+  declaredExamples: { id: string; sides: Side[]; code?: string }[];
   /** The runtime's released versions (`speedyspec-php-runtime-v*` tags, without the prefix). */
   runtimeTags: string[];
   /** Per ported seam (the compat area of the same name), which scenarios and breaks exercise which symbol. */

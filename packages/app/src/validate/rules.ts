@@ -261,6 +261,58 @@ export const SeamSymbolsExist: Rule = {
   },
 };
 
+/** The PHP calls that add a hook callback: `add_filter(`, `add_action(` and `WP_Hook`'s `->add_filter(`. */
+const ADDS_CALLBACK = /(?:\badd_(?:filter|action)|->add_filter)\s*\(/g;
+/** A callback argument nothing can name again: a closure, an arrow function or a method of a new object. */
+const UNREMOVABLE = /^(?:static\s+)?(?:function\b|fn\b)|^array\s*\(\s*new\b|^\[\s*new\b/;
+/** Marks an example whose point is an unremovable callback, such as one showing why not to add one. */
+const DELIBERATE = '// guide: closure on purpose';
+
+/** The second argument of the call whose opening parenthesis ends at `from`, or null when it has none. */
+function secondArgument(code: string, from: number): string | null {
+  let depth = 0;
+  let quote: string | null = null;
+  let start = -1;
+  for (let i = from; i < code.length; i++) {
+    const ch = code[i]!;
+    if (quote) {
+      if (ch === '\\') i++;
+      else if (ch === quote) quote = null;
+      continue;
+    }
+    if (ch === "'" || ch === '"') quote = ch;
+    else if (ch === '(' || ch === '[') depth++;
+    else if (ch === ')' || ch === ']') {
+      if (depth === 0) return start < 0 ? null : code.slice(start, i).trim();
+      depth--;
+    } else if (ch === ',' && depth === 0) {
+      if (start >= 0) return code.slice(start, i).trim();
+      start = i + 1;
+    }
+  }
+  return null;
+}
+
+/**
+ * Every example adds hook callbacks that can be removed again: a named function or a method of a kept object. A
+ *  closure, an arrow function or `array( new Foo(), 'bar' )` can never be removed, so readers must not copy one.
+ */
+export const ExampleCallbackRemovable: Rule = {
+  id: 'ExampleCallbackRemovable',
+  async check(ctx) {
+    const f: Failure[] = [];
+    for (const { id, code } of ctx.declaredExamples) {
+      if (code === undefined || code.includes(DELIBERATE)) continue;
+      const bad = [...code.matchAll(ADDS_CALLBACK)].some((m) => {
+        const arg = secondArgument(code, m.index! + m[0].length);
+        return arg !== null && UNREMOVABLE.test(arg);
+      });
+      if (bad) f.push({ rule: this.id, where: id, message: 'adds a closure, arrow function or new object as a hook callback, which can never be removed; add a named function or a kept object' });
+    }
+    return f;
+  },
+};
+
 /** Every example a guide embeds is an example file. Whether it ran and passed is ExampleHasRun's to say. */
 export const GuideExampleExists: Rule = {
   id: 'GuideExampleExists',
