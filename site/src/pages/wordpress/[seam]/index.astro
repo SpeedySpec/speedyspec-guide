@@ -19,6 +19,7 @@ const view = seamView(Astro.params.seam!, 'wordpress', d);
 const intro = d.content.find((c) => c.section === 'wordpress' && c.seam === view.id && c.kind === 'seam');
 const memberCount = view.roles.reduce((n, r) => n + r.members.length, 0);
 const diagram = memberCount === 0 ? null : seamDiagram(view, d);
+const elsewhere = d.seams.find((s) => s.id === view.id)?.elsewhere ?? [];
 const written = new Set(d.content.filter((c) => c.section === 'wordpress' && c.kind === 'symbol').map((c) => c.symbol));
 ---
 <Base title={`${view.name} · WordPress API`} section="wordpress">
@@ -27,6 +28,17 @@ const written = new Set(d.content.filter((c) => c.section === 'wordpress' && c.k
     <h1>{view.name}</h1>
     <p class="muted">{view.job}</p>
     {intro && <Prose entry={intro} />}
+    {elsewhere.length > 0 && (
+      <aside class="elsewhere">
+        <h2>Documented elsewhere</h2>
+        <p class="muted">These APIs ship with WordPress but belong to another project, so this guide leaves their functions and classes out; their own documentation describes them.</p>
+        <ul>
+          {elsewhere.map((e) => (
+            <li><a href={e.docs}>{e.name}</a>{e.note && <span>: {e.note}</span>}</li>
+          ))}
+        </ul>
+      </aside>
+    )}
     {diagram ? <Diagram code={diagram} label={`The ${view.name} seam: its functions, classes and globals, and the seams it depends on`} /> : <p class="muted no-diagram">{memberCount === 0 ? 'This seam has no members yet.' : 'This seam is too large to draw; its members and their links are listed below.'}</p>}
     <div class="members">
       {view.roles.map((r) => (

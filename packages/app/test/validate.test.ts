@@ -29,7 +29,7 @@ function content(pages: Record<string, string>): string {
   return dir;
 }
 
-const hooks: Seam = { id: 'hooks', name: 'Hooks', job: 'j', ported: true, files: [], symbols: [], exclude: [], roles: {}, edges: [], wordpress: [] };
+const hooks: Seam = { id: 'hooks', name: 'Hooks', job: 'j', ported: true, files: [], symbols: [], exclude: [], elsewhere: [], roles: {}, edges: [], wordpress: [] };
 const inventory: Inventory = { base: 'wp', version: '7.1.5', symbols: [], edges: [], unresolved: [] };
 
 async function ctx(pages: Record<string, string>, over: Partial<ValidationContext> = {}): Promise<ValidationContext> {

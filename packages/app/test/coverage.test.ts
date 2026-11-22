@@ -4,7 +4,7 @@ import { computeCoverage } from '../src/coverage.ts';
 import { PortedSeamCovered } from '../src/validate/rules.ts';
 import type { ValidationContext } from '../src/validate/rule.ts';
 
-const seam = (id: string, ported: boolean): Seam => ({ id, name: id, job: 'j', ported, files: [], symbols: [], exclude: [], roles: {}, edges: [], wordpress: [] });
+const seam = (id: string, ported: boolean): Seam => ({ id, name: id, job: 'j', ported, files: [], symbols: [], exclude: [], elsewhere: [], roles: {}, edges: [], wordpress: [] });
 const assignment: Assignment = {
   seamOf: { 'function:a': 'hooks', 'function:b': 'hooks', 'class:C': 'hooks', 'method:C::m': 'hooks', 'function:o': 'options' },
   unassigned: ['function:x', 'function:y'],

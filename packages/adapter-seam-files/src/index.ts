@@ -1,5 +1,5 @@
 import type { SeamRepository } from '@speedyspec-guide/contracts';
-import { type Citation, type DependencyState, type Edge, type EdgeKind, parseCitation, type Seam } from '@speedyspec-guide/domain';
+import { type Citation, type DependencyState, type Edge, type EdgeKind, type Elsewhere, parseCitation, type Seam } from '@speedyspec-guide/domain';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
@@ -67,6 +67,19 @@ export class SeamFiles implements SeamRepository {
       }
       return out;
     }
+    const elsewhere = (): Elsewhere[] => {
+      const v = data.elsewhere;
+      if (v === undefined) return [];
+      if (!Array.isArray(v)) throw new Error(`${where}: "elsewhere" must be a list`);
+      return v.map((entry, i) => {
+        const e = (entry ?? {}) as { name?: unknown; docs?: unknown; files?: unknown; note?: unknown };
+        const files = Array.isArray(e.files) ? e.files.map(String) : [];
+        if (typeof e.name !== 'string' || typeof e.docs !== 'string' || !e.docs.startsWith('https://') || files.length === 0) {
+          throw new Error(`${where}: elsewhere entry ${i + 1} needs a name, an https docs link and files`);
+        }
+        return { name: e.name, docs: e.docs, files, note: typeof e.note === 'string' ? e.note : '' };
+      });
+    };
     let setup: string | undefined;
     if (data.setup !== undefined) {
       if (typeof data.setup !== 'string' || data.setup.trim() === '') throw new Error(`${where}: "setup" must be a file name`);
@@ -81,6 +94,7 @@ export class SeamFiles implements SeamRepository {
       files: list('files'),
       symbols: list('symbols'),
       exclude: list('exclude'),
+      elsewhere: elsewhere(),
       roles: roles as Record<string, string[]>,
       wordpress: list('wordpress'),
       crates: list('crates'),

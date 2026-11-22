@@ -1,8 +1,15 @@
 name: "Passwords and crypto"
-job: "Hashes and checks passwords, and provides sodium_compat's cryptography."
+job: "Hashes and checks passwords and manages application passwords."
 ported: false
 files:
-  - 'wp-includes/sodium_compat/**'
   - 'wp-includes/class-phpass.php'
   - 'wp-includes/class-wp-application-passwords.php'
+# sodium_compat (wp-includes/sodium_compat) is a pure-PHP polyfill of PHP's Sodium extension, which WordPress
+# bundles for servers without the extension. Its functions and classes are the extension's API, documented on
+# PHP.net, so the guide leaves them out.
+elsewhere:
+  - name: "PHP's Sodium extension"
+    docs: "https://www.php.net/manual/en/book.sodium.php"
+    files: ["wp-includes/sodium_compat/**"]
+    note: "WordPress bundles sodium_compat, a pure-PHP polyfill of the extension for servers without it; its functions and classes are the extension's API."
 wordpress: []

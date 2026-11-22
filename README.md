@@ -68,6 +68,19 @@ A seam's `seam.yaml` may name a `setup` file, run after its `wordpress` files an
 side; it sees `GUIDE_MULTISITE`, which an example sets with `"multisite": true` (WordPress side only). A seam whose
 examples need the database says `mysql: true`.
 
+An API WordPress bundles but another project documents, such as sodium_compat (a polyfill of PHP's Sodium
+extension), goes in its seam's `elsewhere` list: a `name`, an https `docs` link, the `files` that hold it (globs
+allowed) and a `note`. The extract stage leaves those files' symbols out of `inventory-wp.json`, so no page is asked
+for, and the seam's page links to the documentation instead.
+
+```yaml
+elsewhere:
+  - name: "PHP's Sodium extension"
+    docs: "https://www.php.net/manual/en/book.sodium.php"
+    files: ["wp-includes/sodium_compat/**"]
+    note: "WordPress bundles sodium_compat, a polyfill of the extension for servers without it."
+```
+
 ### Some examples need MySQL
 
 The seams with `mysql: true` (Options, Navigation menus) store through `$wpdb`, so their examples need a MySQL

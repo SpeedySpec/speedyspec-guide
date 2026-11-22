@@ -1,0 +1,9 @@
+name: Elsewhere
+job: Fixture seam whose vendored API is documented elsewhere.
+ported: false
+files: ["e/*.php"]
+elsewhere:
+  - name: The Sodium extension
+    docs: https://www.php.net/manual/en/book.sodium.php
+    files: ["e/vendor/**"]
+    note: A polyfill of the extension's API.

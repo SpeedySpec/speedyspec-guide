@@ -10,6 +10,8 @@ export interface Seam {
   files: string[];
   symbols: string[];
   exclude: string[];
+  /** APIs in this seam's files that are documented elsewhere, so the guide leaves their symbols out. */
+  elsewhere: Elsewhere[];
   roles: Record<string, string[]>;
   edges: Edge[];
   /** WordPress files an example of this seam loads first, on the WordPress side (relative to the release). */
@@ -22,6 +24,21 @@ export interface Seam {
   crates?: string[];
   /** The SpeedySpec state of each cross-seam dependency, by target symbol id, with the evidence for it. */
   dependencies?: Record<string, { state: DependencyState; cite: Citation }>;
+}
+
+/**
+ * An API WordPress bundles but doesn't own, such as a polyfill of a PHP extension: its own documentation describes
+ * it, so the guide leaves its symbols out and links there instead.
+ */
+export interface Elsewhere {
+  /** What the API is, as the note names it. */
+  name: string;
+  /** Where it is documented (https). */
+  docs: string;
+  /** The files that hold it, relative to the release; globs allowed. */
+  files: string[];
+  /** Why it is documented there, for the note. */
+  note: string;
 }
 
 /** How a ported seam reaches another seam: still through WordPress's PHP, behind an outbound port, or in Rust. */

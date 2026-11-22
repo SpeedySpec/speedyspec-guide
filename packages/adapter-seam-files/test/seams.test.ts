@@ -23,6 +23,22 @@ describe('SeamFiles', () => {
     expect(seams[1]).toMatchObject({ ported: true, symbols: ['function:shared'], exclude: [], roles: {}, edges: [], wordpress: [] });
   });
 
+  test('an_elsewhere_entry_names_an_api_documented_elsewhere', async () => {
+    const dir = only('elsewhere', 'a');
+    const [a, e] = await new SeamFiles(dir).all();
+    rmSync(dir, { recursive: true });
+    expect(a?.elsewhere).toEqual([]);
+    expect(e?.elsewhere).toEqual([
+      { name: 'The Sodium extension', docs: 'https://www.php.net/manual/en/book.sodium.php', files: ['e/vendor/**'], note: "A polyfill of the extension's API." },
+    ]);
+  });
+
+  test('an_elsewhere_entry_needs_a_link', async () => {
+    const dir = only('elsewhere-broken');
+    await expect(new SeamFiles(dir).all()).rejects.toThrow('elsewhere-broken/seam.yaml: elsewhere entry 1 needs a name, an https docs link and files');
+    rmSync(dir, { recursive: true });
+  });
+
   test('fork_fields_are_refused', async () => {
     const dir = only('forked');
     await expect(new SeamFiles(dir).all()).rejects.toThrow("forked/seam.yaml: forkPackages is no longer supported; list the seam's WordPress files");

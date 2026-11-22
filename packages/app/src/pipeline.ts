@@ -1,6 +1,7 @@
 import type { ContentPages, CrateSource, EvidenceSource, ExampleRunner, ExampleSource, GeneratedStore, ReleaseHistory, SeamRepository, SymbolSource } from '@speedyspec-guide/contracts';
 import type { Assignment, GuideSymbol, Inventory } from '@speedyspec-guide/domain';
 import { assign } from './assign.ts';
+import { withoutElsewhere } from './elsewhere.ts';
 import { loadOrder } from './load-order.ts';
 import { computeCoverage } from './coverage.ts';
 import { type ConversionFile, conversionStates } from './conversion.ts';
@@ -70,7 +71,9 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
   }
   switch (stage) {
     case 'extract': {
-      await store.write('inventory-wp', await deps.source.extract(await deps.wordpressDir(), 'wp', deps.wordpressVersion));
+      // APIs documented elsewhere (seam.yaml `elsewhere`) leave the inventory, so no rule asks for their pages.
+      const extracted = await deps.source.extract(await deps.wordpressDir(), 'wp', deps.wordpressVersion);
+      await store.write('inventory-wp', withoutElsewhere(extracted, await deps.seams.all()));
       break;
     }
     case 'assign':

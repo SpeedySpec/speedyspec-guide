@@ -3,7 +3,7 @@ import type { ExampleRunner, ExampleSource } from '@speedyspec-guide/contracts';
 import type { Example, GuideSymbol, Seam } from '@speedyspec-guide/domain';
 import { runExamples, runtimeApi } from '../src/examples.ts';
 
-const seam: Seam = { id: 'hooks', name: 'Hooks', job: 'j', ported: true, files: [], symbols: [], exclude: [], roles: {}, edges: [], wordpress: ['wp-includes/plugin.php'] };
+const seam: Seam = { id: 'hooks', name: 'Hooks', job: 'j', ported: true, files: [], symbols: [], exclude: [], elsewhere: [], roles: {}, edges: [], wordpress: ['wp-includes/plugin.php'] };
 const example: Example = { id: 'hooks/add_filter/a', seam: 'hooks', symbol: 'add_filter', name: 'a', file: '/x/a.php', sides: ['wordpress', 'runtime'], multisite: false, expect: { output: '', return: '20', error: null } };
 const source: ExampleSource = { all: async () => ({ examples: [example], problems: [{ where: '/x/b.php', message: 'has no b.expect.json' }] }) };
 

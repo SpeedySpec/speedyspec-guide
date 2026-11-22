@@ -5,7 +5,7 @@ import { assign } from '../src/assign.ts';
 const s = (id: string, file: string): GuideSymbol => ({ id, kind: id.split(':')[0] as GuideSymbol['kind'], name: id, file, line: 1 });
 const fires = (from: string, to: string): Edge => ({ from, to, kind: 'fires' });
 const at = (file: string, line: number) => ({ kind: 'source' as const, base: 'wp' as const, file, from: line, to: line });
-const seam = (id: string, over: Partial<Seam>): Seam => ({ id, name: id, job: '', ported: false, files: [], symbols: [], exclude: [], roles: {}, edges: [], wordpress: [], ...over });
+const seam = (id: string, over: Partial<Seam>): Seam => ({ id, name: id, job: '', ported: false, files: [], symbols: [], exclude: [], elsewhere: [], roles: {}, edges: [], wordpress: [], ...over });
 
 const seams = [seam('a', { files: ['a/*.php'], exclude: ['function:excluded'] }), seam('b', { files: ['b/*.php'], symbols: ['function:shared'] })];
 

@@ -25,6 +25,14 @@ describe('the WordPress API section', () => {
     expect(p.text('.members .member a')).toEqual(['add_filter', 'apply_filters', 'WP_Hook', 'wp_filter', 'the_content']);
   });
 
+  test('a_seam_page_links_the_apis_documented_elsewhere', async () => {
+    const p = await html(dist, '/wordpress/options/');
+    expect(p.text('.elsewhere a')).toEqual(['The Sodium extension']);
+    expect(p.raw).toContain('href="https://www.php.net/manual/en/book.sodium.php"');
+    expect(p.raw).toContain('sodium_compat is a pure-PHP polyfill of the extension.');
+    expect((await html(dist, '/wordpress/hooks/')).count('.elsewhere')).toBe(0);
+  });
+
   test('a function page has every part, in order', async () => {
     const p = await html(dist, '/wordpress/hooks/add_filter/');
     expect(p.text('h1')).toEqual(['add_filter()']);
