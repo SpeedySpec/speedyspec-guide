@@ -22,16 +22,20 @@ that already uses it. `WP_REST_Server::READABLE` and `CREATABLE` stand for `GET`
 `guide_send()` sends requests from PHP with <Sym id="function:rest_do_request" />. It goes through the same checks
 as a request from outside, and shows what a client would get. <OnSpeedySpecNote id="function:register_rest_route" />
 
-## Permission first, always
+## A permission check, always
 
 Every route needs a `permission_callback`, and WordPress warns developers when one is missing. It runs before your
-callback, so your code never runs for someone who isn't allowed. Check a capability, as everywhere else. Use
-`__return_true` only for data you would happily show to anyone, like the public list here:
+route's callback, so the callback never runs for someone who isn't allowed. Check a capability, as everywhere else.
+Use `__return_true` only for data you would happily show to anyone, like the public list here:
 
 <Example id="guides/adding-a-rest-endpoint/permission-denied-logged-out" />
 
 A visitor who isn't logged in got `401`, meaning "who are you?", and a subscriber got `403`, meaning "you may not".
 Nothing was created. Anyone could read the list.
+
+The order matters. WordPress checks the arguments **before** the permission callback, so the logged-out request with a
+blank title got `400`, not `401`. Your validate and sanitize callbacks therefore run for everyone, allowed or not.
+Keep them free of side effects: no saving, no sending, no costly lookups.
 
 From the browser, WordPress knows who is logged in only when the request carries a REST nonce, made with
 <Sym id="function:wp_create_nonce" /> for the action `wp_rest` and sent in an `X-WP-Nonce` header. Without one, a
@@ -40,14 +44,18 @@ routes. The `wp-api-fetch` script adds the header for you.
 
 ## Arguments: validate, then sanitize
 
-List every argument a route accepts, with its `type`, and whether it is `required`. The REST server checks the types
-and limits before your callback runs. Add a `validate_callback` for rules a type can't express, and a
-`sanitize_callback` to clean what passes:
+List every argument a route accepts, with its `type`, and whether it is `required`. For an argument with no callbacks
+of its own, such as `per_page`, the REST server checks the type and limits itself, then casts the value.
+
+A `validate_callback` or `sanitize_callback` of your own **replaces** those checks. So when you add one, call
+<Sym id="function:rest_validate_request_arg" /> inside your validator first, and keep the schema's checks. Then test
+the value as it will be saved, after sanitizing, so input that sanitizes to nothing is refused:
 
 <Example id="guides/adding-a-rest-endpoint/invalid-argument" />
 
-Each refusal was a `400` with a code and a message saying which argument failed and why. Your callback didn't run for
-any of them. Once an argument has passed, the sanitize callback cleans it:
+Each refusal was a `400` with a code and a message saying which argument failed and why. The list given as a title
+was refused by the schema's `string` type, and the title of only tags by the check after sanitizing. Your callback
+didn't run for any of them. Once an argument has passed, the sanitize callback cleans it:
 
 <Example id="guides/adding-a-rest-endpoint/sanitized-argument" />
 

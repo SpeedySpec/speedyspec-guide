@@ -19,8 +19,14 @@ function my_plugin_can_create_books() {
 	return current_user_can( 'edit_posts' );
 }
 
-function my_plugin_validate_title( $value ) {
-	return is_string( $value ) && '' !== trim( $value ) && mb_strlen( $value ) <= 200;
+// A validate_callback replaces the schema's own check, so it runs that check first, then tests the value as saved.
+function my_plugin_validate_title( $value, WP_REST_Request $request, $param ) {
+	$valid = rest_validate_request_arg( $value, $request, $param );
+	if ( true !== $valid ) {
+		return $valid;
+	}
+	$title = sanitize_text_field( $value );
+	return '' !== $title && mb_strlen( $title ) <= 200;
 }
 
 function my_plugin_register_routes() {
@@ -67,8 +73,12 @@ function guide_send( $method, $route, array $params = array() ) {
 $missing = guide_send( 'POST', '/my-plugin/v1/books' );
 $blank   = guide_send( 'POST', '/my-plugin/v1/books', array( 'title' => '   ' ) );
 $range   = guide_send( 'GET', '/my-plugin/v1/books', array( 'per_page' => 500 ) );
+$listed  = guide_send( 'POST', '/my-plugin/v1/books', array( 'title' => array( 'Dune' ) ) );
+$tags    = guide_send( 'POST', '/my-plugin/v1/books', array( 'title' => '<b></b>' ) );
 return array(
 	'missing title' => array( $missing['status'], $missing['data']['code'] ),
 	'blank title'   => array( $blank['status'], $blank['data']['code'] ),
+	'title a list'  => array( $listed['status'], $listed['data']['code'] ?? 'created' ),
+	'only tags'     => array( $tags['status'], $tags['data']['code'] ?? 'created' ),
 	'per_page 500'  => array( $range['status'], $range['data']['data']['params']['per_page'] ),
 );

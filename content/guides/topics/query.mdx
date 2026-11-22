@@ -34,8 +34,10 @@ status, so it can be restored:
 
 <Example id="query/wp_trash_post/example" />
 
-<Sym id="function:wp_delete_post" /> also trashes first, unless you force it, and then deletes the post with its
-meta, terms, comments and revisions:
+<Sym id="function:wp_delete_post" /> deletes a post with its meta, terms, comments and revisions. For posts and
+pages it trashes them first, unless you force it, but **any other post type is deleted at once**, including a
+plugin's own. Call `wp_trash_post()` yourself when a custom type's posts should be recoverable. <Ev source="wp:wp-includes/post.php#L4042-L4046" hash="b158300900169a3c26ede30d872764a7e3be157243a20f4d6f2433fb92b3ddd1"/>
+The example deletes a post, so it shows the trashing:
 
 <Example id="query/wp_delete_post/example" />
 

@@ -19,8 +19,14 @@ function my_plugin_can_create_books() {
 	return current_user_can( 'edit_posts' );
 }
 
-function my_plugin_validate_title( $value ) {
-	return is_string( $value ) && '' !== trim( $value ) && mb_strlen( $value ) <= 200;
+// A validate_callback replaces the schema's own check, so it runs that check first, then tests the value as saved.
+function my_plugin_validate_title( $value, WP_REST_Request $request, $param ) {
+	$valid = rest_validate_request_arg( $value, $request, $param );
+	if ( true !== $valid ) {
+		return $valid;
+	}
+	$title = sanitize_text_field( $value );
+	return '' !== $title && mb_strlen( $title ) <= 200;
 }
 
 function my_plugin_register_routes() {

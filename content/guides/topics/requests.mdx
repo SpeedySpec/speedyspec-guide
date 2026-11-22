@@ -33,11 +33,14 @@ that couldn't be completed returns a `WP_Error` instead:
 
 ## Defaults and filters on the way
 
-`WP_Http::request()` merges the arguments with defaults: a 5-second timeout, up to 5 redirects, HTTP/1.1, and a user
+`WP_Http::request()` merges the arguments with defaults: a 5-second timeout, up to 5 redirects, HTTP/1.0, and a user
 agent naming WordPress and the site. Each default has a filter, and <Sym id="filter:http_request_args" /> sees the
 whole set:
 
 <Example id="requests/class--WP_Http--request/defaults" />
+
+The example changes each default through its filter, so the values it shows are its own, not WordPress's. Unfiltered,
+the HTTP version is `1.0`. <Ev source="wp:wp-includes/class-wp-http.php#L202-L202" hash="87e506aaefe753af98946fc19aba823aea1763b796fc868bcecdaf8884260615"/>
 
 Then come the hooks other code uses to watch or replace requests:
 

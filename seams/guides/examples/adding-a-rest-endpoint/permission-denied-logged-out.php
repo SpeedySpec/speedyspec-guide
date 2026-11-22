@@ -1,5 +1,5 @@
 <?php
-// The permission callback runs before yours: logged out gets 401, logged in without the capability gets 403.
+// The permission callback runs before yours, after the arguments are checked: logged out gets 401, without the capability 403.
 function my_plugin_list_books( WP_REST_Request $request ) {
 	$titles = get_option( 'my_plugin_books', array() );
 	return rest_ensure_response( array_slice( $titles, 0, $request['per_page'] ) );
@@ -19,8 +19,14 @@ function my_plugin_can_create_books() {
 	return current_user_can( 'edit_posts' );
 }
 
-function my_plugin_validate_title( $value ) {
-	return is_string( $value ) && '' !== trim( $value ) && mb_strlen( $value ) <= 200;
+// A validate_callback replaces the schema's own check, so it runs that check first, then tests the value as saved.
+function my_plugin_validate_title( $value, WP_REST_Request $request, $param ) {
+	$valid = rest_validate_request_arg( $value, $request, $param );
+	if ( true !== $valid ) {
+		return $valid;
+	}
+	$title = sanitize_text_field( $value );
+	return '' !== $title && mb_strlen( $title ) <= 200;
 }
 
 function my_plugin_register_routes() {
@@ -66,10 +72,13 @@ function guide_send( $method, $route, array $params = array() ) {
 
 wp_set_current_user( 0 );
 $logged_out = guide_send( 'POST', '/my-plugin/v1/books', array( 'title' => 'Dune' ) );
+$bad_arg    = guide_send( 'POST', '/my-plugin/v1/books', array( 'title' => '   ' ) ); // Arguments are checked first.
+$validated  = $bad_arg['status'];
 wp_set_current_user( wp_insert_user( array( 'user_login' => 'sam', 'user_pass' => wp_generate_password(), 'role' => 'subscriber' ) ) );
 $subscriber = guide_send( 'POST', '/my-plugin/v1/books', array( 'title' => 'Dune' ) );
 return array(
 	'logged out'    => array( $logged_out['status'], $logged_out['data']['code'] ),
+	'logged out, blank title' => array( $validated, $bad_arg['data']['code'] ),
 	'subscriber'    => array( $subscriber['status'], $subscriber['data']['code'] ),
 	'public list'   => guide_send( 'GET', '/my-plugin/v1/books' )['status'],
 	'books created' => get_option( 'my_plugin_books', array() ),

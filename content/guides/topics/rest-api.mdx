@@ -52,13 +52,14 @@ For each request the server goes through the same steps. Plugins can hook into e
 
    <Example id="rest-api/class--WP_REST_Server--dispatch/example" />
 
-3. **Permission.** The handler's permission callback runs. A refusal is `401` for a visitor and `403` for a logged-in
-   user, as <Sym id="function:rest_authorization_required_code" /> decides:
+3. **Arguments.** Each argument is validated and sanitized: by its own callbacks when it has them, otherwise against
+   its schema. This happens before the permission check, so argument callbacks run for every request, allowed or not,
+   and a bad argument is a `400` even for a visitor.
+4. **Permission.** The handler's permission callback runs. A refusal is `401` for a visitor and `403` for a logged-in
+   user, as <Sym id="function:rest_authorization_required_code" /> decides. Only then does the callback run, with a
+   <Sym id="class:WP_REST_Request" />:
 
    <Example id="rest-api/rest_authorization_required_code/example" />
-
-4. **Arguments.** Each argument is checked and cleaned against its schema, then the callback runs with a
-   <Sym id="class:WP_REST_Request" />.
 5. **Response.** The callback's result becomes a <Sym id="class:WP_REST_Response" />, passes through
    <Sym id="filter:rest_post_dispatch" />, and is sent as JSON.
 
@@ -80,7 +81,9 @@ properties the schema doesn't allow:
 
 <Example id="rest-api/rest_sanitize_value_from_schema/example" />
 
-Describe arguments with schemas rather than checking them by hand in the callback. The same description also tells
+Describe arguments with schemas rather than checking them by hand in the callback. A `validate_callback` or
+`sanitize_callback` of an argument's own replaces its schema check, so a custom validator should call
+`rest_validate_request_arg()` first. The same description also tells
 clients what the route accepts, when they ask with `OPTIONS`.
 
 ## Responses
