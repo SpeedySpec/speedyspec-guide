@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'admin',\n  1 => false,\n  2 => false,\n  3 => \n  array (\n    0 => 'ID',\n    1 => 'user_login',\n    2 => 'user_pass',\n    3 => 'user_nicename',\n    4 => 'user_email',\n    5 => 'user_url',\n    6 => 'user_registered',\n    7 => 'user_activation_key',\n    8 => 'user_status',\n    9 => 'display_name',\n  ),\n)",
+ "error": null
+}

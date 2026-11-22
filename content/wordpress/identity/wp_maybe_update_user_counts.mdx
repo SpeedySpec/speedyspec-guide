@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_maybe_update_user_counts"
+---
+
+## Behaviour
+
+Updates the stored user count unless the site is large (and so counted on a schedule). <Ev source="wp:wp-includes/user.php#L1532-L1552" hash="5cfeffe2aaf243ad29ff222fc1bb2ea4e8260f86fa03c6e9af3fe54bf7d7a306"/>
+
+## Override
+
+`enable_live_network_counts` filters it.

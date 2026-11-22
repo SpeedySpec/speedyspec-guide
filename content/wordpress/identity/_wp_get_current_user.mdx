@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_get_current_user"
+---
+
+## Behaviour
+
+The logged-in user, determined once through determine_current_user; a WP_User with ID 0 when nobody is. <Ev source="wp:wp-includes/user.php#L3836-L3885" hash="a5def9df9ae922c538e71aff8da3e29397a7edf5f45999e4d5c26359b81b6482"/>
+
+## Override
+
+`determine_current_user` filters it.

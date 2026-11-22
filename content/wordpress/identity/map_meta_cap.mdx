@@ -1,0 +1,11 @@
+---
+symbol: "function:map_meta_cap"
+---
+
+## Behaviour
+
+Maps a meta capability to the primitive capabilities a user needs: editing a post is edit_posts for its author, edit_others_posts for anyone else, edit_published_posts once published; unknown capabilities map to themselves. map_meta_cap filters the result. <Ev source="wp:wp-includes/capabilities.php#L45-L878" hash="d11ec152ebede1e508c181e668125f1f3a817ead243716d8e65bc769d566f38b"/>
+
+## Override
+
+`auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`, `auth_{$object_type}_meta_{$meta_key}`, `auth_{$object_type}_{$object_subtype}_meta_{$meta_key}`, `map_meta_cap` filter it.

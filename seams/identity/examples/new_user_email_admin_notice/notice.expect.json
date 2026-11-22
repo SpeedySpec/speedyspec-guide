@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"notice notice-info\"><p>Your email address has not been updated yet. Please check your inbox at <code>new@example.org</code> for a confirmation email. <a href=\"http://example.org/wp-admin/profile.php?dismiss=1_new_email&amp;_wpnonce=NONCE\">Cancel request</a></p></div>'",
+ "error": null
+}

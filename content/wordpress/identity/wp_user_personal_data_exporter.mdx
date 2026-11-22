@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_user_personal_data_exporter"
+---
+
+## Behaviour
+
+Exports a user's data by email: the user fields, contact methods, community events location and session tokens, as name and value pairs; an unknown email gives no data. <Ev source="wp:wp-includes/user.php#L4090-L4276" hash="aa2869ae16096541aa4f4a22c71bb50f2c9ba6d23bf1099d5b5f4ff5e04dc262"/>
+
+## Override
+
+`wp_privacy_additional_user_profile_data` filters it.

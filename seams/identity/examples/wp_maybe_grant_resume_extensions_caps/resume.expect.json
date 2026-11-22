@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'activate_plugins' => true,\n    'resume_plugins' => true,\n  ),\n  1 => \n  array (\n    'switch_themes' => true,\n    'resume_themes' => true,\n  ),\n  2 => \n  array (\n  ),\n)",
+ "error": null
+}

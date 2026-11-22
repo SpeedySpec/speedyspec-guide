@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'first_name',\n  1 => 'last_name',\n  2 => 'nickname',\n  3 => 'description',\n  4 => 'rich_editing',\n  5 => 'syntax_highlighting',\n  6 => 'infinite_scrolling',\n  7 => 'comment_shortcuts',\n  8 => 'admin_color',\n  9 => 'use_ssl',\n  10 => 'show_admin_bar_front',\n  11 => 'locale',\n)",
+ "error": null
+}

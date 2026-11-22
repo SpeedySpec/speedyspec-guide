@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "email to admin@example.org: [Guide] Password Reset\n",
+ "return": "array (\n  0 => true,\n  1 => 'invalidcombo',\n  2 => 'empty_username',\n)",
+ "error": null
+}

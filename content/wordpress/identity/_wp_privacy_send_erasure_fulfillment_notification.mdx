@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_privacy_send_erasure_fulfillment_notification"
+---
+
+## Behaviour
+
+Emails the requester that an erasure request is complete, once, for completed erasure requests only. <Ev source="wp:wp-includes/user.php#L4529-L4789" hash="bde4d4afbaa278bb2e0734939464caaf3af505551f6891919b5b20eefac4f075"/>
+
+## Override
+
+`user_erasure_fulfillment_email_to`, `user_erasure_complete_email_subject`, `user_erasure_fulfillment_email_subject`, `user_confirmed_action_email_content`, `user_erasure_fulfillment_email_content`, `user_erasure_complete_email_headers`, `user_erasure_fulfillment_email_headers` filter it.

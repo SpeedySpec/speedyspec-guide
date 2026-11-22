@@ -1,0 +1,7 @@
+---
+symbol: "filter:edit_user_{$field}"
+---
+
+## Behaviour
+
+Filters a field whose name lacks `user_` (such as `description`, as `edit_user_description`) when it is sanitized for editing, with the user's ID. <Ev source="wp:wp-includes/user.php#L1963-L1963" hash="771f35d03f7c3c32310a65ee393d694dedcdaee7787c85a9c4124c36804081fd"/>

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_list_users"
+---
+
+## Behaviour
+
+Prints (or returns with echo false) the users' names as a list or comma-separated, optionally full names and feed links; exclude_admin leaves out a user whose display name is 'admin'. Unlike wp_list_authors(), names aren't linked. <Ev source="wp:wp-includes/user.php#L929-L1035" hash="9032a4cba83b55208042d4660ba13b130a6dad6ab5ab5396a29106273fa62a00"/>
+
+## Override
+
+`wp_list_users_args` filters it.

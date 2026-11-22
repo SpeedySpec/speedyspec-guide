@@ -1,0 +1,11 @@
+---
+symbol: "function:sanitize_user_field"
+---
+
+## Behaviour
+
+Cleans one user field for a context: IDs as integers, logins and emails filtered by their pre_ and edit_ and display filters, URLs escaped for display. <Ev source="wp:wp-includes/user.php#L1929-L2029" hash="1b02b14fb05aef73f401ab919dac47fb500ee6ce78ad9a1e0e69622bba8d1c33"/>
+
+## Override
+
+`edit_{$field}`, `edit_user_{$field}`, `pre_{$field}`, `pre_user_{$field}`, `{$field}`, `user_{$field}` filter it.

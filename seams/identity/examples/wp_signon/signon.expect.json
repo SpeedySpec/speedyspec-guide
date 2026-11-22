@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "wp_login admin\n",
+ "return": "array (\n  0 => 'admin',\n  1 => 'incorrect_password',\n  2 => 'invalid_username',\n)",
+ "error": null
+}

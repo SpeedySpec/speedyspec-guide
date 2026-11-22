@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_authenticate_spam_check"
+---
+
+## Behaviour
+
+On authenticate on a network: refuses a user marked as spam; on a single site the user is passed on. <Ev source="wp:wp-includes/user.php#L555-L572" hash="aaf22a6c696fce9d19888edd2663d8a811a9a6eafcd1c4fe2cfc848f578bc45f"/>
+
+## Override
+
+`check_is_user_spammed` filters it.
