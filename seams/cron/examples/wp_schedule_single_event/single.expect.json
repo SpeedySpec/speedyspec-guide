@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "2000000000 guide_send {\"schedule\":false,\"args\":{\"id\":7}}\n2000001000 guide_send {\"schedule\":false,\"args\":{\"id\":7}}\n",
+ "return": "array (\n  0 => true,\n  1 => 'duplicate_event',\n  2 => true,\n  3 => 'invalid_timestamp',\n)",
+ "error": null
+}

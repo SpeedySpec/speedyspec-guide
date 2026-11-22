@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_cron"
+---
+
+## Behaviour
+
+Spawns cron when an event is due, unless this is a `wp-cron.php` request or `DISABLE_WP_CRON` is set. It spawns once however many events are due, and returns the number of spawns, `0` when nothing was due, or `false` when spawning failed. <Ev source="wp:wp-includes/cron.php#L1061-L1104" hash="7852fa7dba54b88b88938ffac546d52f660003cb7158d90fb796c29b1fb72037"/>
+
+## Override
+
+Not overridable.

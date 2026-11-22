@@ -1,0 +1,7 @@
+---
+symbol: "filter:https_local_ssl_verify"
+---
+
+## Behaviour
+
+Filters whether a request to the site itself verifies its SSL certificate (`false`): here for `spawn_cron()`'s request, and also in the old transports and admin requests. <Ev source="wp:wp-includes/cron.php#L1006-L1006" hash="e9bc0c2c391ad18b945d00bb4315ce934f28a3e70cde4c2e0babbbd2d3d3eeae"/>

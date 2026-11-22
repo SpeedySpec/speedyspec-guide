@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_clear_scheduled_hook"
+---
+
+## Behaviour
+
+Removes every event of a hook with the given arguments and returns how many it removed, `0` when none; a failure to save is `false`, or the merged `WP_Error` with `$wp_error`. Passing the arguments as separate parameters is deprecated. <Ev source="wp:wp-includes/cron.php#L588-L672" hash="ad9a370a4ca871a4fd6bf626ca2b2ecd7be727209ff69ae875133b73312ba751"/>
+
+## Override
+
+`pre_clear_scheduled_hook` can answer instead.

@@ -1,0 +1,11 @@
+---
+symbol: "function:_set_cron_array"
+---
+
+## Behaviour
+
+Saves events to the `cron` option, autoloaded, with version 2. Returns whether it saved; saving what is already stored counts as a failure, a `could_not_set` `WP_Error` with `$wp_error`. <Ev source="wp:wp-includes/cron.php#L1309-L1326" hash="9c4c7398f81329cdc088d19ac4f3c7bd9aa416a9eeed81c160b844cfab08e022"/>
+
+## Override
+
+Not overridable.

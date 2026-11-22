@@ -1,0 +1,11 @@
+---
+symbol: "function:spawn_cron"
+---
+
+## Behaviour
+
+Starts a cron run in another request when an event is due: unless this is already a cron request, or another run took the `doing_cron` lock less than `WP_CRON_LOCK_TIMEOUT` ago, it sets the lock and posts a non-blocking request to `wp-cron.php?doing_wp_cron=<time>`. With `ALTERNATE_WP_CRON` it redirects the visitor to that URL and runs `wp-cron.php` in this request instead. Returns whether it spawned. <Ev source="wp:wp-includes/cron.php#L913-L1015" hash="ec9e7633e41b9964e5cb6e6efa43b6b1751c02d9774639d8bbfbb26a1c33b915"/>
+
+## Override
+
+`cron_request` changes the request; `https_local_ssl_verify` decides certificate checks.

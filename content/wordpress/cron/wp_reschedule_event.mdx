@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_reschedule_event"
+---
+
+## Behaviour
+
+Schedules the next run of a recurring event: one interval from now when the timestamp is now or later, or the next whole interval after a past timestamp. The interval comes from the schedule, or else from the event stored at that timestamp; with neither it is refused as an invalid schedule. It does not remove the old event. <Ev source="wp:wp-includes/cron.php#L375-L475" hash="d465b2b4d1a30e2d4c1143e742537acf27bec6f7310ffeff4b99c3055156972c"/>
+
+## Override
+
+`pre_reschedule_event` can answer instead; the rest goes through `wp_schedule_event()` and its filters.

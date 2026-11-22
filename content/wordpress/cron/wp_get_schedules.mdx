@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_schedules"
+---
+
+## Behaviour
+
+The recurrences events can use, each with an interval in seconds and a display name: `hourly`, `twicedaily`, `daily` and `weekly`, after any that `cron_schedules` adds. The built-in four can't be replaced. <Ev source="wp:wp-includes/cron.php#L1145-L1182" hash="c5d2aa6a4c464cdb00c87449fb5adeff18633cf4b7b1b0406ded59fbc4b1f320"/>
+
+## Override
+
+`cron_schedules` adds schedules.

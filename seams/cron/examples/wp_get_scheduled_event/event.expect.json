@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  (object) array(\n     'hook' => 'guide_ping',\n     'timestamp' => 2000000000,\n     'schedule' => 'hourly',\n     'args' => \n    array (\n      0 => 'a',\n    ),\n     'interval' => 3600,\n  ),\n  1 => false,\n  2 => false,\n  3 => \n  (object) array(\n     'hook' => 'guide_faked',\n  ),\n)",
+ "error": null
+}

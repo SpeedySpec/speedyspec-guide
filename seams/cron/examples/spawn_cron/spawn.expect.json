@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "request http://example.org/wp-cron.php?doing_wp_cron=1500000000.5000000000000000000000, blocking: false\n",
+ "return": "array (\n  0 => false,\n  1 => true,\n  2 => '1500000000.5000000000000000000000',\n  3 => false,\n)",
+ "error": null
+}
