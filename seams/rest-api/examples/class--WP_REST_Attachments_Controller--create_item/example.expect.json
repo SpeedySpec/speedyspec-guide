@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "array (\n  0 => 201,\n  1 => 'text/plain',\n  2 => 'file',\n  3 => 'notes-2',\n  4 => 'hello file',\n)",
+ "return": "array (\n  0 => 201,\n  1 => 'text/plain',\n  2 => 'file',\n  3 => 'guide-notes',\n  4 => 'hello file',\n)",
  "error": null
 }
