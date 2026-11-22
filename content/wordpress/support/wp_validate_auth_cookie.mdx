@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_validate_auth_cookie"
+---
+
+## Behaviour
+
+The user ID a login cookie belongs to, when it is well formed, unexpired, its HMAC is right and its session exists; false otherwise, with auth_cookie_malformed, _expired, _bad_username, _bad_hash or _bad_session_token fired. <Ev source="wp:wp-includes/pluggable.php#L788-L940" hash="de2bb7807cdf852ee7d9f0a0f097819c45db8e705da048d9ae4eb7ca95fc64a6"/>
+
+## Override
+
+`auth_cookie_malformed`, `auth_cookie_expired`, `auth_cookie_bad_username`, `auth_cookie_bad_hash`, `auth_cookie_bad_session_token`, `auth_cookie_valid` fire.

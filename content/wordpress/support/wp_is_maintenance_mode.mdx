@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_is_maintenance_mode"
+---
+
+## Behaviour
+
+Whether the site is in maintenance mode: a .maintenance file in ABSPATH setting $upgrading within the last ten minutes, unless enable_maintenance_mode turns it off. <Ev source="wp:wp-includes/load.php#L442-L484" hash="76d83c1556392b1e1ad949e182be89c1535eafbf4ae71a02f3d793d4dc3f7cc0"/>
+
+## Override
+
+`enable_maintenance_mode` filters it.

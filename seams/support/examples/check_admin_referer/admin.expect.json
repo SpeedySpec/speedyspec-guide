@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 1,\n  1 => \n  array (\n    'output' => '',\n    'message' => 'The link you followed has expired.',\n    'title' => 'An error occurred.',\n    'response' => 403,\n  ),\n)",
+ "error": null
+}

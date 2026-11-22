@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<img alt=\\'\\' src=\\'https://secure.gravatar.com/avatar/cfe00dde46ef942601ffafb9e2825e802858b460e586b8305b344c1eb826357d?s=48&#038;d=mm&#038;r=g\\' srcset=\\'https://secure.gravatar.com/avatar/cfe00dde46ef942601ffafb9e2825e802858b460e586b8305b344c1eb826357d?s=96&#038;d=mm&#038;r=g 2x\\' class=\\'avatar avatar-48 photo\\' height=\\'48\\' width=\\'48\\' loading=\\'lazy\\' decoding=\\'async\\'/>',\n  1 => false,\n)",
+ "error": null
+}

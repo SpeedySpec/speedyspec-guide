@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'https://example.org/a%20b/xSet-Cookie:%20y'",
+ "error": null
+}

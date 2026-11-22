@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_verify_nonce"
+---
+
+## Behaviour
+
+Whether a nonce is right for an action and the current user and session: 1 when made in this tick, 2 in the one before, false otherwise (wp_verify_nonce_failed fires). <Ev source="wp:wp-includes/pluggable.php#L2481-L2530" hash="b17e2db7d06e38b165a1dc216e23c9d9203d84eb5af95e5ae1a9647e1040a3bf"/>
+
+## Override
+
+`nonce_user_logged_out` filters it; `wp_verify_nonce_failed` fires.

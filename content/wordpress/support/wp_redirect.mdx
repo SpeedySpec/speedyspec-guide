@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_redirect"
+---
+
+## Behaviour
+
+Sends a redirect to a location, 302 by default; wp_redirect and wp_redirect_status filter them before the location is sanitized, and false from either stops it. A status that isn't 3xx ends the request. <Ev source="wp:wp-includes/pluggable.php#L1495-L1551" hash="63a9d72e2e6ec695024f0f79b7bc8bef570ff8c0708ae890abd2a0eb3c21e11c"/>
+
+## Override
+
+`wp_redirect`, `wp_redirect_status`, `x_redirect_by` filter it.

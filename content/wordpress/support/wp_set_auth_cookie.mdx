@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_set_auth_cookie"
+---
+
+## Behaviour
+
+Logs a user in by setting the login cookies (auth or secure_auth, and logged_in), for two days or 14 when remembered, with a new session; set_auth_cookie and set_logged_in_cookie fire, and send_auth_cookies can stop the sending. <Ev source="wp:wp-includes/pluggable.php#L1077-L1205" hash="5b7524851045df42fe03e3d7b62f0966ecebb5e176dd2e7a0d1f6bb1a39c24d8"/>
+
+## Override
+
+`auth_cookie_expiration`, `secure_auth_cookie`, `secure_logged_in_cookie`, `send_auth_cookies` filter it; `set_auth_cookie`, `set_logged_in_cookie` fire.

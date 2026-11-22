@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_authenticate"
+---
+
+## Behaviour
+
+Checks a login (or email) and password through the authenticate filter: a WP_User, or a WP_Error saying what was wrong. <Ev source="wp:wp-includes/pluggable.php#L690-L741" hash="4617ab2a5df53b5c219d70ff89c312b1b67d6153aee8492c8ba3621dabb5a348"/>
+
+## Override
+
+`authenticate` filters it; `wp_login_failed` fires.

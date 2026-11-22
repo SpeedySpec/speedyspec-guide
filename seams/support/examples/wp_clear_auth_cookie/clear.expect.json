@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "clear_auth_cookie\n",
+ "return": "'cleared'",
+ "error": null
+}

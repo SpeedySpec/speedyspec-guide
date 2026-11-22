@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<table class=\\'diff is-split-view\\'>\n<tbody>\n<tr><td class=\\'diff-context\\'><span class=\\'screen-reader-text\\'>Unchanged: </span>one</td><td class=\\'diff-context\\'><span class=\\'screen-reader-text\\'>Unchanged: </span>one</td></tr>\n<tr><td class=\\'diff-deletedline\\'><span aria-hidden=\\'true\\' class=\\'dashicons dashicons-minus\\'></span><span class=\\'screen-reader-text\\'>Deleted: </span>two</td><td class=\\'diff-addedline\\'><span aria-hidden=\\'true\\' class=\\'dashicons dashicons-plus\\'></span><span class=\\'screen-reader-text\\'>Added: </span>three</td></tr>\n\n</tbody>\n</table>',\n  1 => '',\n)",
+ "error": null
+}

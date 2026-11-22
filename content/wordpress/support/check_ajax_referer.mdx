@@ -1,0 +1,11 @@
+---
+symbol: "function:check_ajax_referer"
+---
+
+## Behaviour
+
+Checks an AJAX request's nonce (_ajax_nonce or _wpnonce, or the field named): 1 or 2 when valid; false when told not to stop, otherwise a -1 response that ends the request (403 for AJAX requests). <Ev source="wp:wp-includes/pluggable.php#L1427-L1464" hash="f11d64808ccfd3bad39e3cad2127f1eb92a87075b3ea8d8641268dece0b3c3ea"/>
+
+## Override
+
+`check_ajax_referer` fires.

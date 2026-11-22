@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "malformed\n",
+ "return": "array (\n  0 => 1,\n  1 => false,\n)",
+ "error": null
+}

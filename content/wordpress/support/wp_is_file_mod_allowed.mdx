@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_is_file_mod_allowed"
+---
+
+## Behaviour
+
+Whether files may be changed (installs, updates, editing) in a context: not when DISALLOW_FILE_MODS is true; file_mod_allowed filters it. <Ev source="wp:wp-includes/load.php#L1871-L1881" hash="2999e6b551fe97b8e0046669b9cadbad902119b5cb685d70b46a68a340ef92ce"/>
+
+## Override
+
+`file_mod_allowed` filters it.

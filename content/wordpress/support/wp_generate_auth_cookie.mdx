@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_generate_auth_cookie"
+---
+
+## Behaviour
+
+A login cookie for a user: login|expiration|token|HMAC, the HMAC keyed on the scheme's salt and part of the password hash. <Ev source="wp:wp-includes/pluggable.php#L957-L995" hash="ea73152b3b0da8dd7e5266ee950800f61242ce83d8cbb0a10275b8de6a247632"/>
+
+## Override
+
+`auth_cookie` filters it.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'guide nonce keyguide nonce salt',\n  1 => 'guide auth keyguide auth salt',\n)",
+ "error": null
+}

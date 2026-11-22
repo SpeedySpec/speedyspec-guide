@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_notify_moderator"
+---
+
+## Behaviour
+
+Emails the site admin (and the author, when they can edit the comment) that a comment waits for moderation, when moderation emails are on. <Ev source="wp:wp-includes/pluggable.php#L2015-L2192" hash="d4c5ac31d6eaa6a5456d8321d5cd5a93b62cbf8fdab4524c9b1d81a6b4da2430"/>
+
+## Override
+
+`notify_moderator`, `comment_moderation_recipients`, `comment_moderation_headers`, `comment_moderation_text`, `comment_moderation_subject` filter it.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "auth_redirect for user 1\n",
+ "return": "'let through'",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:is_protected_endpoint"
+---
+
+## Behaviour
+
+Whether the request is for a page that must keep working after a fatal error: the login page, the admin, protected AJAX actions, and what is_protected_endpoint adds. <Ev source="wp:wp-includes/load.php#L1185-L1214" hash="c2204b33a9880daa19a195a71fe558ab4609d2611200a8cb4d15b08f503b6d78"/>
+
+## Override
+
+`is_protected_endpoint` filters it.

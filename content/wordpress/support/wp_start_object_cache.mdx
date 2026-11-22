@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_start_object_cache"
+---
+
+## Behaviour
+
+Starts the object cache: an object-cache.php drop-in when there is one, else WordPress's own, then the global groups; run again, it resets the cache. <Ev source="wp:wp-includes/load.php#L838-L937" hash="d601b9d68dd2c4b12dbbd703af086969f1b97bb328b83a963dec66daadac9d6d"/>
+
+## Override
+
+`enable_loading_object_cache_dropin` filters it.

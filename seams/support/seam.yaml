@@ -14,7 +14,11 @@ files:
   - 'wp-includes/php-compat/readonly.php'
   - 'wp-includes/pluggable.php'
   - 'wp-includes/vars.php'
-wordpress: []
+# WordPress is booted by the setup (see boot.php); the runner needs one file to load first.
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true
 # Symbols whose file belongs to another seam.
 symbols:
   - "constant:WP_CONTENT_DIR"
