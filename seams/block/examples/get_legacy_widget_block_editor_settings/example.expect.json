@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'widgetTypesToHideFromLegacyWidgetBlock' => \n  array (\n    0 => 'pages',\n    1 => 'calendar',\n    2 => 'archives',\n    3 => 'media_audio',\n    4 => 'media_image',\n    5 => 'media_gallery',\n    6 => 'media_video',\n    7 => 'search',\n    8 => 'text',\n    9 => 'categories',\n    10 => 'recent-posts',\n    11 => 'recent-comments',\n    12 => 'rss',\n    13 => 'tag_cloud',\n    14 => 'custom_html',\n    15 => 'block',\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:inject_ignored_hooked_blocks_metadata_attributes"
+---
+
+## Behaviour
+
+Hooked to rest_pre_insert_wp_template and wp_template_part: records in a saved template's anchor blocks the hooked blocks it already holds, so they aren't inserted twice. <Ev source="wp:wp-includes/block-template-utils.php#L1719-L1812" hash="89b96a8c96fa2780ea33a77e360402dd7968f961cecc2917c356a53b258b0778"/>
+
+## Override
+
+Not overridable.

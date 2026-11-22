@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<themes>/twentytwentyfive/parts/vertical-header.html',\n  1 => '<themes>/twentytwentyfive/parts/footer-columns.html',\n  2 => '<themes>/twentytwentyfive/parts/footer-newsletter.html',\n  3 => '<themes>/twentytwentyfive/parts/header-large-title.html',\n  4 => '<themes>/twentytwentyfive/parts/footer.html',\n  5 => '<themes>/twentytwentyfive/parts/sidebar.html',\n  6 => '<themes>/twentytwentyfive/parts/header.html',\n  7 => '<themes>/twentytwentyfive/templates/single.html',\n  8 => '<themes>/twentytwentyfive/templates/page.html',\n  9 => '<themes>/twentytwentyfive/templates/index.html',\n  10 => '<themes>/twentytwentyfive/templates/home.html',\n  11 => '<themes>/twentytwentyfive/templates/404.html',\n  12 => '<themes>/twentytwentyfive/templates/page-no-title.html',\n  13 => '<themes>/twentytwentyfive/templates/search.html',\n  14 => '<themes>/twentytwentyfive/templates/archive.html',\n)",
+ "error": null
+}

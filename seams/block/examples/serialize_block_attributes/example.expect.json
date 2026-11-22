@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'{\"text\":\"a \\\\u002d\\\\u002d b \\\\u003cc\\\\u003e \\\\u0026 d\",\"n\":1}'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<!-- wp:paragraph {\"x\":\"\"} --><p onclick=\"evil()\">Hi</p><!-- /wp:paragraph -->'",
+ "error": null
+}

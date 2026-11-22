@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/pattern-overrides',\n  1 => 'core/post-data',\n  2 => 'core/post-meta',\n  3 => 'core/term-data',\n)",
+ "error": null
+}

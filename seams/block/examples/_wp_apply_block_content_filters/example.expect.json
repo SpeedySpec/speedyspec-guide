@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<p class=\"wp-block-paragraph\">x :)</p>'",
+ "error": null
+}

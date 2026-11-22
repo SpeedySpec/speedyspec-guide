@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'uncategorized',\n  1 => 'header',\n  2 => 'footer',\n  3 => 'navigation-overlay',\n)",
+ "error": null
+}

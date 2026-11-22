@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<!-- wp:post-content {\"metadata\":{\"ignoredHookedBlocks\":[\"guide/like\"]}} /--><!-- wp:guide/like /-->'",
+ "error": null
+}

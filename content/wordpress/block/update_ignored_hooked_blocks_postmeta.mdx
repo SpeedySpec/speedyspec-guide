@@ -1,0 +1,11 @@
+---
+symbol: "function:update_ignored_hooked_blocks_postmeta"
+---
+
+## Behaviour
+
+Hooked to `rest_pre_insert_{$post_type}`: stores in an existing post's _wp_ignored_hooked_blocks meta the hooked blocks its new content already holds as first or last children of the post itself. <Ev source="wp:wp-includes/blocks.php#L1423-L1492" hash="750818009817a1c5a055434972e68affc5b394c6721e96f6d397b0c972ba21ce"/>
+
+## Override
+
+Not overridable.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WP_Block_Template',\n  1 => 'template_not_registered',\n)",
+ "error": null
+}

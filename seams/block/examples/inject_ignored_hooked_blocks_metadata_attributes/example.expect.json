@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<!-- wp:paragraph {\"metadata\":{\"ignoredHookedBlocks\":[\"guide/like\"]}} --><p>x</p><!-- /wp:paragraph -->'",
+ "error": null
+}

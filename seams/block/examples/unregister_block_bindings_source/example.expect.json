@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WP_Block_Bindings_Source',\n  1 => false,\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:_resolve_template_for_new_post"
+---
+
+## Behaviour
+
+Hooked to pre_get_posts when the site editor asks which template a new post uses: makes the main query find the auto-draft by its ID; other queries pass. <Ev source="wp:wp-includes/block-template.php#L462-L485" hash="6339330efe7c346bf968c26e06681ac9d7e9a70bff12177518536a640c100543"/>
+
+## Override
+
+Not overridable.
