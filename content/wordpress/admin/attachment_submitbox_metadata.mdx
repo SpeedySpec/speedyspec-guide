@@ -1,0 +1,11 @@
+---
+symbol: "function:attachment_submitbox_metadata"
+---
+
+## Behaviour
+
+Prints the attachment edit screen's file details: URL, name, type, size, dimensions and, for audio and video, length and bitrate. <Ev source="wp:wp-admin/includes/media.php#L3409-L3620" hash="1c5b74832bccfbdbe61dfe2a39736618b9c959efa7b984e3771060bba1e7f6ef"/>
+
+## Override
+
+`media_meta`, `media_submitbox_misc_sections`, `audio_submitbox_misc_sections` filter it.

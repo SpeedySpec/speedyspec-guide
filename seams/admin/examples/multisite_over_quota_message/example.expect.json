@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'<p>Sorry, you have used your space allocation of 100 MB. Please delete some files to upload more files.</p>'",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_media_upload_handler"
+---
+
+## Behaviour
+
+Handles the old media dialog's From Computer and From URL tabs, saving uploads or inserting URLs and printing the form in an iframe. <Ev source="wp:wp-admin/includes/media.php#L923-L1044" hash="a20b96222a2b2f69841cdc98cb6e2f91cba08e66ddf1c32f0174b7638f641e35"/>
+
+## Override
+
+`{$type}_send_to_editor_url`, `image_send_to_editor_url` filter it.

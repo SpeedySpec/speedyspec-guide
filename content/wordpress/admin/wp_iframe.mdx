@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_iframe"
+---
+
+## Behaviour
+
+Prints a page in an iframe, such as the old media dialog: the iframe's head, the content callback's output and the footer. <Ev source="wp:wp-admin/includes/media.php#L553-L682" hash="4f736cd1d8166d9b3e1b4bbb36563f0406424ea6b555c30abc0f060522d6b518"/>
+
+## Override
+
+`admin_enqueue_scripts`, `admin_print_styles-media-upload-popup`, `admin_print_styles`, `admin_print_scripts-media-upload-popup`, `admin_print_scripts`, `admin_head-media-upload-popup`, `admin_head`, `admin_head_{$content_func}`, `admin_print_footer_scripts` fire.

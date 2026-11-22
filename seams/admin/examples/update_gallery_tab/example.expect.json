@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'type' => 'From Computer',\n  'gallery' => 'Gallery (<span id=\\'attachments-count\\'>1</span>)',\n)",
+ "error": null
+}

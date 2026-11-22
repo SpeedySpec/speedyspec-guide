@@ -1,0 +1,11 @@
+---
+symbol: "function:media_upload_form"
+---
+
+## Behaviour
+
+Prints the old media dialog's upload form: the Plupload uploader, or the browser uploader when chosen. <Ev source="wp:wp-admin/includes/media.php#L2161-L2396" hash="f366f1294f7b7b1f8cd155c673278642768426886896e8de9c1df3d3d194811d"/>
+
+## Override
+
+`upload_post_params`, `wp_prevent_unsupported_mime_type_uploads`, `plupload_init` filter it; `upload_ui_over_quota`, `pre-upload-ui`, `pre-plupload-upload-ui`, `post-plupload-upload-ui`, `pre-html-upload-ui`, `post-html-upload-ui`, `post-upload-ui` fire.

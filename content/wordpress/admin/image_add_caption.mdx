@@ -1,0 +1,11 @@
+---
+symbol: "function:image_add_caption"
+---
+
+## Behaviour
+
+Hooked to image_send_to_editor: wraps an inserted image in a [caption] shortcode when it has a caption; filtered by image_add_caption_text and image_add_caption_shortcode. <Ev source="wp:wp-admin/includes/media.php#L188-L250" hash="9f7938d1a93c8cfcae007da25646ad06e4148afc70fc596fc42c1723b72748ab"/>
+
+## Override
+
+`image_add_caption_text`, `disable_captions`, `image_add_caption_shortcode` filter it.

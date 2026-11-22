@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'post_title',\n  1 => 'image_alt',\n  2 => 'post_excerpt',\n  3 => 'post_content',\n  4 => 'url',\n  5 => 'menu_order',\n  6 => 'image_url',\n  7 => 'align',\n  8 => 'image-size',\n)",
+ "error": null
+}
