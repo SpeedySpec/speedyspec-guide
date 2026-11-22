@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'with the check' => 1,\n  'without' => 3,\n)",
+ "error": null
+}
