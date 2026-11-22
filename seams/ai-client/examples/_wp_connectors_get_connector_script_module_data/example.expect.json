@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'connectors',\n    1 => 'isFileModDisabled',\n  ),\n  1 => \n  array (\n    0 => 'akismet',\n    1 => 'anthropic',\n    2 => 'google',\n    3 => 'openai',\n  ),\n)",
+ "error": null
+}

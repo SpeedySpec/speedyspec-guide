@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Akismet Anti-spam',\n  1 => 'spam_filtering',\n  2 => 'api_key',\n  3 => NULL,\n)",
+ "error": null
+}

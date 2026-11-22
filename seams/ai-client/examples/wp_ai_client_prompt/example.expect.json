@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'WP_AI_Client_Prompt_Builder'",
+ "error": null
+}

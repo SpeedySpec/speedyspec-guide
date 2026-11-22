@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_connectors_rest_settings_dispatch"
+---
+
+## Behaviour
+
+Hooked to rest_post_dispatch: masks connector API keys in /wp/v2/settings responses, and checks a new AI provider key, clearing it when the provider rejects it. <Ev source="wp:wp-includes/connectors.php#L698-L758" hash="d92dfb5ecbb4442c9d374143d885c0092fcf99d2cec8af01c759d8300d4aafed"/>
+
+## Override
+
+Not overridable.

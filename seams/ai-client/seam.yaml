@@ -7,7 +7,10 @@ files:
   - 'wp-includes/php-ai-client/**'
   - 'wp-includes/connectors.php'
   - 'wp-includes/class-wp-connector-registry.php'
-wordpress: []
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true
 elsewhere:
   - name: "PSR-7 HTTP messages (Nyholm PSR-7)"
     docs: "https://github.com/Nyholm/psr7"
