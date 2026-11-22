@@ -1,0 +1,70 @@
+---
+title: Shortcodes
+summary: Register a shortcode that returns its HTML, give it sanitized attributes with defaults, escape what it prints, and wrap content.
+---
+
+A **shortcode** is a tag in square brackets that someone types into a post, such as `[my_plugin_stars count="4"]`.
+When the post is shown, WordPress replaces the tag with whatever your plugin's function returns. Shortcodes let
+people who don't write code put your plugin's output exactly where they want it in their content. For new interfaces
+in the block editor a block is the richer choice, but shortcodes still work everywhere: in posts, in widgets and in
+classic content.
+
+## Return, never echo
+
+Register the shortcode on `init` with <Sym id="function:add_shortcode" />, giving its tag and the function that
+builds its output. The tag is a name in the same shared space as everything else, so prefix it.
+
+The function must **return** its HTML. WordPress collects the returned text and puts it where the tag was written.
+If the function prints with `echo` instead, the output appears wherever WordPress happens to be when it runs the
+shortcode, usually before the content:
+
+<Example id="guides/shortcodes/returns-not-echoes" />
+
+The echoing shortcode left a gap where it was written, and its output landed before the text. When building a lot of
+HTML is easier with `echo`, wrap it in `ob_start()` and return `ob_get_clean()`.
+
+WordPress runs <Sym id="function:do_shortcode" /> on post content through the `the_content` filter, after
+paragraphs are added. The examples call it directly to show the result. <OnSpeedySpecNote id="function:add_shortcode" />
+
+## Attributes with defaults
+
+A shortcode's attributes arrive as an array of strings, exactly as typed, and possibly not at all.
+<Sym id="function:shortcode_atts" /> merges them with the defaults you list, and drops any attribute you didn't
+define. Pass your tag as its third argument: then others can adjust the attributes through
+<Sym id="filter:shortcode_atts_{$shortcode}" />.
+
+<Example id="guides/shortcodes/attributes-with-defaults" />
+
+Every value is still a string from the post's author, so sanitize it for its use. Here `absint()` makes the count a
+whole number and the code keeps it between 1 and 5, so `99` shows five stars instead of a hundred. The unknown
+`colour` attribute was ignored.
+
+## Escape everything you return
+
+Anyone who can write a post can type any attribute value, and a post may be written by someone with far less trust
+than an administrator. Escape each value for where it goes, as in any other output:
+
+<Example id="guides/shortcodes/hostile-attributes-escaped" />
+
+`esc_url()` refused the `javascript:` address, and the shortcode printed nothing rather than a button that leads
+nowhere. Had the URL been fine, the label's markup would still have been printed as harmless text by `esc_html()`.
+
+## Wrapping content
+
+A shortcode can also enclose content: `[my_plugin_box]…[/my_plugin_box]`. The content between the tags arrives as
+the function's second argument. Run `do_shortcode()` on it, so shortcodes inside it still work, and filter its HTML
+with `wp_kses_post()`, so it can hold only the markup a post may hold:
+
+<Example id="guides/shortcodes/enclosing-content" />
+
+The stars inside the box were expanded, the `<script>` was removed, and an empty box printed nothing at all.
+
+## Other things to know
+
+- <Sym id="function:shortcode_exists" /> tells you whether a tag is registered, and
+  <Sym id="function:has_shortcode" /> whether a piece of content uses it, for example to load a stylesheet only on
+  posts that need it.
+- When the plugin is deactivated, its shortcodes stop being replaced and their tags appear in posts as plain text.
+  Say so in your plugin's description, so people know what to expect.
+
+The Shortcode seam isn't ported to SpeedySpec yet, so this guide makes no promise about how shortcodes behave there.
