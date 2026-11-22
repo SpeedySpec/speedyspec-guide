@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 401,\n  1 => \n  array (\n    'rendered' => '',\n    'protected' => true,\n  ),\n  2 => '<p>Hidden text</p>\n',\n)",
+ "error": null
+}
