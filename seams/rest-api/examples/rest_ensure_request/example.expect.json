@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WP_REST_Request',\n  1 => '/wp/v2/posts',\n  2 => 'GET',\n  3 => \n  array (\n    'per_page' => 2,\n  ),\n)",
+ "error": null
+}

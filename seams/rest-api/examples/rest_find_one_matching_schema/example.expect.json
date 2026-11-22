@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'type' => 'number',\n  ),\n  1 => 'rest_one_of_multiple_matches',\n)",
+ "error": null
+}

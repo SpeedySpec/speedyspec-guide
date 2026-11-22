@@ -1,0 +1,11 @@
+---
+symbol: "function:create_initial_rest_routes"
+---
+
+## Behaviour
+
+Hooked to rest_api_init: registers WordPress's own controllers' routes, such as posts, users, settings and block types. <Ev source="wp:wp-includes/rest-api.php#L265-L447" hash="de58debd43d5acb1f3dcf83f28660eba2de9b0cf502044263be39b7878758d9c"/>
+
+## Override
+
+`wp_rest_search_handlers` filters it.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'title',\n  1 => 'description',\n  2 => 'default',\n  3 => 'type',\n  4 => 'format',\n  5 => 'enum',\n  6 => 'items',\n  7 => 'properties',\n  8 => 'additionalProperties',\n  9 => 'patternProperties',\n  10 => 'minProperties',\n  11 => 'maxProperties',\n  12 => 'minimum',\n  13 => 'maximum',\n  14 => 'exclusiveMinimum',\n  15 => 'exclusiveMaximum',\n  16 => 'multipleOf',\n  17 => 'minLength',\n  18 => 'maxLength',\n  19 => 'pattern',\n  20 => 'minItems',\n  21 => 'maxItems',\n  22 => 'uniqueItems',\n  23 => 'anyOf',\n  24 => 'oneOf',\n)",
+ "error": null
+}

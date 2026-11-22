@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"opts\":{\"type\":\"object\",\"default\":{}}},\"required\":[\"name\"]}'",
+ "error": null
+}
