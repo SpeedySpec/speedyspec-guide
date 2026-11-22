@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<section class=\"widget_recent_comments\"><h2>Comments</h2><ul id=\"recentcomments\"><li class=\"recentcomments\"><span class=\"comment-author-link\">Ada</span> on <a href=\"http://example.org/?p=1#comment-1\">First post</a></li></ul></section>'",
+ "error": null
+}

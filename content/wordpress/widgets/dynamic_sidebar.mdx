@@ -1,0 +1,11 @@
+---
+symbol: "function:dynamic_sidebar"
+---
+
+## Behaviour
+
+Prints a sidebar's widgets, found by ID, number or name: each through its callback, with the sidebar's markup and the widget's ID and class filled in, inside the sidebar's own wrapper outside the admin. Returns whether any widget printed. <Ev source="wp:wp-includes/widgets.php#L698-L887" hash="b4b0be85f81e89eff3d2666b9a73dad0e3c291b40be27e29d4365e68b7a7644a"/>
+
+## Override
+
+`dynamic_sidebar_params` filters each widget's arguments; `dynamic_sidebar_has_widgets` the result; `dynamic_sidebar_before`, `dynamic_sidebar` and `dynamic_sidebar_after` fire.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'title' => 'News',\n  'url' => 'https://feed.example/rss%20',\n  'link' => '',\n  'items' => 10,\n  'error' => false,\n  'show_summary' => 0,\n  'show_author' => 0,\n  'show_date' => 1,\n)",
+ "error": null
+}

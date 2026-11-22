@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_widgets_init"
+---
+
+## Behaviour
+
+Registers WordPress's widgets (Links only with the link manager on) and fires `widgets_init`; nothing while WordPress isn't installed. Hooked to `init`. <Ev source="wp:wp-includes/widgets.php#L1845-L1896" hash="e764c7496c92a8b48c529511d9443e033a278b57021c20013a393d1e363ef4ee"/>
+
+## Override
+
+`widgets_init` is where widgets and sidebars are registered.

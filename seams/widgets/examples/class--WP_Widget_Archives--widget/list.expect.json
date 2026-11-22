@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<section class=\"widget_archive\"><h2>Months</h2> <ul> <li><a href=\\'http://example.org/?m=202603\\'>March 2026</a>&nbsp;(1)</li> </ul> </section>'",
+ "error": null
+}

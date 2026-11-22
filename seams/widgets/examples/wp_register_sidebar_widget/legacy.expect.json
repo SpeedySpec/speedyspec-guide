@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "wp_register_sidebar_widget legacy\n",
+ "return": "array (\n  0 => '&lt;b&gt;Old&lt;/b&gt; style',\n  1 => false,\n)",
+ "error": null
+}

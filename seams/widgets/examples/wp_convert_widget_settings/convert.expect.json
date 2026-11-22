@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    2 => \n    array (\n      'title' => 'Old',\n    ),\n    '_multiwidget' => 1,\n  ),\n  1 => \n  array (\n    3 => \n    array (\n      'title' => 'A',\n    ),\n    '_multiwidget' => 1,\n  ),\n  2 => \n  array (\n    0 => 'legacy-2',\n  ),\n)",
+ "error": null
+}

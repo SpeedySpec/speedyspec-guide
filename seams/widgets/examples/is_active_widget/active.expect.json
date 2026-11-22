@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'side',\n  1 => false,\n  2 => 'wp_inactive_widgets',\n  3 => 'side',\n)",
+ "error": null
+}

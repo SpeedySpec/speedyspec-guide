@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<section class=\"widget_meta\"><h2>Meta</h2> <ul> <li><a href=\"http://example.org/wp-login.php\">Log in</a></li> <li><a href=\"http://example.org/?feed=rss2\">Entries feed</a></li> <li><a href=\"http://example.org/?feed=comments-rss2\">Comments feed</a></li> <li><a href=\"https://wordpress.org/\">WordPress.org</a></li> </ul> </section>'",
+ "error": null
+}

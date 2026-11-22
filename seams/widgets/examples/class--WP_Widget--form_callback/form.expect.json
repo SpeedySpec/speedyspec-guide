@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<p> <label for=\"widget-search-2-title\">Title:</label> <input class=\"widefat\" id=\"widget-search-2-title\" name=\"widget-search[2][title]\" type=\"text\" value=\"Find\" /> </p> <!-- in_widget_form -->',\n  1 => 'search-2',\n  2 => '<p> <label for=\"widget-search-__i__-title\">Title:</label> <input class=\"widefat\" id=\"widget-search-__i__-title\" name=\"widget-search[__i__][title]\" type=\"text\" value=\"\" /> </p> <!-- in_widget_form -->',\n  3 => 'search-__i__',\n)",
+ "error": null
+}

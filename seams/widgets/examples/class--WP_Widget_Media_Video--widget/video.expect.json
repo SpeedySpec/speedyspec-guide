@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<section class=\"widget_media_video\"><h2>Watch</h2></section>'",
+ "error": null
+}

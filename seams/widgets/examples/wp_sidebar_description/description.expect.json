@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Shown <strong>beside</strong> posts x',\n  1 => NULL,\n)",
+ "error": null
+}

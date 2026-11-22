@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 300,\n  1 => 200,\n  2 => \n  array (\n    0 => \n    array (\n      'number' => -1,\n    ),\n  ),\n  3 => false,\n)",
+ "error": null
+}

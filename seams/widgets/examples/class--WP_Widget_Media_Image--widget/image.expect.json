@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<section class=\"widget_media_image\"><h2>Photo</h2><img class=\"image \" src=\"https://example.org/a.jpg\" alt=\"A photo\" width=\"300\" height=\"200\" decoding=\"async\" loading=\"lazy\" /></section>'",
+ "error": null
+}

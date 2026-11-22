@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<section class=\"widget_recent_entries\"> <h2>Latest</h2> <ul> <li> <a href=\"http://example.org/?p=1\">First post</a> <span class=\"post-date\">March 5, 2026</span> </li> </ul> </section>'",
+ "error": null
+}

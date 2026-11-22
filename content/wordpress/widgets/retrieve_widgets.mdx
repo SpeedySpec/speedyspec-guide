@@ -1,0 +1,11 @@
+---
+symbol: "function:retrieve_widgets"
+---
+
+## Behaviour
+
+Sorts stored widgets into the registered sidebars: drops unregistered widgets, maps old sidebars onto new ones, and puts registered widgets shown nowhere into the inactive widgets. It saves the result, except for the Customizer, and returns it; when the sidebars already match, it only drops unregistered widgets. <Ev source="wp:wp-includes/widgets.php#L1333-L1388" hash="e5be7cbc8e818478b513aa4c497fa0a2a7ff0248d600a8d19674ac1ceb6a1946"/>
+
+## Override
+
+Not overridable.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<section class=\"widget_search\"><h2>Search</h2><form role=\"search\" method=\"get\" id=\"searchform\" class=\"searchform\" action=\"http://example.org/\"> <div> <label class=\"screen-reader-text\" for=\"s\">Search for:</label> <input type=\"text\" value=\"\" name=\"s\" id=\"s\" /> <input type=\"submit\" id=\"searchsubmit\" value=\"Search\" /> </div> </form></section>'",
+ "error": null
+}
