@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_image_encode_quality"
+---
+
+## Behaviour
+
+The quality image editors encode a MIME type at: 86 for WebP and 82 for others, through wp_editor_set_quality and, for JPEG, jpeg_quality. <Ev source="wp:wp-includes/media.php#L1006-L1037" hash="128293219418e02e87344474ee0cc73ea550d39ea33d900ebf04bdddbbc9f5ab"/>
+
+## Override
+
+`wp_editor_set_quality`, `jpeg_quality` filter it.

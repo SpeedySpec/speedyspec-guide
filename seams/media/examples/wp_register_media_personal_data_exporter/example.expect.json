@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'wordpress-media' => \n  array (\n    'exporter_friendly_name' => 'WordPress Media',\n    'callback' => 'wp_media_personal_data_exporter',\n  ),\n)",
+ "error": null
+}

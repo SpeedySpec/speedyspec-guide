@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"notice notice-warning update-nag inline\">An automated WordPress update has failed to complete - <a href=\"update-core.php\">please attempt the update again now</a>.</div>'",
+ "error": null
+}

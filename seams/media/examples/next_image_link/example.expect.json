@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\\'http://example.org/?attachment_id=4\\'>On</a>'",
+ "error": null
+}

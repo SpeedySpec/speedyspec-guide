@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'width=\"300\" height=\"200\" ',\n  1 => 'width=\"300\" ',\n)",
+ "error": null
+}

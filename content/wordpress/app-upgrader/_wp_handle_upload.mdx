@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_handle_upload"
+---
+
+## Behaviour
+
+Does the work of wp_handle_upload() and wp_handle_sideload(): checks the file, picks a unique name and moves it into the uploads folder. <Ev source="wp:wp-admin/includes/file.php#L806-L1079" hash="477c4f9d733c6cf1ee772478855c8f61af746a337743489011f964938bf5d16e"/>
+
+## Override
+
+`{$action}_prefilter`, `{$action}_overrides`, `pre_move_uploaded_file`, `wp_handle_upload` filter it.

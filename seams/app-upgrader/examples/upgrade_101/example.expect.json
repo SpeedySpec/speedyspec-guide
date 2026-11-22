@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "<div id=\"error\"><p class=\"wpdberror\"><strong>WordPress database error:</strong> [Table &#039;guide.guide_categories&#039; doesn&#039;t exist]<br /><code>ALTER TABLE `guide_categories` ADD INDEX ( `category_nicename` )</code></p></div><div id=\"error\"><p class=\"wpdberror\"><strong>WordPress database error:</strong> [Key column &#039;link_category&#039; doesn&#039;t exist in table]<br /><code>ALTER TABLE `guide_links` ADD INDEX ( `link_category` )</code></p></div>",
+ "return": "true",
+ "error": null
+}

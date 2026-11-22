@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'mp3',\n  1 => 'ogg',\n  2 => 'flac',\n  3 => 'm4a',\n  4 => 'wav',\n)",
+ "error": null
+}

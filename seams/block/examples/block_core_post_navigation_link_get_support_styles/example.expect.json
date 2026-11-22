@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'class' => '',\n  'style' => 'padding-top:1em;',\n)",
+ "error": null
+}

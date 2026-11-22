@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'He said \"hi\" and \\'bye\\''",
+ "error": null
+}

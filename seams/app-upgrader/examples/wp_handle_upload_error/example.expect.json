@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'error' => 'The uploaded file is too big.',\n)",
+ "error": null
+}

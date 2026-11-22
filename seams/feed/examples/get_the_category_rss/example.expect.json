@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<category><![CDATA[Green]]></category>\n\t\t<category><![CDATA[grassy]]></category>',\n  1 => '<category scheme=\"http://example.org\" term=\"Green\" /><category scheme=\"http://example.org\" term=\"grassy\" />',\n)",
+ "error": null
+}

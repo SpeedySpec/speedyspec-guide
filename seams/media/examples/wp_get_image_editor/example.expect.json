@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WP_Image_Editor_Imagick',\n  1 => \n  array (\n    'width' => 40,\n    'height' => 30,\n  ),\n)",
+ "error": null
+}

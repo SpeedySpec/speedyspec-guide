@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_new_blog_notification"
+---
+
+## Behaviour
+
+Emails the admin that the site is installed, with its URL and username; the password is not sent. <Ev source="wp:wp-admin/includes/upgrade.php#L577-L648" hash="8795c5b6bb1e5d2467a5275e08919da8fa2f79f60dbad90913bdc3404b52b90a"/>
+
+## Override
+
+`wp_installed_email` filters it.

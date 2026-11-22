@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'mp4',\n  1 => 'm4v',\n  2 => 'webm',\n  3 => 'ogv',\n  4 => 'flv',\n)",
+ "error": null
+}

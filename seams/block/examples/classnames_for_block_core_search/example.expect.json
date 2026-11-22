@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'wp-block-search__button-inside wp-block-search__icon-button'",
+ "error": null
+}

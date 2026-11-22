@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'WP_Filesystem_Direct',\n  2 => 'direct',\n)",
+ "error": null
+}

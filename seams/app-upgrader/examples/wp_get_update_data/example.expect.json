@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'counts' => \n  array (\n    'plugins' => 1,\n    'themes' => 0,\n    'wordpress' => 1,\n    'translations' => 0,\n    'total' => 2,\n  ),\n  'title' => '1 WordPress Update, 1 Plugin Update',\n)",
+ "error": null
+}

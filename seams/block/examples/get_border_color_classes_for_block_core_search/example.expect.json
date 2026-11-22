@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'has-border-color has-contrast-border-color'",
+ "error": null
+}

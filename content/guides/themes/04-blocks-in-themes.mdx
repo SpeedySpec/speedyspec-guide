@@ -1,0 +1,91 @@
+---
+title: Blocks in themes
+summary: How block themes are built from blocks, how block markup is parsed and rendered, and how patterns, block styles and block supports connect themes and blocks.
+---
+
+In a block theme, everything on the page is a **block**: the header, the post's title, its content, the footer. Even a
+template is just block markup. This guide explains how WordPress stores, parses and renders blocks, and the four
+places themes and blocks meet: templates and parts, patterns, block styles, and block supports. It builds on
+[The template hierarchy](/guides/themes/the-template-hierarchy/) and
+[theme.json, layer by layer](/guides/themes/theme-json-layer-by-layer/).
+
+## Block markup
+
+Blocks are stored as HTML with comments around each block. A comment names the block, and may carry its attributes
+as JSON. <Sym id="function:parse_blocks" /> reads markup into an array of blocks, each with its name, attributes,
+inner blocks and HTML:
+
+<Example id="block/parse_blocks/example" />
+
+<Sym id="function:serialize_blocks" /> turns that array back into markup, which is how blocks are edited and saved
+without losing anything:
+
+<Example id="block/serialize_blocks/example" />
+
+## Templates are blocks
+
+A block theme's template is that same markup. Twenty Twenty-Five's Single template pulls in its header and footer as
+**template parts**, `core/template-part` blocks that name a part by slug, around a group of blocks for the post:
+
+<Example id="guides/blocks-in-themes/templates-are-blocks" />
+
+A part named in a template is looked up the same way as a template: a copy the site's owner saved first, then the
+child theme's `parts/` folder, then the parent's. <Sym id="function:block_template_part" /> renders one by slug, for a
+classic theme that wants to share a part. <Sym id="function:get_the_block_template_html" /> renders the chosen
+template for the page:
+
+<Example id="block/get_the_block_template_html/example" />
+
+## Rendering: static and dynamic blocks
+
+<Sym id="function:do_blocks" /> renders markup to the HTML a visitor sees, block by block. A **static** block's HTML
+was saved with it and is printed as it is. A **dynamic** block has a render callback that builds its HTML on every
+request, for content that changes, such as a list of recent posts:
+
+<Example id="block/do_blocks/example" />
+
+<Sym id="function:register_block_type" /> adds a block type, by name and arguments or, more often, from the folder
+holding its `block.json`. A render callback makes it dynamic:
+
+<Example id="block/register_block_type/example" />
+
+Like any output, a render callback escapes what it prints. Attributes come from content that people typed.
+<OnSpeedySpecNote id="function:register_block_type" />
+
+## Block supports: theme.json reaches into blocks
+
+A block declares which design tools it **supports**: color, spacing, typography, borders. The editor then offers those
+controls for it, limited to what the theme's `theme.json` settings allow, and WordPress adds the matching classes and
+styles when the block renders. A dynamic block takes them in through
+<Sym id="function:get_block_wrapper_attributes" /> on its outer element:
+
+<Example id="block/get_block_wrapper_attributes/example" />
+
+The block chose the theme's `contrast` color from the palette, and the wrapper received `has-contrast-background-color`.
+That class is defined by the stylesheet `theme.json` generates, so the block follows the theme's palette, including
+when the site's owner changes it.
+
+## Patterns
+
+A **pattern** is a ready-made arrangement of blocks that people insert and then edit, such as a call to action or a
+pricing table. A plugin registers one with <Sym id="function:register_block_pattern" />:
+
+<Example id="block/register_block_pattern/example" />
+
+A block theme doesn't need code for its patterns. Every PHP file in its `patterns/` folder registers itself from the
+header comment at its top: title, slug, categories, and more. The file runs as PHP, so its text can be translated and
+escaped:
+
+<Example id="guides/blocks-in-themes/theme-patterns-folder" />
+
+## Block styles
+
+A **block style** is a named alternative look for a block, such as a quote with a thicker border, chosen from the
+block's toolbar. <Sym id="function:register_block_style" /> adds one. When it is chosen, the block gets the class
+`is-style-{name}`, which the style's CSS targets:
+
+<Example id="block/register_block_style/example" />
+
+Use a block style for a look people choose per block, and `theme.json` for the design every block shares.
+
+The Blocks seam isn't ported to SpeedySpec yet, so this guide makes no promise about how blocks behave there.

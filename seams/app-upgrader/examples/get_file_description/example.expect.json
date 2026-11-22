@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Stylesheet',\n  1 => 'readme.txt',\n)",
+ "error": null
+}

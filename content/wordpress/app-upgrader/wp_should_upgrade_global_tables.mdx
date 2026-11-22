@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_should_upgrade_global_tables"
+---
+
+## Behaviour
+
+Whether an upgrade should change the global tables (users, usermeta, network tables): true except on large networks or when filtered off. <Ev source="wp:wp-admin/includes/upgrade.php#L3863-L3891" hash="ea91957019885f2bfb431d1dcc1561e19943756c553b346396392344b418b82e"/>
+
+## Override
+
+`wp_should_upgrade_global_tables` filters it.

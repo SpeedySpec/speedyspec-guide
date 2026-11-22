@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'WordPress 7.2-RC1-65559-src running guide theme.Update to 7.3'",
+ "error": null
+}

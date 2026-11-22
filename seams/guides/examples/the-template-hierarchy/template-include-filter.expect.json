@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'theme has none' => '<plugins>/my-plugin/templates/single-my_book.php',\n  'theme has one' => 'my-child/single-my_book.php',\n)",
+ "error": null
+}

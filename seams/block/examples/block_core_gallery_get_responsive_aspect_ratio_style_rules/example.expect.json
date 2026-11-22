@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'selector' => '.wp-block-gallery-1.wp-block-gallery.has-nested-images figure.wp-block-image:not(#individual-image) img',\n    'declarations' => \n    array (\n      'aspect-ratio' => '16/9 !important',\n      'object-fit' => 'cover !important',\n    ),\n    'rules_group' => '@media (max-width: 600px)',\n  ),\n)",
+ "error": null
+}

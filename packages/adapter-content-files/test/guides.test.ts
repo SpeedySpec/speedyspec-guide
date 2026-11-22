@@ -29,6 +29,11 @@ describe('GuideFiles', () => {
     ]);
   });
 
+  test('test_maps_theme_guides', async () => {
+    const guides = await new GuideFiles(content({ 'guides/themes/02-theme-json.mdx': front('theme.json'), 'guides/themes/01-finding-templates.mdx': front('Finding templates') })).guides();
+    expect(guides.map((g) => [g.kind, g.slug, g.order])).toEqual([['theme', 'finding-templates', 1], ['theme', 'theme-json', 2]]);
+  });
+
   test('test_collects_examples_and_symbols', async () => {
     const [guide] = await new GuideFiles(content({
       'guides/path/01-first.mdx': front('First') + 'Read it with <Sym id="function:get_option" />.\n\n<Example id="options/get_option/basic" />\n',

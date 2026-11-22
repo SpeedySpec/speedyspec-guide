@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'type' => 'plugin',\n    'slug' => 'akismet',\n    'language' => 'fr_FR',\n    'version' => '5.0',\n  ),\n)",
+ "error": null
+}

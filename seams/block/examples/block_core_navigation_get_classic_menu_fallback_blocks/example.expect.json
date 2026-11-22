@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<!-- wp:navigation-link {\"className\":\" menu-item menu-item-type-custom menu-item-object-custom\",\"description\":\"\",\"id\":null,\"kind\":\"custom\",\"label\":\"Docs\",\"opensInNewTab\":false,\"rel\":null,\"title\":\"\",\"type\":\"custom\",\"url\":\"https://example.org/docs\"} /-->'",
+ "error": null
+}

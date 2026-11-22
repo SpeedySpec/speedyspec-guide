@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<img src=\"http://example.org/wp-content/uploads/2026/11/photo-300x200.jpg\" width=\"300\" height=\"200\" srcset=\"http://example.org/wp-content/uploads/2026/11/photo-300x200.jpg 300w, http://example.org/wp-content/uploads/2026/11/photo-1024x683.jpg 1024w, http://example.org/wp-content/uploads/2026/11/photo.jpg 1200w\" sizes=\"(max-width: 300px) 100vw, 300px\" />'",
+ "error": null
+}

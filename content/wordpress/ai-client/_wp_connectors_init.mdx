@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_connectors_init"
+---
+
+## Behaviour
+
+Hooked to init: makes the connector registry, registers the default AI providers when AI is supported and Akismet, then fires wp_connectors_init with the registry so plugins add theirs; the registry can only be set during init. <Ev source="wp:wp-includes/connectors.php#L216-L277" hash="8d65285247db52858f12b98c86e5d9dfb6c3f57a50ed550ef36cf5a2ae761788"/>
+
+## Override
+
+`wp_connectors_init` fires.

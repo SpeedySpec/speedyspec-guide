@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'outer blocks' => \n  array (\n    0 => 'core/template-part',\n    1 => 'core/group',\n    2 => 'core/template-part',\n  ),\n  'template parts' => \n  array (\n    0 => 'header',\n    1 => 'footer',\n  ),\n  'id' => 'twentytwentyfive//single',\n)",
+ "error": null
+}

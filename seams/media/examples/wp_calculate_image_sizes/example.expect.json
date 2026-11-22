@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '(max-width: 300px) 100vw, 300px',\n  1 => '(max-width: 300px) 100vw, 300px',\n)",
+ "error": null
+}

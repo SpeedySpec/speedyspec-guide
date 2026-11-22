@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<img fetchpriority=\"low\" src=\"logo.png\" alt=\"\">'",
+ "error": null
+}

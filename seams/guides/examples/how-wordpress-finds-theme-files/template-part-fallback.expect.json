@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'printed' => 'Child card, size large',\n  'missing part' => false,\n)",
+ "error": null
+}

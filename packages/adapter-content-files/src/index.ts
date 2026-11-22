@@ -109,7 +109,7 @@ export class GuideFiles implements GuideSource {
     const root = join(this.dir, 'guides');
     if (!existsSync(root)) return [];
     const out: Guide[] = [];
-    for (const folder of ['path', 'topics', 'contributing/wordpress', 'contributing/speedyspec']) {
+    for (const folder of ['path', 'themes', 'topics', 'contributing/wordpress', 'contributing/speedyspec']) {
       if (!existsSync(join(root, folder))) continue;
       for await (const found of new Bun.Glob('*.mdx').scan({ cwd: join(root, folder) })) {
         out.push(this.map(`guides/${folder}/${found}`, await Bun.file(join(root, folder, found)).text()));
@@ -137,6 +137,7 @@ export class GuideFiles implements GuideSource {
     const order = numbered ? Number(numbered[1]) : undefined;
     const placed = order === undefined ? {} : { order };
     if (parts[1] === 'contributing') return { ...base, kind: 'contributing', part: parts[2] as 'wordpress' | 'speedyspec', slug, ...placed };
+    if (parts[1] === 'themes') return { ...base, kind: 'theme', slug, ...placed };
     return { ...base, kind: 'path', slug, ...placed };
   }
 }

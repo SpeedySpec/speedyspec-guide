@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "request https://api.wordpress.org/core/checksums/1.0/?version=7.2&locale=en_US\n",
+ "return": "array (\n  'index.php' => '926dd0f95df723f9ed934eb058882cc8',\n)",
+ "error": null
+}

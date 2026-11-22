@@ -1,0 +1,84 @@
+---
+title: theme.json, layer by layer
+summary: How WordPress merges theme.json from core, blocks, the parent and child themes and the site's owner, what settings and styles each do, and how presets become CSS custom properties.
+---
+
+`theme.json` is a theme's single description of its design. Its **settings** say what the editor offers: which
+colors, font sizes and spacing, and which controls at all. Its **styles** say how things look by default. WordPress
+doesn't read just the theme's file, though. It merges several layers into one result, and the last layer to set a
+value wins. This guide explains those layers, then how settings and styles turn into the editor's options and the
+page's CSS.
+
+The examples here build a child of Twenty Twenty-Five with its own `theme.json`.
+
+## The layers
+
+<Sym id="class:WP_Theme_JSON_Resolver" /> gathers `theme.json` data from four origins, and merges them in this order:
+
+1. **Defaults:** WordPress's own `theme.json`, with its default palette, font sizes and spacing.
+2. **Blocks:** what each block declares in its `block.json`, such as the styles it supports.
+3. **Theme:** the parent theme's `theme.json` with the child's merged over it.
+4. **User:** what the site's owner saves in the Site Editor's Styles panel, kept in a `wp_global_styles` post.
+
+<Example id="theme/class--WP_Theme_JSON_Resolver/example" />
+
+Here is the merge in action. The parent sets a background, the child sets a text color, and then the site's owner
+picks a background of their own:
+
+<Example id="guides/theme-json-layer-by-layer/layers-merge" />
+
+The child's text color joined the parent's background. Then the user's background replaced the theme's, while the
+child's text color stayed. Each layer only overrides what it sets. Underneath, <Sym id="class:WP_Theme_JSON" />'s
+`merge()` does this, one layer over another:
+
+<Example id="theme/class--WP_Theme_JSON--merge/example" />
+
+Each layer passes through a filter as it is read (`wp_theme_json_data_default`, `_blocks`, `_theme` and `_user`).
+That is where a plugin changes `theme.json` data without editing a theme. Results are cached per request and per
+theme, so code that changes a layer during a request clears the cache with
+<Sym id="function:wp_clean_theme_json_cache" />. <OnSpeedySpecNote id="class:WP_Theme_JSON_Resolver" />
+
+## Settings: what the editor offers
+
+Settings decide which controls the block editor shows, and with which choices. They can be set for the whole site,
+and again for one block type under `settings.blocks`. <Sym id="function:wp_get_global_settings" /> reads the merged
+result, for the site or for one block:
+
+<Example id="guides/theme-json-layer-by-layer/settings-switch-features-off" />
+
+With `color.custom` off, the color picker offers only the palette, with no free choice. Text color is on for blocks
+in general, but this theme turned it off for paragraphs. Plugins with blocks of their own should read these settings
+rather than assume a control exists:
+
+<Example id="resources/wp_get_global_settings/settings" />
+
+## Presets become CSS custom properties
+
+A **preset** is a named choice in the settings: a palette color, a font size, a spacing step. WordPress turns every
+preset into a CSS custom property named `--wp--preset--{type}--{slug}`. Styles refer to a preset with
+`var:preset|{type}|{slug}`, and the stylesheet turns that into a `var(--wp--preset--…)` reference:
+
+<Example id="guides/theme-json-layer-by-layer/presets-become-variables" />
+
+<Sym id="function:wp_get_global_styles" /> reads a merged style. It keeps the reference by default, and can resolve it
+to the color itself:
+
+<Example id="resources/wp_get_global_styles/styles" />
+
+Referring to presets instead of raw values is what keeps a design changeable. When the site's owner changes the
+`accent` color in Styles, everything that refers to it follows.
+
+## The stylesheet
+
+<Sym id="function:wp_get_global_stylesheet" /> builds the CSS the front end prints from the merged result. First come
+the custom properties for every preset, then the styles, then the classes that let blocks use presets (such as
+`.has-accent-color`), then layout rules:
+
+<Example id="resources/wp_get_global_stylesheet/stylesheet" />
+
+WordPress prints it as an inline stylesheet on every page, so a theme with a complete `theme.json` needs little CSS of
+its own. Put a design decision in `theme.json` whenever it can be expressed there. Then the editor shows it, the site's
+owner can change it, and blocks follow it.
+
+The Themes and Resources seams aren't ported to SpeedySpec yet, so this guide makes no promise about how `theme.json`
+behaves there.

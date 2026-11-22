@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'width' => false,\n  'height' => false,\n  'bit_depth' => false,\n  'num_channels' => false,\n)",
+ "error": null
+}

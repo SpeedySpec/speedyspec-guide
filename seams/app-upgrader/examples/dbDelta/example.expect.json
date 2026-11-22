@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'Created table guide_guide_scores',\n  ),\n  1 => \n  array (\n    0 => 'Added column guide_guide_scores.player',\n    1 => 'Added index guide_guide_scores KEY `player` (`player`)',\n  ),\n)",
+ "error": null
+}

@@ -8,12 +8,8 @@ files:
   - 'wp-admin/includes/class-bulk-upgrader-skin.php'
   - 'wp-admin/includes/class-core-upgrader.php'
   - 'wp-admin/includes/class-file-upload-upgrader.php'
-  - 'wp-admin/includes/class-ftp-pure.php'
-  - 'wp-admin/includes/class-ftp-sockets.php'
-  - 'wp-admin/includes/class-ftp.php'
   - 'wp-admin/includes/class-language-pack-upgrader-skin.php'
   - 'wp-admin/includes/class-language-pack-upgrader.php'
-  - 'wp-admin/includes/class-pclzip.php'
   - 'wp-admin/includes/class-plugin-installer-skin.php'
   - 'wp-admin/includes/class-plugin-upgrader-skin.php'
   - 'wp-admin/includes/class-plugin-upgrader.php'
@@ -41,4 +37,16 @@ files:
   - 'wp-admin/includes/update.php'
   - 'wp-admin/includes/upgrade.php'
   - 'wp-includes/update.php'
-wordpress: []
+elsewhere:
+  - name: "PemFTP"
+    docs: "https://www.phpclasses.org/package/1743-PHP-FTP-client-in-pure-PHP.html"
+    files: ["wp-admin/includes/class-ftp.php", "wp-admin/includes/class-ftp-pure.php", "wp-admin/includes/class-ftp-sockets.php"]
+    note: "WordPress bundles PemFTP, an FTP client written in PHP; WP_Filesystem_ftpsockets uses it when the FTP extension is missing."
+  - name: "PclZip"
+    docs: "https://www.phpconcept.net/pclzip/"
+    files: ["wp-admin/includes/class-pclzip.php"]
+    note: "WordPress bundles PclZip to unpack and check ZIP archives when the ZipArchive extension is missing; _unzip_file_pclzip() and wp_zip_file_is_valid() use it."
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true

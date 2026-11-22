@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'class' => 'attachment-thumbnail wp-post-image',\n)",
+ "error": null
+}

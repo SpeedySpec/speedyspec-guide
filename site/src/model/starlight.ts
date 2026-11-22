@@ -19,7 +19,7 @@ export type SidebarItem = SidebarLink | SidebarGroup;
 /** A previous or next page link, as Starlight's `prev` / `next` frontmatter takes it. */
 export type PageLink = { link: string; label: string };
 /** The guide tracks a reader can make progress through, plus topics (ticked, never counted). */
-export type Track = 'path' | 'contributing-wordpress' | 'contributing-speedyspec' | 'topics';
+export type Track = 'path' | 'themes' | 'contributing-wordpress' | 'contributing-speedyspec' | 'topics';
 
 /** The site's sections, in the header and the mobile menu. */
 export const HEADER_LINKS: readonly (readonly [label: string, href: string])[] = [
@@ -57,6 +57,7 @@ interface TrackInfo {
 /** The guide tracks, in sidebar order: the one place their ids and labels are written. */
 const TRACKS: readonly TrackInfo[] = [
   { track: 'path', label: 'Learning path', numbered: true, ordered: true, guides: (t) => t.path },
+  { track: 'themes', label: 'Themes', numbered: true, ordered: true, guides: (t) => t.themes },
   { track: 'topics', label: 'Topics', numbered: false, ordered: false, guides: (t) => t.topics },
   { track: 'contributing-wordpress', label: 'Contributing to WordPress', numbered: false, ordered: true, guides: (t) => t.contributing.wordpress },
   { track: 'contributing-speedyspec', label: 'Contributing to SpeedySpec', numbered: false, ordered: true, guides: (t) => t.contributing.speedyspec },

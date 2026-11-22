@@ -63,13 +63,20 @@ describe('the developer guides', () => {
     expect(p.text('.guide-path a')).toEqual(['First', 'Second']);
     expect(p.text('.guide-topics a')).toEqual(['Hooks', 'Options']);
     expect(p.text('.guide-contributing-wordpress a')).toEqual(['Changing a function']);
-    expect(p.text('h2')).toEqual(['Learning path', 'Topics', 'Contributing']);
+    expect(p.text('.guide-themes a')).toEqual(['Cascade', 'Styles']);
+    expect(p.text('h2')).toEqual(['Learning path', 'Themes', 'Topics', 'Contributing']);
   });
 
   test('test_index_says_when_a_track_is_empty', async () => {
     const p = await html(dist, '/guides/');
     expect(p.count('.guide-contributing-speedyspec')).toBe(0);
     expect(p.text('.guide-empty')).toEqual(['No guides for contributing to SpeedySpec yet.']);
+  });
+
+  test('test_theme_guides_render_with_their_track', async () => {
+    const cascade = await html(dist, '/guides/themes/cascade/');
+    expect(cascade.text('h1')).toContain('Cascade');
+    expect(cascade.attr('.pagination-links a[rel="next"]', 'href')).toEqual(['/guides/themes/styles/']);
   });
 
   test('test_path_orders_by_number_then_slug', async () => {
@@ -91,7 +98,7 @@ describe('the developer guides', () => {
   test('test_guide_sidebar_shows_progress_per_ordered_track', async () => {
     for (const path of ['/guides/path/first/', '/guides/topics/hooks/']) {
       const p = await html(dist, path);
-      expect(p.attr('[data-progress-track]', 'data-progress-track')).toEqual(['path', 'contributing-wordpress']);
+      expect(p.attr('[data-progress-track]', 'data-progress-track')).toEqual(['path', 'themes', 'contributing-wordpress']);
     }
   });
 

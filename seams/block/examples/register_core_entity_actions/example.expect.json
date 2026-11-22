@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'view-post',\n  1 => 'view-post-revisions',\n  2 => 'rename-post',\n  3 => 'restore',\n  4 => 'reset-post',\n)",
+ "error": null
+}

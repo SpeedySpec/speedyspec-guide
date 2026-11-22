@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_max_upload_size"
+---
+
+## Behaviour
+
+The largest upload allowed in bytes: the smaller of PHP's upload_max_filesize and post_max_size; filtered by upload_size_limit. <Ev source="wp:wp-includes/media.php#L4331-L4345" hash="3b5e1fd44dcc25545806d3171563bbeeb358bb6e5238df9b8830d98015ae39f6"/>
+
+## Override
+
+`upload_size_limit` filters it.

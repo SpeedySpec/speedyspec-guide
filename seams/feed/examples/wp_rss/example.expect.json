@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'request https://example.org/feed/ <ul><li><a href=\"https://example.org/sencha\" title=\"Fresh leaves\">Sencha season</a></li></ul>'",
+ "error": null
+}

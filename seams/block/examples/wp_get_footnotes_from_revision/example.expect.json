@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'[{\"id\":\"1\",\"content\":\"A note\"}]'",
+ "error": null
+}

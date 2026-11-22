@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<span class=\"wp-block-post-featured-image__overlay has-background-dim has-background-dim-50 has-contrast-background-color\" style=\"\" aria-hidden=\"true\"></span>'",
+ "error": null
+}

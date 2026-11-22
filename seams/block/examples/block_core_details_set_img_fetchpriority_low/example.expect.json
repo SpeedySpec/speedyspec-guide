@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<details><summary>More</summary><img fetchpriority=\"low\" src=\"a.jpg\" alt=\"\"></details>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'WordPress 7.3 is available! Please update now.'",
+ "error": null
+}

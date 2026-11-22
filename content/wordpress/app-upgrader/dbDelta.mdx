@@ -1,0 +1,11 @@
+---
+symbol: "function:dbDelta"
+---
+
+## Behaviour
+
+Brings tables in line with CREATE TABLE statements: creates missing tables and adds or changes columns and indexes, never dropping any; gives what it did. dbdelta_queries, dbdelta_create_queries and dbdelta_insert_queries filter it. <Ev source="wp:wp-admin/includes/upgrade.php#L2934-L3405" hash="b64caf042d7446086511bfe89c2aaeed74bd45c154e7af6a439e098b71372dec"/>
+
+## Override
+
+`dbdelta_queries`, `dbdelta_create_queries`, `dbdelta_insert_queries` filter it.

@@ -1,0 +1,11 @@
+---
+symbol: "function:download_url"
+---
+
+## Behaviour
+
+Downloads a URL to a temporary file and gives its path, or an error; checks the signature when asked. <Ev source="wp:wp-admin/includes/file.php#L1157-L1357" hash="d0a8ca95b22a09c7d506abd9cc7a453347d2a1219f4b5e8146f56a1a196c7fb4"/>
+
+## Override
+
+`download_url_error_max_body_size`, `wp_signature_hosts`, `wp_signature_url`, `wp_signature_softfail` filter it.

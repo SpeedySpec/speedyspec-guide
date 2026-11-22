@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'xmlns:thr=\"http://purl.org/syndication/thread/1.0\"'",
+ "error": null
+}

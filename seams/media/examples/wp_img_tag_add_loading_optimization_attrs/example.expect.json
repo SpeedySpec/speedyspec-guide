@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<img loading=\"lazy\" decoding=\"async\" src=\"a.jpg\" width=\"300\" height=\"200\">'",
+ "error": null
+}

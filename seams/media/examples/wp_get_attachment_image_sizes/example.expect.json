@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'(max-width: 300px) 100vw, 300px'",
+ "error": null
+}

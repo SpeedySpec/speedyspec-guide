@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'class=\"has-text-color has-contrast-color wp-block-navigation-item\"'",
+ "error": null
+}

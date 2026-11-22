@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "request https://api.wordpress.org/plugins/info/1.2/?action=plugin_information&request%5Bslug%5D=hello-dolly&request%5Blocale%5D=en_US&request%5Bwp_version%5D=7.2\n",
+ "return": "array (\n  0 => 'Hello Dolly',\n  1 => '1.7.2',\n)",
+ "error": null
+}

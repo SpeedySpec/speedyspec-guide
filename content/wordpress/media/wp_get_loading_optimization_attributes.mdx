@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_loading_optimization_attributes"
+---
+
+## Behaviour
+
+The loading, fetchpriority and decoding attributes for an img or iframe: lazy below the fold, high priority for the first large image; filtered by wp_get_loading_optimization_attributes. <Ev source="wp:wp-includes/media.php#L6163-L6409" hash="75126e7e1d3e4a36bf7f1698572912b77b880d22af1aceae5ee95d64c9bdd552"/>
+
+## Override
+
+`pre_wp_get_loading_optimization_attributes`, `wp_get_loading_optimization_attributes`, `wp_loading_optimization_force_header_contexts`, `wp_min_priority_img_pixels` filter it.

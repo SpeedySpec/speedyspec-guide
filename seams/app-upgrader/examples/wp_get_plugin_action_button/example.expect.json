@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<button type=\"button\" class=\"install-now button button-compact button-disabled\" disabled=\"disabled\">Install Now</button>'",
+ "error": null
+}

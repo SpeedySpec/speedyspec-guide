@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_enqueue_img_auto_sizes_contain_css_fix"
+---
+
+## Behaviour
+
+Hooked to wp_head: adds the CSS rule giving auto-sized lazy images their intrinsic size, when wp_img_tag_add_auto_sizes is on. <Ev source="wp:wp-includes/media.php#L2196-L2216" hash="9a4113dfb7624ea3c72b27ebf9de43b4ca2c4348559e8bee55e2f539e1137add"/>
+
+## Override
+
+`wp_img_tag_add_auto_sizes` filters it.

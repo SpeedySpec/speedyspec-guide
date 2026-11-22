@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_opcache_invalidate"
+---
+
+## Behaviour
+
+Clears a PHP file from OPcache after it changes, when OPcache is on; filtered by wp_opcache_invalidate_file. <Ev source="wp:wp-admin/includes/file.php#L2722-L2775" hash="5754162100414072e21b951a274f0ec8372d292c2a80750f0c1c2dac2f03fe2d"/>
+
+## Override
+
+`wp_opcache_invalidate_file` filters it.

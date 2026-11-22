@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_playlist_shortcode"
+---
+
+## Behaviour
+
+Renders the [playlist] shortcode: a player for the audio or video attachments given by ids, or attached to the post, with their data in JSON; post_playlist can replace it. <Ev source="wp:wp-includes/media.php#L3192-L3434" hash="c3c9e21403897e1431a3a7c7fe0971049bd4c252b216fd8425447f991bb492d0"/>
+
+## Override
+
+`post_playlist` filters it; `wp_playlist_scripts` fires.

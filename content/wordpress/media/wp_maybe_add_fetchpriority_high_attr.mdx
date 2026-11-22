@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_maybe_add_fetchpriority_high_attr"
+---
+
+## Behaviour
+
+Adds fetchpriority="high" to loading attributes for the first image larger than wp_min_priority_img_pixels that isn't lazy. <Ev source="wp:wp-includes/media.php#L6474-L6524" hash="873ecc224ecd8cf8fd397855fd14c899d65a6cdaa503031fd9703c440c0187e5"/>
+
+## Override
+
+`wp_min_priority_img_pixels` filters it.

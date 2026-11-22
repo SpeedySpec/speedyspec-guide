@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_get_client_side_media_image_settings"
+---
+
+## Behaviour
+
+The image settings client-side processing follows, read through the same filters the server uses: sizes, big-image threshold, metadata stripping, bit depth and animated sub-sizes. <Ev source="wp:wp-includes/media.php#L6800-L6842" hash="dca6fa36d3d8f2643af94df670cfddbf1e7c695c80b494fe9121beb576ec5da3"/>
+
+## Override
+
+`big_image_size_threshold`, `image_strip_meta`, `image_max_bit_depth`, `wp_generate_animated_image_subsizes` filter it.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div><button data-wp-on--click=\"actions.closeMenuOnClick\" class=\"wp-block-navigation-overlay-close\">Close</button></div>'",
+ "error": null
+}
