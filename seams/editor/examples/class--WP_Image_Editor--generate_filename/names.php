@@ -7,7 +7,10 @@ imagepng( $image, $file );
 register_shutdown_function( fn() => array_map( 'unlink', glob( sys_get_temp_dir() . '/guide-' . getmypid() . '*' ) ) );
 $editor = new WP_Image_Editor_GD( $file );
 $editor->load();
-add_filter( 'wp_editor_set_quality', fn( $q, $mime ) => 'image/png' === $mime ? 70 : $q, 10, 2 );
+function guide_png_quality( $quality, $mime ) {
+	return 'image/png' === $mime ? 70 : $quality;
+}
+add_filter( 'wp_editor_set_quality', 'guide_png_quality', 10, 2 );
 $editor->set_quality();
 $name = fn( $path ) => preg_replace( '/guide-\d+/', 'guide', basename( $path ) );
 return array( $name( $editor->generate_filename() ), $name( $editor->generate_filename( 'edited', null, 'jpg' ) ), $editor->get_suffix(), $editor->get_quality(), $editor->set_quality( 101 )->get_error_code() );

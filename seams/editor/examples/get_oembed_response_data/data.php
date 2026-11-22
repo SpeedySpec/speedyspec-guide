@@ -3,6 +3,9 @@
 $post = guide_post();
 $private = guide_post( array( 'post_status' => 'private' ) );
 add_filter( 'oembed_response_data', 'get_oembed_response_data_rich', 10, 4 );
-add_filter( 'random_password', fn() => 'SECRET' );
+function guide_secret_password( $password ) {
+	return 'SECRET';
+}
+add_filter( 'random_password', 'guide_secret_password' );
 $data = get_oembed_response_data( $post, 9999 );
 return array( $data['width'], $data['height'], $data['type'], $data['title'], get_oembed_response_data( $private, 600 ) );
