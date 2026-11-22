@@ -261,8 +261,8 @@ export const SeamSymbolsExist: Rule = {
   },
 };
 
-/** The PHP calls that add a hook callback: `add_filter(`, `add_action(` and `WP_Hook`'s `->add_filter(`. */
-const ADDS_CALLBACK = /(?:\badd_(?:filter|action)|->add_filter)\s*\(/g;
+/** The PHP calls that add a callback: `add_filter(`, `add_action(`, `add_shortcode(` and `WP_Hook`'s `->add_filter(`. */
+const ADDS_CALLBACK = /(?:\badd_(?:filter|action|shortcode)|->add_filter)\s*\(/g;
 /** A callback argument nothing can name again: a closure, an arrow function or a method of a new object. */
 const UNREMOVABLE = /^(?:static\s+)?(?:function\b|fn\b)|^array\s*\(\s*new\b|^\[\s*new\b/;
 /** Marks an example whose point is an unremovable callback, such as one showing why not to add one. */
@@ -294,8 +294,9 @@ function secondArgument(code: string, from: number): string | null {
 }
 
 /**
- * Every example adds hook callbacks that can be removed again: a named function or a method of a kept object. A
- *  closure, an arrow function or `array( new Foo(), 'bar' )` can never be removed, so readers must not copy one.
+ * Every example adds hook and shortcode callbacks as a named function or a method of a kept object. A hook callback
+ *  that is a closure, an arrow function or `array( new Foo(), 'bar' )` can never be removed, and readers copy what
+ *  examples show, so shortcodes follow the same rule.
  */
 export const ExampleCallbackRemovable: Rule = {
   id: 'ExampleCallbackRemovable',
@@ -307,7 +308,7 @@ export const ExampleCallbackRemovable: Rule = {
         const arg = secondArgument(code, m.index! + m[0].length);
         return arg !== null && UNREMOVABLE.test(arg);
       });
-      if (bad) f.push({ rule: this.id, where: id, message: 'adds a closure, arrow function or new object as a hook callback, which can never be removed; add a named function or a kept object' });
+      if (bad) f.push({ rule: this.id, where: id, message: 'adds a closure, arrow function or new object as a hook or shortcode callback; add a named function or a kept object' });
     }
     return f;
   },

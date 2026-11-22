@@ -63,7 +63,7 @@ const withSymbol: Inventory = { ...inventory, symbols: [{ id: 'function:get_opti
 describe('guide rules', () => {
   const withCode = (code: string) => ({ declaredExamples: [{ id: 'hooks/add_filter/a', sides: ['wordpress' as const], code }] });
   const callbackFindings = async (code: string) => (await runRules(ALL_RULES, await ctx({}, withCode(code)))).filter((x) => x.rule === 'ExampleCallbackRemovable');
-  const CALLBACK_MESSAGE = 'adds a closure, arrow function or new object as a hook callback, which can never be removed; add a named function or a kept object';
+  const CALLBACK_MESSAGE = 'adds a closure, arrow function or new object as a hook or shortcode callback; add a named function or a kept object';
 
   test('example_closure_callback_fails', async () => {
     expect(await callbackFindings("<?php\nadd_filter( 'x', function ( $v ) {\n\treturn $v;\n} );\n")).toEqual([{ rule: 'ExampleCallbackRemovable', where: 'hooks/add_filter/a', message: CALLBACK_MESSAGE }]);
@@ -74,6 +74,11 @@ describe('guide rules', () => {
     expect(await callbackFindings("<?php\nadd_filter( 'x', array( new Foo(), 'bar' ) );\n")).toHaveLength(1);
     expect(await callbackFindings("<?php\n$hook->add_filter( 'x', static function () {}, 10, 1 );\n")).toHaveLength(1);
     expect(await callbackFindings("<?php\nadd_filter(\n\t'x',\n\tfunction () {}\n);\n")).toHaveLength(1);
+  });
+
+  test('example_closure_shortcode_fails', async () => {
+    expect(await callbackFindings("<?php\nadd_shortcode( 'x', fn( $atts ) => 'y' );\n")).toHaveLength(1);
+    expect(await callbackFindings("<?php\nadd_shortcode( 'x', 'guide_x_shortcode' );\n")).toEqual([]);
   });
 
   test('example_named_callback_passes', async () => {
