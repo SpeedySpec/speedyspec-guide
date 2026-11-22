@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_should_output_buffer_template_for_enhancement"
+---
+
+## Behaviour
+
+Whether to buffer the page for wp_template_enhancement_output_buffer: when that filter or the wp_finalized_template_enhancement_output_buffer action has a callback, so pages stream otherwise; filtered by wp_should_output_buffer_template_for_enhancement, which classic themes turn on at priority 0 to load block styles on demand. <Ev source="wp:wp-includes/template.php#L910-L926" hash="d9371d7d165230f05faf889393c0d44691429e602c5ac92aa25b6fd3d993dca7"/>
+
+## Override
+
+`wp_should_output_buffer_template_for_enhancement` filters it.

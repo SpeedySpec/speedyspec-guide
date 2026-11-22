@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<p>First part.<span id=\"more-1\"></span>Rest of it.</p>'",
+ "error": null
+}

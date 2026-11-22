@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_print_media_templates"
+---
+
+## Behaviour
+
+Prints every Underscore template the media modal uses (attachment details, uploader, galleries, image editing); fires print_media_templates. <Ev source="wp:wp-includes/media-template.php#L156-L1593" hash="c917b1ab9a4bf7f133b37d3a673cb4fd9989e531a3a1079ccc504fd026e8c253"/>
+
+## Override
+
+`image_size_names_choose`, `disable_captions` filter it; `upload_ui_over_quota`, `pre-upload-ui`, `pre-plupload-upload-ui`, `post-plupload-upload-ui`, `post-upload-ui`, `print_media_templates` fire.

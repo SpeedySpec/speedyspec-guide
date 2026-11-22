@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<p class=\"post-nav-links\">Pages: <a href=\"http://example.org/?p=1\" class=\"post-page-numbers\">1</a> <span class=\"post-page-numbers current\" aria-current=\"page\">2</span> <a href=\"http://example.org/?p=1&#038;page=3\" class=\"post-page-numbers\">3</a></p>'",
+ "error": null
+}

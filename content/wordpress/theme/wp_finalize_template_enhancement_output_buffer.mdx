@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_finalize_template_enhancement_output_buffer"
+---
+
+## Behaviour
+
+The buffer's callback: passes complete HTML output through wp_template_enhancement_output_buffer, anything else unchanged. <Ev source="wp:wp-includes/template.php#L992-L1185" hash="9becb5a4db855ba4f86e13df642f938e784b799ad9eb6e8d28f4a7fb3de69a50"/>
+
+## Override
+
+`wp_template_enhancement_output_buffer` filters it; `wp_finalized_template_enhancement_output_buffer` fires.

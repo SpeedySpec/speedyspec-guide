@@ -1,0 +1,11 @@
+---
+symbol: "function:get_the_post_thumbnail"
+---
+
+## Behaviour
+
+A post's featured image as an img tag at a size, with attributes; filtered by post_thumbnail_html. <Ev source="wp:wp-includes/post-thumbnail-template.php#L165-L237" hash="e74de402903cc5cd296b07b797ee624064b86d346ab2a8bc9b540af2862eb213"/>
+
+## Override
+
+`post_thumbnail_size`, `post_thumbnail_html` filter it; `begin_fetch_post_thumbnail_html`, `end_fetch_post_thumbnail_html` fire.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<li id=\"linkcat-\" class=\"linkcat\"><h2>Links</h2>\n\t<ul class=\\'xoxo blogroll\\'>\n<li><a href=\"https://php.net\">PHP</a></li>\n<li><a href=\"https://wordpress.org\" title=\"Code is poetry\">WordPress</a></li>\n\n\t</ul>\n</li>\n'",
+ "error": null
+}

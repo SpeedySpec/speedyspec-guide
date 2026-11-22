@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<meta name=\\'robots\\' content=\\'max-image-preview:large\\' />'",
+ "error": null
+}

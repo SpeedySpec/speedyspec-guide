@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'wp-singular',\n    1 => 'post-template-default',\n    2 => 'single',\n    3 => 'single-post',\n    4 => 'postid-1',\n    5 => 'single-format-standard',\n    6 => 'logged-in',\n    7 => 'admin-bar',\n    8 => 'no-customize-support',\n    9 => 'wp-theme-guide',\n  ),\n  1 => \n  array (\n    0 => 'archive',\n    1 => 'category',\n    2 => 'category-uncategorized',\n    3 => 'category-1',\n    4 => 'logged-in',\n    5 => 'admin-bar',\n    6 => 'no-customize-support',\n    7 => 'wp-theme-guide',\n  ),\n)",
+ "error": null
+}

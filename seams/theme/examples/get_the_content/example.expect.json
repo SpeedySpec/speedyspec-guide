@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'First part. <a href=\"http://example.org/?p=1#more-1\" class=\"more-link\">Continue</a>'",
+ "error": null
+}

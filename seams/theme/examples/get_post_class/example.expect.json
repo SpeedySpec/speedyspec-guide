@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'card',\n  1 => 'post-1',\n  2 => 'post',\n  3 => 'type-post',\n  4 => 'status-publish',\n  5 => 'format-standard',\n  6 => 'hentry',\n  7 => 'category-uncategorized',\n)",
+ "error": null
+}

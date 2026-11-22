@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_nav_menu"
+---
+
+## Behaviour
+
+Prints (or gives) a navigation menu by location, ID, slug or name, walked by Walker_Nav_Menu inside a container; a fallback (wp_page_menu) when there is none; filtered by wp_nav_menu_args, pre_wp_nav_menu, wp_nav_menu_items and wp_nav_menu. <Ev source="wp:wp-includes/nav-menu-template.php#L62-L314" hash="f04ee4941ee600510a777fc694adc8e469c97c2ba0bf7a32bf4c7f3e2ffc7dc8"/>
+
+## Override
+
+`wp_nav_menu_args`, `pre_wp_nav_menu`, `wp_nav_menu_container_allowedtags`, `wp_nav_menu_objects`, `wp_nav_menu_items`, `wp_nav_menu_{$menu->slug}_items`, `wp_nav_menu` filter it.

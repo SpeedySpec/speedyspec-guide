@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_start_template_enhancement_output_buffer"
+---
+
+## Behaviour
+
+Hooked to wp_before_include_template: starts the output buffer the page's HTML is filtered through, when it should; true when started. <Ev source="wp:wp-includes/template.php#L937-L976" hash="67ba22e2b4f68c89ed8f350f54845053f2b7ceb478195142a77ecc259aad1e1d"/>
+
+## Override
+
+`wp_template_enhancement_output_buffer_started` fires.
