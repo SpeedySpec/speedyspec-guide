@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'ext' => 'png',\n  'type' => 'image/png',\n  'proper_filename' => 'photo.png',\n)",
+ "error": null
+}

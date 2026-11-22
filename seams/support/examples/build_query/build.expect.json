@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'a=1&b=x y&c%5B0%5D=1&c%5B1%5D=2'",
+ "error": null
+}

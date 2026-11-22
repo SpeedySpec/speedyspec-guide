@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '{\"a\":\"\\\\u00e9\",\"b\":[1,2]}',\n  1 => '{\n    \"x\": 1\n}',\n  2 => '\"bad ? utf8\"',\n)",
+ "error": null
+}

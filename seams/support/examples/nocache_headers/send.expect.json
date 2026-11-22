@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "Expires, Cache-Control\n",
+ "return": "'sent'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'An error of type <code>E_ERROR</code> was caused in line <code>7</code> of the file <code>plugin.php</code>. Error message: <code>Boom</code>'",
+ "error": null
+}

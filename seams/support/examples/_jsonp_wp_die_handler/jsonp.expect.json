@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'/**/cb({\"code\":\"wp_die\",\"message\":\"Failed.\",\"data\":{\"status\":400},\"additional_errors\":[]})'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "do_feed_rss2 for rss2\n",
+ "return": "'<strong>Error:</strong> This is not a valid feed template.'",
+ "error": null
+}

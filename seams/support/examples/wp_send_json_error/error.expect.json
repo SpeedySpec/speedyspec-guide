@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'{\"success\":false,\"data\":[{\"code\":\"bad\",\"message\":\"Failed.\"}]}'",
+ "error": null
+}

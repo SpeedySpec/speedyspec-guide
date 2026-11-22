@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_check_filetype_and_ext"
+---
+
+## Behaviour
+
+A file's extension, type and a corrected name: images and some other files are checked by their content, and a name whose extension doesn't match is fixed. <Ev source="wp:wp-includes/functions.php#L3179-L3437" hash="210ccffc71cb718516db4a3203099b0e230d17dd95decf4604016b95b4bc39b1"/>
+
+## Override
+
+`getimagesize_mimes_to_exts`, `wp_check_filetype_and_ext` filter it.

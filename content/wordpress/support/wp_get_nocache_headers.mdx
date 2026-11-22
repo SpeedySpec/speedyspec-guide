@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_nocache_headers"
+---
+
+## Behaviour
+
+The headers that stop caching: Expires in the past and Cache-Control no-cache, must-revalidate, max-age=0, no-store, private; nocache_headers filters them. <Ev source="wp:wp-includes/functions.php#L1538-L1560" hash="d5eb80c96884ab5a75f68be93c2e52f8a0b41143bef67e8d4741ab4b9f7189fe"/>
+
+## Override
+
+`nocache_headers` filters it.

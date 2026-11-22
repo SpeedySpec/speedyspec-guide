@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "HTTP/1.0 404 Not Found\nHTTP/1.0 503 Back soon\n",
+ "return": "'sent'",
+ "error": null
+}

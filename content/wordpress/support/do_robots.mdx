@@ -1,0 +1,11 @@
+---
+symbol: "function:do_robots"
+---
+
+## Behaviour
+
+Prints robots.txt: the admin is disallowed except admin-ajax.php; do_robotstxt fires first and robots_txt filters the text, with whether the site is public. <Ev source="wp:wp-includes/functions.php#L1745-L1772" hash="addf3adcd053cd4738f634a5f46aaf758fd2c78f009f04d136721272b7f90178"/>
+
+## Override
+
+`robots_txt` filters it; `do_robotstxt` fires.

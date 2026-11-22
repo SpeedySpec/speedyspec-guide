@@ -1,0 +1,11 @@
+---
+symbol: "function:do_feed"
+---
+
+## Behaviour
+
+Loads the feed the query asks for, by firing do_feed_{feed} (rss2 for the default feed); stops with an error page when nothing serves that feed. <Ev source="wp:wp-includes/functions.php#L1644-L1679" hash="012b002b108627e766e97e02baa531aee015c0968f8144a77edaa6b20fffd6f7"/>
+
+## Override
+
+`do_feed_{$feed}` fires.

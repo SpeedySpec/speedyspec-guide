@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<input type=\"hidden\" id=\"_wpnonce\" name=\"_wpnonce\" value=\"NONCE\" /><input type=\"hidden\" name=\"_wp_http_referer\" value=\"/wp-admin/options.php\" />'",
+ "error": null
+}
