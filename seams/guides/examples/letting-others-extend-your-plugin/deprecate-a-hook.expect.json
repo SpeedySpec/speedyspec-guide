@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "mp_greeting is deprecated since 2.0.0; use my_plugin_greeting_text. ",
+ "return": "'HELLO'",
+ "error": null
+}

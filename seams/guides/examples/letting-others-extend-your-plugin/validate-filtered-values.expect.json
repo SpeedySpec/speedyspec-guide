@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'valid value used' => 25,\n  'invalid value refused' => 10,\n)",
+ "error": null
+}

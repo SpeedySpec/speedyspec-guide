@@ -1,0 +1,77 @@
+---
+title: Letting other code extend your plugin
+summary: Give your plugin hooks of its own, name and document them, check what comes back, and rename them without breaking anyone.
+---
+
+So far your plugin has used WordPress's hooks. Your plugin can also offer hooks of its own. Then another plugin, a
+theme or a site's own code can change how your plugin behaves without editing your files. Nobody has to fork your
+plugin to adjust one detail, and your updates never overwrite their changes.
+
+There is nothing special to set up. A hook exists the moment code fires it, so firing `do_action()` or
+`apply_filters()` with a new name creates one. The work is in choosing where to put hooks, naming them well, and
+treating what comes back with care.
+
+## Actions at moments, filters on values
+
+Offer an **action** where something has just happened that others may want to react to: a setting was saved, an
+order was paid, an import finished. Pass along whatever a listener will need, so it doesn't have to look it up again.
+
+<Example id="guides/letting-others-extend-your-plugin/fire-your-own-action" />
+
+The other plugin's callback receives both the old and the new greeting because it asked for two arguments. Your
+plugin doesn't know or care who is listening. <Sym id="function:do_action" /> runs every callback, or none.
+
+Offer a **filter** where your plugin is about to use a value others might want to change: text it prints, a number
+of items, a list of choices. Pass extra arguments for context. Here that is the person being greeted, so a callback
+can tailor the value:
+
+<Example id="guides/letting-others-extend-your-plugin/filter-your-output" />
+
+Look at where the filter sits: before escaping. The other plugin added a `<3`, and your plugin still escaped it, so
+whatever a callback returns is printed as text. Put filters on raw values and escape after them. Never filter
+markup you have already escaped, or a callback could put anything back into it.
+
+## Naming and documenting your hooks
+
+Hook names share one global list with WordPress and every other plugin. Start every hook name with your plugin's
+prefix, as `my_plugin_greeting_saved` does, so it can't collide with anyone else's. Say what the hook is about:
+`_saved`, `_text` and `_per_page` tell a reader what fired it, or what value it carries.
+
+Put a docblock directly above the call, as in the examples above. It says what the hook is for and lists each
+argument with its type, which is all another developer needs to use the hook. Once you publish a hook, treat its name
+and arguments as a promise: other code depends on them.
+
+## Check what comes back
+
+A filter returns whatever the last callback returned, and you don't control those callbacks. One may return the
+wrong type, a number out of range, or nothing at all. Before relying on a filtered value, check it the way you
+would check a form field, and fall back to your default when it fails:
+
+<Example id="guides/letting-others-extend-your-plugin/validate-filtered-values" />
+
+The well-behaved callback's `25` is used. When a broken one returns `lots`, the plugin keeps working with its
+default. A filter is a way for others to make choices your plugin allows, not a way around your plugin's rules.
+
+## Renaming a hook without breaking anyone
+
+Sometimes a hook needs a better name. Removing the old one would silently break every plugin that uses it, so keep
+it working for a while and say it is deprecated. Apply the new name, then pass the result through the old one with
+<Sym id="function:apply_filters_deprecated" />, giving the version you deprecated it in and the replacement:
+
+<Example id="guides/letting-others-extend-your-plugin/deprecate-a-hook" />
+
+The old callback still ran, which is why `HELLO` is in capitals. Because the deprecated hook had a callback, WordPress
+also fired <Sym id="action:deprecated_hook_run" />, which debugging tools listen to. With `WP_DEBUG` on, it shows a
+notice telling the developer which hook to move to. When nothing uses the old name, nothing is reported. For actions,
+<Sym id="function:do_action_deprecated" /> does the same. Remove the old name in a later major version, once people
+have had time to move.
+
+## On SpeedySpec
+
+Hooks are ported, and SpeedySpec runs these functions as WordPress does, so the hooks your plugin offers work the
+same there. <OnSpeedySpecNote id="function:apply_filters" /> <OnSpeedySpecNote id="function:apply_filters_deprecated" />
+
+## Where to go next
+
+The [Hooks topic guide](/guides/topics/hooks/) explains priorities, accepted arguments and removing callbacks, from
+the other side: the code listening to your hooks.
