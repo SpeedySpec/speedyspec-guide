@@ -4,6 +4,6 @@
  ],
  "multisite": true,
  "output": "",
- "return": null,
+ "return": "'This file is too big. Files must be less than 1500 KB in size.'",
  "error": null
 }
