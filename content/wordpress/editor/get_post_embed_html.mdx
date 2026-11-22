@@ -1,0 +1,11 @@
+---
+symbol: "function:get_post_embed_html"
+---
+
+## Behaviour
+
+The HTML other sites embed a post with: a blockquote linking to it and a sandboxed iframe of its embed view sharing a random secret, followed by the embed script; `false` for a missing post. <Ev source="wp:wp-includes/embed.php#L490-L548" hash="79fb54aa498efcf29aa0dd21caa498d70cd726593e202852e22af1cba4361c68"/>
+
+## Override
+
+`embed_html` filters it.

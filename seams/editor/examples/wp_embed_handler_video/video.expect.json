@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '[video width=\"640\" height=\"360\"  src=\"https://example.org/clip.mp4\" /]',\n  1 => '[video  src=\"https://example.org/clip.mp4\" /]',\n)",
+ "error": null
+}

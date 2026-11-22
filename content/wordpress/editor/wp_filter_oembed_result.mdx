@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_filter_oembed_result"
+---
+
+## Behaviour
+
+For rich and video embeds from sites that aren't known providers, keeps only a blockquote and an iframe, sandboxes the iframe and pairs them with a secret, hiding the iframe until its script shows it; without an iframe, `false`. Known providers' HTML is kept as it is. <Ev source="wp:wp-includes/embed.php#L935-L999" hash="152be9f50f3c387222e6809f75322ed838c30ba11c693194ac556742b5a8b12d"/>
+
+## Override
+
+Not overridable.

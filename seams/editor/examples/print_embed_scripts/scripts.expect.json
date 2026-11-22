@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<script> //# sourceURL=http://example.org/wp-includes/js/wp-'",
+ "error": null
+}

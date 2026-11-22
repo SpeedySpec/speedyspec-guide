@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<iframe class=\"wp-embedded-content\"  src=\"x\"></iframe><iframe style=\"border:0\" src=\"y\"></iframe>'",
+ "error": null
+}

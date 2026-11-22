@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<blockquote class=\"wp-embedded-content\" data-secret=\"SECRET\"><a href=\"http://exa',\n  1 => NULL,\n)",
+ "error": null
+}

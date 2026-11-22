@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/index.php?rest_route=/oembed/1.0/embed',\n  1 => 'http://example.org/index.php?rest_route=%2Foembed%2F1.0%2Fembed&url=http%3A%2F%2Fexample.org%2F%3Fp%3D1&format=xml',\n)",
+ "error": null
+}

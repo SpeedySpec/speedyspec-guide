@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<?xml version=\"1.0\"?>\n<oembed><version>1.0</version><title>A &amp; B</title><list><oembed>x</oembed><oembed>y</oembed></list></oembed>\n',\n  1 => false,\n)",
+ "error": null
+}

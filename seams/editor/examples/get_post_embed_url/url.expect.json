@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/?p=1&embed=true&guide=1',\n  1 => false,\n)",
+ "error": null
+}

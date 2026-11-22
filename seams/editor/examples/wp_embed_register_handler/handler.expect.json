@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<div class=\"map\">paris</div>',\n  1 => '<a href=\"https://maps.example/paris\">https://maps.example/paris</a>',\n)",
+ "error": null
+}

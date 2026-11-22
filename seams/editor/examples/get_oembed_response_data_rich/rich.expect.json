@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'type' => 'rich',\n  'width' => 400,\n  'height' => 225,\n  'html' => '<blockquote class=\"wp-embedded-content\" data-secret=\"SECRET\"',\n)",
+ "error": null
+}

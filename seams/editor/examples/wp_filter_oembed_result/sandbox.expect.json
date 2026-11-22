@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<blockquote class=\"wp-embedded-content\" data-secret=\"SECRET\"><a href=\"https://blog.example/p\">Post</a></blockquote><iframe class=\"wp-embedded-content\" sandbox=\"allow-scripts\" security=\"restricted\" style=\"position: absolute; visibility: hidden;\" src=\"https://blog.example/p/embed/#?secret=SECRET\" data-secret=\"SECRET\"></iframe>',\n  1 => false,\n  2 => '<iframe src=\"https://www.youtube.com/embed/a\"></iframe>',\n)",
+ "error": null
+}

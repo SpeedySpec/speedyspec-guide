@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '[...]',\n  1 => ' &hellip; <a href=\"http://example.org/?p=1\" class=\"wp-embed-more\" target=\"_top\">Continue reading <span class=\"screen-reader-text\">Hello</span></a>',\n)",
+ "error": null
+}

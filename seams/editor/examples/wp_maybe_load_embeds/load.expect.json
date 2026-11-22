@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => '10 youtube_embed_url',\n    1 => '9999 audio',\n    2 => '9999 video',\n  ),\n  1 => '[audio src=\"https://example.org/song.mp3\" /]',\n)",
+ "error": null
+}

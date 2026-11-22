@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => true,\n  2 => true,\n  3 => \n  array (\n    'width' => 200,\n    'height' => 100,\n  ),\n  4 => 82,\n  5 => 'error_loading_image',\n)",
+ "error": null
+}

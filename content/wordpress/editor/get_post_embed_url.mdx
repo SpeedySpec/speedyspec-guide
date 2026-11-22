@@ -1,0 +1,11 @@
+---
+symbol: "function:get_post_embed_url"
+---
+
+## Behaviour
+
+A post's embed URL: `/embed/` after its permalink, or `?embed=true` with plain permalinks or when a page already has that path; `false` for a missing post. <Ev source="wp:wp-includes/embed.php#L419-L442" hash="3ab2870cec2c4b9f34571f40692134a11568382c6cbac2a80cec145f7fc4a34a"/>
+
+## Override
+
+`post_embed_url` filters it.

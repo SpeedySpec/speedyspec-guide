@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<iframe title=\"My clip\" src=\"https://v.example/1\"></iframe>',\n  1 => '<iframe title=\"Own\" src=\"x\"></iframe>',\n  2 => '<img src=\"x\">',\n)",
+ "error": null
+}

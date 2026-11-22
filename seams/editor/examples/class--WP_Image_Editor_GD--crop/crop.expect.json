@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'width' => 100,\n    'height' => 50,\n  ),\n  1 => \n  array (\n    'width' => 50,\n    'height' => 100,\n  ),\n  2 => true,\n  3 => 'image_crop_error',\n)",
+ "error": null
+}

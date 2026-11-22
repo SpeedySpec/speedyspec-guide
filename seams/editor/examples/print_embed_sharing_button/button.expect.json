@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"wp-embed-share\"> <button type=\"button\" class=\"wp-embed-share-dialog-open\" aria-label=\"Open sharing dialog\"> <span class=\"dashicons dashicons-share\"></span> </button> </div>'",
+ "error": null
+}
