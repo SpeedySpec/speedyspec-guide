@@ -1,0 +1,136 @@
+/**
+ * Adapters from the guide's views to the shapes Starlight's page component takes: sidebar items and previous/next
+ * links. Plain functions over plain data; the types are declared here, structurally compatible with Starlight's, so
+ * nothing in the model depends on Starlight.
+ */
+import type { Guide } from '@speedyspec-guide/domain';
+import type { GuideData } from './data.ts';
+import { type GuideTracks, guidePath, neighbours } from './guides.ts';
+import { type InstallPage, inReadingOrder, installPath } from './install.ts';
+import type { MemberView, RailView, Section } from './views.ts';
+import { roleLabel } from './wording.ts';
+
+/** A sidebar entry that links somewhere. */
+export type SidebarLink = { label: string; link: string; attrs?: Record<string, string> };
+/** A labelled group of sidebar entries. */
+export type SidebarGroup = { label: string; items: SidebarItem[]; collapsed?: boolean };
+/** One sidebar entry, as Starlight's `sidebar` prop takes it. */
+export type SidebarItem = SidebarLink | SidebarGroup;
+/** A previous or next page link, as Starlight's `prev` / `next` frontmatter takes it. */
+export type PageLink = { link: string; label: string };
+/** The guide tracks a reader can make progress through, plus topics (ticked, never counted). */
+export type Track = 'path' | 'contributing-wordpress' | 'contributing-speedyspec' | 'topics';
+
+/** The site's sections, in the header and the mobile menu. */
+export const HEADER_LINKS: readonly (readonly [label: string, href: string])[] = [
+  ['Guides', '/guides/'],
+  ['Reference', '/reference/'],
+  ['Install', '/install/'],
+];
+
+/** The sidebar of the reference overview pages. */
+export const REFERENCE_SIDEBAR: SidebarItem[] = [
+  { label: 'Reference', link: '/reference/' },
+  { label: 'WordPress API', link: '/wordpress/' },
+  { label: 'SpeedySpec API', link: '/speedyspec/' },
+  { label: 'Conversion', link: '/speedyspec/conversion/' },
+  { label: 'Runtime', link: '/speedyspec/runtime/' },
+  { label: 'Coverage', link: '/coverage/' },
+];
+
+function guideLink(g: Guide, track: Track, label: string): SidebarLink {
+  const path = guidePath(g);
+  return { label, link: path, attrs: { 'data-guide': path, 'data-guide-track': track } };
+}
+
+/**
+ * Every guide, by track. Learning-path guides are numbered; each link carries its path and track for the read ticks.
+ *
+ * @param t
+ *     The guides by track.
+ * @return
+ *     One group per track that has guides: Learning path, Topics, Contributing to WordPress, Contributing to SpeedySpec.
+ */
+export function guideSidebar(t: GuideTracks): SidebarItem[] {
+  const tracks: [string, Track, Guide[], boolean][] = [
+    ['Learning path', 'path', t.path, true],
+    ['Topics', 'topics', t.topics, false],
+    ['Contributing to WordPress', 'contributing-wordpress', t.contributing.wordpress, false],
+    ['Contributing to SpeedySpec', 'contributing-speedyspec', t.contributing.speedyspec, false],
+  ];
+  return tracks
+    .filter(([, , guides]) => guides.length > 0)
+    .map(([label, track, guides, numbered]) => ({ label, items: guides.map((g, i) => guideLink(g, track, numbered ? `${i + 1} · ${g.title}` : g.title)) }));
+}
+
+/**
+ * A guide's previous and next guides in its track, as Starlight's prev/next links; `false` where there is none.
+ *
+ * @param g
+ *     The guide.
+ * @param d
+ *     All guides.
+ * @return
+ *     Previous and next links; topics have neither.
+ */
+export function guidePrevNext(g: Guide, d: Pick<GuideData, 'guides'>): { prev: PageLink | false; next: PageLink | false } {
+  const { prev, next } = neighbours(g, d);
+  const link = (x: Guide | null): PageLink | false => (x ? { link: guidePath(x), label: x.title } : false);
+  return { prev: link(prev), next: link(next) };
+}
+
+/**
+ * A learning-path guide's chapter number.
+ *
+ * @param g
+ *     The guide.
+ * @param t
+ *     The guides by track.
+ * @return
+ *     1-based position in the learning path; undefined for any other guide.
+ */
+export function chapterOf(g: Guide, t: GuideTracks): number | undefined {
+  const i = g.kind === 'path' ? t.path.findIndex((x) => x.file === g.file) : -1;
+  return i >= 0 ? i + 1 : undefined;
+}
+
+// Hooks of both kinds can share a name, so the sidebar says which.
+const memberLabel = (m: MemberView) => `${m.kind === 'filter' || m.kind === 'action' ? `${m.kind} ${m.name}` : m.name}${m.circular ? ' ↻' : ''}`;
+
+/**
+ * A reference page's sidebar: its seam, then the seam's roles. Only the current symbol's role lists its members
+ * (the others link to the seam page), and a class's methods show only on that class's pages, as the rail did.
+ *
+ * @param rail
+ *     The page's rail view.
+ * @param section
+ *     Which reference the page is in.
+ * @param current
+ *     The page's symbol id, if it is a symbol page.
+ * @return
+ *     Sidebar items.
+ */
+export function seamSidebar(rail: RailView, section: Section, current?: string): SidebarItem[] {
+  const open = (classId: string) => current === classId || (current?.startsWith(`method:${classId.slice('class:'.length)}::`) ?? false);
+  const item = (m: MemberView, roleHref: string): SidebarItem => {
+    const link: SidebarLink = { label: memberLabel(m), link: m.href ?? roleHref, ...(m.circular ? { attrs: { class: 'circular' } } : {}) };
+    if (!m.methods || m.methods.length === 0 || !open(m.id)) return link;
+    return { label: m.name, items: [link, ...m.methods.map((x) => ({ label: `::${x.name}`, link: x.href ?? roleHref }))] };
+  };
+  return [
+    { label: `${rail.seam.name} seam`, link: `/${section}/${rail.seam.id}/` },
+    ...rail.roles.map((r): SidebarItem => (r.members === null ? { label: roleLabel(r.role), link: r.href } : { label: roleLabel(r.role), items: r.members.map((m) => item(m, r.href)) })),
+  ];
+}
+
+/**
+ * The installation guide's pages, in reading order.
+ *
+ * @param pages
+ *     The install pages, in any order.
+ * @return
+ *     One link per page.
+ */
+export function installSidebar(pages: InstallPage[]): SidebarItem[] {
+  return inReadingOrder(pages).map((p) => ({ label: p.title, link: installPath(p.slug) }));
+}
