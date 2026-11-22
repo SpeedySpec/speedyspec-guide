@@ -210,6 +210,17 @@ describe('headingsIn', () => {
     expect(r.headings.map((h) => h.slug)).toEqual(['examples', 'examples-3', 'examples-2']);
   });
 
+  test('test_headings_in_ignores_attributes_that_end_in_id', () => {
+    const r = headingsIn('<h2 data-id="x">Fired by</h2><h2 class="m" data-id="y" id="real">Real</h2>');
+    expect(r.html).toBe('<h2 id="fired-by" data-id="x">Fired by</h2><h2 class="m" data-id="y" id="real">Real</h2>');
+    expect(r.headings.map((h) => h.slug)).toEqual(['fired-by', 'real']);
+  });
+
+  test('test_headings_in_does_not_reserve_slugs_from_attributes_that_end_in_id', () => {
+    const r = headingsIn('<h2 data-id="examples">A</h2><h2>Examples</h2>');
+    expect(r.headings.map((h) => h.slug)).toEqual(['a', 'examples']);
+  });
+
   test('test_headings_in_leaves_other_levels_alone', () => {
     const r = headingsIn('<h1>T</h1><h3>Sub</h3>');
     expect(r).toEqual({ html: '<h1>T</h1><h3>Sub</h3>', headings: [] });

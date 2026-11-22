@@ -188,11 +188,12 @@ const slugOf = (text: string) =>
  *     The body with every h2 carrying an id, and the h2s in page order.
  */
 export function headingsIn(html: string): { html: string; headings: Heading[] } {
-  const taken = new Set([...html.matchAll(/<h2\s[^>]*\bid="([^"]*)"/g)].map((m) => m[1]!));
+  // An id attribute is `id="…"` after whitespace; `\b` would also match the end of data-id or x-id.
+  const taken = new Set([...html.matchAll(/<h2(?:\s[^>]*)?\sid="([^"]*)"/g)].map((m) => m[1]!));
   const headings: Heading[] = [];
   const out = html.replace(/<h2(\s[^>]*)?>([\s\S]*?)<\/h2>/g, (whole, attrs: string | undefined, inner: string) => {
     const text = plainText(inner);
-    const existing = attrs?.match(/\bid="([^"]*)"/)?.[1];
+    const existing = attrs?.match(/\sid="([^"]*)"/)?.[1];
     if (existing !== undefined) {
       headings.push({ depth: 2, slug: existing, text });
       return whole;
