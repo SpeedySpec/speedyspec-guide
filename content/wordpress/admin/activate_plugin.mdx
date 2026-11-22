@@ -1,0 +1,11 @@
+---
+symbol: "function:activate_plugin"
+---
+
+## Behaviour
+
+Activates a plugin: checks it is valid and its requirements, loads it, runs its activation hook and adds it to active_plugins; null or an error. <Ev source="wp:wp-admin/includes/plugin.php#L647-L748" hash="b87b54a5abdf3bc08b47db6297e6db5ac28202d9a694816f671289e4481fd9f3"/>
+
+## Override
+
+`activate_plugin`, `activate_{$plugin}`, `activated_plugin` fire.

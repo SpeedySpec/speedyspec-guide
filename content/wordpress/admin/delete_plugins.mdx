@@ -1,0 +1,11 @@
+---
+symbol: "function:delete_plugins"
+---
+
+## Behaviour
+
+Deletes plugins' files through $wp_filesystem, running their uninstall routines first; true, false or an error. <Ev source="wp:wp-admin/includes/plugin.php#L913-L1067" hash="6a12cafadcdc868c3256d79ee675416f8b43728bb290802d9feadb1500b49342"/>
+
+## Override
+
+`delete_plugin`, `deleted_plugin` fire.

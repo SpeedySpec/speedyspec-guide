@@ -144,3 +144,17 @@ function guide_deprecated(string $function, mixed ...$args): array
     $printed = trim(preg_replace('/\s+/', ' ', ob_get_clean()));
     return [$result, $printed];
 }
+
+/**
+ * Builds the admin menus as wp-admin/menu.php does for the logged-in user, so menu functions find their parents.
+ *
+ *  menu.php runs in the global scope on a real request, so its variables are made global first.
+ */
+function guide_admin_menu(): void
+{
+    global $menu, $submenu, $compat, $_wp_real_parent_file, $_wp_submenu_nopriv, $_wp_menu_nopriv, $admin_page_hooks,
+        $_registered_pages, $_parent_pages, $_wp_last_object_menu, $_wp_last_utility_menu, $self, $parent_file,
+        $submenu_file, $plugin_page, $typenow, $pagenow;
+    $pagenow = $pagenow ?: 'index.php';
+    require ABSPATH . 'wp-admin/menu.php';
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:deactivate_plugins"
+---
+
+## Behaviour
+
+Deactivates plugins, running their deactivation hooks unless silent, and removes them from active_plugins. <Ev source="wp:wp-admin/includes/plugin.php#L764-L856" hash="cf9aa48d4906978cbc5b7057f607644110c4fb9c3435058cbac3d3c9baac6ef6"/>
+
+## Override
+
+`deactivate_plugin`, `deactivate_{$plugin}`, `deactivated_plugin` fire.
