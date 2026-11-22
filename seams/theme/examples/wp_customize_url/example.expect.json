@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/wp-admin/customize.php',\n  1 => 'http://example.org/wp-admin/customize.php?theme=twentytwentyfive',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'red',\n  1 => 'blue',\n  2 => 'http://example.org/wp-content/themes/guide/logo.png',\n)",
+ "error": null
+}

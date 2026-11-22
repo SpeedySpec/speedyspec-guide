@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Twenty Twenty-Five',\n  1 => true,\n  2 => 'guide',\n  3 => 'theme_not_found',\n)",
+ "error": null
+}

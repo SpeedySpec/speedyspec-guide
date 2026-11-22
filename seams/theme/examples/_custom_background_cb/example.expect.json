@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<style id=\"custom-background-css\"> body.custom-background { background-color: #f0f0f0; background-image: url(\"http://example.org/bg.jpg\"); background-position: left top; background-size: auto; background-repeat: repeat; background-attachment: scroll; } </style>'",
+ "error": null
+}
