@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => 'deprecated remove_custom_image_header since 3.4.0, use remove_theme_support( \\'custom-header\\' )',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_admin_bar_header since 6.4.0, use wp_enqueue_admin_bar_header_styles <style media=\"print\">#wpadminbar { display:none; }</style>',\n)",
+ "error": null
+}

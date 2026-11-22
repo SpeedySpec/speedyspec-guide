@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_queue_comments_for_comment_meta_lazyload since 6.3.0, use wp_lazyload_comment_meta()',\n)",
+ "error": null
+}

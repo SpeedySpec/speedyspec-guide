@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<link rel=\\'index\\' title=\\'Guide\\' href=\\'http://example.org\\' />\n',\n  1 => 'deprecated get_index_rel_link since 3.3.0',\n)",
+ "error": null
+}

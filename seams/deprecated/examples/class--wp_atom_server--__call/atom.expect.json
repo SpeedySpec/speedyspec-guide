@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "deprecated_function_run wp_atom_server::handle_request 3.5.0 the Atom Publishing Protocol plugin\ndeprecated_function_run wp_atom_server::anything 3.5.0 the Atom Publishing Protocol plugin\n",
+ "return": "array (\n  0 => NULL,\n  1 => NULL,\n)",
+ "error": null
+}

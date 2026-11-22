@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated list_authors since 2.1.0, use wp_list_authors() <li><a href=\"http://example.org/?author=1\">Admin</a></li>',\n)",
+ "error": null
+}

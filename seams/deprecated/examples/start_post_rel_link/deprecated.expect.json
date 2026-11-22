@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated start_post_rel_link since 3.3.0 deprecated get_boundary_post_rel_link since 3.3.0 <link rel=\\'start\\' title=\\'Hello\\' href=\\'http://example.org/?p=1\\' />',\n)",
+ "error": null
+}

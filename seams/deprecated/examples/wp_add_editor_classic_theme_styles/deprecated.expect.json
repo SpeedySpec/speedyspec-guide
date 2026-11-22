@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'styles' => \n    array (\n      0 => \n      array (\n        'css' => '/**\n * These rules are needed for backwards compatibility.\n * They should match the button element rules in the base theme.json file.\n */\n.wp-block-button__link {\n\tcolor: #fff;\n\tbackground-color: #32373c;\n\tborder-radius: 9999px; /* 100% causes an oval, but any explicit but really high value retains the pill shape. */\n\n\t/* This needs a low specificity so it won\\'t override the rules from the button element if defined in theme.json. */\n\tbox-shadow: none;\n\ttext-decoration: none;\n\n\t/* The extra 2px are added to size solids the same as the outline versions.*/\n\tpadding: calc(0.667em + 2px) calc(1.333em + 2px);\n\n\tfont-size: 1.125em;\n}\n\n.wp-block-file__button {\n\tbackground: #32373c;\n\tcolor: #fff;\n\ttext-decoration: none;\n}\n',\n        '__unstableType' => 'core',\n        'isGlobalStyles' => false,\n      ),\n    ),\n  ),\n  1 => 'deprecated wp_add_editor_classic_theme_styles since 6.8.0, use wp_enqueue_classic_theme_styles',\n)",
+ "error": null
+}

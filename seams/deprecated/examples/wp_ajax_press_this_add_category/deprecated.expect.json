@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "deprecated wp_ajax_press_this_add_category since 4.9.0\n{\"success\":false,\"data\":{\"errorMessage\":\"The Press This plugin is required.\"}}",
+ "return": "'wp_die'",
+ "error": null
+}

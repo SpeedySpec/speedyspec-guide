@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => 'deprecated wp_get_user_request_data since 5.4.0, use wp_get_user_request()',\n)",
+ "error": null
+}

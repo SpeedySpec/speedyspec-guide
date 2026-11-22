@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => 'deprecated _get_path_to_translation since 6.1.0, use WP_Textdomain_Registry deprecated _get_path_to_translation_from_lang_dir since 6.1.0, use WP_Textdomain_Registry',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated start_wp since 1.5.0, use new WordPress Loop',\n)",
+ "error": null
+}

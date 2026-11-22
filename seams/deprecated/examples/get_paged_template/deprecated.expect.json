@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '',\n  1 => 'deprecated get_paged_template since 4.7.0',\n)",
+ "error": null
+}

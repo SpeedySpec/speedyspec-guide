@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated comments_rss_link since 2.5.0, use post_comments_feed_link() <a href=\"http://example.org/?feed=rss2&#038;p=1\">Comments RSS</a>',\n)",
+ "error": null
+}

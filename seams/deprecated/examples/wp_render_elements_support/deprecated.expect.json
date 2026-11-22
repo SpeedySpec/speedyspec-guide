@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<p>x</p>',\n  1 => 'deprecated wp_render_elements_support since 6.6.0, use wp_render_elements_class_name',\n)",
+ "error": null
+}

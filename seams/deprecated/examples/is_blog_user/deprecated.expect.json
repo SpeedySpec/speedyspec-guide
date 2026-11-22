@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'deprecated is_blog_user since 3.3.0, use is_user_member_of_blog()',\n)",
+ "error": null
+}

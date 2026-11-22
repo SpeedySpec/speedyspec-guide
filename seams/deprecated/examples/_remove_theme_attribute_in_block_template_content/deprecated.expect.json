@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<!-- wp:template-part {\"slug\":\"header\"} /-->',\n  1 => 'deprecated _remove_theme_attribute_in_block_template_content since 6.4.0, use traverse_and_serialize_blocks( parse_blocks( $template_content ), \"_remove_theme_attribute_from_template_part_block\" )',\n)",
+ "error": null
+}

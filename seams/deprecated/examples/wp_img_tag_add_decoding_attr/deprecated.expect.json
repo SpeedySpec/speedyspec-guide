@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<img decoding=\"async\" src=\"a.jpg\" width=\"10\" height=\"10\">',\n  1 => 'deprecated wp_img_tag_add_decoding_attr since 6.4.0, use wp_img_tag_add_loading_optimization_attrs()',\n)",
+ "error": null
+}

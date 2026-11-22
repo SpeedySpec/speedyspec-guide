@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/?feed=rss2&amp;cat=1',\n  1 => 'deprecated get_category_rss_link since 2.5.0, use get_category_feed_link()',\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_update_https_detection_errors"
+---
+
+## Behaviour
+
+Deprecated in 6.4.0. Runs a remote HTTPS request to detect whether HTTPS supported, and stores potential errors. Calling it reports the deprecation (deprecated_function_run). <Ev source="wp:wp-includes/deprecated.php#L6033-L6057" hash="f8836076c62ff7514e113e1b6c3a525ae369a5c35f0f55c58aaf95081ee7a3b0"/>
+
+## Override
+
+`pre_wp_update_https_detection_errors` filters it.

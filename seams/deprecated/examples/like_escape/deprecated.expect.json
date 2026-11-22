@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Fish & \"Chips\" <b>here</b>',\n  1 => 'deprecated like_escape since 4.0.0, use wpdb::esc_like()',\n)",
+ "error": null
+}

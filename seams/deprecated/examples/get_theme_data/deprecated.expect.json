@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'Name' => 'themes',\n    'URI' => false,\n    'Description' => false,\n    'Author' => false,\n    'AuthorURI' => false,\n    'Version' => false,\n    'Template' => false,\n    'Status' => false,\n    'Tags' => false,\n    'Title' => 'themes',\n    'AuthorName' => false,\n  ),\n  1 => 'deprecated get_theme_data since 3.4.0, use wp_get_theme()',\n)",
+ "error": null
+}

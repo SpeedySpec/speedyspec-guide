@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated get_link since 2.1.0, use get_bookmark()',\n)",
+ "error": null
+}

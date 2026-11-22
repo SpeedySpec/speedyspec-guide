@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'admin',\n  1 => 'deprecated set_current_user since 3.0.0, use wp_set_current_user()',\n)",
+ "error": null
+}

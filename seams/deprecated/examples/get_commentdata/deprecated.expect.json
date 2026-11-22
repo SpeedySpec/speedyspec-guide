@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'comment_ID' => '1',\n    'comment_post_ID' => '1',\n    'comment_author' => 'Ada',\n    'comment_author_email' => '',\n    'comment_author_url' => '',\n    'comment_author_IP' => '',\n    'comment_date' => '2026-03-05 11:00:00',\n    'comment_date_gmt' => '2026-03-05 11:00:00',\n    'comment_content' => 'Nice',\n    'comment_karma' => '0',\n    'comment_approved' => '1',\n    'comment_agent' => '',\n    'comment_type' => 'comment',\n    'comment_parent' => '0',\n    'user_id' => '0',\n    'children' => NULL,\n    'populated_children' => false,\n    'post_fields' => \n    array (\n      0 => 'post_author',\n      1 => 'post_date',\n      2 => 'post_date_gmt',\n      3 => 'post_content',\n      4 => 'post_title',\n      5 => 'post_excerpt',\n      6 => 'post_status',\n      7 => 'comment_status',\n      8 => 'ping_status',\n      9 => 'post_name',\n      10 => 'to_ping',\n      11 => 'pinged',\n      12 => 'post_modified',\n      13 => 'post_modified_gmt',\n      14 => 'post_content_filtered',\n      15 => 'post_parent',\n      16 => 'guid',\n      17 => 'menu_order',\n      18 => 'post_type',\n      19 => 'post_mime_type',\n      20 => 'comment_count',\n    ),\n  ),\n  1 => 'deprecated get_commentdata since 2.7.0, use get_comment()',\n)",
+ "error": null
+}

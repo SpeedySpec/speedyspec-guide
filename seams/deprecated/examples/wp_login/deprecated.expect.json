@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'deprecated wp_login since 2.5.0, use wp_signon()',\n)",
+ "error": null
+}

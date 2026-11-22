@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  \\WP_Error::__set_state(array(\n     'errors' => \n    array (\n      'error_loading_image' => \n      array (\n        0 => 'File does not exist?',\n      ),\n    ),\n     'error_data' => \n    array (\n      'error_loading_image' => '/no/such/file.png',\n    ),\n     'additional_data' => \n    array (\n    ),\n  )),\n  1 => 'deprecated image_resize since 3.5.0, use wp_get_image_editor()',\n)",
+ "error": null
+}

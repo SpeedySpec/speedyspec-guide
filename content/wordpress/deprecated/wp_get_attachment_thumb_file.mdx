@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_attachment_thumb_file"
+---
+
+## Behaviour
+
+Deprecated in 6.1.0. Retrieves thumbnail for an attachment. Note that this works only for the (very) old image metadata style where 'thumb' was set, and the 'sizes' array did not exist. This function returns false for the newer image metadata style despite that 'thumbnail' is present in the 'sizes' array. Calling it reports the deprecation (deprecated_function_run). <Ev source="wp:wp-includes/deprecated.php#L4387-L4422" hash="3b01d1722a9480026def6e9c255a30c8c40f732b707847ad4aa4724bdffcbb8e"/>
+
+## Override
+
+`wp_get_attachment_thumb_file` filters it.

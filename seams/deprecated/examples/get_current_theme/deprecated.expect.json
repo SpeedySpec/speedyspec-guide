@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'guide',\n  1 => 'deprecated get_current_theme since 3.4.0, use wp_get_theme()',\n)",
+ "error": null
+}

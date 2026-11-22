@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 0,\n  1 => 'deprecated _sort_nav_menu_items since 4.7.0, use wp_list_sort()',\n)",
+ "error": null
+}

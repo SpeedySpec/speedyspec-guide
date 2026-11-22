@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'File &#8220;/no/such/file.png&#8221; does not exist?',\n  1 => 'deprecated wp_load_image since 3.5.0, use wp_get_image_editor()',\n)",
+ "error": null
+}

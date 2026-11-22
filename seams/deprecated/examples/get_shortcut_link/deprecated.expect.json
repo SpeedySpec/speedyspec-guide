@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '',\n  1 => 'deprecated get_shortcut_link since 4.9.0',\n)",
+ "error": null
+}

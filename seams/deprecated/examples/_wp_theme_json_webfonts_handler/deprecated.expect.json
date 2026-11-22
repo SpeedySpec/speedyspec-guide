@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated _wp_theme_json_webfonts_handler since 6.4.0, use wp_print_font_faces',\n)",
+ "error": null
+}

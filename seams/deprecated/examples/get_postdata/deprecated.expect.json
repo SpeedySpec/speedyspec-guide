@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'ID' => 1,\n    'Author_ID' => '1',\n    'Date' => '2026-03-05 10:00:00',\n    'Content' => 'The first words of the post.',\n    'Excerpt' => '',\n    'Title' => 'Hello',\n    'Category' => \n    array (\n      0 => 1,\n    ),\n    'post_status' => 'publish',\n    'comment_status' => 'open',\n    'ping_status' => 'open',\n    'post_password' => '',\n    'to_ping' => '',\n    'pinged' => '',\n    'post_type' => 'post',\n    'post_name' => 'hello',\n  ),\n  1 => 'deprecated get_postdata since 1.5.1, use get_post()',\n)",
+ "error": null
+}

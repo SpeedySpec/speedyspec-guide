@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/?p=1',\n  1 => 'deprecated post_permalink since 4.4.0, use get_permalink()',\n)",
+ "error": null
+}

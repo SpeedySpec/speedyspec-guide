@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/?feed=rss2&amp;author=1',\n  1 => 'deprecated get_author_rss_link since 2.5.0, use get_author_feed_link()',\n)",
+ "error": null
+}

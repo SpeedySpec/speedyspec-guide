@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated register_sidebar_widget since 2.8.0, use wp_register_sidebar_widget()',\n)",
+ "error": null
+}

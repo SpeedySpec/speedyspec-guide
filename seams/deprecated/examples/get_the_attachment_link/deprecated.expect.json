@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Missing Attachment',\n  1 => 'deprecated get_the_attachment_link since 2.5.0, use wp_get_attachment_link()',\n)",
+ "error": null
+}

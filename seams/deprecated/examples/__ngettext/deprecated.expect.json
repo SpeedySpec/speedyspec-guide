@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'items',\n  1 => 'deprecated __ngettext since 2.8.0, use _n()',\n)",
+ "error": null
+}

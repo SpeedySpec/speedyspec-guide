@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 2,\n  1 => 'deprecated create_user since 2.0.0, use wp_create_user()',\n)",
+ "error": null
+}

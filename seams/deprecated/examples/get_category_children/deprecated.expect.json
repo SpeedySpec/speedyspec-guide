@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '',\n  1 => 'deprecated get_category_children since 2.8.0, use get_term_children() deprecated get_all_category_ids since 4.0.0, use get_terms()',\n)",
+ "error": null
+}

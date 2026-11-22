@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => 'deprecated wp_blacklist_check since 5.5.0, use wp_check_comment_disallowed_list()',\n)",
+ "error": null
+}

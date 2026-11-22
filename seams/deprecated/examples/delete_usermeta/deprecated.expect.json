@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'deprecated delete_usermeta since 3.0.0, use delete_user_meta()',\n)",
+ "error": null
+}

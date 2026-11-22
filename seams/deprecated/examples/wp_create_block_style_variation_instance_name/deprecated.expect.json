@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'dark--082cf0076784d14e323cd6d9c6dda9a3',\n  1 => 'deprecated wp_create_block_style_variation_instance_name since 6.7.0, use wp_unique_id',\n)",
+ "error": null
+}

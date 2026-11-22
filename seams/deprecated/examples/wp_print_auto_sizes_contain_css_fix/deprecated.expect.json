@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_print_auto_sizes_contain_css_fix since 6.9.0, use wp_enqueue_img_auto_sizes_contain_css_fix <style>img:is([sizes=\"auto\" i], [sizes^=\"auto,\" i]) { contain-intrinsic-size: 3000px 1500px }</style>',\n)",
+ "error": null
+}

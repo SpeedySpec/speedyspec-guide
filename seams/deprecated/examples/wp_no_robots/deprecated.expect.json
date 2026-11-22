@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_no_robots since 5.7.0, use wp_robots_no_robots() <meta name=\\'robots\\' content=\\'noindex,follow\\' />',\n)",
+ "error": null
+}

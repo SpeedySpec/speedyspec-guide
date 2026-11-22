@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'styles' => \n    array (\n    ),\n  ),\n  1 => 'deprecated _wp_multiple_block_styles since 6.1.0',\n)",
+ "error": null
+}

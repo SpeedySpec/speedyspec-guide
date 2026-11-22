@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated the_block_template_skip_link since 6.4.0, use wp_enqueue_block_template_skip_link()',\n)",
+ "error": null
+}
