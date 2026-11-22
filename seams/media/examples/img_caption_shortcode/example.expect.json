@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div id=\"attachment_5\" style=\"width: 310px\" class=\"wp-caption aligncenter\"><img aria-describedby=\"caption-attachment-5\" src=\"lake.jpg\" width=\"300\" height=\"200\"><p id=\"caption-attachment-5\" class=\"wp-caption-text\">A lake</p></div>'",
+ "error": null
+}

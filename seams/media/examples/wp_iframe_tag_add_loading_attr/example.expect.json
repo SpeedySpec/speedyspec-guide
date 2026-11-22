@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<iframe loading=\"lazy\" src=\"https://example.org/embed\" width=\"560\" height=\"315\"></iframe>'",
+ "error": null
+}

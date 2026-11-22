@@ -12,7 +12,10 @@ elsewhere:
     docs: "https://aomedia.googlesource.com/libavifinfo/"
     files: ["wp-includes/class-avif-info.php"]
     note: "A PHP port of libavifinfo that reads the size and features of AVIF images without decoding them; wp_get_avif_info() calls it."
-wordpress: []
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true
 # Symbols whose file belongs to another seam.
 symbols:
   - "constant:GETID3_TEMP_DIR"

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  '1536x1536' => \n  array (\n    'width' => 1536,\n    'height' => 1536,\n    'crop' => false,\n  ),\n  '2048x2048' => \n  array (\n    'width' => 2048,\n    'height' => 2048,\n    'crop' => false,\n  ),\n  'card' => \n  array (\n    'width' => 600,\n    'height' => 400,\n    'crop' => true,\n  ),\n  'banner' => \n  array (\n    'width' => 1600,\n    'height' => 0,\n    'crop' => false,\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"http://example.org/song.mp3\">http://example.org/song.mp3</a>'",
+ "error": null
+}

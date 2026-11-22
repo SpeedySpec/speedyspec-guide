@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_enqueue_media"
+---
+
+## Behaviour
+
+Enqueues the media modal's scripts, styles, templates and settings, once per page. <Ev source="wp:wp-includes/media.php#L4928-L5331" hash="22d3648f697b9e9a1c95084867cf2dabaeccb646ae728bcbde2f2f191febb167"/>
+
+## Override
+
+`media_upload_tabs`, `media_library_show_audio_playlist`, `media_library_show_video_playlist`, `media_library_months_with_files`, `media_library_infinite_scrolling`, `disable_captions`, `media_view_settings`, `media_view_strings` filter it; `wp_enqueue_media` fires.

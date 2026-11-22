@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'image_tag',\n  1 => 'license',\n)",
+ "error": null
+}

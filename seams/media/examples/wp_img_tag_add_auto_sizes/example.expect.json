@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<img src=\"a.jpg\" width=\"300\" loading=\"lazy\" sizes=\"auto, (max-width: 300px) 100vw, 300px\">',\n  1 => '<img src=\"a.jpg\" width=\"300\" sizes=\"300px\">',\n)",
+ "error": null
+}

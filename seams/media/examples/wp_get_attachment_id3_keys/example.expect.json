@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'artist' => 'Artist',\n    'album' => 'Album',\n    'genre' => 'Genre',\n    'year' => 'Year',\n    'length_formatted' => 'Length',\n  ),\n  1 => \n  array (\n    0 => 'artist',\n    1 => 'album',\n    2 => 'bitrate',\n    3 => 'bitrate_mode',\n  ),\n)",
+ "error": null
+}

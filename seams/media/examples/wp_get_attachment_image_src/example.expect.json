@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'http://example.org/wp-content/uploads/2026/11/photo-150x150.jpg',\n    1 => 150,\n    2 => 150,\n    3 => true,\n  ),\n  1 => false,\n)",
+ "error": null
+}

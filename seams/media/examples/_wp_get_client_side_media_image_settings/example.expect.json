@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'image_sizes',\n    1 => 'image_size_threshold',\n    2 => 'image_strip_meta',\n    3 => 'image_max_bit_depth',\n    4 => 'generate_animated_image_subsizes',\n  ),\n  1 => 2560,\n  2 => true,\n)",
+ "error": null
+}

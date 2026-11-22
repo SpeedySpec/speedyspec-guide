@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_image_editor_output_format"
+---
+
+## Behaviour
+
+The MIME types image editors save each input type as: HEIC and HEIF become JPEG; filtered by image_editor_output_format. <Ev source="wp:wp-includes/media.php#L6555-L6581" hash="3cb40960dd9c5075ac0906dbeaac43c23b6d79d81cf438e9633bc92dd7cbb8a5"/>
+
+## Override
+
+`image_editor_output_format` filters it.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'thumbnail',\n  1 => 'medium',\n  2 => 'medium_large',\n  3 => 'large',\n  4 => '1536x1536',\n  5 => '2048x2048',\n  6 => 'card',\n)",
+ "error": null
+}

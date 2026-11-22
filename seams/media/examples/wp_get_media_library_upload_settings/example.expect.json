@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'maxUploadFileSize',\n    1 => 'allowedMimeTypes',\n    2 => 'allImageSizes',\n    3 => 'bigImageSizeThreshold',\n    4 => 'imageStripMeta',\n    5 => 'imageMaxBitDepth',\n    6 => 'generateAnimatedImageSubsizes',\n  ),\n  1 => 2560,\n)",
+ "error": null
+}
