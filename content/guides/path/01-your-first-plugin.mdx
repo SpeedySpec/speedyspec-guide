@@ -1,0 +1,82 @@
+---
+title: Your first plugin
+summary: A plugin header, a hook, an activation hook, and a setting saved and read back.
+---
+
+A WordPress plugin is a PHP file that WordPress loads on every request. It never edits WordPress's own files. Instead
+it asks WordPress to run its code at the right moments, and it keeps what it needs to remember in the database. This
+guide builds a small plugin that shows a greeting on every admin screen, and lets the greeting be changed. Along the
+way you meet the four things almost every plugin uses: the plugin header, hooks, the activation hook and options.
+
+Every example on this page was run on a freshly installed WordPress, and what it printed or returned is shown under
+it.
+
+## The plugin header
+
+A plugin lives in its own folder under `wp-content/plugins/`, for example
+`wp-content/plugins/my-first-plugin/my-first-plugin.php`. What makes that file a plugin is the comment at its top: the
+plugin header. WordPress reads it to list the plugin on the Plugins screen. Only `Plugin Name` is required; the other
+fields describe the plugin to the people installing it.
+
+<Example id="guides/your-first-plugin/header" />
+
+The example writes the header to a file and reads it back with <Sym id="function:get_plugin_data" />, the function
+the Plugins screen uses. You don't call it yourself in a plugin; it shows you exactly what WordPress sees.
+
+## Running code with a hook
+
+WordPress announces what it is doing as it builds a page. Each announcement is a named **hook**. Your plugin adds a
+callback to a hook, and WordPress runs the callback when it reaches that point. A hook that just announces a moment is
+an **action**. The admin screens fire the `admin_notices` action, <Sym id="action:admin_notices" />, at the top of the
+page, where WordPress shows its own messages.
+
+<Example id="guides/your-first-plugin/hello" />
+
+<Sym id="function:add_action" /> registers the callback and <Sym id="function:do_action" /> fires the action. In a real
+plugin you only write the `add_action()` call: WordPress fires `admin_notices` itself. The example fires it so the
+notice can be captured and shown. <OnSpeedySpecNote id="function:add_action" />
+
+Hooks are the heart of WordPress plugins. The [Hooks topic guide](/guides/topics/hooks/) explains actions, filters,
+priorities and removing callbacks.
+
+## Doing something once, on activation
+
+Some work should happen once, when someone activates the plugin, not on every request: creating a database table,
+or storing default settings. <Sym id="function:register_activation_hook" /> takes the path of your plugin's main file
+and a callback. Inside the main file you pass `__FILE__`, the path of the file itself.
+
+<Example id="guides/your-first-plugin/activation" />
+
+Behind the scenes it is just another action. Its name is `activate_` followed by the plugin's path relative to the
+plugins folder, <Sym id="action:activate_{$plugin}" />, and <Sym id="function:activate_plugin" /> fires it when the
+plugin is activated. That is why the example can fire it directly. Here the callback stores a default greeting with
+<Sym id="function:add_option" />, which never overwrites a value that is already saved, so reactivating the plugin
+keeps whatever greeting the site's owner chose.
+
+## Saving and reading a setting
+
+WordPress stores settings as **options**: named values in the `wp_options` table. <Sym id="function:get_option" />
+reads one, and its second argument is the value to use when nothing is saved yet.
+<Sym id="function:update_option" /> saves a value, adding the option if it doesn't exist.
+
+<Example id="guides/your-first-plugin/save-a-setting" />
+
+This guide doesn't count the Options seam as ported to SpeedySpec yet, so it can't promise that options behave the
+same there. <OnSpeedySpecNote id="function:get_option" />
+
+## The whole plugin
+
+Put together, the plugin's notice reads its greeting from the option. Anything that came from the database, or from
+a person, is escaped before it is printed: <Sym id="function:esc_html" /> turns characters that mean something in
+HTML, such as `&` and `<`, into text that displays as itself.
+
+<Example id="guides/your-first-plugin/notice-from-setting" />
+
+The plugin's main file holds the header, the `register_activation_hook()` call and the `add_action()` call. That is a
+complete plugin: activate it, and every admin screen greets you.
+
+## Where to go next
+
+- The [Options topic guide](/guides/topics/options/) explains adding, updating and deleting options, autoloading,
+  the option filters and transients.
+- The [Hooks topic guide](/guides/topics/hooks/) explains filters, priorities, arguments and removing callbacks.

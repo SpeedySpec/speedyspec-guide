@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "pre_option_guide_colour got default grey; pre_option got guide_colour; ",
+ "return": "'from pre_option'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'activate_my-first-plugin/my-first-plugin.php',\n  1 => 'Hello from my first plugin!',\n)",
+ "error": null
+}
