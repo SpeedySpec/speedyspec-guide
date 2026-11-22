@@ -1,4 +1,7 @@
 <?php
 // The current network, the $current_site global; deprecated in 3.9.0.
-add_action( 'deprecated_function_run', fn( $f ) => print( "$f is deprecated\n" ) );
+function guide_report_deprecated( $function_name ) {
+	echo "$function_name is deprecated\n";
+}
+add_action( 'deprecated_function_run', 'guide_report_deprecated' );
 return wpmu_current_site()->site_name;
