@@ -46,4 +46,7 @@ elsewhere:
     docs: "https://www.phpconcept.net/pclzip/"
     files: ["wp-admin/includes/class-pclzip.php"]
     note: "WordPress bundles PclZip to unpack and check ZIP archives when the ZipArchive extension is missing; _unzip_file_pclzip() and wp_zip_file_is_valid() use it."
-wordpress: []
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true

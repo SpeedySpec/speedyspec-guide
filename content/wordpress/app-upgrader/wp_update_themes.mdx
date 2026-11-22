@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_update_themes"
+---
+
+## Behaviour
+
+Asks WordPress.org for theme updates, sending the installed themes, and stores the answer in the update_themes transient, at most every 12 hours. <Ev source="wp:wp-includes/update.php#L626-L876" hash="2443f187e6ca055c6c5edf08ac3c79e54912d8dc63d127fd7cf87b9b5d0c661a"/>
+
+## Override
+
+`themes_update_check_locales`, `update_themes_{$hostname}` filter it.

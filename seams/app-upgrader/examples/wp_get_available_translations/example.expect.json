@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "request https://api.wordpress.org/translations/core/1.0/\n",
+ "return": "array (\n  0 => \n  array (\n    0 => 'fr_FR',\n  ),\n  1 => 'Fran\u00e7ais',\n)",
+ "error": null
+}

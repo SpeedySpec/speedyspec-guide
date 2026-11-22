@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'Automatic update will not run because this site appears to be under version control. <a href=\"http://example.org/wp-admin/site-health.php\">Learn more in Site Health</a>.'",
+ "error": null
+}

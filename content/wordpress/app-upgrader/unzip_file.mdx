@@ -1,0 +1,11 @@
+---
+symbol: "function:unzip_file"
+---
+
+## Behaviour
+
+Unzips a file into a folder through $wp_filesystem, with ZipArchive when it can and PclZip otherwise; true or an error. <Ev source="wp:wp-admin/includes/file.php#L1611-L1664" hash="a5a10db05607d500f3e64f99f8fb180491fb65ddc913e0810d5c5ae7345f3522"/>
+
+## Override
+
+`unzip_file_use_ziparchive` filters it.

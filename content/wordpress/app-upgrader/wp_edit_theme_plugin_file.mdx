@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_edit_theme_plugin_file"
+---
+
+## Behaviour
+
+Saves an edit made in the theme or plugin file editor after checking the nonce, capabilities and file, then checks the site still loads; true or an error. <Ev source="wp:wp-admin/includes/file.php#L380-L653" hash="39cb579b1c0471026f4b0cc3bc07719c7399668a290929dc9898d35101926d40"/>
+
+## Override
+
+`https_local_ssl_verify` filters it.

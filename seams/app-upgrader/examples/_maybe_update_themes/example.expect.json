@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "request https://api.wordpress.org/themes/update-check/1.1/\n",
+ "return": "true",
+ "error": null
+}

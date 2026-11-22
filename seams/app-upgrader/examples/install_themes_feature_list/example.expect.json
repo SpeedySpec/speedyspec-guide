@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "request https://api.wordpress.org/themes/info/1.2/?action=feature_list&request%5Blocale%5D=en_US&request%5Bwp_version%5D=7.2\n",
+ "return": "array (\n  'Colors' => \n  array (\n    'black' => 'Black',\n  ),\n)",
+ "error": null
+}

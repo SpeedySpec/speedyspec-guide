@@ -1,0 +1,11 @@
+---
+symbol: "function:get_filesystem_method"
+---
+
+## Behaviour
+
+The filesystem method WordPress can write files with: direct when PHP owns the files, else ssh2, ftpext or ftpsockets; FS_METHOD and filesystem_method override it. <Ev source="wp:wp-admin/includes/file.php#L2268-L2340" hash="ba3fec19f374d6674057d49d7f7adc5f9bc565dbe3ae2f4ffa309d9021a4c416"/>
+
+## Override
+
+`filesystem_method` filters it.

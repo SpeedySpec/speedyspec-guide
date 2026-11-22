@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "request https://api.wordpress.org/plugins/update-check/1.1/\n",
+ "return": "array (\n  0 => 'hello.php',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'bash',\n  1 => 'conf',\n  2 => 'css',\n  3 => 'diff',\n  4 => 'htm',\n  5 => 'html',\n  6 => 'http',\n  7 => 'inc',\n  8 => 'include',\n  9 => 'js',\n  10 => 'mjs',\n  11 => 'json',\n  12 => 'jsx',\n  13 => 'less',\n  14 => 'md',\n  15 => 'patch',\n  16 => 'php',\n  17 => 'php3',\n  18 => 'php4',\n  19 => 'php5',\n  20 => 'php7',\n  21 => 'phps',\n  22 => 'phtml',\n  23 => 'sass',\n  24 => 'scss',\n  25 => 'sh',\n  26 => 'sql',\n  27 => 'svg',\n  28 => 'text',\n  29 => 'txt',\n  30 => 'xml',\n  31 => 'yaml',\n  32 => 'yml',\n)",
+ "error": null
+}

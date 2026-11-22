@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<form id=\"plugin-filter\" method=\"post\"> <table class=\"plugins\">\u2026</table> </form>'",
+ "error": null
+}

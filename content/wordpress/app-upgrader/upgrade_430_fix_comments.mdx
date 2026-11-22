@@ -1,0 +1,11 @@
+---
+symbol: "function:upgrade_430_fix_comments"
+---
+
+## Behaviour
+
+Trims comments longer than the comment_content column allows, which WordPress 4.3 found utf8mb4 could leave too long. <Ev source="wp:wp-admin/includes/upgrade.php#L2037-L2066" hash="5c568ddf8565acdba401d2de5cc744983292f5aa3794b4d59e4270447dbc274c"/>
+
+## Override
+
+Not overridable.

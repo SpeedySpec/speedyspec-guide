@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_update_plugins"
+---
+
+## Behaviour
+
+Asks WordPress.org for plugin updates, sending the installed plugins, and stores the answer in the update_plugins transient, at most every 12 hours. <Ev source="wp:wp-includes/update.php#L355-L610" hash="2efe067053e403094136a35629c5d2361da0fe40a69106fea3d7d835b1daf9ca"/>
+
+## Override
+
+`plugins_update_check_locales`, `update_plugins_{$hostname}` filter it.

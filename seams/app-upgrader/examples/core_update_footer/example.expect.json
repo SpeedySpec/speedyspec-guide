@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'You are using a development version (7.2-RC1-65559-src). Cool! Please stay updated.'",
+ "error": null
+}

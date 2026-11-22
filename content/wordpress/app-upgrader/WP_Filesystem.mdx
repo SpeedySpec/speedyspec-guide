@@ -1,0 +1,11 @@
+---
+symbol: "function:WP_Filesystem"
+---
+
+## Behaviour
+
+Sets up the global $wp_filesystem with the filesystem method WordPress can use (direct, SSH2, FTP or FTP sockets) and connects it; false when credentials are missing. <Ev source="wp:wp-admin/includes/file.php#L2177-L2240" hash="581271c461842c8f480337d8b818f77babe3133e315791345258a31260c4c7d9"/>
+
+## Override
+
+`filesystem_method_file` filters it.
