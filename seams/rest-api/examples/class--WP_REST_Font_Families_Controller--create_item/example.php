@@ -1,0 +1,6 @@
+<?php
+// The font library controllers: font families at /wp/v2/font-families and their faces at /wp/v2/font-families/<id>/font-faces (wp_font_family and wp_font_face posts, settings as JSON), and font collections to install from at /wp/v2/font-collections; users need edit_theme_options. A face's src must be a URL that passes wp_http_validate_url() or an uploaded file.
+[ $status, $family ] = guide_rest( 'POST', '/wp/v2/font-families', array( 'font_family_settings' => wp_json_encode( array( 'name' => 'Guide Sans', 'slug' => 'guide-sans', 'fontFamily' => 'Guide Sans, sans-serif' ) ) ) );
+[ $face_status, $face ] = guide_rest( 'POST', "/wp/v2/font-families/{$family['id']}/font-faces", array( 'font_face_settings' => wp_json_encode( array( 'fontFamily' => 'Guide Sans', 'fontWeight' => '400', 'fontStyle' => 'normal', 'src' => 'http://example.org/fonts/guide.woff2' ) ) ) );
+$family = guide_rest( 'GET', "/wp/v2/font-families/{$family['id']}" )[1];
+return array( $status, $family['font_family_settings']['slug'], $face_status, $face['font_face_settings']['src'], $family['font_faces'] === array( $face['id'] ), guide_rest( 'POST', '/wp/v2/font-families', array( 'font_family_settings' => wp_json_encode( array( 'name' => 'Dup', 'slug' => 'guide-sans', 'fontFamily' => 'X' ) ) ) )[1]['code'] );
