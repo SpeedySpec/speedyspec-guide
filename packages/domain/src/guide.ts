@@ -1,7 +1,7 @@
 import type { Citation } from './citation.ts';
 
 /** Which track a developer guide belongs to. */
-export type GuideKind = 'path' | 'topic' | 'contributing';
+export type GuideKind = 'path' | 'theme' | 'topic' | 'contributing';
 
 /**
  * A developer guide: prose that teaches, with the examples it embeds, the symbols it links and the

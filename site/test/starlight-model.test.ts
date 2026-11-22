@@ -26,7 +26,10 @@ const third = guide({ kind: 'path', slug: 'keeping-it-safe', title: 'Keeping it 
 const options = guide({ kind: 'topic', slug: 'options', seam: 'options', title: 'Options' });
 const changing = guide({ kind: 'contributing', part: 'wordpress', slug: 'changing-a-function', title: 'Changing a function', order: 1 });
 const porting = guide({ kind: 'contributing', part: 'speedyspec', slug: 'porting-a-function', title: 'Porting a function', order: 1 });
+const cascade = guide({ kind: 'theme', slug: 'finding-templates', title: 'Finding templates', order: 1 });
+const themeJson = guide({ kind: 'theme', slug: 'theme-json', title: 'theme.json', order: 2 });
 const data = { guides: [third, options, first, porting, second, changing] };
+const withThemes = { guides: [...data.guides, themeJson, cascade] };
 
 const groups = (items: SidebarItem[]) => items.filter((i): i is SidebarGroup => 'items' in i);
 const links = (items: SidebarItem[]) => items.filter((i): i is SidebarLink => 'link' in i);
@@ -52,6 +55,30 @@ describe('guideSidebar', () => {
     const [, , wp, ss] = groups(guideSidebar(guideTracks(data)));
     expect(links(wp!.items)[0]!.attrs).toEqual({ 'data-guide': guidePath(changing), 'data-guide-track': 'contributing-wordpress' });
     expect(links(ss!.items)[0]!.attrs).toEqual({ 'data-guide': guidePath(porting), 'data-guide-track': 'contributing-speedyspec' });
+  });
+});
+
+describe('the Themes track', () => {
+  test('test_theme_guides_have_their_own_urls', () => {
+    expect(guidePath(cascade)).toBe('/guides/themes/finding-templates/');
+    expect(guideTracks(withThemes).themes.map((g) => g.slug)).toEqual(['finding-templates', 'theme-json']);
+  });
+
+  test('test_themes_track_follows_the_learning_path_numbered', () => {
+    const sidebar = groups(guideSidebar(guideTracks(withThemes)));
+    expect(sidebar.map((g) => g.label)).toEqual(['Learning path', 'Themes', 'Topics', 'Contributing to WordPress', 'Contributing to SpeedySpec']);
+    expect(links(sidebar[1]!.items)).toEqual([
+      { label: '1 · Finding templates', link: guidePath(cascade), attrs: { 'data-guide': guidePath(cascade), 'data-guide-track': 'themes' } },
+      { label: '2 · theme.json', link: guidePath(themeJson), attrs: { 'data-guide': guidePath(themeJson), 'data-guide-track': 'themes' } },
+    ]);
+    expect(progressBars(guideTracks(withThemes)).map((b) => b.track)).toEqual(['path', 'themes', 'contributing-wordpress', 'contributing-speedyspec']);
+  });
+
+  test('test_theme_prev_next_stays_in_the_track', () => {
+    expect(guidePrevNext(cascade, withThemes)).toEqual({ prev: false, next: { link: guidePath(themeJson), label: 'theme.json' } });
+    expect(guidePrevNext(themeJson, withThemes)).toEqual({ prev: { link: guidePath(cascade), label: 'Finding templates' }, next: false });
+    expect(guidePrevNext(third, withThemes).next).toBe(false);
+    expect(chapterOf(cascade, guideTracks(withThemes))).toBeUndefined();
   });
 });
 

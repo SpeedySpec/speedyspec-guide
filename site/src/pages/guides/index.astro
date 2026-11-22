@@ -13,13 +13,19 @@ const contributing = [
 ---
 <Page title="Guides" sidebar={guideSidebar(t)}>
   <div class="guides">
-    <p>Learn to write WordPress plugins, how WordPress's functions work together, and how SpeedySpec runs them. Every code example is run and checked on WordPress.</p>
+    <p>Learn to write WordPress plugins, how themes are put together, how WordPress's functions work together, and how SpeedySpec runs them. Every code example is run and checked on WordPress.</p>
     <h2>Learning path</h2>
     {t.path.length > 0 ? (
       <ol class="guide-path">
         {t.path.map((g) => <li><a href={guidePath(g)}>{g.title}</a> <span class="muted">{g.summary}</span></li>)}
       </ol>
     ) : <p class="guide-empty">No learning path guides yet.</p>}
+    <h2>Themes</h2>
+    {t.themes.length > 0 ? (
+      <ol class="guide-themes">
+        {t.themes.map((g) => <li><a href={guidePath(g)}>{g.title}</a> <span class="muted">{g.summary}</span></li>)}
+      </ol>
+    ) : <p class="guide-empty">No theme guides yet.</p>}
     <h2>Topics</h2>
     {t.topics.length > 0 ? (
       <ul class="guide-topics">
