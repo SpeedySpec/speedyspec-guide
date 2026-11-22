@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'saved' => false,\n  'stored' => 'Howdy',\n  'errors' => \n  array (\n    'my_plugin_empty_greeting' => 'The greeting cannot be empty.',\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "<h2 id=\"wp-settings-section-my_plugin_main-1\">Greeting</h2>\n<p>What the plugin says on admin screens.</p><table class=\"form-table\" role=\"presentation\"><tr><th scope=\"row\"><label for=\"my_plugin_greeting\">Greeting text</label></th><td><input type=\"text\" id=\"my_plugin_greeting\" name=\"my_plugin_greeting\" value=\"Say &quot;hi&quot; &lt;b&gt;loudly&lt;/b&gt;\" class=\"regular-text\" /></td></tr></table>",
+ "return": "NULL",
+ "error": null
+}

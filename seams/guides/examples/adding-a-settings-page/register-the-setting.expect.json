@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'group' => 'my_plugin',\n  'type' => 'string',\n  'sanitize callback' => 'my_plugin_sanitize_greeting',\n  'default' => 'Hello',\n  'read before saving' => 'Hello',\n)",
+ "error": null
+}

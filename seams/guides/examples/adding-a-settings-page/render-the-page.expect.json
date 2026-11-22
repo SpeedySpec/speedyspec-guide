@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'administrator' => '<div class=\"wrap\"><h1>My Plugin settings</h1><form action=\"http://example.org/wp-admin/options.php\" method=\"post\"><input type=\\'hidden\\' name=\\'option_page\\' value=\\'my_plugin\\' /><input type=\"hidden\" name=\"action\" value=\"update\" /><input type=\"hidden\" id=\"_wpnonce\" name=\"_wpnonce\" value=\"…\" /><input type=\"hidden\" name=\"_wp_http_referer\" value=\"/\" /><p class=\"submit\"><input type=\"submit\" name=\"submit\" id=\"submit\" class=\"button button-primary\" value=\"Save Changes\"  /></p></form></div>',\n  'logged out' => '',\n)",
+ "error": null
+}

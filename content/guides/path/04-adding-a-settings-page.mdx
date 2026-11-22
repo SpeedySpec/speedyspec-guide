@@ -1,0 +1,105 @@
+---
+title: Adding a settings page
+summary: Put a page under Settings, register the setting it saves, add sections and fields, and let WordPress do the checking.
+---
+
+Most plugins need a few choices the site's owner can make: a greeting, a number of items, a feature switched on or
+off. [Your first plugin](/guides/path/your-first-plugin/) saved a setting by hand, checking the nonce and capability
+itself. For a settings screen, WordPress's **Settings API** does that work for you, as long as you tell it what each
+setting is. This guide builds the page in four pieces: the menu entry, the setting, the fields, and the page that
+holds them.
+
+Every function in this guide comes from WordPress's admin, which loads only on admin screens. The examples load the
+admin files they need, so they can run on their own. Your plugin doesn't need to: on an admin screen they are already
+there.
+
+## The menu entry
+
+Add the page on the <Sym id="action:admin_menu" /> action, which WordPress fires while it builds the admin menu.
+<Sym id="function:add_options_page" /> puts an entry under **Settings**. It takes the page's title, the menu's label,
+the capability a person needs to see the page, a slug for its address, and the function that prints it.
+
+<Example id="guides/adding-a-settings-page/register-the-page" />
+
+`manage_options` is the usual capability for site settings: administrators have it, editors don't. A person without
+it never sees the entry, and WordPress refuses the page's address if they type it. For a section of its own in the
+menu, a plugin can use <Sym id="function:add_menu_page" /> instead, but most settings belong under Settings, where
+people look for them.
+
+## The setting
+
+Register each setting with <Sym id="function:register_setting" />, on the <Sym id="action:admin_init" /> action. It
+takes a **group** (the name your form will use), the option's name, and what WordPress should know about it: its
+type, a description, a default, and the function that sanitizes it.
+
+<Example id="guides/adding-a-settings-page/register-the-setting" />
+
+Registering does three things for you:
+
+- `get_option()` returns the registered default when nothing is saved, so you don't repeat it at every call.
+- The setting is allowed in your group, so the form can save it, and nothing else.
+- The sanitize callback is attached to the option itself, through
+  <Sym id="filter:sanitize_option_{$option}" />. So it runs on every save, not only from your form: from the REST
+  API, from WP-CLI, from another plugin calling `update_option()`.
+
+<Example id="guides/adding-a-settings-page/sanitize-callback-runs" />
+
+Set `show_in_rest` only when the block editor or the REST API needs the setting, and then the `type` also describes
+it there. <OnSpeedySpecNote id="function:register_setting" />
+
+## Refusing a value
+
+Sanitizing cleans a value, but sometimes the value can't be saved at all: an empty greeting, a number out of range.
+Then the sanitize callback returns the value already saved, so nothing changes. It also records why with
+<Sym id="function:add_settings_error" />, which takes the setting, a code of your own, and a message.
+
+<Example id="guides/adding-a-settings-page/reject-with-an-error" />
+
+Nothing was saved, and the error is waiting. After the form is submitted, WordPress keeps the errors briefly and
+shows them on the next page load. Pages under Settings show them automatically. On a top-level page of your own, call
+<Sym id="function:settings_errors" /> at the top of the page.
+
+## Sections and fields
+
+A settings page is made of **sections**, each holding **fields**. <Sym id="function:add_settings_section" /> adds a
+section to your page, with a heading and a function that prints a line of explanation.
+<Sym id="function:add_settings_field" /> adds a field to a section, with a label and a function that prints the
+input. Register both on `admin_init`, next to the setting.
+
+<Example id="guides/adding-a-settings-page/fields-render-escaped" />
+
+<Sym id="function:do_settings_sections" /> printed the heading, the explanation and a table row for the field. Look
+at the `value` attribute: the stored greeting held quotes and a tag, and the field callback escaped it with
+`esc_attr()`. Without that, the quote would end the attribute early and the rest of the value would become markup.
+Passing `label_for` ties the label to the input, so clicking the label focuses it and screen readers announce it.
+
+## The page
+
+The function you gave `add_options_page()` prints the page. It checks the capability again, in case it is ever called
+another way, then prints a form that posts to `options.php`:
+
+<Example id="guides/adding-a-settings-page/render-the-page" />
+
+- <Sym id="function:settings_fields" /> prints the hidden fields that tell `options.php` which group is being saved,
+  and a nonce for that group.
+- `do_settings_sections()` prints every section and field added to the page. This example adds none, so the form has
+  only its hidden fields and the button.
+- <Sym id="function:submit_button" /> prints the Save Changes button.
+
+The logged-out call printed nothing, because the capability check returned first.
+
+## What options.php does with the form
+
+When the form is posted, `options.php` does the checks that your own form handler did in earlier guides:
+
+1. It checks that the person has the group's capability (`manage_options`, unless
+   <Sym id="filter:option_page_capability_{$option_page}" /> changes it).
+2. It checks the nonce `settings_fields()` printed.
+3. It saves only the options registered in the group, each through its sanitize callback.
+4. It sends the person back to your page, with a "Settings saved." notice or the errors your callbacks added.
+
+So a settings page made this way checks the nonce, the capability and the value without any of that code in your
+plugin. What it can't do for you is choose the right sanitizer and escape your fields' output. Those stay your job.
+
+On SpeedySpec, neither the Options seam nor WordPress's admin screens are ported yet, so this guide makes no promise
+about how a settings page behaves there.
