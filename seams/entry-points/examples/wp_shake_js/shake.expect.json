@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<script> document.querySelector(\\'form\\').classList.add(\\'shake\\'); </script>'",
+ "error": null
+}

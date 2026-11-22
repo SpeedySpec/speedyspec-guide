@@ -1,0 +1,5 @@
+---
+symbol: "method:Text_Diff_Engine_shell::diff"
+---
+
+Writes both lists to temporary files in `Text_Diff::_getTempDir()`, runs `diff` on them with `shell_exec()`, and reads the edits from its normal output. When the command gives nothing, the result is one copy of the original lines. <Ev source="wp:wp-includes/Text/Diff/Engine/shell.php#L34-L131" hash="e835674d5fdac6ac7bab0f53ce2f517a76008bf232f0be9a4f01fff7b201b4f2"/>

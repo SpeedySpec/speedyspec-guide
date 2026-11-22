@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Are you sure you want to do this?',\n  1 => 'deprecated wp_explain_nonce since 3.4.1, use wp_nonce_ays()',\n)",
+ "error": null
+}

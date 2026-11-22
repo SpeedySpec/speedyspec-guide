@@ -1,5 +1,5 @@
 import type { EvidenceSource } from '@speedyspec-guide/contracts';
-import type { Assignment, ContentPage, Inventory, PageCitation, PageVersion, Seam, Side } from '@speedyspec-guide/domain';
+import type { Assignment, ContentPage, Guide, Inventory, PageCitation, PageVersion, Seam, Side } from '@speedyspec-guide/domain';
 import type { ExamplesFile } from '../examples.ts';
 import type { EvidenceIndex } from '../evidence-index.ts';
 import type { HistoryFile } from '../history.ts';
@@ -32,6 +32,8 @@ export interface ValidationContext {
   runtimeIds: string[] | null;
   /** Cross-seam edges (generated/graph.json). */
   crossSeam: { from: string; to: string; kind: string; fromSeam: string; toSeam: string }[];
+  /** The developer guides under content/guides/. */
+  guides: Guide[];
 }
 
 /** One validation rule. Specification. */

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '#ffffff',\n  1 => 'guide_section',\n  2 => 'guide_panel',\n  3 => \n  array (\n    0 => 'installed_themes',\n    1 => 'wporg_themes',\n    2 => 'title_tagline',\n    3 => 'colors',\n  ),\n  4 => true,\n)",
+ "error": null
+}

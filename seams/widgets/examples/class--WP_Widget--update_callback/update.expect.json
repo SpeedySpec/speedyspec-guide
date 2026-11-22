@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  2 => \n  array (\n    'title' => 'New',\n    'by' => 'guide',\n  ),\n  5 => \n  array (\n    'title' => 'Other',\n  ),\n  '_multiwidget' => 1,\n)",
+ "error": null
+}

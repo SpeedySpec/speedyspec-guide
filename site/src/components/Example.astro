@@ -1,0 +1,31 @@
+---
+// An example embedded in a guide: its code and what it was checked to do, run on real WordPress.
+import { loadGuideData } from '../model/data.ts';
+import { embedView } from '../model/guides.ts';
+
+interface Props {
+  id: string;
+  /** The lines to show, such as "3-6" (1-based, inclusive); all of them when absent. */
+  lines?: string;
+}
+const { id, lines } = Astro.props;
+const range = lines?.match(/^(\d+)-(\d+)$/);
+const view = embedView(id, await loadGuideData(), range ? [Number(range[1]), Number(range[2])] : undefined);
+const sideName = { wordpress: 'WordPress', runtime: 'SpeedySpec' } as const;
+---
+<figure class="guide-example">
+  <p class="example-title">{view.title}</p>
+  <pre><code class="language-php">{view.code}</code></pre>
+  <figcaption>
+    {view.output !== '' && <div class="result">Prints <code class="result-output">{view.output}</code></div>}
+    {view.return !== null && <div class="result">Returns <code class="result-return">{view.return}</code></div>}
+    {view.error !== null && <div class="result">Throws <code class="result-error">{view.error}</code></div>}
+    <span class="ran">
+      {view.sides.map((s) => (
+        <span class:list={['ran-side', `ran-${s.status}`]}>
+          {s.status === 'passed' ? '✓' : s.status === 'failed' ? '✗' : '–'} {sideName[s.side]}{s.status === 'not-run' ? ': not run' : ''}{s.detail ? `: ${s.detail}` : ''}
+        </span>
+      ))}
+    </span>
+  </figcaption>
+</figure>

@@ -1,0 +1,11 @@
+---
+symbol: "function:twentytwenty_get_post_meta"
+---
+
+## Behaviour
+
+The post meta for a location: at the top the author, date, comments and sticky, at the bottom the tags, each with an icon; both lists are filtered, pages get none, and nothing when no item applies. <Ev source="wp:wp-content/themes/twentytwenty/inc/template-tags.php#L256-L535" hash="150918045b38542f9f146941978ccd993c879667395a15e0e58575140cf40ed4"/>
+
+## Override
+
+`twentytwenty_disallowed_post_types_for_meta_output`, `twentytwenty_post_meta_location_single_top`, `twentytwenty_post_meta_location_single_bottom` filter it; `twentytwenty_start_of_post_meta_list`, `twentytwenty_end_of_post_meta_list` fire.

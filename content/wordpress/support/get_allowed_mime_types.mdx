@@ -1,0 +1,11 @@
+---
+symbol: "function:get_allowed_mime_types"
+---
+
+## Behaviour
+
+The MIME types a user may upload: all known ones except swf and exe, and without htm|html and js unless the user has unfiltered_html; upload_mimes filters them. <Ev source="wp:wp-includes/functions.php#L3776-L3797" hash="9f14f5876fecf52dfb34f1969cf63bad94b67f8681129d48a8ce427171c9169f"/>
+
+## Override
+
+`upload_mimes` filters it.

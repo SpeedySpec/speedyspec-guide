@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "wpmu_blog_updated 1\n",
+ "return": "true",
+ "error": null
+}

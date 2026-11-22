@@ -1,0 +1,96 @@
+---
+title: Options
+summary: How adding, reading, updating and deleting options fit together, with autoloading, the option filters and transients.
+---
+
+Options are WordPress's settings store: named values kept in the `wp_options` table, one row each. WordPress keeps
+its own settings there (the site's title is the option `blogname`), and plugins keep theirs beside them. A value can
+be a string, a number, or an array, which WordPress serializes when it saves and unserializes when it reads.
+
+This guide explains how the option functions relate to each other and where filters let other code step in. Each
+function's reference page has the details and more examples.
+
+## Four functions, one row
+
+<Sym id="function:add_option" />, <Sym id="function:get_option" />, <Sym id="function:update_option" /> and
+<Sym id="function:delete_option" /> all work on one row, found by its name. Each write tells you whether it changed
+anything:
+
+<Example id="guides/options/lifecycle" />
+
+- `add_option()` only adds. If the option already exists it returns `false` and leaves the saved value alone. That
+  makes it the right call for defaults, such as in an activation hook.
+- `update_option()` adds the option when it is missing, and changes it when it is there. Saving the value already
+  stored changes nothing and returns `false`:
+
+<Example id="options/update_option/unchanged" />
+
+- `delete_option()` removes the row, and returns `false` when there was nothing to delete.
+- `get_option()` returns the saved value, or the default you pass when there is none. Without a default it returns
+  `false`, so pass one whenever `false` could be a real value.
+
+<Example id="options/get_option/missing" />
+
+Every read goes through WordPress's object cache, so reading the same option many times in one request costs one
+query at most. You never manage that cache yourself: the write functions keep it up to date.
+
+## Autoloading
+
+Most options are read on most requests: the site's title, its address, the active theme. Rather than query each one,
+WordPress loads every **autoloaded** option in one query, early in the request, with
+<Sym id="function:wp_load_alloptions" />. `get_option()` then finds them in memory.
+
+An option autoloads unless you say otherwise. The fourth argument of `add_option()` (and the third of
+`update_option()`) decides it. Pass `false` for an option that is large or only needed on one screen, so it doesn't
+weigh down every request; it is still read normally when you ask for it.
+
+<Example id="guides/options/autoload" />
+
+To change an existing option's autoload without touching its value, use <Sym id="function:wp_set_option_autoload" />.
+
+## Filters on reading
+
+`get_option()` runs its value through filters, so other code can change what is read without changing what is
+stored. The three you meet most, in the order `get_option()` fires them:
+
+- <Sym id="filter:pre_option_{$option}" /> fires first, before the database or the cache is touched. Returning
+  anything but `false` short-circuits the read: that value is returned and nothing else happens. It is how a plugin
+  forces a setting, whatever is saved.
+
+<Example id="options/get_option/pre-option-short-circuits" />
+
+- <Sym id="filter:default_option_{$option}" /> fires only when the option isn't stored, and supplies the default.
+
+<Example id="options/get_option/default-filter" />
+
+- <Sym id="filter:option_{$option}" /> fires last, on every value that was found. The stored value stays as it was.
+
+<Example id="guides/options/option-filter" />
+
+In each name, `{$option}` is replaced by the option's name, so a callback on `option_blogname` only sees the site's
+title. Writes have filters and actions too: `update_option()` fires `pre_update_option_{$option}` before saving, then
+the actions `update_option`, `update_option_{$option}` and `updated_option`.
+
+<Example id="options/update_option/hooks" />
+
+## Transients: options that expire
+
+A **transient** is a value you can afford to lose, kept for a time you choose: the answer to a slow query, or a
+response from another site. <Sym id="function:set_transient" /> stores it with an expiry in seconds,
+<Sym id="function:get_transient" /> reads it back, and returns `false` once it has expired or was never set.
+<Sym id="function:delete_transient" /> removes it early. The usual pattern is to read, and compute and store only when
+the read comes back `false`:
+
+<Example id="guides/options/transient" />
+
+On a site without a persistent object cache, a transient is stored as two options, one for the value and one for its
+expiry time. With a persistent object cache, such as Redis or Memcached, transients live in the cache instead and may
+disappear before they expire. So never use a transient for anything you can't recompute.
+
+<Example id="options/set_transient/stored-as-options" />
+
+## On SpeedySpec
+
+This guide doesn't count the Options seam as ported yet, so it makes no promise that options behave on SpeedySpec as
+they do on WordPress. <OnSpeedySpecNote id="function:get_option" /> The
+[porting a function guide](/guides/contributing/speedyspec/porting-a-function/) shows how the port is being built.

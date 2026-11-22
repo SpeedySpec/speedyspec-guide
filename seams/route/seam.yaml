@@ -9,4 +9,55 @@ files:
   - 'wp-includes/class-wp-url-pattern-prefixer.php'
   - 'wp-includes/rewrite.php'
   - 'wp-includes/speculative-loading.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side. There is no database: setup.php answers the
+# options the rewrite rules and redirects read.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-error.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/cache-compat.php
+  - wp-includes/link-template.php
+  - wp-includes/class-wp-list-util.php
+  - wp-includes/class-wp.php
+  - wp-includes/class-wp-matchesmapregex.php
+  - wp-includes/class-wp-rewrite.php
+  - wp-includes/rewrite.php
+  - wp-includes/class-wp-post.php
+  - wp-includes/class-wp-post-type.php
+  - wp-includes/post.php
+  - wp-includes/class-wp-term.php
+  - wp-includes/class-wp-taxonomy.php
+  - wp-includes/taxonomy.php
+  - wp-includes/class-wp-role.php
+  - wp-includes/class-wp-roles.php
+  - wp-includes/class-wp-user.php
+  - wp-includes/capabilities.php
+  - wp-includes/user.php
+  - wp-includes/pluggable.php
+  - wp-includes/class-wp-query.php
+  - wp-includes/query.php
+  - wp-includes/http.php
+  - wp-includes/theme.php
+  - wp-includes/canonical.php
+  - wp-includes/class-wp-url-pattern-prefixer.php
+  - wp-includes/class-wp-speculation-rules.php
+  # wp_print_speculation_rules() prints its script tag with the script loader's helpers.
+  - wp-includes/class-wp-token-map.php
+  - wp-includes/html-api/html5-named-character-references.php
+  - wp-includes/html-api/class-wp-html-attribute-token.php
+  - wp-includes/html-api/class-wp-html-span.php
+  - wp-includes/html-api/class-wp-html-doctype-info.php
+  - wp-includes/html-api/class-wp-html-text-replacement.php
+  - wp-includes/html-api/class-wp-html-decoder.php
+  - wp-includes/html-api/class-wp-html-tag-processor.php
+  - wp-includes/script-loader.php
+  - wp-includes/speculative-loading.php
+setup: setup.php

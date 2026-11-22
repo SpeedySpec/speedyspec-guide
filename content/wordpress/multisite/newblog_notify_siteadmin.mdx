@@ -1,0 +1,11 @@
+---
+symbol: "function:newblog_notify_siteadmin"
+---
+
+## Behaviour
+
+Emails the network admin about a new site, when registration notifications are on; the message is filtered. WordPress sends it when the site or user is made, so here it goes twice. <Ev source="wp:wp-includes/ms-functions.php#L1484-L1536" hash="0156d5443e8f55357f5a6764f71a90c3038953b83a5040835ac9738abcf8d0c2"/>
+
+## Override
+
+`newblog_notify_siteadmin` filters it.

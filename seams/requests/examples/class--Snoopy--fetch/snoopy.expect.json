@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "deprecated_file_included class-snoopy.php\n",
+ "return": "array (\n  0 => 'Snoopy v1.2.4',\n  1 => \n  array (\n    0 => '/a',\n  ),\n  2 => 'Hi A',\n  3 => \n  array (\n    0 => 'http://example.org/a',\n    1 => 'http://example.org/dir/b',\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Object_Cache::incr"
+---
+
+`wp_cache_incr()`'s implementation: a value that isn't numeric counts from 0, the offset is cast to an integer, and the result never goes below 0. <Ev scenario="incr_non_numeric_resets" area="object-cache"/> <Ev scenario="incr_int_overflow" area="object-cache"/>

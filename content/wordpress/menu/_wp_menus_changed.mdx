@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_menus_changed"
+---
+
+## Behaviour
+
+After a theme switch, maps the previous theme's menu locations (the `theme_switch_menu_locations` option) onto the new theme's with `wp_map_nav_menu_locations()`, saves them, and deletes the option; hooked to `after_switch_theme`. <Ev source="wp:wp-includes/nav-menu.php#L1206-L1213" hash="26ebc38297ba8b557b71ad72bbaa11855767273a4636118731f43c406b3c7172"/>
+
+## Override
+
+Not overridable.

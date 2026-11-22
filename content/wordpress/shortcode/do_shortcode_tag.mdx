@@ -1,0 +1,11 @@
+---
+symbol: "function:do_shortcode_tag"
+---
+
+## Behaviour
+
+The `preg_replace_callback()` callback `do_shortcode()` uses for one shortcode match. An escaped `[[tag]]` comes back as `[tag]`. A tag whose callback isn't callable is reported through `_doing_it_wrong()` and left as written. Otherwise it parses the attributes with `shortcode_parse_atts()` and calls the callback with the attributes, the enclosed content (an empty string when there is none) and the tag. <Ev source="wp:wp-includes/shortcodes.php#L402-L458" hash="1ddc5171d163b8b06c6dc8cd8c244dc8a25aca82e6c58e147e182bdf1b4a6c92"/>
+
+## Override
+
+A value other than `false` from `pre_do_shortcode_tag` is used instead of calling the callback; `do_shortcode_tag` filters the output. <Ev source="wp:wp-includes/shortcodes.php#L402-L458" hash="1ddc5171d163b8b06c6dc8cd8c244dc8a25aca82e6c58e147e182bdf1b4a6c92"/>

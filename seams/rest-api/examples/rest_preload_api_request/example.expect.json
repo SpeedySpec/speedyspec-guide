@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => '/wp/v2/posts/1?_fields=id,title',\n    1 => 'OPTIONS',\n  ),\n  1 => \n  array (\n    'id' => 1,\n    'title' => \n    array (\n      'rendered' => 'Preload',\n    ),\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'id' => 'isbn',\n    'label' => 'ISBN',\n    'origin' => \n    array (\n      'registeredBy' => 'my-plugin',\n      'updatedBy' => \n      array (\n      ),\n    ),\n  ),\n)",
+ "error": null
+}

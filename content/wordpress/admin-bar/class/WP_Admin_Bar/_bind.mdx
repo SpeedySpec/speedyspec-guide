@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Admin_Bar::_bind"
+---
+
+Builds the tree once. Every node gets children and a type, and an item without a parent goes under `root`. Items under an item go in its `-default` group; groups under a group share a `-container`. Top-level groups get `ab-top-menu` and others `ab-submenu`. Then the bar is bound. <Ev source="wp:wp-includes/class-wp-admin-bar.php#L318-L459" hash="ac8a42467b2404b26bd28ba00f078004435533a2833326506f408e7495599a97"/>

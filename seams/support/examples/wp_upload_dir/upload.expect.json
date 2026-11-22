@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/wp-content/uploads/2026/03',\n  1 => '/2026/03',\n  2 => 'http://example.org/wp-content/uploads',\n)",
+ "error": null
+}

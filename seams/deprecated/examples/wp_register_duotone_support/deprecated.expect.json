@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_register_duotone_support since 6.3.0, use WP_Duotone::register_duotone_support()',\n)",
+ "error": null
+}

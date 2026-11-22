@@ -1,0 +1,11 @@
+---
+symbol: "function:signup_user"
+---
+
+## Behaviour
+
+Prints the first signup step: username and email, and, when both are allowed (the `active_signup` global is `all`), a choice between a site and only a username. It is declared in `wp-signup.php`. <Ev source="wp:wp-signup.php#L602-L674" hash="fc628720eaf9bca68ac643c2f4401a3f7cab0f4345486fa563fa0172f171d73a"/>
+
+## Override
+
+`signup_user_init` changes the defaults; `signup_hidden_fields` fires in the form.

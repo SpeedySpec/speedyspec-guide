@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "password set for 2\n",
+ "return": "true",
+ "error": null
+}

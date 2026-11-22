@@ -1,0 +1,7 @@
+---
+symbol: "action:publish_post"
+---
+
+## Behaviour
+
+Fired by `wp_transition_post_status()` (as `{$new_status}_{$post->post_type}`) when a post is published; WordPress attaches `_publish_post_hook()` at priority 5, which marks it for pings and enclosures and schedules `do_pings`, unless importing. <Ev source="wp:wp-includes/default-filters.php#L453-L453" hash="65f189f010f397ba2cb604e38f68ced2e18fc4b801c4ed5c10859810bc0cc8d5"/>

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<img src=\"a.jpg\" width=\"10\" height=\"10\">',\n  1 => 'deprecated wp_img_tag_add_loading_attr since 6.3.0, use wp_img_tag_add_loading_optimization_attrs() deprecated wp_get_loading_attr_default since 6.3.0, use wp_get_loading_optimization_attributes()',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<select name=\\'user\\' id=\\'user\\' class=\\'\\'>\n\t<option value=\\'-1\\'>None</option>\n\t<option value=\\'1\\'>Admin</option>\n\t<option value=\\'2\\' selected=\\'selected\\'>Grace</option>\n</select>'",
+ "error": null
+}

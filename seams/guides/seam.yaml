@@ -1,0 +1,9 @@
+name: "Guides"
+job: "Examples the developer guides embed, run on a fully booted WordPress."
+ported: false
+# The guides document no symbols of their own; their examples cross seams, so the setup boots all of WordPress.
+files: []
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true

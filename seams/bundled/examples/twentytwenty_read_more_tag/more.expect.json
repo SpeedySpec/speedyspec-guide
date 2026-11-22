@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"read-more-button-wrap\"><a href=\"#more\" class=\"more-link\"><span class=\"faux-button\">Continue reading</span> <span class=\"screen-reader-text\">\"Hello\"</span></a></div>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<link rel=\"pingback\" href=\"http://example.org/xmlrpc.php\">'",
+ "error": null
+}

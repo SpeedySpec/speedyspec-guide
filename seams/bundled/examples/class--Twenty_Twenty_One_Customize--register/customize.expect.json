@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'excerpt',\n  1 => 'excerpt',\n  2 => 'title_tagline',\n  3 => true,\n  4 => false,\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'SMTP Error: Could not connect to SMTP host.'",
+ "error": null
+}

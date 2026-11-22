@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<methodResponse> <fault> <value> <struct> <member> <name>faultCode</name> <value><int>500</int></value> </member> <member> <name>faultString</name> <value><string>Failed.</string></value> </member> </struct> </value> </fault> </methodResponse>'",
+ "error": null
+}

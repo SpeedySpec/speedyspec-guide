@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_batch_split_terms"
+---
+
+## Behaviour
+
+Splits shared terms in batches of 10 under a lock, scheduling the next batch until none are left (then finished_splitting_shared_terms). <Ev source="wp:wp-includes/taxonomy.php#L4576-L4661" hash="41e6671f17bed14e86b0ffd8a839e331f4c9bc0ac4e2cb647bfcd67d4f60d2b4"/>
+
+## Override
+
+Not overridable.

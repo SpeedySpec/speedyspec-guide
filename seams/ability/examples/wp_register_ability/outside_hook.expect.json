@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "doing_it_wrong: wp_register_ability: Abilities must be registered on the wp_abilities_api_init action. The ability guide/add was not registered.\n",
+ "return": "NULL",
+ "error": null
+}

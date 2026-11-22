@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_unique_filename"
+---
+
+## Behaviour
+
+A sanitized file name not yet taken in a folder: -1, -2 and so on are added; also checked against image sizes and other extensions. wp_unique_filename filters it. <Ev source="wp:wp-includes/functions.php#L2638-L2882" hash="91411d73e092ad5f56adc6693096c6d645bb90a98c35748502b5d8ed155c0580"/>
+
+## Override
+
+`pre_wp_unique_filename_file_list`, `wp_unique_filename` filter it.

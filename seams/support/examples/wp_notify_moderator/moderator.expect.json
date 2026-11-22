@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "email to admin@example.org: [Guide] Please moderate: \"Hi\"\n",
+ "return": "true",
+ "error": null
+}

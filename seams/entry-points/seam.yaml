@@ -3,4 +3,95 @@ job: "Holds the top-level PHP files that load WordPress and serve its requests."
 ported: false
 files:
   - '*.php'
-wordpress: []
+# Loaded before each example on the WordPress side; the examples declare the entry scripts' functions they show
+# with guide_load_functions(), as including a script would serve its whole request.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  # Translations, so the signup form can list languages; there are none installed, so text stays in English.
+  - wp-includes/pomo/entry.php
+  - wp-includes/pomo/plural-forms.php
+  - wp-includes/pomo/translations.php
+  - wp-includes/pomo/streams.php
+  - wp-includes/pomo/mo.php
+  - wp-includes/pomo/po.php
+  - wp-includes/l10n/class-wp-translation-controller.php
+  - wp-includes/l10n/class-wp-translations.php
+  - wp-includes/l10n/class-wp-translation-file.php
+  - wp-includes/l10n/class-wp-translation-file-mo.php
+  - wp-includes/l10n/class-wp-translation-file-php.php
+  - wp-includes/l10n.php
+  - wp-includes/class-wp-locale.php
+  - wp-includes/class-wp-locale-switcher.php
+  - wp-includes/class-wp-textdomain-registry.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-error.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/cache-compat.php
+  - wp-includes/class-wpdb.php
+  - wp-includes/link-template.php
+  - wp-includes/general-template.php
+  - wp-includes/pluggable.php
+  - wp-includes/class-wp-network.php
+  - wp-includes/class-wp-site.php
+  - wp-includes/ms-network.php
+  - wp-includes/ms-site.php
+  - wp-includes/ms-blogs.php
+  - wp-includes/ms-load.php
+  - wp-includes/class-wp-user.php
+  - wp-includes/error-protection.php
+  - wp-includes/class-wp-recovery-mode.php
+  - wp-includes/class-wp-recovery-mode-cookie-service.php
+  - wp-includes/class-wp-recovery-mode-key-service.php
+  - wp-includes/class-wp-recovery-mode-link-service.php
+  - wp-includes/class-wp-recovery-mode-email-service.php
+  # The HTML API, which prints the inline scripts.
+  - wp-includes/class-wp-token-map.php
+  - wp-includes/html-api/html5-named-character-references.php
+  - wp-includes/html-api/class-wp-html-attribute-token.php
+  - wp-includes/html-api/class-wp-html-span.php
+  - wp-includes/html-api/class-wp-html-doctype-info.php
+  - wp-includes/html-api/class-wp-html-text-replacement.php
+  - wp-includes/html-api/class-wp-html-decoder.php
+  - wp-includes/html-api/class-wp-html-tag-processor.php
+  - wp-includes/html-api/class-wp-html-unsupported-exception.php
+  - wp-includes/html-api/class-wp-html-active-formatting-elements.php
+  - wp-includes/html-api/class-wp-html-open-elements.php
+  - wp-includes/html-api/class-wp-html-token.php
+  - wp-includes/html-api/class-wp-html-stack-event.php
+  - wp-includes/html-api/class-wp-html-processor-state.php
+  - wp-includes/html-api/class-wp-html-processor.php
+  # script-loader.php loads the script and style classes itself.
+  - wp-includes/script-loader.php
+  - wp-includes/capabilities.php
+  - wp-includes/class-wp-roles.php
+  - wp-includes/class-wp-site-query.php
+  - wp-includes/ms-functions.php
+  - wp-includes/class-wp-post-type.php
+  - wp-includes/post.php
+  - wp-includes/class-wp-taxonomy.php
+  - wp-includes/theme.php
+  - wp-includes/taxonomy.php
+  - wp-includes/class-wp-term-query.php
+  - wp-includes/class-wp-meta-query.php
+  - wp-includes/meta.php
+  - wp-includes/class-wp-term.php
+  - wp-includes/class-wp-query.php
+  - wp-includes/class-wp-list-util.php
+  - wp-includes/class-wp-tax-query.php
+  - wp-includes/user.php
+  - wp-includes/comment.php
+  - wp-includes/class-wp-post.php
+  - wp-includes/revision.php
+  - wp-includes/class-wp-theme.php
+  - wp-includes/class-wp-rewrite.php
+  - wp-includes/rewrite.php
+  - wp-includes/cron.php
+setup: setup.php
+mysql: true

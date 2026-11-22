@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Recovery_Mode::handle_exit_recovery_mode"
+---
+
+At the exit link: with a valid nonce, exits recovery mode and redirects back (to the referrer, the admin or the home page); an expired link stops with a 403. Without an active session it only redirects. <Ev source="wp:wp-includes/class-wp-recovery-mode.php#L225-L252" hash="83dcc9897cc3832f82b8c474cb09e14ab733dee4899e05c38223928dcfeeacb8"/>

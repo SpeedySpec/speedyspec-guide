@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  'jpg|jpeg|jpe' => 'image/jpeg',\n  'png' => 'image/png',\n)",
+ "error": null
+}

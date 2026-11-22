@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_init"
+---
+
+## Behaviour
+
+Creates the object cache: a new `WP_Object_Cache` in the `$wp_object_cache` global, replacing any cache already there. `wp-settings.php` calls it through `wp_start_object_cache()`, unless a drop-in defines its own. <Ev scenario="global_groups_on_multisite" area="object-cache"/> <Ev source="wp:wp-includes/cache.php#L21-L23" hash="5b03872b1920503d0b32e9a05e9850fb38fcf03dea86b10e9594a2542bfe9afa"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

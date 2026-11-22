@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "email to admin@example.org: [Guide] New User Registration\nemail to grace@example.org: [Guide] Login Details\n",
+ "return": "'done'",
+ "error": null
+}

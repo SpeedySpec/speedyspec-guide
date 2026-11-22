@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "doing_it_wrong: WP_Ability_Categories_Registry::unregister: Ability category \"tools\" not found.\n",
+ "return": "array (\n  0 => 'tools',\n  1 => false,\n  2 => NULL,\n)",
+ "error": null
+}

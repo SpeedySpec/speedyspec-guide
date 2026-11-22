@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "strict-origin-when-cross-origin\n",
+ "return": "'sent'",
+ "error": null
+}

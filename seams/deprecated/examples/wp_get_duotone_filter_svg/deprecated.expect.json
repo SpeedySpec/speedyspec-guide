@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '\n\t\t<svg\n\t\t\txmlns=\"http://www.w3.org/2000/svg\"\n\t\t\tviewBox=\"0 0 0 0\"\n\t\t\twidth=\"0\"\n\t\t\theight=\"0\"\n\t\t\tfocusable=\"false\"\n\t\t\trole=\"none\"\n\t\t\tstyle=\"visibility: hidden; position: absolute; left: -9999px; overflow: hidden;\"\n\t\t>\n\t\t\t<defs>\n\t\t\t\t<filter id=\"wp-duotone-dark\">\n\t\t\t\t\t<feColorMatrix\n\t\t\t\t\t\tcolor-interpolation-filters=\"sRGB\"\n\t\t\t\t\t\ttype=\"matrix\"\n\t\t\t\t\t\tvalues=\"\n\t\t\t\t\t\t\t.299 .587 .114 0 0\n\t\t\t\t\t\t\t.299 .587 .114 0 0\n\t\t\t\t\t\t\t.299 .587 .114 0 0\n\t\t\t\t\t\t\t.299 .587 .114 0 0\n\t\t\t\t\t\t\"\n\t\t\t\t\t/>\n\t\t\t\t\t<feComponentTransfer color-interpolation-filters=\"sRGB\" >\n\t\t\t\t\t\t<feFuncR type=\"table\" tableValues=\"0 1\" />\n\t\t\t\t\t\t<feFuncG type=\"table\" tableValues=\"0 1\" />\n\t\t\t\t\t\t<feFuncB type=\"table\" tableValues=\"0 1\" />\n\t\t\t\t\t\t<feFuncA type=\"table\" tableValues=\"1 1\" />\n\t\t\t\t\t</feComponentTransfer>\n\t\t\t\t\t<feComposite in2=\"SourceGraphic\" operator=\"in\" />\n\t\t\t\t</filter>\n\t\t\t</defs>\n\t\t</svg>\n\n\t\t',\n  1 => 'deprecated wp_get_duotone_filter_svg since 6.3.0, use WP_Duotone::get_filter_svg_from_preset() deprecated get_filter_svg_from_preset since 6.3.0 deprecated get_filter_id_from_preset since 6.3.0',\n)",
+ "error": null
+}

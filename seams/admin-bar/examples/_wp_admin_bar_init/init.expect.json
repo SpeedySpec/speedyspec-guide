@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "admin_bar_init\nadd_admin_bar_menus\n",
+ "return": "array (\n  0 => true,\n  1 => 'WP_Admin_Bar',\n  2 => 30,\n)",
+ "error": null
+}

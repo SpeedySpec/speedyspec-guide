@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '.?.+?/attachment/([^/]+)/?$',\n  1 => '.?.+?/attachment/([^/]+)/trackback/?$',\n  2 => '.?.+?/attachment/([^/]+)/feed/(feed|rdf|rss|rss2|atom)/?$',\n  3 => '.?.+?/attachment/([^/]+)/(feed|rdf|rss|rss2|atom)/?$',\n  4 => '.?.+?/attachment/([^/]+)/comment-page-([0-9]{1,})/?$',\n  5 => '.?.+?/attachment/([^/]+)/embed/?$',\n  6 => '(.?.+?)/embed/?$',\n  7 => '(.?.+?)/trackback/?$',\n  8 => '(.?.+?)/feed/(feed|rdf|rss|rss2|atom)/?$',\n  9 => '(.?.+?)/(feed|rdf|rss|rss2|atom)/?$',\n  10 => '(.?.+?)/page/?([0-9]{1,})/?$',\n  11 => '(.?.+?)/comment-page-([0-9]{1,})/?$',\n  12 => '(.?.+?)(?:/([0-9]+))?/?$',\n)",
+ "error": null
+}

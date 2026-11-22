@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "wp_delete_nav_menu 1\n",
+ "return": "array (\n  0 => true,\n  1 => NULL,\n  2 => NULL,\n  3 => \n  array (\n    'primary' => 0,\n    'footer' => 7,\n  ),\n  4 => false,\n)",
+ "error": null
+}

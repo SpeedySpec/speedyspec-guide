@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"wp-embed-site-title\"><a href=\"http://example.org\" target=\"_top\"><img src=\"http://example.org/wp-includes/images/w-logo-gray-white-bg.svg\" width=\"32\" height=\"32\" alt=\"\" class=\"wp-embed-site-icon\" /><span>Guide</span></a></div>'",
+ "error": null
+}

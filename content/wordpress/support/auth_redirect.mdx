@@ -1,0 +1,11 @@
+---
+symbol: "function:auth_redirect"
+---
+
+## Behaviour
+
+Lets only logged-in users through: with a valid login cookie it fires auth_redirect and returns; without one, it redirects to the login page with the address to return to (reauth=1) and ends the request. <Ev source="wp:wp-includes/pluggable.php#L1286-L1356" hash="b8a14d697f4fe797f9c685b5902901a49f6c0169abd5654098f713aa0e95f472"/>
+
+## Override
+
+`secure_auth_redirect`, `auth_redirect_scheme` filter it; `auth_redirect` fires.

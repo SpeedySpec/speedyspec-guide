@@ -1,0 +1,11 @@
+---
+symbol: "function:get_shortcode_regex"
+---
+
+## Behaviour
+
+Returns the regular expression, without delimiters, that matches shortcodes for the tags given, or for every registered tag. Its groups are: 1, an escaping second `[`; 2, the tag; 3, the attribute text; 4, a self-closing `/`; 5, the enclosed content; 6, an escaping second `]`. <Ev source="wp:wp-includes/shortcodes.php#L334-L377" hash="76aa6305efadac305d7f7b1cc33cb7d8ec53b0ce8cab314d0e20b9249ef951bc"/>
+
+## Override
+
+Not overridable.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "some_function: Call it after init. (6.0.0)\n",
+ "return": "'reported'",
+ "error": null
+}

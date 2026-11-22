@@ -1,0 +1,7 @@
+---
+symbol: "action:wp_entity_fields_api_init"
+---
+
+## Behaviour
+
+Fired once, by `WP_Entity_Fields_Registry`, the first time fields are read after `init` has completed. Fields are registered, updated and unregistered on it; WordPress registers its own field collections at priority 0. New in WordPress 7.2 (trunk); WordPress 7.1.5 has no entity API. <Ev source="wp:wp-includes/class-wp-entity-fields-registry.php#L555-L594" hash="713dd0c497d4547dd7528d982c25c33375357c5cd8f2814d0b4de051fb9ea436"/>

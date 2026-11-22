@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'Welcome to the Network installation process! Fill in the information below and you&#8217;ll be on your way to creating a'",
+ "error": null
+}

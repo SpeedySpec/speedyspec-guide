@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'Expires' => 'Wed, 11 Jan 1984 05:00:00 GMT',\n  'Cache-Control' => 'no-cache, must-revalidate, max-age=0, no-store, private',\n  'Last-Modified' => false,\n)",
+ "error": null
+}

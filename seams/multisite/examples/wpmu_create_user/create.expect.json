@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "wpmu_new_user\n",
+ "return": "array (\n  0 => \n  array (\n  ),\n  1 => false,\n)",
+ "error": null
+}

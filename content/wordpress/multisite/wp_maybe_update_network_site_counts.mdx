@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_maybe_update_network_site_counts"
+---
+
+## Behaviour
+
+Updates the site count unless the network is large (more than 10,000 sites) and enable_live_network_counts says no. <Ev source="wp:wp-includes/ms-functions.php#L2522-L2540" hash="69f50d7d1201864f737a9d3a1c8a0fa9b7d3c8d5c237e47898195ddac23d69aa"/>
+
+## Override
+
+`enable_live_network_counts` filters it.

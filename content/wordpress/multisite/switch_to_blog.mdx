@@ -1,0 +1,11 @@
+---
+symbol: "function:switch_to_blog"
+---
+
+## Behaviour
+
+Makes another site current: its tables, cache groups, roles and globals, kept on a stack for restore_current_blog(); fires switch_blog. <Ev source="wp:wp-includes/ms-blogs.php#L504-L550" hash="d877b156ff79b9745f8e9f69fe9a77bf1c82da631098d1f7d69ea84c478b5732"/>
+
+## Override
+
+`switch_blog` fires.

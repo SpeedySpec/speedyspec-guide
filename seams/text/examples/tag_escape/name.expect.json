@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'my-tagscript/My-Tag<script>'",
+ "error": null
+}

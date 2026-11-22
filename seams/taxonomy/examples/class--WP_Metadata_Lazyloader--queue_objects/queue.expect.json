@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "queued term\n",
+ "return": "array (\n  0 => \n  array (\n    'b' => \n    array (\n      0 => '2',\n    ),\n  ),\n  1 => 'invalid_object_type',\n)",
+ "error": null
+}

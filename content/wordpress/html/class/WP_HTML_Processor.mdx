@@ -1,0 +1,5 @@
+---
+symbol: "class:WP_HTML_Processor"
+---
+
+Parses HTML as the HTML standard's tree builder does, on top of `WP_HTML_Tag_Processor`: it tracks the open elements, so it knows each element's breadcrumbs, and it visits the elements and closers the HTML only implies (virtual tokens). It supports most HTML; on markup it doesn't support yet it stops, and `get_last_error()` says so, rather than guess. Create it with `create_fragment()` or `create_full_parser()`. <Ev source="wp:wp-includes/html-api/class-wp-html-processor.php#L155-L6668" hash="e7bf076832115778001478af2e5e7ba98aad3108f57d884b7437b2923cb301a1"/>

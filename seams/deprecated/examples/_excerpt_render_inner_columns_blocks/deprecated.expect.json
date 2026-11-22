@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '',\n  1 => 'deprecated _excerpt_render_inner_columns_blocks since 5.8.0, use _excerpt_render_inner_blocks()',\n)",
+ "error": null
+}

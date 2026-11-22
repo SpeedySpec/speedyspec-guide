@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_add_global_groups"
+---
+
+## Behaviour
+
+Marks groups as global: on multisite their keys are shared by every site instead of being prefixed with the current site's id. <Ev scenario="global_groups_on_multisite" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

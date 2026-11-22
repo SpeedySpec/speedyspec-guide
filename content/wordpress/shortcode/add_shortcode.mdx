@@ -1,0 +1,13 @@
+---
+symbol: "function:add_shortcode"
+---
+
+## Behaviour
+
+Registers a callback for a tag, in `$shortcode_tags`, replacing any callback the tag had. The callback gets the attributes, the enclosed content (an empty string when there is none) and the tag, and its return value replaces the shortcode. <Ev source="wp:wp-includes/shortcodes.php#L65-L92" hash="005476ae46b978a28d9fd34d655eb3bb62ef5bfde2179077b3b3f73314a63401"/>
+
+An empty name, or one with a space or any of `& / < > [ ] =`, is refused and reported through `_doing_it_wrong()`. <Ev source="wp:wp-includes/shortcodes.php#L65-L92" hash="005476ae46b978a28d9fd34d655eb3bb62ef5bfde2179077b3b3f73314a63401"/>
+
+## Override
+
+Registering the tag again replaces its callback; `pre_do_shortcode_tag` and `do_shortcode_tag` change what one shortcode produces.

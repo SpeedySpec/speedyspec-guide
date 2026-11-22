@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 22,\n  1 => 'Guide label',\n  2 => 'tinymce.addI18n( \\'en\\',',\n)",
+ "error": null
+}

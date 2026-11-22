@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_update_term"
+---
+
+## Behaviour
+
+Updates a term's name, slug, description or parent; a slug used by another term or a parent that would make a loop is refused. edit_term, edited_term and related actions fire. <Ev source="wp:wp-includes/taxonomy.php#L3399-L3684" hash="be35ff01264bc47433b42cdad3a23fbd7c86778e7309bbade9126ebbea5f106d"/>
+
+## Override
+
+`wp_update_term_parent`, `wp_update_term_data`, `term_id_filter` filter it; `edit_terms`, `edited_terms`, `edit_term_taxonomy`, `edited_term_taxonomy`, `edit_term`, `edit_{$taxonomy}`, `edited_term`, `edited_{$taxonomy}`, `saved_term`, `saved_{$taxonomy}` fire.

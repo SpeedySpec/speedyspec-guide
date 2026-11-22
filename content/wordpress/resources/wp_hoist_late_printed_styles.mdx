@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_hoist_late_printed_styles"
+---
+
+## Behaviour
+
+While the page is buffered, captures the block, global and late styles printed after the head and moves them into it, at a placeholder after the block library's styles; not for embeds. <Ev source="wp:wp-includes/script-loader.php#L4084-L4381" hash="1392c7789c1bd4a67f0a5990d5e3858ff0d97c270cef5b303b8c6a3c1a064c19"/>
+
+## Override
+
+Not overridable.

@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^4",
+    "@speedyspec-guide/adapter-content-files": "workspace:*",
     "@speedyspec-guide/adapter-example-files": "workspace:*",
     "@speedyspec-guide/adapter-seam-files": "workspace:*",
     "@speedyspec-guide/app": "workspace:*",

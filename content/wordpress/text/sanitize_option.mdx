@@ -1,0 +1,11 @@
+---
+symbol: "function:sanitize_option"
+---
+
+## Behaviour
+
+Cleans a value for an option by its name: numbers for size and count options, `esc_html()` for the site title and tagline, URLs for `siteurl` and `home`, lists for keys, domains and ping sites, and so on. An invalid value is replaced with the option's current value and, in the admin, reported with `add_settings_error()`. <Ev source="wp:wp-includes/formatting.php#L4975-L5251" hash="553255c918ccb9a64277e472822a86ca9c8cf77462e007e38d235e7548b3eedb"/>
+
+## Override
+
+`sanitize_option_{$option}` filters the result for every option.

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_insert_term"
+---
+
+## Behaviour
+
+Adds a term to a taxonomy: name, slug (made unique), description and parent; a name already used at that level, an empty name, or a missing parent is refused. create_term, created_term and related actions fire; returns its IDs. <Ev source="wp:wp-includes/taxonomy.php#L2587-L2955" hash="3a6e87f41f7a5ba7280cfbb4cea49596e06f4890c4786a3cdeec1efb9617fdbb"/>
+
+## Override
+
+`pre_insert_term`, `wp_insert_term_data`, `wp_insert_term_duplicate_term_check`, `term_id_filter` filter it; `edit_terms`, `edited_terms`, `create_term`, `create_{$taxonomy}`, `created_term`, `created_{$taxonomy}`, `saved_term`, `saved_{$taxonomy}` fire.

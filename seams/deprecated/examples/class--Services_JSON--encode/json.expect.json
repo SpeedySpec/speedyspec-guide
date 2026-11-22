@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "deprecated_file_included class-json.php 5.3.0\n",
+ "return": "array (\n  0 => '{\"a\":1,\"b\":[true,null,\"x\\\\\"y\"]}',\n  1 => \n  (object) array(\n     'a' => 1,\n     'b' => \n    array (\n      0 => true,\n      1 => NULL,\n    ),\n  ),\n  2 => \n  array (\n    'a' => 1,\n  ),\n  3 => '\"\\\\u00e9\"',\n)",
+ "error": null
+}

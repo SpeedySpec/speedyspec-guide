@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    2000000000 => \n    array (\n      'guide_send' => \n      array (\n        '40cd750bba9870f18aada2478b24840a' => \n        array (\n          'schedule' => false,\n          'args' => \n          array (\n          ),\n        ),\n      ),\n    ),\n  ),\n  1 => \n  array (\n  ),\n)",
+ "error": null
+}

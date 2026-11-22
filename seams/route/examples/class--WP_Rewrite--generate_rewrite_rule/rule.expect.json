@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'guides/([^/]+)/?$' => 'index.php?guide=$1',\n  ),\n  1 => \n  array (\n    'guides/%unknown%/?$' => 'index.php?%unknown%$1',\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Ability::execute"
+---
+
+Runs the ability. It fires `wp_ability_invoked`, lets `wp_pre_execute_ability` answer, prepares the input and checks permission (`ability_invalid_permissions` otherwise). Then it fires `wp_before_execute_ability`, runs the callback, validates the output and fires `wp_after_execute_ability`. It returns the result or the first error. <Ev source="wp:wp-includes/abilities-api/class-wp-ability.php#L982-L1086" hash="df60e5a4bb07bef39a76ff53a6f9075a4d9cbe031a20e88abdf3ec6113383533"/>

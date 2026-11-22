@@ -18,13 +18,17 @@ export interface EvidenceIndex {
  * `WP_Hook`) and `WP_Hook::m` are methods; `new WP_Hook` is the class; `global:<op>` names the global in its first
  * argument.
  */
+/** The class of the values an area's scenarios keep (`$h`, `$c`), whose methods `$var->m` calls. */
+const KEPT_CLASS: Record<string, string> = { hooks: 'WP_Hook', 'object-cache': 'WP_Object_Cache' };
+
 export function stepSymbol(area: string, step: { call: string; args?: unknown[] }): string | null {
   const call = step.call;
   if (call.startsWith('global:')) return typeof step.args?.[0] === 'string' ? `global:${step.args[0]}` : null;
   if (call.startsWith('new ')) return `class:${call.slice(4).trim()}`;
   if (call.startsWith('$')) {
     const method = call.slice(call.indexOf('->') + 2);
-    return area === 'hooks' ? `method:WP_Hook::${method}` : null;
+    const kept = KEPT_CLASS[area];
+    return kept ? `method:${kept}::${method}` : null;
   }
   if (call.includes('::')) return `method:${call}`;
   return `function:${call}`;

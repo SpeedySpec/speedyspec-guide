@@ -1,0 +1,11 @@
+---
+symbol: "function:rest_cookie_check_errors"
+---
+
+## Behaviour
+
+Hooked to rest_authentication_errors: a cookie-authenticated request needs a valid wp_rest nonce, else the user is logged out for it; an invalid nonce is a 403 error. <Ev source="wp:wp-includes/rest-api.php#L1246-L1289" hash="6d98cf30e97b3f2f23f774663df7587572e6cff4312132d34bc5919a00aa7d7f"/>
+
+## Override
+
+Not overridable.

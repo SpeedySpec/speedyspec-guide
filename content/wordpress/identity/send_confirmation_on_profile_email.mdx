@@ -1,0 +1,11 @@
+---
+symbol: "function:send_confirmation_on_profile_email"
+---
+
+## Behaviour
+
+When a user changes their email on the profile screen, stores the new address as pending (_new_email) and emails it a confirmation link instead of changing it. <Ev source="wp:wp-includes/user.php#L3898-L4006" hash="a8174e2b254a752dc8fdb9d82d5fae082a34183e4be0722171b3776d82d33574"/>
+
+## Override
+
+`new_user_email_content` filters it.

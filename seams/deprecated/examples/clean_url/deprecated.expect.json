@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'https://example.org/a?b=1&#038;c=2',\n  1 => 'deprecated clean_url since 3.0.0, use esc_url()',\n)",
+ "error": null
+}

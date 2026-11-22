@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "logged out 1\n",
+ "return": "0",
+ "error": null
+}

@@ -1,0 +1,5 @@
+---
+symbol: "class:POP3"
+---
+
+WordPress's own POP3 client, from SquirrelMail, used to fetch posts sent by email. It is separate from PHPMailer's. Its `$FP` starts as an empty string rather than unset, so the commands' `isset()` checks treat it as connected: a command sent before `connect()` reaches `fwrite()` and throws a `TypeError`. <Ev source="wp:wp-includes/class-pop3.php#L19-L665" hash="4722e5b0169bfc856e68ae979453a149f7e96d396aea5fe53efc913a2b9754cf"/>

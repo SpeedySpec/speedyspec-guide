@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "doing_it_wrong_run register_meta\n",
+ "return": "array (\n  0 => true,\n  1 => \n  array (\n    0 => 'type',\n    1 => 'label',\n    2 => 'description',\n    3 => 'single',\n    4 => 'sanitize_callback',\n    5 => 'auth_callback',\n    6 => 'show_in_rest',\n    7 => 'revisions_enabled',\n    8 => 'default',\n    9 => 'extra',\n  ),\n  2 => 3,\n  3 => false,\n)",
+ "error": null
+}

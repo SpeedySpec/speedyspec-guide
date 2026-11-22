@@ -1,0 +1,7 @@
+---
+symbol: "global:wp_kses_operating_mode"
+---
+
+## Behaviour
+
+New in WordPress 7.2 (trunk): `legacy` or `html-api`, which kses parser is running. `wp_sanitize_html_kses()` sets it to `html-api` while it runs the `pre_kses` filters, so filters written for the legacy parser, such as `wp_pre_kses_less_than()`, can skip themselves. <Ev source="wp:wp-includes/kses.php#L1033-L2051" hash="ae5d3de75e880e821a84018485b60158b9ceddf87cea3d86891caddbfb94ae80"/>

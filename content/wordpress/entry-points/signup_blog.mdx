@@ -1,0 +1,11 @@
+---
+symbol: "function:signup_blog"
+---
+
+## Behaviour
+
+Prints the site step of a signup, carrying the username and email in hidden fields; the site name defaults to the username. It is declared in `wp-signup.php`. <Ev source="wp:wp-signup.php#L746-L798" hash="8474e4dda779bcc158cd15dec8078bce47a280e9170cdd9861d198b4d317442d"/>
+
+## Override
+
+`signup_blog_init` changes the defaults; `signup_hidden_fields` fires in the form.

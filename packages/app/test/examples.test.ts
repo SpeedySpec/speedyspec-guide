@@ -3,7 +3,7 @@ import type { ExampleRunner, ExampleSource } from '@speedyspec-guide/contracts';
 import type { Example, GuideSymbol, Seam } from '@speedyspec-guide/domain';
 import { runExamples, runtimeApi } from '../src/examples.ts';
 
-const seam: Seam = { id: 'hooks', name: 'Hooks', job: 'j', ported: true, files: [], symbols: [], exclude: [], roles: {}, edges: [], wordpress: ['wp-includes/plugin.php'] };
+const seam: Seam = { id: 'hooks', name: 'Hooks', job: 'j', ported: true, files: [], symbols: [], exclude: [], elsewhere: [], roles: {}, edges: [], wordpress: ['wp-includes/plugin.php'] };
 const example: Example = { id: 'hooks/add_filter/a', seam: 'hooks', symbol: 'add_filter', name: 'a', file: '/x/a.php', sides: ['wordpress', 'runtime'], multisite: false, expect: { output: '', return: '20', error: null } };
 const source: ExampleSource = { all: async () => ({ examples: [example], problems: [{ where: '/x/b.php', message: 'has no b.expect.json' }] }) };
 
@@ -54,7 +54,7 @@ describe('runExamples', () => {
 });
 
 describe('a seam with a setup file', () => {
-  const options: Seam = { ...seam, id: 'options', ported: false, setup: '/seams/options/setup.php' };
+  const options: Seam = { ...seam, id: 'options', ported: false, setup: '/seams/options/setup.php', mysql: true };
   const ms: Example = { ...example, id: 'options/get_option/ms', seam: 'options', symbol: 'get_option', sides: ['wordpress'], multisite: true };
   const msSource: ExampleSource = { all: async () => ({ examples: [ms], problems: [] }) };
 
@@ -68,6 +68,13 @@ describe('a seam with a setup file', () => {
     const { runner, calls } = fakeRunner({ wordpress: '20' });
     await runExamples(msSource, runner, [options], '/wp', 'mysql://u:p@h:1/d');
     expect(calls[0]?.examples[0]).toMatchObject({ setup: '/seams/options/setup.php', multisite: true });
+  });
+
+  test('a_setup_file_without_mysql_needs_no_mysql_url', async () => {
+    const { runner, calls } = fakeRunner({ wordpress: '20' });
+    const cache: Seam = { ...options, id: 'object-cache', mysql: false };
+    await runExamples({ all: async () => ({ examples: [{ ...ms, seam: 'object-cache', multisite: false }], problems: [] }) }, runner, [cache], '/wp', null);
+    expect(calls[0]?.examples[0]?.setup).toBe('/seams/options/setup.php');
   });
 
   test('a_run_without_such_a_seam_needs_no_mysql_url', async () => {

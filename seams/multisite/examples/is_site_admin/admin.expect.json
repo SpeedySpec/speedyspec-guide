@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "is_site_admin is deprecated since 3.0.0 for is_super_admin()\nis_site_admin is deprecated since 3.0.0 for is_super_admin()\n",
+ "return": "array (\n  0 => true,\n  1 => true,\n)",
+ "error": null
+}

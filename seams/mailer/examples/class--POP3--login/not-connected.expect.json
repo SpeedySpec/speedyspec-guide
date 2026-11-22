@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": null,
+ "error": "TypeError: fwrite(): Argument #1 ($stream) must be of type resource, string given"
+}

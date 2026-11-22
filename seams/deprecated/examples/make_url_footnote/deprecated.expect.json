@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Some content.\n',\n  1 => 'deprecated make_url_footnote since 2.9.0',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'system.multicall',\n    1 => 'system.listMethods',\n    2 => 'system.getCapabilities',\n    3 => 'demo.self',\n    4 => 'demo.missing',\n    5 => 'demo.one',\n    6 => 'demo.add',\n  ),\n  1 => \n  array (\n    0 => 'xmlrpc',\n    1 => 'faults_interop',\n    2 => 'system.multicall',\n  ),\n  2 => true,\n)",
+ "error": null
+}

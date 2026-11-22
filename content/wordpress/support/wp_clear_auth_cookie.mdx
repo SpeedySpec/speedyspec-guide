@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_clear_auth_cookie"
+---
+
+## Behaviour
+
+Logs out by expiring every login cookie, fired as clear_auth_cookie; send_auth_cookies can stop the sending. <Ev source="wp:wp-includes/pluggable.php#L1214-L1253" hash="7bf252774c2684919745eff10e9b5df62c46dc0447e9e324e25cb46291426d2d"/>
+
+## Override
+
+`send_auth_cookies` filters it; `clear_auth_cookie` fires.

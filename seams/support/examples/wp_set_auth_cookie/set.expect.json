@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "logged_in cookie for user 1, 14 days\n",
+ "return": "1",
+ "error": null
+}

@@ -1,0 +1,7 @@
+---
+symbol: "action:upgrader_scheduled_cleanup"
+---
+
+## Behaviour
+
+The cron event scheduled two hours after a plugin or theme zip is uploaded; WordPress attaches `wp_delete_attachment()`, which deletes it. <Ev source="wp:wp-includes/default-filters.php#L474-L474" hash="668ec6c55dde1dafac4b844b8ee7e9b8d689adac0c8f614404514aa90de59ae1"/>

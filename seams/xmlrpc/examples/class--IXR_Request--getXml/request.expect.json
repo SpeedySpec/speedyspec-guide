@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<?xml version=\"1.0\"?>\n<methodCall>\n<methodName>demo.add</methodName>\n<params>\n<param><value><int>2</int></value></param>\n<param><value><string>x</string></value></param>\n</params></methodCall>',\n  1 => 192,\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'deprecated is_taxonomy since 3.0.0, use taxonomy_exists()',\n)",
+ "error": null
+}

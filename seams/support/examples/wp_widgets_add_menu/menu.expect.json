@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  9 => \n  array (\n    0 => 'Widgets',\n    1 => 'edit_theme_options',\n    2 => 'widgets.php',\n  ),\n)",
+ "error": null
+}

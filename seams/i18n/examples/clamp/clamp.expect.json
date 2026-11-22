@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 3,\n  1 => 0,\n  2 => 2.5,\n  3 => 'clamp(): Argument #2 ($min) must be smaller than or equal to argument #3 ($max)',\n)",
+ "error": null
+}

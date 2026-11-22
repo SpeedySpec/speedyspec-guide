@@ -1,0 +1,11 @@
+---
+symbol: "function:redirect_guess_404_permalink"
+---
+
+## Behaviour
+
+On a 404 with a post name, guesses the post: one of a viewable type and status whose name starts with the requested one (or equals it, when strict), within the requested date. Returns its permalink, comment feed or page, or `false`. <Ev source="wp:wp-includes/canonical.php#L936-L1051" hash="30782eca355d3c1abb76ac2284c5b41be82a0c37255c3b9ae4b42b5648cf709e"/>
+
+## Override
+
+`do_redirect_guess_404_permalink` can turn it off, `pre_redirect_guess_404_permalink` answer instead, and `strict_redirect_guess_404_permalink` make the match exact.

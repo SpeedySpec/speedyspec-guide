@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'calm',\n  1 => \n  array (\n    'footnotes' => '',\n    'guide_mood' => 'calm',\n  ),\n  2 => \n  array (\n    0 => 'post',\n    1 => 'post',\n  ),\n)",
+ "error": null
+}

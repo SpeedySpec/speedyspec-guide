@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "waits for wp_loaded: true\n",
+ "return": "'saving 72 rules'",
+ "error": null
+}

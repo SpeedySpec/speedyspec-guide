@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'index.php?name=a+b&page=2&x='",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:esc_js"
+---
+
+## Behaviour
+
+Escapes text for a string in inline JavaScript: invalid UTF-8 is dropped, HTML special characters become entities, quotes are slashed and newlines become `\n`. <Ev source="wp:wp-includes/formatting.php#L4770-L4789" hash="bcb0f14cea86fd57a6a7b5369b111411832cf3d86c411cd25824d5379bc01236"/>
+
+## Override
+
+`js_escape` filters the result.

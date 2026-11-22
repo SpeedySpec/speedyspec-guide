@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_utf8_decode_fallback"
+---
+
+## Behaviour
+
+Converts UTF-8 to ISO-8859-1 without mbstring, as PHP's old `utf8_decode()` did; characters outside Latin-1 become `?`. <Ev source="wp:wp-includes/compat-utf8.php#L487-L558" hash="e47e539af6ee022cd401605cedc5f177eba1eff0d7162bcb2a33ec781adc40b1"/>
+
+## Override
+
+Not overridable.

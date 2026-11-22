@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_flush_runtime"
+---
+
+## Behaviour
+
+Empties the in-memory cache. The built-in cache has no other kind, so this is `wp_cache_flush()`. <Ev scenario="flush_runtime" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

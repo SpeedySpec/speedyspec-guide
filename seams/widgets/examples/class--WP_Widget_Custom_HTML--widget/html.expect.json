@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<section class=\"widget_text widget_custom_html\"><h2>Code</h2><div class=\"textwidget custom-html-widget\"><em>Raw</em> HTML</div></section>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated automatic_feed_links since 3.0.0, use add_theme_support( \\'automatic-feed-links\\' )',\n)",
+ "error": null
+}

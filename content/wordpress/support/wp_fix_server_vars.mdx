@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_fix_server_vars"
+---
+
+## Behaviour
+
+Fills in the server variables some servers leave out: REQUEST_URI from PATH_INFO and QUERY_STRING (IIS), SCRIPT_FILENAME, PHP_SELF from REQUEST_URI, and drops HTTPS when it is empty or off. <Ev source="wp:wp-includes/load.php#L34-L95" hash="62eb3d274f77d6959c3c5ff68953a0d31e002666ffcf11f06c93f91d391cff7a"/>
+
+## Override
+
+Not overridable.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'invalid_key',\n  1 => 'invalid_key',\n  2 => 'expired_key',\n)",
+ "error": null
+}

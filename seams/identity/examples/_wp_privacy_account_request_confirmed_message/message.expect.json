@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<p class=\"success\">Thanks for confirming your export request.</p><p>The site administrator has been notified. You will receive a link to download your export via email when they fulfill your request.</p>',\n  1 => '<p class=\"success\">Action has been confirmed.</p><p>The site administrator has been notified and will fulfill your request as soon as possible.</p>',\n)",
+ "error": null
+}

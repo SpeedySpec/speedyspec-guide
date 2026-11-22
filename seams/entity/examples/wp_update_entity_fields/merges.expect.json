@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Book number',\n  1 => \n  array (\n    'registeredBy' => 'a',\n    'updatedBy' => \n    array (\n      0 => 'b',\n    ),\n  ),\n)",
+ "error": null
+}

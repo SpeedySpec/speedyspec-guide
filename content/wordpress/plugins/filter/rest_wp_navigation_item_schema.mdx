@@ -1,0 +1,7 @@
+---
+symbol: "filter:rest_wp_navigation_item_schema"
+---
+
+## Behaviour
+
+Fired by the REST posts controller (as `rest_{$post_type}_item_schema`) for Navigation posts; WordPress attaches `WP_Navigation_Fallback::update_wp_navigation_post_schema()`, which adds the `embed` context. <Ev source="wp:wp-includes/default-filters.php#L804-L804" hash="2289465c2487444022020a7ef164150c2a310b970aaf0e4cf26bd9962bfa8f9b"/>

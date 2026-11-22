@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_is_site_protected_by_basic_auth"
+---
+
+## Behaviour
+
+Whether the site sits behind HTTP Basic authentication in a context (login, admin, front), seen from the request's PHP_AUTH_USER or a 401; filtered by wp_is_site_protected_by_basic_auth. <Ev source="wp:wp-includes/load.php#L2067-L2091" hash="dcc4c5503c418f083812a2cf29f31aeaf813d5be30065c915f502963c132de1a"/>
+
+## Override
+
+`wp_is_site_protected_by_basic_auth` filters it.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'fortnightly' => \n  array (\n    'interval' => 1209600,\n    'display' => 'Fortnightly',\n  ),\n  'daily' => \n  array (\n    'interval' => 86400,\n    'display' => 'Once Daily',\n  ),\n  'hourly' => \n  array (\n    'interval' => 3600,\n    'display' => 'Once Hourly',\n  ),\n  'twicedaily' => \n  array (\n    'interval' => 43200,\n    'display' => 'Twice Daily',\n  ),\n  'weekly' => \n  array (\n    'interval' => 604800,\n    'display' => 'Once Weekly',\n  ),\n)",
+ "error": null
+}

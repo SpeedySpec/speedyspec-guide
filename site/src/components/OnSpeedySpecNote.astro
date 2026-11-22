@@ -1,0 +1,13 @@
+---
+// How a symbol a guide uses fares on SpeedySpec, as the reference's verdict says.
+import VerdictPill from './VerdictPill.astro';
+import { loadGuideData } from '../model/data.ts';
+import { speedyspecVerdict } from '../model/verdict.ts';
+
+interface Props {
+  id: string;
+}
+const { id } = Astro.props;
+const { verdict } = speedyspecVerdict(id, await loadGuideData());
+---
+<span class="speedyspec-note">On SpeedySpec: <span class="verdict"><VerdictPill verdict={verdict} /></span></span>

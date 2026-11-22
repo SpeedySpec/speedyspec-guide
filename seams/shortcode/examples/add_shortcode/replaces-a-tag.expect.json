@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'Say: Hello, Ada and Hello, you'",
+ "error": null
+}

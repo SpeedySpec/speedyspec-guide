@@ -1,0 +1,11 @@
+---
+symbol: "function:sanitize_user"
+---
+
+## Behaviour
+
+Makes a user name safe: tags and entities removed and accents stripped. With `$strict`, only letters, digits, spaces and `_ . - @` are kept. <Ev source="wp:wp-includes/formatting.php#L2152-L2180" hash="351fd52f430fab3100e342f0d33b3db13c016cd18bbe77e40a047e4cfa647dc5"/>
+
+## Override
+
+`sanitize_user` filters the result.

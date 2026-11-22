@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "wp_update_nav_menu 1\n",
+ "return": "array (\n  0 => true,\n  1 => 'Header',\n  2 => 'Site header',\n  3 => 'menu_exists',\n)",
+ "error": null
+}

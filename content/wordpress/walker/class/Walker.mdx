@@ -1,0 +1,5 @@
+---
+symbol: "class:Walker"
+---
+
+The base class for rendering a tree of items, such as pages, categories, comments or menu items, as nested HTML. A subclass names the parent and ID fields in `$db_fields` and writes the markup in `start_lvl()`, `end_lvl()`, `start_el()` and `end_el()`; `walk()` and `paged_walk()` turn a flat list into that tree. <Ev source="wp:wp-includes/class-wp-walker.php#L14-L467" hash="7b805839b1dd4c1eb0dda13b37be21aedbbbc3f9fa4bf56be72e1563168050aa"/>

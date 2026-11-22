@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "' <a href=\"https://example.com\" rel=\"nofollow\">https://example.com</a>.'",
+ "error": null
+}

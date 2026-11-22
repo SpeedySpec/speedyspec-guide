@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_map_sidebars_widgets"
+---
+
+## Behaviour
+
+Maps widgets onto the registered sidebars: sidebars of the same ID keep theirs, one old and one new sidebar pair up, otherwise common names are matched (sidebar/primary/main/right, second/left, sidebar-2/footer/bottom, header/top), and the rest become inactive. Inactive and orphaned widgets stay inactive, and the theme's saved widgets from before are restored where they fit. <Ev source="wp:wp-includes/widgets.php#L1401-L1572" hash="6cfe2b3d271a37b7d573c9ac5d650f0b0bb6f5d12b496d3196c7524aa8ddfb4f"/>
+
+## Override
+
+Not overridable.

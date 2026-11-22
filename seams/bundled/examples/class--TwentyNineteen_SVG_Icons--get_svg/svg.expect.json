@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<svg class=\"svg-icon\" width=\"12\" height=\"12\" aria-hidden=\"true\" role=\"img\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">\u2026</svg>',\n  1 => NULL,\n  2 => '<svg class=\"svg-icon\" width=\"16\" height=\"16\" aria-hidden=\"true\" role=\"img\" focusable=\"false\" viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\u2026</svg>',\n)",
+ "error": null
+}

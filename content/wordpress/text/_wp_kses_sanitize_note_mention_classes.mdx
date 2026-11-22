@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_kses_sanitize_note_mention_classes"
+---
+
+## Behaviour
+
+When comments get the strict `wp_filter_kses()` filter, it keeps only the `wp-note-mention` and `user-<id>` classes on spans, so a mention can't bring other classes. <Ev source="wp:wp-includes/kses.php#L2276-L2296" hash="ba7a5accb212c989d47eba45f0f5f849bcf1a4bb3c7359abd591d0a9934b234a"/>
+
+## Override
+
+Not overridable.

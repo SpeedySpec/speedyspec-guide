@@ -1,0 +1,11 @@
+---
+symbol: "function:allow_subdirectory_install"
+---
+
+## Behaviour
+
+Whether the site can become a subdirectory network: always when WP_ALLOW_MULTISITE says so or the site is new (under a month old, no published posts). <Ev source="wp:wp-admin/includes/network.php#L54-L79" hash="eda88dcaca5ae7bf65c11196472a4fbd4e850a64c9a7d2c4c344d91a8975b187"/>
+
+## Override
+
+`allow_subdirectory_install` filters it.

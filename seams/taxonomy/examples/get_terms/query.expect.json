@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    1 => 'Local',\n    2 => 'News',\n  ),\n  1 => \n  array (\n    0 => 'Empty',\n    1 => 'Local',\n    2 => 'News',\n  ),\n  2 => '3',\n  3 => 'invalid_taxonomy',\n)",
+ "error": null
+}

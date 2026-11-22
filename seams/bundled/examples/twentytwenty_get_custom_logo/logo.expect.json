@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<img width=\"200\" height=\"100\" style=\"height: 100px;\" src=\"logo.png\">'",
+ "error": null
+}

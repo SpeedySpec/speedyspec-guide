@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'News',\n  1 => 'filtered',\n  2 => 'news',\n  3 => NULL,\n  4 => NULL,\n  5 => 'invalid_taxonomy',\n)",
+ "error": null
+}

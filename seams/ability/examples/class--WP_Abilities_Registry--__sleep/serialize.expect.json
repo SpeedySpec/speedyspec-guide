@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "WP_Abilities_Registry should never be serialized.\nWP_Abilities_Registry should never be unserialized.\n",
+ "return": "NULL",
+ "error": null
+}

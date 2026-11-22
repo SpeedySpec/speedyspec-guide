@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<p>Some <b>content</b>.</p>',\n  1 => 'deprecated wp_kses_js_entities since 4.7.0',\n)",
+ "error": null
+}

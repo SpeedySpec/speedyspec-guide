@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'a &lt; b <![CDATA[ <raw> ]]> &amp; c'",
+ "error": null
+}

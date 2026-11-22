@@ -1,6 +1,7 @@
-import type { ContentPages, CrateSource, EvidenceSource, ExampleRunner, ExampleSource, GeneratedStore, ReleaseHistory, SeamRepository, SymbolSource } from '@speedyspec-guide/contracts';
+import type { ContentPages, CrateSource, EvidenceSource, ExampleRunner, ExampleSource, GeneratedStore, GuideSource, ReleaseHistory, SeamRepository, SymbolSource } from '@speedyspec-guide/contracts';
 import type { Assignment, GuideSymbol, Inventory } from '@speedyspec-guide/domain';
 import { assign } from './assign.ts';
+import { withoutElsewhere } from './elsewhere.ts';
 import { loadOrder } from './load-order.ts';
 import { computeCoverage } from './coverage.ts';
 import { type ConversionFile, conversionStates } from './conversion.ts';
@@ -28,6 +29,8 @@ export interface PipelineDeps {
   wordpressFile(rel: string): Promise<string>;
   evidence(): Promise<EvidenceSource>;
   content: ContentPages;
+  /** The developer guides; none when absent. */
+  guides?: GuideSource;
   crates: CrateSource;
   examples: ExampleSource;
   /** Null when the runner binary is not built. */
@@ -70,7 +73,9 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
   }
   switch (stage) {
     case 'extract': {
-      await store.write('inventory-wp', await deps.source.extract(await deps.wordpressDir(), 'wp', deps.wordpressVersion));
+      // APIs documented elsewhere (seam.yaml `elsewhere`) leave the inventory, so no rule asks for their pages.
+      const extracted = await deps.source.extract(await deps.wordpressDir(), 'wp', deps.wordpressVersion);
+      await store.write('inventory-wp', withoutElsewhere(extracted, await deps.seams.all()));
       break;
     }
     case 'assign':
@@ -145,6 +150,7 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
         evidenceIndex: await evidenceIndexes(deps, store),
         runtimeIds: (await store.read<GuideSymbol[]>('inventory-runtime'))?.map((s) => s.id) ?? null,
         crossSeam: (await store.read<{ crossSeam: ValidationContext['crossSeam'] }>('graph'))?.crossSeam ?? [],
+        guides: (await deps.guides?.guides()) ?? [],
         runtimeTags: opts.offline
           ? ((await store.read<RuntimeHistoryFile>('speedyspec-history'))?.versions ?? [])
           : await deps.runtimeTags(opts.offline),

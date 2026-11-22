@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'a' => '1',\n  'b' => '2',\n  'c' => '3',\n  0 => 'loose',\n  1 => 'quoted value',\n)",
+ "error": null
+}

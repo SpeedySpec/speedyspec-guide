@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<section class=\"widget_categories\"><h2>Topics</h2> <ul> <li class=\"cat-item cat-item-1\"><a href=\"http://example.org/?cat=1\">News</a> (1) </li> </ul> </section>'",
+ "error": null
+}

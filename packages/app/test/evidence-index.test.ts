@@ -35,6 +35,13 @@ describe('buildEvidenceIndex', () => {
   });
 });
 
+describe('a kept object in the object cache area', () => {
+  test('is_a_WP_Object_Cache', () => {
+    const index = buildEvidenceIndex('object-cache', { scenarios: [{ name: 'own', steps: [{ call: '$c->get' }] }], breaks: [] });
+    expect(index['method:WP_Object_Cache::get']?.scenarios).toEqual(['own']);
+  });
+});
+
 describe('a scenario step that hooks a name', () => {
   const hooks = [
     { id: 'filter:pre_option_{$option}', name: 'pre_option_{$option}' },
@@ -86,7 +93,7 @@ describe('a recorder that never fired', () => {
 });
 
 describe('CitesItsScenario', () => {
-  const seams: Seam[] = [{ id: 'hooks', name: 'Hooks', job: 'j', ported: true, files: [], symbols: [], exclude: [], roles: {}, edges: [], wordpress: [] }];
+  const seams: Seam[] = [{ id: 'hooks', name: 'Hooks', job: 'j', ported: true, files: [], symbols: [], exclude: [], elsewhere: [], roles: {}, edges: [], wordpress: [] }];
   const assignment: Assignment = { seamOf: { 'function:add_filter': 'hooks', 'class:WP_Hook': 'hooks', 'method:WP_Hook::apply_filters': 'hooks' }, unassigned: [], conflicts: [] };
   const page = (symbol: string): ContentPage => ({ page: `speedyspec/hooks/${symbol}.mdx`, section: 'speedyspec', seam: 'hooks', symbol });
   const ctx = (symbol: string, citation: object) =>

@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "\t<h2>\n\tgrace is your new username\t</h2>\n\t<p>But, before you can start using your new username, <strong>you must activate it</strong>.</p>\n\t<p>\n\tCheck your inbox at <strong>grace@example.org</strong> and click on the given link.\t</p>\n\t<p>If you do not activate your username within two days, you will have to sign up again.</p>\n\t",
+ "return": "array (\n  0 => true,\n  1 => \n  array (\n    'user_login' => 'grace',\n    'user_email' => 'grace@example.org',\n    'active' => '0',\n  ),\n)",
+ "error": null
+}

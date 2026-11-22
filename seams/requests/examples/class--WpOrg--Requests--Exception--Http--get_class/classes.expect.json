@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => '\\\\WpOrg\\\\Requests\\\\Exception\\\\Http\\\\Status304',\n    1 => '\\\\WpOrg\\\\Requests\\\\Exception\\\\Http\\\\Status418',\n    2 => '\\\\WpOrg\\\\Requests\\\\Exception\\\\Http\\\\Status503',\n    3 => 'WpOrg\\\\Requests\\\\Exception\\\\Http\\\\StatusUnknown',\n  ),\n  1 => 418,\n  2 => 'I\\'m A Teapot',\n  3 => '418 I\\'m A Teapot',\n  4 => 0,\n  5 => 'Unknown',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 43,\n  1 => \n  array (\n    0 => 'expiration',\n    1 => 'login',\n  ),\n  2 => true,\n  3 => false,\n  4 => false,\n  5 => 1,\n  6 => 'WP_User_Meta_Session_Tokens',\n)",
+ "error": null
+}

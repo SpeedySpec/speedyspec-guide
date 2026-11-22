@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '> wp-logo',\n  1 => 'wp-logo-external > wporg https://wordpress.org/',\n  2 => 'wp-logo-external > documentation https://wordpress.org/documentation/',\n  3 => 'wp-logo-external > learn https://learn.wordpress.org/',\n  4 => 'wp-logo-external > support-forums https://wordpress.org/support/forums/',\n  5 => 'wp-logo-external > feedback https://wordpress.org/support/forum/requests-and-feedback',\n)",
+ "error": null
+}

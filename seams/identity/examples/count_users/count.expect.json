@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'total_users' => 4,\n    'avail_roles' => \n    array (\n      'administrator' => 1,\n      'editor' => 1,\n      'author' => 2,\n      'none' => 0,\n    ),\n  ),\n  1 => 4,\n)",
+ "error": null
+}

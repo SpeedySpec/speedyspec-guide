@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'id',\n  1 => 'abc',\n  2 => '/docs',\n  3 => '.example.org',\n  4 => 4070908800,\n  5 => true,\n  6 => false,\n  7 => false,\n  8 => 'id=[abc]',\n  9 => 'Cookie: id=[abc]',\n  10 => \n  array (\n    'expires' => 4070908800,\n    'path' => '/docs',\n    'domain' => '.example.org',\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => 'deprecated debug_fopen since 3.4.0, use error_log()',\n)",
+ "error": null
+}

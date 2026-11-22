@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "admin_bar_init\n",
+ "return": "array (\n  0 => 'http://example.org/',\n  1 => 10,\n)",
+ "error": null
+}

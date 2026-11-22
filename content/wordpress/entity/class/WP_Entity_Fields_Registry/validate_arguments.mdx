@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Entity_Fields_Registry::validate_arguments"
+---
+
+Checks a registration's arguments: it must be running during `wp_entity_fields_api_init`; the origin, kind and name must be non-empty strings; the fields a non-empty list; and the script module, if given, a non-empty string. It reports the first problem through `_doing_it_wrong()`. <Ev source="wp:wp-includes/class-wp-entity-fields-registry.php#L682-L719" hash="31d83e51d553766be7e7a5c8973aa1e8dfd6cd8d0c61aeb1b74aafb0ceeb4404"/>

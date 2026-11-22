@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<methodResponse>\n  <params>\n    <param>\n      <value>\n      <int>5</int>\n      </value>\n    </param>\n  </params>\n</methodResponse>\n",
+ "return": null,
+ "error": "fatal: PHP code called exit(0)"
+}

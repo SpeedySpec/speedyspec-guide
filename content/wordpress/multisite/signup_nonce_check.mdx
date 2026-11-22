@@ -1,0 +1,11 @@
+---
+symbol: "function:signup_nonce_check"
+---
+
+## Behaviour
+
+On wp-signup.php, adds an invalid_nonce error to a sign-up whose form nonce doesn't match its id; elsewhere, or with a good nonce, the result passes unchanged. <Ev source="wp:wp-includes/ms-functions.php#L2194-L2204" hash="062136cc5524527dfc02d09887e605f70122c455fa3a39fef2b78dddabd5fccb"/>
+
+## Override
+
+Not overridable.

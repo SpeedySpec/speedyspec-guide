@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'l must contain at most 2 items.',\n  2 => 'l has duplicate items.',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => '/wp-admin/',\n    1 => '/wp-includes/css/',\n  ),\n  1 => true,\n  2 => \n  array (\n    0 => 'dashicons',\n    1 => 'common',\n    2 => 'forms',\n    3 => 'admin-menu',\n    4 => 'dashboard',\n    5 => 'list-tables',\n    6 => 'edit',\n    7 => 'revisions',\n    8 => 'media',\n    9 => 'themes',\n    10 => 'about',\n    11 => 'nav-menus',\n    12 => 'widgets',\n    13 => 'site-icon',\n    14 => 'l10n',\n    15 => 'wp-base-styles',\n    16 => 'wp-tooltip',\n  ),\n)",
+ "error": null
+}

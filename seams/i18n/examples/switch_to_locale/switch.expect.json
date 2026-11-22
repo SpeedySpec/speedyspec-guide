@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "change_locale fr_FR\nswitch_locale fr_FR\nchange_locale en_US\nrestore_previous_locale en_US fr_FR\n",
+ "return": "array (\n  0 => true,\n  1 => 'Bonjour',\n  2 => true,\n  3 => false,\n  4 => false,\n  5 => 'en_US',\n  6 => false,\n  7 => false,\n  8 => false,\n)",
+ "error": null
+}

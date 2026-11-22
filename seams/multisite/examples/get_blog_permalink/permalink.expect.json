@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'http://example.org/second/2026/03/01/over-there/'",
+ "error": null
+}

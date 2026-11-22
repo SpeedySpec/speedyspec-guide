@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "wp_get_sites is deprecated since 4.6.0 for get_sites()\n",
+ "return": "array (\n  0 => '/',\n  1 => '/second/',\n)",
+ "error": null
+}

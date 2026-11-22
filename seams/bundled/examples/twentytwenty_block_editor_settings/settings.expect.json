@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'accent' => '#cd2653',\n    'primary' => '#000000',\n    'secondary' => '#6d6d6d',\n    'subtle-background' => '#dcd7ca',\n    'background' => '#f5efe0',\n  ),\n  1 => \n  array (\n    'small' => 18,\n    'normal' => 21,\n    'large' => 26.25,\n    'larger' => 32,\n  ),\n)",
+ "error": null
+}

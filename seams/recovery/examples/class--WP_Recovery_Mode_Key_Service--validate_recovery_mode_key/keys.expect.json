@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "generate_recovery_mode_key guide_token, key of 22\ngenerate_recovery_mode_key wrong, key of 22\ngenerate_recovery_mode_key late, key of 22\n",
+ "return": "array (\n  0 => 22,\n  1 => \n  array (\n    0 => 'hashed_key',\n    1 => 'created_at',\n  ),\n  2 => true,\n  3 => 'token_not_found',\n  4 => 'hash_mismatch',\n  5 => 'key_expired',\n  6 => \n  array (\n  ),\n)",
+ "error": null
+}

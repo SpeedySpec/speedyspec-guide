@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'items',\n  1 => 'deprecated _nc since 2.9.0, use _nx()',\n)",
+ "error": null
+}

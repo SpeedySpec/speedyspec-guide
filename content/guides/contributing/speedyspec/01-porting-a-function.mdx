@@ -1,0 +1,105 @@
+---
+title: Porting a function to SpeedySpec
+summary: How the Options seam is built in Rust (domain, ports, adapters), and porting delete_option() against its checked examples.
+---
+
+SpeedySpec runs WordPress's PHP API on native Rust code, one seam at a time. Porting a function means writing Rust
+that does what the PHP function does, observably: the same return values, the same hooks fired in the same order with
+the same arguments, the same database statements. This guide shows how the Options seam is built in
+`speedyspec-server`, then follows one function, <Sym id="function:delete_option" />, from its checked examples to its
+Rust. Read [Changing a WordPress function](/guides/contributing/wordpress/changing-a-wordpress-function/) first: a
+port starts by reading the PHP the same way.
+
+The seam's [architecture page](/speedyspec/architecture/options/) and its
+[porting page](/speedyspec/porting/options/) are where the seam's design and its differences for plugin authors are
+written up. The source quoted here is the `speedyspec-server` commit this site documents.
+
+## How a seam is built
+
+Every ported seam follows the same shape, from the design principles the project holds to: Clean Architecture's rule
+that dependencies point inward, and Hexagonal Architecture's ports and adapters. For Options the crates are:
+
+- **`speedyspec-wp-options`: the domain, its ports and the API.** The domain is plain Rust that knows nothing about
+  storage. An option is a name, a serialized value and an autoload flag, and it never saves or loads itself.
+  <Ev source="ss:crates/speedyspec-wp-options/src/entity.rs#L7-L13" hash="db7307789a30e46eb40c22dd85aca3a41c07bf4978c717adafba325f651c8b04"/> The ports are traits for everything
+  the domain needs from outside. The main one is `OptionRepository` (the Repository pattern), with one method per
+  database call `option.php` makes, so a port issues the same statements WordPress does.
+  <Ev source="ss:crates/speedyspec-wp-options/src/ports.rs#L9-L11" hash="22ceb81ee4c6d40f2fa6726e44d18709dabafdcb254098282e4cd3db37be51cf"/> `OptionsApi` implements WordPress's
+  functions over those ports, one method per function.
+- **`speedyspec-wp-options-sql`: the database adapter.** It implements `OptionRepository` over `wp_options` through
+  the `wpdb` port, so WordPress's `query` filter still fires and `$wpdb->num_queries` still counts, and it maps rows
+  to the entity with a Data Mapper.
+- **`speedyspec-wp-options-memory`: an in-memory adapter** for tests. It answers as MySQL does, affected-row counts
+  included, and passes the same conformance suite as the SQL adapter, so the two can be swapped.
+- **`speedyspec-wp-options-php`: the PHP adapter.** It declares `get_option()`, `delete_option()` and the rest in PHP,
+  with WordPress's signatures, and each calls into Rust. WordPress's own `option.php` is loaded without the functions
+  the port declares.
+
+Commands and queries connect the PHP adapter to the API: each function is a message, such as the `DeleteOption`
+command, sent through the container to a handler that calls `OptionsApi`. Because the handler is bound in the
+container, it can be replaced, and a ported function can be swapped out without touching its callers.
+
+## Start from the checked examples
+
+A port is checked against WordPress's own behaviour, not against a reading of it. The reference page of each function
+carries examples the guide's runner runs on real WordPress. For `delete_option()` they pin down three things. It
+deletes a stored option and returns `true`, after which the option reads as missing:
+
+<Example id="options/delete_option/deletes" />
+
+It returns `false` when there is nothing to delete:
+
+<Example id="options/delete_option/missing" />
+
+And it fires three actions, in this order:
+
+<Example id="options/delete_option/hooks" />
+
+Read the PHP alongside them. `delete_option()` protects WordPress's special option names, looks up the option's
+autoload value (which doubles as "does it exist?"), and fires `delete_option` before it deletes.
+<Ev source="wp:wp-includes/option.php#L1214-L1229" hash="3e9d16130f72c409c8ebf70395d03ab835ac79ae64292628fcb8c471d5ed8401"/> After the delete it updates the cache, and only if a row
+was deleted does it fire `delete_option_{$option}` and `deleted_option` and return `true`.
+<Ev source="wp:wp-includes/option.php#L1255-L1280" hash="2683da77c4828e1d7f436e7c117de7331c7d4fc0b4d1194cd67c26e36c9d9837"/>
+
+## The port, layer by layer
+
+**The API.** `OptionsApi::delete_option()` reads like the PHP, split into a plan, the one write, and what follows it.
+<Ev source="ss:crates/speedyspec-wp-options/src/write.rs#L89-L94" hash="6aad52e36ec04e90ce0223d5a1eb0ae1e58dd746a63250e908b9cbfa2d07a389"/> The plan does the PHP's checks in the
+PHP's order: the name, the special-option guard, the autoload lookup, then the `delete_option` action.
+<Ev source="ss:crates/speedyspec-wp-options/src/write.rs#L313-L333" hash="8419f9b035e29b5daa3882b328d0e018faea84fb5e9236bf6baffe48986f25b9"/> Each `None` is a place where the PHP
+returns `false`, which is exactly what the "missing" example checks.
+
+**The ports it uses.** The plan calls two repository methods, each the counterpart of one `$wpdb` call in the PHP:
+`autoload_of` for the `SELECT autoload` and `remove` for `$wpdb->delete()`.
+<Ev source="ss:crates/speedyspec-wp-options/src/ports.rs#L23-L24" hash="9200440a9dd0dee1f84a4eaffbe493ef4a8975676fa56d53d4b443f63e08b5dc"/>
+<Ev source="ss:crates/speedyspec-wp-options/src/ports.rs#L56-L57" hash="2e5435cff71aa70c3592e44b09446c583d7e7de3d7200e117d41fcb5fc878cbb"/>
+
+**The command.** One line binds the `DeleteOption` command to the API.
+<Ev source="ss:crates/speedyspec-wp-options/src/messages.rs#L73-L73" hash="3a06644bfc8f7663a78a88b7b9b82dc99d8e61f8c463ee2e8ec32a59618e15e1"/>
+
+**The database adapter.** `remove` builds the `DELETE` and returns the affected-row count, which tells the API whether
+to fire the two later actions. <Ev source="ss:crates/speedyspec-wp-options-sql/src/repository.rs#L320-L334" hash="593620918d344120b6747585edc9c02b488f0f8bd6559c0e26f2999095fa40bb"/>
+
+**The PHP adapter.** The native `delete_option()` turns PHP's argument into a name (an empty name returns `false`
+before anything else happens, as in WordPress) and sends the command.
+<Ev source="ss:crates/speedyspec-wp-options-php/src/native.rs#L253-L258" hash="a1fb325e0eb550b9c2de6d6fcfd22ff1898f7d8b40d197124c05a0c3aeca6c88"/>
+
+## Porting your own function
+
+The same steps apply to any function in a seam being ported:
+
+1. Read the function's reference page and run its examples. If a behaviour you are about to port has no example,
+   add one first, in `seams/<seam>/examples/<function>/`, and accept its result from a WordPress run. Examples are
+   cheap; a port that differs where nobody looked is not.
+2. Read the PHP and list its hooks, its database calls and its early returns, in order.
+3. Add a repository method for each new database call, implement it in the SQL and memory adapters, and extend the
+   conformance suite so both answer alike.
+4. Write the API method, keeping the PHP's order of checks, hooks and writes.
+5. Add the command or query, and declare the function in the PHP adapter.
+6. When the seam is marked ported, add `runtime` to each example's `sides` in its `.expect.json`. The runner then runs
+   the example on SpeedySpec too, and the example only passes if both give the same result.
+
+The Hooks seam has finished all six steps: its examples run on both sides. The Options crates exist, but this guide
+doesn't count the Options seam as ported yet, so its examples still run only on WordPress, and its reference pages say
+so. <OnSpeedySpecNote id="function:delete_option" /> Marking it ported, and running its examples on the runtime, is
+what closes that gap.

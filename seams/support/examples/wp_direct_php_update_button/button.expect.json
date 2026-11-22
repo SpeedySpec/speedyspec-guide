@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<p class=\"button-container\"><a class=\"button button-primary\" href=\"https://host.example/update\" target=\"_blank\">Update PHP<span class=\"screen-reader-text\"> (opens in a new tab)</span><span aria-hidden=\"true\" class=\"dashicons dashicons-external\"></span></a></p>'",
+ "error": null
+}

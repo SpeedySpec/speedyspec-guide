@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<script id=\"@guide/app-js-module\" src=\"https://cdn.example/app.js?ver=1.0\" type=\"module\"></script>',\n  1 => '<script id=\"wp-importmap\" type=\"importmap\"> {\"imports\":{\"@guide/lazy\":\"https://cdn.example/lazy.js?ver=1.0\"}} </script>',\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_insert_user"
+---
+
+## Behaviour
+
+Adds a user (or updates one with an ID): login, password (hashed), email, URL, names, nicename and display name, role, and meta like admin_color and show_admin_bar_front. Logins over 60 characters, taken logins or emails, and illegal logins are refused. user_register fires; returns the ID. <Ev source="wp:wp-includes/user.php#L2252-L2746" hash="25df929e932afd631074cef316c4a98ba7cb26a9eb32bd51a992c65f9d6ad34b"/>
+
+## Override
+
+`pre_user_login`, `illegal_user_logins`, `pre_user_nicename`, `pre_user_email`, `pre_user_url`, `pre_user_nickname`, `pre_user_first_name`, `pre_user_last_name`, `pre_user_display_name`, `pre_user_description`, `wp_pre_insert_user_data`, `insert_user_meta`, `insert_custom_user_meta` filter it; `wp_set_password`, `profile_update`, `make_spam_user`, `make_ham_user`, `user_register` fire.

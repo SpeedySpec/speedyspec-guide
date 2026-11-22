@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WP_User_Request',\n  1 => 'admin@example.org',\n  2 => 'export_personal_data',\n  3 => 'request-pending',\n  4 => false,\n)",
+ "error": null
+}

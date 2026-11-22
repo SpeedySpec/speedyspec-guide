@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_get_salted"
+---
+
+## Behaviour
+
+Reads a value stored with `wp_cache_set_salted()`, returning it only when it was stored with the same salt; otherwise `false`. An array salt is joined with `:`. Defined in `cache-compat.php`, so a persistent cache may define its own. <Ev source="wp:wp-includes/cache-compat.php#L214-L227" hash="da1e68a394cf06454c1b4a52d24bebfcf2aee114ef06b64c72654e4335fa45ed"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

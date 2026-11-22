@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Object_Cache::add"
+---
+
+`wp_cache_add()`'s implementation: it sets the key only when it isn't in the group, and not while cache addition is suspended. <Ev scenario="add_existing_is_false" area="object-cache"/> <Ev scenario="suspend_addition" area="object-cache"/>

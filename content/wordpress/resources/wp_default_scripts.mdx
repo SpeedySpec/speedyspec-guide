@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_default_scripts"
+---
+
+## Behaviour
+
+Registers WordPress's default scripts: jQuery and its UI, the admin scripts, utils, heartbeat, media and more, with their localized data; sets the base URL and the default directories. <Ev source="wp:wp-includes/script-loader.php#L718-L1526" hash="344ce45e3d8353e6fd400bc318763d949415ea801563fd6f0a29f5bf99aeeec5"/>
+
+## Override
+
+`bulk_action_observer_ids`, `heartbeat_settings`, `wp_audio_shortcode_library`, `wp_video_shortcode_library`, `mejs_settings` filter it.

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_admin_bar_site_menu"
+---
+
+## Behaviour
+
+Adds the site name menu for a logged-in member of the site (or a network admin), with the site title cut to 40 characters and the site icon when there is one. In the admin it links to the site with View Site under it. On the front end, for a user who can read, it links to the dashboard with Dashboard, the Appearance group and Plugins under it. <Ev source="wp:wp-includes/admin-bar.php#L401-L511" hash="072c1c73f02ccd59a8dd5455160b1dfcad69df60b91e10198c02532b192bcb91"/>
+
+## Override
+
+`wp_admin_bar_show_site_icons` decides whether the site icon is shown.

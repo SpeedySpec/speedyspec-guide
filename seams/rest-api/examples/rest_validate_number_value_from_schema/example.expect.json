@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'r must be between 0 (inclusive) and 1 (exclusive)',\n  2 => 'rest_invalid_type',\n)",
+ "error": null
+}

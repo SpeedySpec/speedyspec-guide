@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "http_api_debug response WpOrg\\Requests\\Requests\n",
+ "return": "array (\n  0 => 'HELLO',\n  1 => 'short-circuited',\n)",
+ "error": null
+}

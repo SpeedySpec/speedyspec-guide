@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "clear_global_post_cache is deprecated since 3.0.0 for clean_post_cache()\n",
+ "return": "'reported'",
+ "error": null
+}

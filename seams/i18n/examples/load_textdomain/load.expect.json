@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "load_textdomain guide guide-fr_FR.mo\nformat php for guide\nload_textdomain default fr_FR.mo\nformat php for default\nload_textdomain guide guide-fr_FR.mo\nformat php for guide\nload_textdomain nope missing.mo\nformat php for nope\n",
+ "return": "array (\n  0 => true,\n  1 => 'Salut',\n  2 => false,\n  3 => true,\n)",
+ "error": null
+}

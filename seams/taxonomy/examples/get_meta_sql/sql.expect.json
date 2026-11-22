@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'INNER JOIN guide_postmeta ON ( guide_posts.ID = guide_postmeta.post_id )',\n  1 => 'AND ( ( guide_postmeta.meta_key = \\'color\\' AND guide_postmeta.meta_value = \\'red\\' ) )',\n)",
+ "error": null
+}

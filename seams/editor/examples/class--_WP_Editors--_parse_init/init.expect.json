@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'{menubar:false,toolbar1:\"bold,italic\",formats:{a:1},setup:function(ed){}}'",
+ "error": null
+}

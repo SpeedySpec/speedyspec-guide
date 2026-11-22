@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "email to ada@example.org: Hello\n",
+ "return": "true",
+ "error": null
+}

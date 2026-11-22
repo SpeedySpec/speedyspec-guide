@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  '^wp-json/?$' => 'index.php?rest_route=/',\n  '^wp-json/(.*)?' => 'index.php?rest_route=/$matches[1]',\n)",
+ "error": null
+}

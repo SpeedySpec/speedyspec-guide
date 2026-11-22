@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'LEFT JOIN guide_term_relationships ON (guide_posts.ID = guide_term_relationships.object_id)',\n  1 => 'AND ( guide_term_relationships.term_taxonomy_id IN (2,1) )',\n)",
+ "error": null
+}

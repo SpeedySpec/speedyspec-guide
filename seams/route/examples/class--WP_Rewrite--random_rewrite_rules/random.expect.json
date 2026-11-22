@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'random',\n  1 => \n  array (\n    'random/?$' => 'index.php?random=1',\n    'random/author/([^/]+)/?$' => 'index.php?author_name=$1&random=1',\n  ),\n)",
+ "error": null
+}

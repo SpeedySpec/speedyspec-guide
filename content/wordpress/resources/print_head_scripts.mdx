@@ -1,0 +1,11 @@
+---
+symbol: "function:print_head_scripts"
+---
+
+## Behaviour
+
+Prints the scripts queued for the head, firing wp_print_scripts first unless it already ran; gives the handles printed. <Ev source="wp:wp-includes/script-loader.php#L2130-L2151" hash="ef3bb84940e285af10741c5203178c39468637bdc978315d7ea3ffb6bbf080c3"/>
+
+## Override
+
+`print_head_scripts` filters it; `wp_print_scripts` fires.

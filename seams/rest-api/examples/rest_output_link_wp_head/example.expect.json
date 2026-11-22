@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<link rel=\"https://api.w.org/\" href=\"http://example.org/index.php?rest_route=/\" />'",
+ "error": null
+}

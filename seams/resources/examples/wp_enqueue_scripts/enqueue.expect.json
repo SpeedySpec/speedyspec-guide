@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "wp_enqueue_scripts\n",
+ "return": "'done'",
+ "error": null
+}

@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "email to newbie@example.org: [Guide Network] Activate newbie\n",
+ "return": "array (\n  'user_login' => 'newbie',\n  'user_email' => 'newbie@example.org',\n  'active' => '0',\n)",
+ "error": null
+}

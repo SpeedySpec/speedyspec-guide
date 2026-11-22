@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'ab',\n  1 => 'ef',\n  2 => true,\n  3 => false,\n  4 => 'abc',\n  5 => 6,\n  6 => 'POMO_CachedFileReader',\n)",
+ "error": null
+}

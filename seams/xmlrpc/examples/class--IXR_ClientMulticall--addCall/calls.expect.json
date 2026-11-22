@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => \n    array (\n      'methodName' => 'demo.add',\n      'params' => \n      array (\n        0 => 1,\n        1 => 2,\n      ),\n    ),\n    1 => \n    array (\n      'methodName' => 'demo.echo',\n      'params' => \n      array (\n        0 => 'x',\n      ),\n    ),\n  ),\n  1 => 'The Incutio XML-RPC PHP Library (multicall client)',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'thumb' => \n    array (\n      'file' => 'guide-50x50.png',\n      'width' => 50,\n      'height' => 50,\n      'mime-type' => 'image/png',\n    ),\n    'medium' => \n    array (\n      'file' => 'guide-120x60.png',\n      'width' => 120,\n      'height' => 60,\n      'mime-type' => 'image/png',\n    ),\n  ),\n  1 => \n  array (\n    'width' => 200,\n    'height' => 100,\n  ),\n)",
+ "error": null
+}

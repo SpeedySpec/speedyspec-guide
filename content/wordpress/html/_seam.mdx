@@ -1,0 +1,4 @@
+---
+---
+
+The HTML API reads and changes HTML as browsers read it, following the HTML standard. `WP_HTML_Tag_Processor` scans tokens and changes tags' attributes, classes and text in place without building a tree; `WP_HTML_Processor` builds on it to track the open elements, so it knows where each element sits and which closers the HTML implies. <Ev source="wp:wp-includes/html-api/class-wp-html-tag-processor.php#L1-L20" hash="e0c94efa63673b20e207c500997002f9d53e3e6fc213de23b2a27316c936ade1"/> The rest of the seam supports them: character reference decoding, tokens and spans, the stacks of open and active formatting elements, and the parser's state. Nothing in the seam touches the database.

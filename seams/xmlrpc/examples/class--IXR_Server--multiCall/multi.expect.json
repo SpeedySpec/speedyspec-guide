@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 3,\n  ),\n  1 => \n  array (\n    'faultCode' => -32600,\n    'faultString' => 'Recursive calls to system.multicall are forbidden',\n  ),\n  2 => \n  array (\n    'faultCode' => -32602,\n    'faultString' => 'server error. invalid method parameters. Each multicall entry params must be an array',\n  ),\n  3 => \n  array (\n    'faultCode' => -32600,\n    'faultString' => 'server error. invalid xml-rpc. Each multicall entry must be a struct with a string methodName',\n  ),\n)",
+ "error": null
+}

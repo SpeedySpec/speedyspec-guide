@@ -1,0 +1,11 @@
+---
+symbol: "function:kses_init"
+---
+
+## Behaviour
+
+Removes the kses filters and adds them again unless the user can post unfiltered HTML. WordPress runs it on `init` and when the current user changes. <Ev source="wp:wp-includes/kses.php#L3691-L3697" hash="bb44a02351e5572abb0f8bc8d15632a25d6597d4d0dd3cff8b6890d660c72713"/>
+
+## Override
+
+Not overridable.

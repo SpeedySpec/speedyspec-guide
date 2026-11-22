@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'.a {\n\tcolor: red;\n\tmargin: 0;\n}\n.b {\n\tpadding: 1em;\n}\n'",
+ "error": null
+}

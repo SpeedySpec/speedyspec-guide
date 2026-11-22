@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'config' => \n  array (\n    'my-plugin' => \n    array (\n      'debug' => true,\n    ),\n  ),\n  'state' => \n  array (\n    'my-plugin' => \n    array (\n      'count' => 1,\n    ),\n  ),\n)",
+ "error": null
+}

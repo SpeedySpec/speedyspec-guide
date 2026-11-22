@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "get_blogaddress_by_domain is deprecated since 3.7.0\n",
+ "return": "'http://example.org/team/'",
+ "error": null
+}

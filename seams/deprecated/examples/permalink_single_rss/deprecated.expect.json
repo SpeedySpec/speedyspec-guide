@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated permalink_single_rss since 2.3.0, use the_permalink_rss() http://example.org/?p=1',\n)",
+ "error": null
+}

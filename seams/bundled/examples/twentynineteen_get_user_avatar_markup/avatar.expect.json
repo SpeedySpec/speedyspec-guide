@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"comment-user-avatar comment-author vcard\"><img alt=\\'\\' src=\\'https://secure.gravatar.com/avatar/cfe00dde46ef942601ffafb9e2825e802858b460e586b8305b344c1eb826357d?s=60&#038;d=mm&#038;r=g\\' srcset=\\'https://secure.gravatar.com/avatar/cfe00dde46ef942601ffafb9e2825e802858b460e586b8305b344c1eb826357d?s=120&#038;d=mm&#038;r=g 2x\\' class=\\'avatar avatar-60 photo\\' height=\\'60\\' width=\\'60\\' loading=\\'lazy\\' decoding=\\'async\\'/></div>'",
+ "error": null
+}

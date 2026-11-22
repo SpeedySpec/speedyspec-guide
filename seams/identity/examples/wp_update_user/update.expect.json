@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "profile_update\nemail to grace@example.org: [Guide] Email Changed\n",
+ "return": "array (\n  0 => true,\n  1 => 'Grace Hopper',\n  2 => 'hopper@example.org',\n  3 => 'invalid_user_id',\n)",
+ "error": null
+}

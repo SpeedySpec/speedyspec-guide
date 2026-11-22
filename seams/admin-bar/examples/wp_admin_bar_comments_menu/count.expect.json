@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "33 Comments in moderation\n",
+ "return": "array (\n  0 => '> comments http://example.org/wp-admin/edit-comments.php',\n)",
+ "error": null
+}

@@ -1,0 +1,7 @@
+---
+symbol: "action:pre_trackback_post"
+---
+
+## Behaviour
+
+Fires before a trackback is added to a post, with the post ID, URL, charset, title, excerpt and blog name; WordPress attaches `wp_maybe_disable_trackback_for_environment()`, which refuses trackbacks outside production. <Ev source="wp:wp-trackback.php#L127-L127" hash="8355d9d43ac437f190a9d14d781c27b098a2e84b17dd07d04ccbc07962fd2649"/>

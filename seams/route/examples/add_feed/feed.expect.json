@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'do_feed_guide',\n  1 => \n  array (\n    0 => 'guide',\n  ),\n  2 => 10,\n)",
+ "error": null
+}

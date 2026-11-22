@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"x\" target=\"_blank\" rel=\"noopener\">'",
+ "error": null
+}

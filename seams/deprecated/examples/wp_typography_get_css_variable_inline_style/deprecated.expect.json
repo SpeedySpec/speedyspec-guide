@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_typography_get_css_variable_inline_style since 6.1.0, use wp_style_engine_get_styles()',\n)",
+ "error": null
+}

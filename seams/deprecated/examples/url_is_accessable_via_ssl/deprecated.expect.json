@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => 'deprecated url_is_accessable_via_ssl since 4.0.0',\n)",
+ "error": null
+}

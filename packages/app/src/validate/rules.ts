@@ -1,13 +1,14 @@
-import { type Citation, citationText } from '@speedyspec-guide/domain';
+import { type Citation, citationText, type Guide } from '@speedyspec-guide/domain';
 import { exampleFailures } from '../examples.ts';
 import type { Failure, Rule, ValidationContext } from './rule.ts';
 
 const sha256 = (s: string) => new Bun.CryptoHasher('sha256').update(s).digest('hex');
 
-/** Page citations and seam-edge citations, each with where it is written. */
+/** Page, guide and seam-edge citations, each with where it is written. */
 function allCitations(ctx: ValidationContext): { where: string; citation: Citation }[] {
   return [
     ...ctx.citations.map((c) => ({ where: c.page, citation: c.citation })),
+    ...ctx.guides.flatMap((g) => g.citations.map((citation) => ({ where: g.file, citation }))),
     ...ctx.seams.flatMap((s) => Object.values(s.dependencies ?? {}).map((dep) => ({ where: `seams/${s.id}/seam.yaml`, citation: dep.cite }))),
     ...ctx.seams.flatMap((s) => s.edges.filter((e) => e.at).map((e) => ({ where: `seams/${s.id}/seam.yaml`, citation: e.at! }))),
   ];
@@ -37,6 +38,8 @@ export const CitationExists: Rule = {
       if (c.kind === 'example') {
         const declared = ctx.declaredExamples.find((e) => e.id === c.id);
         if (!declared) f.push({ rule: this.id, where, message: `${citationText(c)} does not exist in seams/*/examples` });
+        // A guide backs no WordPress or SpeedySpec claim with an example; it only shows one, so it must exist.
+        else if (where.startsWith('guides/')) continue;
         else if (where.startsWith('wordpress/')) {
           if (!declared.sides.includes('wordpress')) f.push({ rule: this.id, where, message: `${citationText(c)} does not run on WordPress, so it can't back a WordPress claim` });
         } else if (!declared.sides.includes('runtime')) f.push({ rule: this.id, where, message: `${citationText(c)} does not run on the runtime, so it can't back a SpeedySpec claim` });
@@ -252,6 +255,62 @@ export const SeamSymbolsExist: Rule = {
         // Without the runtime's inventory, SpeedySpec's own ids can't be checked.
         if (runtime === null ? id.slice(id.indexOf(':') + 1).startsWith('SpeedySpec\\') : runtime.has(id)) continue;
         f.push({ rule: this.id, where: `seams/${seam.id}/seam.yaml`, message: `lists ${id}, which neither WordPress nor the runtime has` });
+      }
+    }
+    return f;
+  },
+};
+
+/** Every example a guide embeds is an example file. Whether it ran and passed is ExampleHasRun's to say. */
+export const GuideExampleExists: Rule = {
+  id: 'GuideExampleExists',
+  async check(ctx) {
+    const known = new Set(ctx.declaredExamples.map((e) => e.id));
+    return ctx.guides.flatMap((g) => g.examples.filter((id) => !known.has(id)).map((id) => ({ rule: this.id, where: g.file, message: `embeds ${id}, which is no example` })));
+  },
+};
+
+/** Every symbol a guide links is a WordPress symbol, or a SpeedySpec one when the runtime's are known. */
+export const GuideSymbolResolves: Rule = {
+  id: 'GuideSymbolResolves',
+  async check(ctx) {
+    const known = new Set([...ctx.inventory.symbols.map((s) => s.id), ...(ctx.runtimeIds ?? [])]);
+    return ctx.guides.flatMap((g) => g.symbols.filter((id) => !known.has(id)).map((id) => ({ rule: this.id, where: g.file, message: `links ${id}, which is no symbol` })));
+  },
+};
+
+/** A topic guide explains a seam that exists; the guides' own example seam is no seam to explain. */
+export const GuideTopicSeamExists: Rule = {
+  id: 'GuideTopicSeamExists',
+  async check(ctx) {
+    const seams = new Set(ctx.seams.map((s) => s.id).filter((id) => id !== 'guides'));
+    return ctx.guides
+      .filter((g) => g.kind === 'topic' && !seams.has(g.seam ?? ''))
+      .map((g) => ({ rule: this.id, where: g.file, message: `is a topic guide for ${g.seam}, which is no seam` }));
+  },
+};
+
+/**
+ * A guide has a title and a summary; a numbered track's files have an nn- prefix, and no two in a track share a
+ * number or a slug (they would share a page).
+ */
+export const GuideFrontAndOrder: Rule = {
+  id: 'GuideFrontAndOrder',
+  async check(ctx) {
+    const track = (g: Guide) => `${g.kind}/${g.part ?? ''}`;
+    const f: Failure[] = [];
+    for (const g of ctx.guides) {
+      if (g.title === '' || g.summary === '') f.push({ rule: this.id, where: g.file, message: 'needs a title and a summary' });
+      if (g.kind === 'topic') continue;
+      for (const other of ctx.guides) {
+        if (other !== g && track(other) === track(g) && other.slug === g.slug) f.push({ rule: this.id, where: g.file, message: `shares slug ${g.slug} with ${other.file}` });
+      }
+      if (g.order === undefined) {
+        f.push({ rule: this.id, where: g.file, message: 'needs an nn- number prefix' });
+        continue;
+      }
+      for (const other of ctx.guides) {
+        if (other !== g && track(other) === track(g) && other.order === g.order) f.push({ rule: this.id, where: g.file, message: `shares number ${g.order} with ${other.file}` });
       }
     }
     return f;

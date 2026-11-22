@@ -129,6 +129,22 @@ table.conversion { border-collapse: collapse; margin: 1rem 0; }
 table.conversion th, table.conversion td { border-bottom: 1px solid var(--line); padding: 0.25rem 0.75rem; text-align: left; }
 table.conversion td + td { text-align: right; }
 
+/* Developer guides: embedded examples, symbol notes, and the links around a guide. */
+.guide-example { margin: 1.25rem 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.guide-example .example-title { margin: 0; padding: 0.45rem 0.9rem; font-size: 0.8125rem; color: var(--muted); background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.guide-example pre { margin: 0; border-radius: 0; }
+.guide-example figcaption { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 1rem; padding: 0.5rem 0.9rem; font-size: 0.8125rem; border-top: 1px solid var(--line); }
+.guide-example figcaption .result { min-width: 0; max-width: 100%; color: var(--muted); }
+.guide-example figcaption .result code { color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; }
+.guide-example figcaption .result-error { color: var(--bad); }
+.guide-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.9375rem; }
+.guide-nav .guide-next { margin-left: auto; text-align: right; }
+.guide-reference, .seam-guide { border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 6px; padding: 0.5rem 0.9rem; margin: 1rem 0; font-size: 0.875rem; background: var(--accent-soft); }
+.speedyspec-note { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8125rem; color: var(--muted); white-space: nowrap; }
+.guide-empty { color: var(--muted); font-style: italic; }
+.guide-prose h2 { margin-top: 2rem; }
+.guide .summary { font-size: 1.0625rem; color: var(--muted); margin-top: -0.25rem; }
+.guide-prose .ev { white-space: normal; overflow-wrap: anywhere; }
 /* The installation guide. */
 .install-contents ol { padding-left: 1.25rem; }
 .install-contents li { margin: 0.25rem 0; }

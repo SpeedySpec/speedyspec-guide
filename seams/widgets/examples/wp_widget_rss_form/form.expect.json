@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<p><label for=\"rss-url-2\">Enter the RSS feed URL here:</label> <input class=\"widefat\" id=\"rss-url-2\" name=\"widget-rss[2][url]\" type=\"text\" value=\"https://feed.example/\" /></p> <p><label for=\"rss-title-2\">Give the feed a title (optional):</label> <input class=\"widefat\" id=\"rss-title-2\" name=\"widget-rss[2][title]\" type=\"text\" value=\"\" /></p> <p><label for=\"rss-items-2\">How many items would you like to display?</label> <select id=\"rss-items-2\" name=\"widget-rss[2][items]\"> <option value=\\'1\\' >1</option><option value=\\'2\\' >2</option><option value=\\'3\\' >3</option><option value=\\'4\\' >4</option><option value=\\'5\\' >5</option><option value=\\'6\\' >6</option><option value=\\'7\\' >7</option><option value=\\'8\\' >8</option><option value=\\'9\\' >9</option><option value=\\'10\\' selected=\\'selected\\'>10</option><option value=\\'11\\' >11</option><option value=\\'12\\' >12</option><option value=\\'13\\' >13</option><option value=\\'14\\' >14'",
+ "error": null
+}

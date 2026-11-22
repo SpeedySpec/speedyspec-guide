@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_prepare_site_data"
+---
+
+## Behaviour
+
+A site's data for inserting or updating: merged with the old data and defaults, its options set aside, normalized, validated and given the database's column names (site_id for the network); an error when invalid. <Ev source="wp:wp-includes/ms-site.php#L470-L519" hash="b42a281be42d49ba4669cb6151f6fcf6c80226db011e44281c89deae816017cc"/>
+
+## Override
+
+`wp_normalize_site_data` filters it; `wp_validate_site_data` fires.

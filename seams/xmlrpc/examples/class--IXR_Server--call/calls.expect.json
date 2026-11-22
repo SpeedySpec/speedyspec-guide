@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 5,\n  1 => 'only',\n  2 => 'server error. requested method nope does not exist.',\n  3 => 'server error. requested function &quot;no_such_function&quot; does not exist.',\n  4 => 'server error. requested class method &quot;nope&quot; does not exist.',\n)",
+ "error": null
+}

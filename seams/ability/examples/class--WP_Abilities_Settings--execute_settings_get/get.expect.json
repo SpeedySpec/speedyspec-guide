@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'blogname' => 'Guide',\n    'per_page' => 10,\n    'guide_flag' => false,\n  ),\n  1 => \n  array (\n    'per_page' => 10,\n    'guide_flag' => false,\n  ),\n  2 => \n  array (\n    'per_page' => 10,\n  ),\n)",
+ "error": null
+}

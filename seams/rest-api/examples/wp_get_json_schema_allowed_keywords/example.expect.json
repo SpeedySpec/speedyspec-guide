@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 25,\n  1 => \n  array (\n    0 => '$schema',\n    1 => 'id',\n    2 => '$ref',\n    3 => 'required',\n    4 => 'allOf',\n    5 => 'not',\n    6 => 'definitions',\n    7 => 'dependencies',\n    8 => 'additionalItems',\n  ),\n)",
+ "error": null
+}

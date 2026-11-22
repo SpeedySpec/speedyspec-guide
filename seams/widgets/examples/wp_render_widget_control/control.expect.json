@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '\t\t<p>\n\t\t\t<label for=\"widget-search-2-title\">Title:</label>\n\t\t\t<input class=\"widefat\" id=\"widget-search-2-title\" name=\"widget-search[2][title]\" type=\"text\" value=\"Find\" />\n\t\t</p>\n\t\t',\n  1 => NULL,\n)",
+ "error": null
+}

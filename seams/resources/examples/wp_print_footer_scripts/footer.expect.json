@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "wp_print_footer_scripts\n",
+ "return": "'done'",
+ "error": null
+}

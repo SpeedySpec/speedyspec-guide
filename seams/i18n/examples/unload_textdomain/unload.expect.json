@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "unload_textdomain guide\n",
+ "return": "array (\n  0 => true,\n  1 => false,\n  2 => true,\n  3 => 'Hello',\n)",
+ "error": null
+}

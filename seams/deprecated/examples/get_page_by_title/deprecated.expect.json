@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'deprecated get_page_by_title since 6.2.0, use WP_Query',\n)",
+ "error": null
+}

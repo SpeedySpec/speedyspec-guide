@@ -2,10 +2,11 @@
  * Everything the site shows, loaded once: generated JSON, the seam map, example files and the MDX content.
  * The only module of the site that reads files.
  */
+import { GuideFiles } from '@speedyspec-guide/adapter-content-files';
 import { ExampleFiles } from '@speedyspec-guide/adapter-example-files';
 import { SeamFiles } from '@speedyspec-guide/adapter-seam-files';
 import type { CratesFile, Cycles, ExamplesFile, Graph, HistoryFile, RuntimeHistoryFile } from '@speedyspec-guide/app';
-import type { Assignment, Example, GuideSymbol, Inventory, Seam } from '@speedyspec-guide/domain';
+import type { Assignment, Example, Guide, GuideSymbol, Inventory, Seam } from '@speedyspec-guide/domain';
 
 import { existsSync } from 'node:fs';
 import { join, sep } from 'node:path';
@@ -15,6 +16,12 @@ import { type InstallPage, inReadingOrder, installPage } from './install.ts';
 import type { Sources } from './wording.ts';
 
 export type { CratesFile } from '@speedyspec-guide/app';
+
+/**
+ * The pseudo-seam holding the developer guides' examples: they run on a fully booted WordPress, but it documents no
+ * symbols, so the site lists it as no seam.
+ */
+export const GUIDES_SEAM = 'guides';
 
 export type ContentKind = 'symbol' | 'seam' | 'porting' | 'architecture';
 
@@ -58,6 +65,8 @@ export interface GuideData {
   examples: { files: ExampleFile[]; results: ExamplesFile | null };
   seams: Seam[];
   content: ContentEntry[];
+  /** The developer guides under content/guides/. */
+  guides: Guide[];
   /** The installation guide's pages (content/install/*.mdx), in reading order. */
   install: InstallPage[];
   /** sources.json: what the evidence links point at. */
@@ -98,8 +107,9 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
       }
     }
   }
-  const seams = existsSync(dirs.seams) ? await new SeamFiles(dirs.seams).all() : [];
-  const found = seams.length > 0 ? (await new ExampleFiles(dirs.seams, seams).all()).examples : [];
+  const allSeams = existsSync(dirs.seams) ? await new SeamFiles(dirs.seams).all() : [];
+  const found = allSeams.length > 0 ? (await new ExampleFiles(dirs.seams, allSeams).all()).examples : [];
+  const seams = allSeams.filter((s) => s.id !== GUIDES_SEAM);
   const examples: ExampleFile[] = await Promise.all(found.map(async (e) => ({ ...e, code: await Bun.file(e.file).text() })));
   const assignment = await json<Assignment>('assignment', { seamOf: {}, unassigned: [], conflicts: [] });
   const runtime = await json<GuideSymbol[]>('inventory-runtime', []);
@@ -125,6 +135,7 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
     examples: { files: examples, results: await json<ExamplesFile | null>('examples', null) },
     seams,
     content: await readContent(dirs.content),
+    guides: await new GuideFiles(dirs.content).guides(),
     install: await readInstallPages(dirs.content),
     sources: (await Bun.file(dirs.sources).exists()) ? ((await Bun.file(dirs.sources).json()) as Sources) : null,
   };

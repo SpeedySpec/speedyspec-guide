@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  'email' => 'admin@example.org',\n  'IP' => '10.0.0.1',\n  'blog_id' => '2',\n)",
+ "error": null
+}

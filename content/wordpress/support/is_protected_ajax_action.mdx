@@ -1,0 +1,11 @@
+---
+symbol: "function:is_protected_ajax_action"
+---
+
+## Behaviour
+
+Whether the AJAX request's action must keep working after a fatal error (plugin and theme updates and deletions, and those wp_protected_ajax_actions adds). <Ev source="wp:wp-includes/load.php#L1223-L1260" hash="206891e11f01e71e5fc657b9dec0f24a6670c31c28d565ceb64d7fb9117a7635"/>
+
+## Override
+
+`wp_protected_ajax_actions` filters it.

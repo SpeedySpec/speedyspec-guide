@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "clean_site_cache 2\n",
+ "return": "false",
+ "error": null
+}

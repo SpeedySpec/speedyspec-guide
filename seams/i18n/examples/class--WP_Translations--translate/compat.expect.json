@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Article',\n  1 => 'Publier',\n  2 => '%d \u00e9l\u00e9ment',\n  3 => \n  array (\n    'Plural-Forms' => 'nplurals=2; plural=n>1;',\n    'Language' => 'fr_FR',\n  ),\n  4 => \n  array (\n    0 => \n    array (\n      0 => NULL,\n      1 => 'Post',\n      2 => \n      array (\n        0 => 'Article',\n      ),\n      3 => false,\n    ),\n    1 => \n    array (\n      0 => 'verb',\n      1 => 'Post',\n      2 => \n      array (\n        0 => 'Publier',\n      ),\n      3 => false,\n    ),\n    2 => \n    array (\n      0 => NULL,\n      1 => '%d item',\n      2 => \n      array (\n        0 => '%d \u00e9l\u00e9ment',\n        1 => '%d \u00e9l\u00e9ments',\n      ),\n      3 => true,\n    ),\n  ),\n  5 => 'null',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<li class=\"c\" data-li=\"1\">(<a href=\"http://example.org/1\" data-a=\"1\"><span>HOME</span></a>)<ul class=\"sub\" data-ul=\"1\"><li class=\"c\" data-li=\"1\">(<a href=\"http://example.org/2\" data-a=\"1\"><span>DOCS</span></a>)</li></ul></li>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '> new-content http://example.org/wp-admin/post-new.php?post_type=guide_note',\n  1 => 'new-content > new-guide_note http://example.org/wp-admin/post-new.php?post_type=guide_note',\n  2 => 'new-content > new-user http://example.org/wp-admin/user-new.php',\n)",
+ "error": null
+}

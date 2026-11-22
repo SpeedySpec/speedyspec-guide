@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'blockName' => 'core/paragraph',\n    'attrs' => \n    array (\n    ),\n    'innerBlocks' => \n    array (\n    ),\n  ),\n  1 => 'deprecated wp_interactivity_process_directives_of_interactive_blocks since 6.6.0',\n)",
+ "error": null
+}

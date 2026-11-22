@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_start_cross_origin_isolation_output_buffer since 7.2.0, use wp_send_document_isolation_policy_header()',\n)",
+ "error": null
+}

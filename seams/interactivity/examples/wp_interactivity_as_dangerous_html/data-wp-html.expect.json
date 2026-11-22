@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div data-wp-interactive=\"my-plugin\"><div data-wp-html=\"state.html\"><b>bold</b></div></div>'",
+ "error": null
+}

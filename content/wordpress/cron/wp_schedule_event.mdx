@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_schedule_event"
+---
+
+## Behaviour
+
+Schedules a recurring event with a schedule from `wp_get_schedules()`, storing the schedule name and its interval with it. An unknown schedule or a timestamp that isn't positive is refused; there is no duplicate check, so the same event can be stored at several times. <Ev source="wp:wp-includes/cron.php#L257-L337" hash="451e796edb251b4b519f1430fc473415606095bd74e11ea6cb2ecbcc1fb32c7e"/>
+
+## Override
+
+`pre_schedule_event` can answer instead of scheduling; `schedule_event` can change the event or refuse it with `false`; `cron_schedules` adds schedules.

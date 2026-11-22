@@ -1,0 +1,11 @@
+---
+symbol: "function:get_user_option"
+---
+
+## Behaviour
+
+A user setting: the site-specific meta `({prefix}{name}`) first, then the global meta, then a user field; `get_user_option_{$option}` filters it. update_user_option() and delete_user_option() write it, globally or for the site. <Ev source="wp:wp-includes/user.php#L755-L792" hash="15e4776e6daf858de63593690eaed274c0fa6b177f46bb962f8fe5b904e3cb8c"/>
+
+## Override
+
+`get_user_option_{$option}` filters it.

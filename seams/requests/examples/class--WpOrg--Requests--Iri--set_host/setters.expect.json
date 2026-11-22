@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => true,\n  2 => true,\n  3 => 'http://[::1]:8080/',\n  4 => false,\n  5 => true,\n  6 => ':8080',\n  7 => '/a%20b',\n)",
+ "error": null
+}

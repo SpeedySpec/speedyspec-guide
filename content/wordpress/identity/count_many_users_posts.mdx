@@ -1,0 +1,11 @@
+---
+symbol: "function:count_many_users_posts"
+---
+
+## Behaviour
+
+Published post counts for several users at once, by user ID. <Ev source="wp:wp-includes/user.php#L661-L713" hash="388fa35ac1202aa04f89315a2d3f711a68beaf8ac7de0a35188e801584af36b4"/>
+
+## Override
+
+`pre_count_many_users_posts` filters it.

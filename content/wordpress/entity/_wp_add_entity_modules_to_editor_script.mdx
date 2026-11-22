@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_add_entity_modules_to_editor_script"
+---
+
+## Behaviour
+
+Adds the script modules a getter returns to `wp-editor`'s `module_dependencies`, each as a dynamic import, skipping any it already has. It does nothing unless `wp-editor` is enqueued or done. It uses the given `WP_Scripts`, or `wp_scripts()`. <Ev source="wp:wp-includes/entity-utils.php#L114-L156" hash="d80344eea9ba22fc210210578d70cdd0569f5008c7c86013b164dfc89ecc809d"/>
+
+## Override
+
+Not overridable.

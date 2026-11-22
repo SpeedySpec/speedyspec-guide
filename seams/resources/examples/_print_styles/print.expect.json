@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'_print_styles is deprecated since 7.2.0 <style>/* x */</style>'",
+ "error": null
+}

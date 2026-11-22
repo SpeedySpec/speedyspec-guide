@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<a href=\"http://example.org/?p=1#respond\">Be the first to comment<span class=\"screen-reader-text\"> on Hello</span></a>',\n  1 => '',\n  2 => NULL,\n)",
+ "error": null
+}

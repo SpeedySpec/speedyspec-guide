@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'{\n    \"prefetch\": [\n        {\n            \"source\": \"document\",\n            \"where\": {\n                \"and\": [\n                    {\n                        \"href_matches\": \"/*\"\n                    },\n                    {\n                        \"not\": {\n                            \"href_matches\": [\n                                \"/wp-*.php\",\n                                \"/wp-admin/*\",\n                                \"/wp-content/uploads/*\",\n                                \"/wp-content/*\",\n                                \"/wp-content/plugins/*\",\n                                \"/wp-content/themes/twentytwentyfive/*\",\n                                \"/*\\\\\\\\?(.+)\",\n                                \"/cart/*\"\n                            ]\n                        }\n                    },\n                    {\n                        \"not\": {\n                            \"selector_matches\": \"a[rel~=\\\\\"nofollow\\\\\"]\"\n                        }\n                    },\n                    {\n                        \"not\": {\n                            \"selector_matches\": \".no-prefetch, .no-prefetch a\"\n                        }\n                    }\n                ]\n            },\n            \"eagerness\": \"conservative\"\n        }\n    ],\n    \"prerender\": [\n        {\n            \"source\": \"list\",\n            \"urls\": [\n                \"/next/\"\n            ]\n        }\n    ]\n}'",
+ "error": null
+}

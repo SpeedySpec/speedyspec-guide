@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WP_Term',\n  1 => 1,\n  2 => \n  array (\n    0 => 'term_id',\n    1 => 'name',\n    2 => 'slug',\n    3 => 'term_group',\n    4 => 'term_taxonomy_id',\n    5 => 'taxonomy',\n    6 => 'description',\n    7 => 'parent',\n    8 => 'count',\n    9 => 'filter',\n  ),\n  3 => 'stdClass',\n  4 => false,\n  5 => false,\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_auto_add_pages_to_menu"
+---
+
+## Behaviour
+
+When a top-level page is first published, adds it to each menu in the `nav_menu_options` option's `auto_add` list that doesn't already have it; hooked to `transition_post_status`. <Ev source="wp:wp-includes/nav-menu.php#L1129-L1164" hash="7c077981c8abe67c2b0ad988b9a00f16affdd731457c5db1ac9f32ad882f672f"/>
+
+## Override
+
+Not overridable.

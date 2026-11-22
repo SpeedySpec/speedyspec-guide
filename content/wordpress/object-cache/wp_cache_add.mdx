@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_add"
+---
+
+## Behaviour
+
+Stores a value under a key in a group only when the key isn't cached yet, and returns whether it did. <Ev scenario="add_get" area="object-cache"/> <Ev scenario="add_existing_is_false" area="object-cache"/> While `wp_suspend_cache_addition()` is on, it adds nothing and returns `false`. <Ev scenario="suspend_addition" area="object-cache"/> The expiry is ignored by the built-in cache, which lives only for the request. <Ev scenario="expire_ignored" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

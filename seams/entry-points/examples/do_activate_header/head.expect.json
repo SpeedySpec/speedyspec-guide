@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "activate_wp_head\n",
+ "return": "NULL",
+ "error": null
+}

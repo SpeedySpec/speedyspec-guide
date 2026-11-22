@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "WP_Entity_Actions_Registry::register ",
+ "return": "false",
+ "error": null
+}

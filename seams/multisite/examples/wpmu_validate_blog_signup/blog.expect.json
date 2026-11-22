@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => 'example.org',\n  1 => '/teamblog/',\n  2 => false,\n  3 => \n  array (\n    0 => 'blogname',\n    1 => 'blog_title',\n  ),\n)",
+ "error": null
+}

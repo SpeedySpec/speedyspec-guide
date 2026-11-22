@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "wp_unregister_sidebar_widget legacy\n",
+ "return": "array (\n  0 => false,\n  1 => false,\n)",
+ "error": null
+}

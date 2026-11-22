@@ -1,0 +1,11 @@
+---
+symbol: "function:plugin_basename"
+---
+
+## Behaviour
+
+A plugin file's path relative to the plugins folder or the must-use plugins folder, with forward slashes and no leading or trailing slash. A file under a symlinked plugin folder is first mapped back through `wp_plugin_paths`. A file outside both folders keeps its path, minus the leading slash. <Ev source="wp:wp-includes/plugin.php#L790-L811" hash="cfbfe2e6af041432939d04d7e81c793369843d01f70e2990a5c05ed7dbe3f04d"/>
+
+## Override
+
+Not overridable.

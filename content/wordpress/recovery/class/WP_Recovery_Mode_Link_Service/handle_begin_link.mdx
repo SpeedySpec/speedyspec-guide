@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Recovery_Mode_Link_Service::handle_begin_link"
+---
+
+On `wp-login.php` with `action=enter_recovery_mode`, `rm_token` and `rm_key`: validates the key (stopping with `wp_die()` when it fails), sets the session cookie, and redirects to the login page with `action=entered_recovery_mode`. Any other request is left alone. <Ev source="wp:wp-includes/class-wp-recovery-mode-link-service.php#L73-L97" hash="6055f64fe4090ee86bcf7707c688e07f806076759072bf8fbf92d8c7adf8ec77"/>

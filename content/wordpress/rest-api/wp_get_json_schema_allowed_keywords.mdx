@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_json_schema_allowed_keywords"
+---
+
+## Behaviour
+
+The JSON Schema keywords a profile allows clients to see: rest-api, the REST keywords, or draft-04, those plus $schema, $ref, required, allOf and the rest; filtered by wp_json_schema_allowed_keywords. <Ev source="wp:wp-includes/json-schema.php#L32-L69" hash="b9f683f8665de603805da9c654bde41f91be4c3f57e7b3d06f65f155cff4c6b9"/>
+
+## Override
+
+`wp_json_schema_allowed_keywords` filters it.

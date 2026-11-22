@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"site-description\">Just a guide</div><!-- .site-description -->'",
+ "error": null
+}

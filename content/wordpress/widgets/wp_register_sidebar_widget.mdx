@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_register_sidebar_widget"
+---
+
+## Behaviour
+
+Registers a widget by ID with an output callback and options (the class name defaults to the callback); an empty callback removes it. A widget already registered is kept until `widgets_init` has fired; old callbacks no longer defined are dropped with their controls. <Ev source="wp:wp-includes/widgets.php#L396-L435" hash="d7d65eb680904b11aa577a4efea7f7a6d267e9a30df990ce5894da23d4b34cf0"/>
+
+## Override
+
+`wp_register_sidebar_widget` fires as it is registered.

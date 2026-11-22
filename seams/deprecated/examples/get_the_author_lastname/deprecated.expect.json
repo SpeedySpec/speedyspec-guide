@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Admin',\n  1 => 'deprecated get_the_author_lastname since 2.8.0, use get_the_author_meta(\\'last_name\\')',\n)",
+ "error": null
+}

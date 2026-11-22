@@ -1,0 +1,11 @@
+---
+symbol: "function:wpmu_validate_blog_signup"
+---
+
+## Behaviour
+
+Checks a new site's name and title: lowercase letters and digits, at least 4 characters, not reserved or taken, and a title given; wpmu_validate_blog_signup filters the result. <Ev source="wp:wp-includes/ms-functions.php#L639-L786" hash="57677de51f1760778499cdac518bcc8f8d43789600ed06b6323e48a73ed3c430"/>
+
+## Override
+
+`minimum_site_name_length`, `newblogname`, `wpmu_validate_blog_signup` filter it.

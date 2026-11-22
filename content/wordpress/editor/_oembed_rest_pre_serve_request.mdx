@@ -1,0 +1,11 @@
+---
+symbol: "function:_oembed_rest_pre_serve_request"
+---
+
+## Behaviour
+
+On `rest_pre_serve_request`: serves the oEmbed endpoint as XML when `format=xml` is asked for, ending with a 501 without SimpleXML; any other request is left to the REST server. <Ev source="wp:wp-includes/embed.php#L787-L821" hash="f81e8568d322d6cc932565cb7ac940b68ecf4d13ea033d50062130476a06587a"/>
+
+## Override
+
+Not overridable.

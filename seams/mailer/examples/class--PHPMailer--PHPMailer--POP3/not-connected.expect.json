@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => \n  array (\n    0 => 'Not connected to POP3 server',\n  ),\n)",
+ "error": null
+}

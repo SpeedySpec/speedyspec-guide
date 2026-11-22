@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_enqueue_global_styles_custom_css since 6.7.0, use wp_enqueue_global_styles',\n)",
+ "error": null
+}

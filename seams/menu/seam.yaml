@@ -4,4 +4,43 @@ ported: false
 files:
   - 'wp-includes/class-wp-navigation-fallback.php'
   - 'wp-includes/nav-menu.php'
-wordpress: []
+# Loaded before each example on the WordPress side; its setup recreates WordPress's tables in MySQL.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-error.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/cache-compat.php
+  - wp-includes/class-wpdb.php
+  - wp-includes/link-template.php
+  - wp-includes/class-wp-post-type.php
+  - wp-includes/post.php
+  - wp-includes/class-wp-taxonomy.php
+  - wp-includes/theme.php
+  - wp-includes/taxonomy.php
+  - wp-includes/class-wp-term-query.php
+  - wp-includes/class-wp-meta-query.php
+  - wp-includes/meta.php
+  - wp-includes/class-wp-term.php
+  - wp-includes/class-wp-query.php
+  - wp-includes/class-wp-list-util.php
+  - wp-includes/class-wp-tax-query.php
+  - wp-includes/user.php
+  - wp-includes/comment.php
+  - wp-includes/class-wp-post.php
+  - wp-includes/revision.php
+  - wp-includes/class-wp-theme.php
+  - wp-includes/class-wp-rewrite.php
+  - wp-includes/rewrite.php
+  - wp-includes/cron.php
+  - wp-includes/nav-menu.php
+  - wp-includes/class-wp-navigation-fallback.php
+setup: setup.php
+mysql: true

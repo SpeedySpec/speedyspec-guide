@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "is_main_blog is deprecated since 3.0.0 for is_main_site()\n",
+ "return": "true",
+ "error": null
+}

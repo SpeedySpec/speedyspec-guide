@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_replace"
+---
+
+## Behaviour
+
+Stores a value only when the key is already cached, and returns whether it did. <Ev scenario="replace_missing_is_false" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

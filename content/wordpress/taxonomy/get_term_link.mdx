@@ -1,0 +1,11 @@
+---
+symbol: "function:get_term_link"
+---
+
+## Behaviour
+
+A term's archive URL: through the taxonomy's permalink structure when it has one (with parents for hierarchical ones), else a query string; term_link and the taxonomy's own link filters apply. <Ev source="wp:wp-includes/taxonomy.php#L4839-L4940" hash="42b15dd9e3fa095c699683984a794156a7cc2135e2b483514779f41b971cbfc6"/>
+
+## Override
+
+`pre_term_link`, `tag_link`, `category_link`, `term_link` filter it.

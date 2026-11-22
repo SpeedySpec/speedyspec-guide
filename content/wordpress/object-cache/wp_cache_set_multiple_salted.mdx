@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_set_multiple_salted"
+---
+
+## Behaviour
+
+Stores several values with one salt in one group, through `wp_cache_set_multiple()`. <Ev source="wp:wp-includes/cache-compat.php#L303-L313" hash="24b1474f248ea7a6e38ceade0a4610e8f8240ac64c8c74b2eaa24f950898ef58"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "split_shared_term post_tag\n",
+ "return": "array (\n  0 => true,\n  1 => true,\n  2 => false,\n)",
+ "error": null
+}

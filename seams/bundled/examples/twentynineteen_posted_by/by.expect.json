@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<span class=\"byline\"><svg class=\"svg-icon\" width=\"16\" height=\"16\" aria-hidden=\"true\" role=\"img\" focusable=\"false\" viewBox=\"0 0 24 24\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\u2026</svg><span class=\"screen-reader-text\">Posted by</span><span class=\"author vcard\"><a class=\"url fn n\" href=\"http://example.org/?author=1\">Admin</a></span></span>'",
+ "error": null
+}

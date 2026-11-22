@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<ul><li class=\"first\">a</li><li>b</li></ul>'",
+ "error": null
+}

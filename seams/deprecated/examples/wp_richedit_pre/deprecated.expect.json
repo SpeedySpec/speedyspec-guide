@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '&lt;p&gt;Fish &amp;#038; \"Chips\" &lt;b&gt;here&lt;/b&gt;&lt;/p&gt;\n',\n  1 => 'deprecated wp_richedit_pre since 4.3.0, use format_for_editor()',\n)",
+ "error": null
+}

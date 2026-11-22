@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "<!-- before empty -->",
+ "return": "array (\n  0 => '<!-- before side --><li id=\"search-2\" class=\"widget widget_search\"><h2 class=\"widgettitle\">Find</h2> <form role=\"search\" method=\"get\" id=\"searchform\" class=\"searchform\" action=\"http://example.org/\"> <div> <label class=\"screen-reader-text\" for=\"s\">Search for:</label> <input type=\"text\" value=\"\" name=\"s\" id=\"s\" /> <input type=\"submit\" id=\"searchsubmit\" value=\"Search\" /> </div> </form></li> <li id=\"text-3\" class=\"widget widget_text\"><h2 class=\"widgettitle\">Hi</h2> <div class=\"textwidget\">Hello there</div> </li>',\n  1 => false,\n)",
+ "error": null
+}

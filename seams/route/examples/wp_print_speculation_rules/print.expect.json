@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "(nothing with plain permalinks)\n",
+ "return": "array (\n  0 => true,\n  1 => true,\n)",
+ "error": null
+}

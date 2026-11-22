@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_map_nav_menu_locations"
+---
+
+## Behaviour
+
+Maps old menu locations to the registered ones: locations of the same slug keep their menu, a single old location moves to a single new one, and otherwise slugs in the same common group (`primary`, `menu-1`, `main`, `header`, `navigation`, `top`; `secondary`, `menu-2`, `footer`, `subsidiary`, `bottom`; `social`) are paired. New locations that aren't registered are dropped. <Ev source="wp:wp-includes/nav-menu.php#L1224-L1312" hash="bd20d5cab32ffc69412209497796ed04c2d1110f0457fbe97508357acd2c5d13"/>
+
+## Override
+
+Not overridable.

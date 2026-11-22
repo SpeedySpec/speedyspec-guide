@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'deprecated gd_edit_image_support since 3.5.0, use wp_image_editor_supports()',\n)",
+ "error": null
+}

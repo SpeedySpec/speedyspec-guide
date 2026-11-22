@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "Bonjour\nA &quot;q&quot;\n&lt;b&gt;\nPublier",
+ "return": "NULL",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:ms_site_check"
+---
+
+## Behaviour
+
+Lets a request for a site through, or stops it: deleted sites (410), inactive sites and archived or spam sites, each with a drop-in page when there is one; super admins always pass, and ms_site_check can answer. <Ev source="wp:wp-includes/ms-load.php#L74-L127" hash="2d0f6c0f47f3e44c0ee678bbf82ebb525bbf3e92b0542682e783bb697ef4ab57"/>
+
+## Override
+
+`ms_site_check` filters it.

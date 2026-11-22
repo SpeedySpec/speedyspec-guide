@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'CapitalDifferentialD',\n  1 => 'Abc',\n  2 => 'Cap',\n  3 => 'Ab',\n)",
+ "error": null
+}

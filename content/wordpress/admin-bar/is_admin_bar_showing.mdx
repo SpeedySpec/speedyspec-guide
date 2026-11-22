@@ -1,0 +1,11 @@
+---
+symbol: "function:is_admin_bar_showing"
+---
+
+## Behaviour
+
+Whether the admin bar shows. Never for XML-RPC, Ajax, iframes, JSON requests or embeds; always in the admin. On the front end it follows `show_admin_bar()`, or else shows for a logged-in user, outside the login page, whose preference allows it. <Ev source="wp:wp-includes/admin-bar.php#L1483-L1521" hash="ff51186d330dcbc00922df80e53235a658fc53c7360470f784d3c195affdedef"/>
+
+## Override
+
+`show_admin_bar` filters the answer.

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_signon"
+---
+
+## Behaviour
+
+Logs a user in from credentials (or the posted log and pwd): authenticates through authenticate, sets the auth cookies, fires wp_login, and returns the user or a WP_Error. <Ev source="wp:wp-includes/user.php#L41-L141" hash="ea03a9a81f792a9d9c60778ae76a375ba0b8a2ff02edbbae5c1fc3ef560c7f6d"/>
+
+## Override
+
+`secure_signon_cookie` filters it; `wp_authenticate`, `wp_login` fire.

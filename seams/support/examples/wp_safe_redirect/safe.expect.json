@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "to http://example.org/wp-admin/\nto http://example.org/ok\n",
+ "return": "'done'",
+ "error": null
+}

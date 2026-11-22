@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "edited_category\n",
+ "return": "array (\n  0 => \n  array (\n    0 => 'term_id',\n    1 => 'term_taxonomy_id',\n  ),\n  1 => 'Local News',\n  2 => 'local',\n  3 => 'Near',\n  4 => 'duplicate_term_slug',\n  5 => 'invalid_term',\n)",
+ "error": null
+}

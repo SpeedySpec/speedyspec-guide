@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "doing_it_wrong: WP_Abilities_Registry::register: The ability args should provide a valid `ability_class` that extends WP_Ability.\ndoing_it_wrong: WP_Abilities_Registry::register: Ability \"guide/sub\" is already registered.\n",
+ "return": "array (\n  0 => 'Guide_Ability',\n  1 => \n  array (\n    0 => 'guide/sub',\n  ),\n  2 => false,\n)",
+ "error": null
+}

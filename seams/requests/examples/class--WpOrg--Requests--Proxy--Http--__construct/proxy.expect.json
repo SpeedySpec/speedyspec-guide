@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'proxy.example:8080',\n  1 => 'http://example.org/x',\n  2 => 'Proxy-Authorization: Basic dTpw\r\n',\n  3 => 'u:p',\n  4 => true,\n  5 => 'WpOrg\\\\Requests\\\\Proxy\\\\Http::__construct() expects an array with exactly one element or exactly three elements, 2 given',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '/blog\\\\+1/a/*',\n  1 => '/blog\\\\+1/a/*',\n  2 => '/wp-content/x',\n  3 => '/x',\n  4 => \n  array (\n    0 => 'home',\n    1 => 'site',\n    2 => 'uploads',\n    3 => 'content',\n    4 => 'plugins',\n    5 => 'template',\n    6 => 'stylesheet',\n  ),\n  5 => 'a\\\\+b\\\\(c\\\\)\\\\*',\n)",
+ "error": null
+}

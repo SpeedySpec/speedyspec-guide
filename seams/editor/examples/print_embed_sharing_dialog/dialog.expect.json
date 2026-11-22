@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"wp-embed-share-dialog hidden\" role=\"dialog\" aria-label=\"Sharing options\"> <div class=\"wp-embed-share-dialog-content\"> <div class=\"wp-embed-share-dialog-text\"> <ul class=\"wp-embed-share-tabs\" role=\"tablist\"> <li class=\"wp-embed-share-tab-button wp-embed-share-tab-button-wordpress\" role=\"presentation\"> <button type=\"button\" role=\"tab\" aria-controls=\"wp-embed-share-tab-wordpress-ID-RAND\" aria-selected=\"true\" tabindex=\"0\">WordPress Embed</button> </li> <li class=\"wp-embed-share-tab-button wp-embed-share-tab-button-html\" role=\"presentation\"> <button type=\"button\" role=\"tab\" aria-controls=\"wp-embed-share-tab-html-ID-RAND\" aria-selected=\"false\" tabindex=\"-1\">HTML Embed</button> </li> </'",
+ "error": null
+}

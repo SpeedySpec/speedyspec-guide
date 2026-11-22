@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_validate_user_request_key"
+---
+
+## Behaviour
+
+Checks a request's confirmation key: missing, expired (after a day, user_request_key_expiration) or wrong keys and requests not pending are WP_Errors. <Ev source="wp:wp-includes/user.php#L5125-L5171" hash="74b5e73e7f7de62d17b6e0afe414a8844833b9a0f9a89cbf72f1ea4c4445cc07"/>
+
+## Override
+
+`user_request_key_expiration` filters it.

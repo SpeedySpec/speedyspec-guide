@@ -1,0 +1,11 @@
+---
+symbol: "function:redirect_canonical"
+---
+
+## Behaviour
+
+Redirects a request to its canonical URL with a 301, or, with `$do_redirect` false, returns that URL. The canonical URL adds or removes the trailing slash, puts the home host and scheme back, turns query URLs into pretty ones, and so on. Non-`GET` requests, the admin, searches, previews, trackbacks, favicons and random content are left alone. A URL that only differs by its fragment isn't redirected. <Ev source="wp:wp-includes/canonical.php#L44-L859" hash="d0530f3427f8d18dcf67f9087c69b5483fe2eb42523683ca2e122f8bd5a580de"/>
+
+## Override
+
+`redirect_canonical` filters the URL; false cancels the redirect.

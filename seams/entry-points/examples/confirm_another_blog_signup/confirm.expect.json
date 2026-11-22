@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'<h2> The site <a href=\"http://example.org/second/\">Second</a> is yours. </h2> <p> <a href=\"http://example.org/second/\">example.org/second</a> is your new site. <a href=\"http://example.org/second/wp-login.php\">Log in</a> as &#8220;ada&#8221; using your existing password. </p> <!-- signup_finished -->'",
+ "error": null
+}

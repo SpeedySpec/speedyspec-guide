@@ -1,0 +1,5 @@
+---
+symbol: "method:Text_Diff::_check"
+---
+
+Checks a diff against the lines it came from. It throws a `Text_Exception` when the edits don't rebuild both texts, when the reversed diff doesn't rebuild them the other way round, or when two edits in a row are of the same kind. Otherwise it returns `true`. <Ev source="wp:wp-includes/Text/Diff.php#L237-L263" hash="d55656fb8794b53992d542e9bbca1d2918bae0f771f93e31b3b613d03d1ed19d"/>

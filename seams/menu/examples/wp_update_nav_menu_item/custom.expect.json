@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "wp_add_nav_menu_item 1\nwp_update_nav_menu_item 1\nwp_add_nav_menu_item 2\nwp_update_nav_menu_item 2\n",
+ "return": "array (\n  0 => \n  array (\n    '_menu_item_classes' => 'a:2:{i:0;s:3:\"one\";i:1;s:3:\"two\";}',\n    '_menu_item_menu_item_parent' => '0',\n    '_menu_item_object' => 'custom',\n    '_menu_item_object_id' => '1',\n    '_menu_item_target' => '',\n    '_menu_item_type' => 'custom',\n    '_menu_item_url' => 'http://example.org/',\n    '_menu_item_xfn' => '',\n  ),\n  1 => 0,\n  2 => 2,\n  3 => 'draft',\n  4 => true,\n)",
+ "error": null
+}

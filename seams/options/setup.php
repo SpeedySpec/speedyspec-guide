@@ -102,6 +102,16 @@ if (GUIDE_MULTISITE)
     ]);
 }
 
+// wpdb falls back to loading translations when it can't connect, which hides why; say so plainly instead.
+try
+{
+    $guide_probe = mysqli_connect($guide_db['host'] ?? 'localhost', DB_USER, DB_PASSWORD, DB_NAME, (int) ($guide_db['port'] ?? 3306));
+    mysqli_close($guide_probe);
+}
+catch (mysqli_sql_exception $guide_error)
+{
+    throw new RuntimeException('cannot connect to the MySQL database in GUIDE_MYSQL_URL: ' . $guide_error->getMessage());
+}
 $GLOBALS['wpdb'] = new wpdb(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
 $GLOBALS['wpdb']->set_prefix('guide_');
 if (GUIDE_MULTISITE)
@@ -157,4 +167,4 @@ add_filter('wp_die_handler', static fn () => 'guide_wp_die');
 // The one line of default-filters.php the option functions depend on.
 add_filter('wp_default_autoload_value', 'wp_filter_default_autoload_value_via_option_size', 5, 4);
 
-unset($guide_url, $guide_db, $guide_name, $guide_value);
+unset($guide_url, $guide_db, $guide_name, $guide_value, $guide_probe);

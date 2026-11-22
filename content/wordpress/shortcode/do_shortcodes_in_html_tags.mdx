@@ -1,0 +1,13 @@
+---
+symbol: "function:do_shortcodes_in_html_tags"
+---
+
+## Behaviour
+
+Runs the given shortcodes inside HTML tags, where `do_shortcode()`'s regular expression won't. A shortcode that starts an attribute's value before any quote is run as it is. One inside a quoted value is run, and its output is kept only if `wp_kses_one_attr()` still allows the attribute. Every bracket left in a tag is escaped as `&#91;` or `&#93;`, so `do_shortcode()` doesn't run it; `unescape_invalid_shortcodes()` puts them back. <Ev source="wp:wp-includes/shortcodes.php#L475-L574" hash="1549b74e0d1cd236a80f9463afcc1e99ce8906304d61270ee29a4dc43409170c"/>
+
+With `$ignore_html`, and in comments and CDATA, the brackets are escaped without running anything. <Ev source="wp:wp-includes/shortcodes.php#L475-L574" hash="1549b74e0d1cd236a80f9463afcc1e99ce8906304d61270ee29a4dc43409170c"/>
+
+## Override
+
+Not overridable.

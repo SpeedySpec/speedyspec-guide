@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'See <a href=\"https://example.com\" rel=\"nofollow\">https://example.com</a> and <a href=\"http://www.example.net\" rel=\"nofollow\">http://www.example.net</a> or mail <a href=\"mailto:me@example.com\">me@example.com</a>'",
+ "error": null
+}

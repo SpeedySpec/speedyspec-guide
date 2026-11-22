@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'software_name',\n    1 => 'software_version',\n    2 => 'blog_url',\n    3 => 'home_url',\n    4 => 'login_url',\n    5 => 'admin_url',\n    6 => 'image_default_link_type',\n    7 => 'image_default_size',\n    8 => 'image_default_align',\n    9 => 'template',\n    10 => 'stylesheet',\n    11 => 'post_thumbnail',\n    12 => 'guide',\n  ),\n  1 => \n  array (\n    0 => 'time_zone',\n    1 => 'blog_title',\n    2 => 'blog_tagline',\n    3 => 'date_format',\n    4 => 'time_format',\n    5 => 'users_can_register',\n    6 => 'thumbnail_size_w',\n    7 => 'thumbnail_size_h',\n    8 => 'thumbnail_crop',\n    9 => 'medium_size_w',\n    10 => 'medium_size_h',\n    11 => 'medium_large_size_w',\n    12 => 'medium_large_size_h',\n    13 => 'large_size_w',\n    14 => 'large_size_h',\n    15 => 'default_comment_status',\n    16 => 'default_ping_status',\n  ),\n  2 => \n  array (\n    'desc' => 'Software Version',\n    'readonly' => true,\n    'value' => '7.2',\n  ),\n  3 => \n  array (\n    'desc' => 'WordPress Address (URL)',\n    'readonly' => true,\n    'option' => 'siteurl',\n  ),\n)",
+ "error": null
+}

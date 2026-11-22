@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'<form id=\"setupform\" method=\"post\" action=\"wp-signup.php\"> <input type=\"hidden\" name=\"stage\" value=\"validate-blog-signup\" /> <input type=\"hidden\" name=\"user_name\" value=\"grace\" /> <input type=\"hidden\" name=\"user_email\" value=\"grace@example.org\" /> <label for=\"blogname\">Site Name (subdirectory only)</label><div class=\"wp-signup-blogname\"><span class=\"prefix_address\" id=\"prefix-address\">example.org/</span><input name=\"blogname\" type=\"text\" id=\"blogname\" value=\"grace\" maxlength=\"60\" autocomplete=\"off\" required=\"required\" aria-describedby=\"prefix-address\" /></div><p>(<strong>Your address will be example.org/sitename.</strong>) Must be at least 4 characters, letters and numbers only. It cannot be'",
+ "error": null
+}

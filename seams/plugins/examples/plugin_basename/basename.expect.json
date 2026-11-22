@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'shop/shop.php',\n  1 => 'cache.php',\n  2 => 'linked/linked.php',\n  3 => 'shop/inc/a.php',\n  4 => 'elsewhere/x.php',\n)",
+ "error": null
+}

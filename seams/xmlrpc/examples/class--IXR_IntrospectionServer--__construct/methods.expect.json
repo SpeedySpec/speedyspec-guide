@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'system.getCapabilities',\n    1 => 'system.listMethods',\n    2 => 'system.multicall',\n    3 => 'system.methodSignature',\n    4 => 'system.methodHelp',\n  ),\n  1 => \n  array (\n    0 => 'string',\n    1 => 'string',\n  ),\n  2 => \n  array (\n    0 => 'xmlrpc',\n    1 => 'faults_interop',\n    2 => 'system.multicall',\n    3 => 'introspection',\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:do_enclose"
+---
+
+## Behaviour
+
+Adds enclosure meta for audio and video links in a post's content, after checking each link's headers; links already enclosed and those in pung are skipped. Here every request is blocked, so none are added. <Ev source="wp:wp-includes/functions.php#L913-L1003" hash="5b770a2fbbce2c6be75640159e6fbebad295c96e4c0ef69b43bf921605a90465"/>
+
+## Override
+
+`enclosure_links` filters it.

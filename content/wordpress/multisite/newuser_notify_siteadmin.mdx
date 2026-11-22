@@ -1,0 +1,11 @@
+---
+symbol: "function:newuser_notify_siteadmin"
+---
+
+## Behaviour
+
+Emails the network admin about a new user, when registration notifications are on; the message is filtered. WordPress sends it when the site or user is made, so here it goes twice. <Ev source="wp:wp-includes/ms-functions.php#L1549-L1592" hash="9c5cdd95c5224b515997f7034e50c04192c32b15fdc204dc0d5e864bd2c81744"/>
+
+## Override
+
+`newuser_notify_siteadmin` filters it.

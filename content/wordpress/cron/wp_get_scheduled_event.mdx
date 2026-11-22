@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_scheduled_event"
+---
+
+## Behaviour
+
+An event as an object (`hook`, `timestamp`, `schedule`, `args`, and `interval` for a recurring one): the next of the hook with these arguments, or the one at a timestamp. `false` when there is none or the timestamp isn't numeric. <Ev source="wp:wp-includes/cron.php#L792-L859" hash="6ac2a88f4091fde133bf53f71428351536c34a5438911d61b47e19eb5ea1df52"/>
+
+## Override
+
+`pre_get_scheduled_event` can answer instead.

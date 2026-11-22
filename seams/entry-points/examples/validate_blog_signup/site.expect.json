@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "\t<h2>\n\tCongratulations! Your new site, <a href='//example.org/graceblog/'>Grace</a>, is almost ready.\t</h2>\n\n\t<p>But, before you can start using your site, <strong>you must activate it</strong>.</p>\n\t<p>\n\tCheck your inbox at <strong>grace@example.org</strong> and click on the given link.\t</p>\n\t<p>If you do not activate your site within two days, you will have to sign up again.</p>\n\t<h2>Still waiting for your email?</h2>\n\t<p>If you have not received your email yet, there are a number of things you can do:</p>\n\t<ul id=\"noemail-tips\">\n\t\t<li><p><strong>Wait a little longer. Sometimes delivery of email can be delayed by processes outside of our control.</strong></p></li>\n\t\t<li><p>Check the junk or spam folder of your email client. Sometime emails wind up there by mistake.</p></li>\n\t\t<li>\n\t\tHave you entered your email correctly? You have entered grace@example.org, if it&#8217;s incorrect, you will not receive your email.\t\t</li>\n\t</ul>\n\t",
+ "return": "array (\n  0 => true,\n  1 => \n  array (\n    'domain' => 'example.org',\n    'path' => '/graceblog/',\n    'title' => 'Grace',\n    'user_login' => 'grace',\n    'meta' => \n    array (\n      'lang_id' => 1,\n      'public' => 0,\n      'source' => 'guide',\n    ),\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'path' => '/up/fonts',\n  'url' => 'http://x/up/fonts',\n  'subdir' => '',\n  'basedir' => '/up/fonts',\n  'baseurl' => 'http://x/up/fonts',\n  'error' => false,\n)",
+ "error": null
+}

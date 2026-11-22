@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => 'fr',\n  2 => \n  array (\n    0 => 'Article',\n  ),\n  3 => 'Mine',\n  4 => \n  array (\n    0 => 'fuzzy',\n  ),\n  5 => '%d \u00e9l\u00e9ments',\n)",
+ "error": null
+}

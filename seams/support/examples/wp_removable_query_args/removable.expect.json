@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'activate',\n  1 => 'activated',\n  2 => 'admin_email_remind_later',\n  3 => 'admin_email_updated',\n  4 => 'approved',\n  5 => 'core-major-auto-updates-saved',\n)",
+ "error": null
+}

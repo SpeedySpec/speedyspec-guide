@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated the_author_email since 2.8.0, use the_author_meta(\\'email\\') admin@example.org',\n)",
+ "error": null
+}

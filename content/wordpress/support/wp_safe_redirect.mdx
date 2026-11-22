@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_safe_redirect"
+---
+
+## Behaviour
+
+Redirects only to the site's own host or the allowed_redirect_hosts; any other location goes to the admin (or the fallback wp_safe_redirect_fallback gives). <Ev source="wp:wp-includes/pluggable.php#L1638-L1656" hash="69a10127e7dc7a952b09a4442cc38ff76160396e48565577667b2caa70b70c90"/>
+
+## Override
+
+`wp_safe_redirect_fallback` filters it.

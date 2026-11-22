@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Http::handle_redirects"
+---
+
+For the old transports: follows a response's `Location` on a redirect status, with one fewer redirect left and a `GET` after 302 or 303. No redirect gives `false`; none left gives a too-many-redirects `WP_Error`. <Ev source="wp:wp-includes/class-wp-http.php#L1075-L1117" hash="a66dcda79d26091477ce39bd6cb9be31447b6a81cdb9fcd46856094e51fdd588"/>

@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'<input type=\\'hidden\\' name=\\'signup_form_id\\' value=\"X\" /><input type=\"hidden\" id=\"_signup_form\" name=\"_signup_form\" value=\"X\" />'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '\"\"\n\"Line \\\\\"one\\\\\"\\\\n\"\n\"Line\\\\ttwo\"',\n  1 => 'Line \"one\"\nLine\ttwo',\n  2 => '# a\n# b',\n  3 => '#: A note',\n  4 => 'x',\n)",
+ "error": null
+}

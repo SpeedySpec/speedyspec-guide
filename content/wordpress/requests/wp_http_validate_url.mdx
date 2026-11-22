@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_http_validate_url"
+---
+
+## Behaviour
+
+The URL when it is safe to request, else `false`. It must be a non-numeric string with the `http` or `https` scheme, a host without credentials or the characters `:#?[]`, and a host that resolves; one other than the site's own may not be a loopback, private, reserved, link-local, multicast or test-network IPv4 address. A port must be 80, 443, 8080, or the home URL's own port for the site's host. <Ev source="wp:wp-includes/http.php#L561-L672" hash="b03cf84eef39c8e92f07c9413e93ff1755fee781adc667637534386df866d706"/>
+
+## Override
+
+`http_request_host_is_external` allows a host the address check refuses; `http_allowed_safe_ports` changes the ports.

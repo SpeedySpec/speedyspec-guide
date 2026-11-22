@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_resolve_numeric_slug_conflicts"
+---
+
+## Behaviour
+
+Decides whether date query vars from a URL are really a post with a numeric slug, such as `/2026/` for a post named `2026`. If the structure puts `%postname%` where the date part matched and such a post exists (with a matching date), the vars become that post's `name` and `page`. Without date vars or `%postname%`, the vars are returned as they are. <Ev source="wp:wp-includes/rewrite.php#L404-L498" hash="7c3cf7dd0ecf64ff0f37154f87203f74c21ce8bd5d89ef0374c1c026ef105b33"/>
+
+## Override
+
+Not overridable.

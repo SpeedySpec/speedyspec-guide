@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "generate_rewrite_rules\n",
+ "return": "array (\n  '^guide/?$' => 'index.php?guide=1',\n  'robots\\\\.txt$' => 'index.php?robots=1',\n  'favicon\\\\.ico$' => 'index.php?favicon=1',\n  'sitemap\\\\.xml' => 'index.php?sitemap=index',\n  '.*wp-(atom|rdf|rss|rss2|feed|commentsrss2)\\\\.php$' => 'index.php?feed=old',\n  '.*wp-app\\\\.php(/.*)?$' => 'index.php?error=403',\n)",
+ "error": null
+}

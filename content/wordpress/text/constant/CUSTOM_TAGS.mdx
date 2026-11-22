@@ -1,0 +1,7 @@
+---
+symbol: "constant:CUSTOM_TAGS"
+---
+
+## Behaviour
+
+When defined as true before `kses.php` loads, WordPress takes `$allowedposttags`, `$allowedtags`, `$allowedentitynames` and `$allowedxmlentitynames` as already set, rather than setting them; it is `false` by default. Using it is discouraged: the `wp_kses_allowed_html` filter does the same job. <Ev source="wp:wp-includes/kses.php#L51-L53" hash="e420562aa5f4f2359ec30616ec4dfd4f1fd20ea8154b1aef9e42361329298543"/>

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'# do_robotstxt User-agent: * Disallow: /wp-admin/ Allow: /wp-admin/admin-ajax.php'",
+ "error": null
+}

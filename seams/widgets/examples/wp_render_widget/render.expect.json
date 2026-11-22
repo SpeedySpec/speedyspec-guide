@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<li id=\"text-3\" class=\"widget widget_text\"><h2 class=\"widgettitle\">Hi</h2>\n\t\t\t<div class=\"textwidget\">Hello there</div>\n\t\t</li>\n',\n  1 => '',\n  2 => '',\n)",
+ "error": null
+}

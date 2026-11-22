@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "WP_Sitemaps_Renderer::get_sitemap_xml\n",
+ "return": "'<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"><url><loc>http://example.org/?a=1&amp;b=2</loc><lastmod>2026-01-02</lastmod><priority>0.5</priority></url></urlset>\n'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'core/details' => \n  array (\n    0 => 'arrow-icon-details',\n  ),\n  'core/post-terms' => \n  array (\n    0 => 'pill',\n  ),\n  'core/list' => \n  array (\n    0 => 'checkmark-list',\n  ),\n  'core/navigation-link' => \n  array (\n    0 => 'arrow-link',\n  ),\n  'core/heading' => \n  array (\n    0 => 'asterisk',\n  ),\n)",
+ "error": null
+}

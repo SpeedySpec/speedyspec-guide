@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Writes the guide.',\n  1 => 'deprecated get_the_author_description since 2.8.0, use get_the_author_meta(\\'description\\')',\n)",
+ "error": null
+}

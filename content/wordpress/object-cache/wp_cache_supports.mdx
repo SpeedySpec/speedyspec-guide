@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_supports"
+---
+
+## Behaviour
+
+Says whether the cache supports a feature: `add_multiple`, `set_multiple`, `get_multiple`, `delete_multiple`, `flush_runtime` and `flush_group` are `true` for the built-in cache, anything else `false`. <Ev scenario="supports_each_feature" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

@@ -1,0 +1,7 @@
+---
+symbol: "filter:option_ping_sites"
+---
+
+## Behaviour
+
+Fired by `get_option()` (as `option_{$option}`) for the ping services list; WordPress attaches `privacy_ping_filter()`, which gives no services when the site asks search engines not to index it. <Ev source="wp:wp-includes/default-filters.php#L300-L300" hash="08a15f2a9e1e69cbb0fdfd1d21311656f2ff20b5d840e72987a543ec77eb58f1"/>

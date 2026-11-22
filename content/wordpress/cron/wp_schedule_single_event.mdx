@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_schedule_single_event"
+---
+
+## Behaviour
+
+Schedules a one-off event: a hook to fire at a timestamp with arguments, stored in the `cron` option under the timestamp, the hook and an md5 of the arguments. It refuses a timestamp that isn't a positive number, and an event of the same hook and arguments within ten minutes of one already stored. Returns `true` when saved; failures are `false`, or `WP_Error`s with `$wp_error`. The key is made before `schedule_event` runs, so arguments that filter changes are stored under the original arguments' key. <Ev source="wp:wp-includes/cron.php#L50-L212" hash="cdc5e5918e61977809c0886febb1d215c06a23f4f00209f925c39edab2859c3f"/>
+
+## Override
+
+`pre_schedule_event` can answer instead of scheduling; `schedule_event` can change the event or refuse it with `false`.

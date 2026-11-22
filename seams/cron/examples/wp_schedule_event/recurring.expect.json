@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "2000000000 guide_cleanup {\"schedule\":\"daily\",\"args\":[],\"interval\":86400}\n2000000100 guide_cleanup {\"schedule\":\"daily\",\"args\":[],\"interval\":86400}\n",
+ "return": "array (\n  0 => true,\n  1 => true,\n  2 => 'invalid_schedule',\n)",
+ "error": null
+}

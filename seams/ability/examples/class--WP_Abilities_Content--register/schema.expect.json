@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'content',\n  1 => \n  array (\n    0 => 'where',\n    1 => 'fields',\n    2 => 'pagination',\n  ),\n  2 => \n  array (\n    0 => 'type',\n    1 => 'ids',\n    2 => 'slugs',\n    3 => 'status',\n    4 => 'author',\n    5 => 'parent',\n  ),\n  3 => \n  array (\n    0 => 'guide_note',\n  ),\n  4 => \n  array (\n    0 => 'type',\n  ),\n  5 => \n  array (\n    0 => 'items',\n    1 => 'pagination',\n  ),\n)",
+ "error": null
+}

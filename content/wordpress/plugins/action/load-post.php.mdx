@@ -1,0 +1,7 @@
+---
+symbol: "action:load-post.php"
+---
+
+## Behaviour
+
+Fired by the admin when the post edit screen loads (`load-{$pagenow}`); WordPress attaches `wp_set_up_cross_origin_isolation()`, which sends the isolation headers client-side media processing needs. <Ev source="wp:wp-includes/default-filters.php#L716-L716" hash="5fe38d3f58ad0d23da3207c4cc2722c121d4f4fd7d6beb22dfd002fe7c851490"/>

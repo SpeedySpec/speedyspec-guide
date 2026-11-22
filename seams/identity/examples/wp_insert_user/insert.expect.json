@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "user_register\n",
+ "return": "array (\n  0 => 'Ada Lovelace',\n  1 => 'ada',\n  2 => \n  array (\n    0 => 'author',\n  ),\n  3 => true,\n  4 => 'modern',\n  5 => 'existing_user_login',\n  6 => 'existing_user_email',\n  7 => 'empty_user_login',\n)",
+ "error": null
+}

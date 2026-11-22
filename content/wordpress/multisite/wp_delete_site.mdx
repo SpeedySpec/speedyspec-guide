@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_delete_site"
+---
+
+## Behaviour
+
+Deletes a site: wp_validate_site_deletion can refuse it with errors, wp_uninitialize_site drops its tables and files, then its row and meta go and wp_delete_site fires. Gives the deleted site, or an error for an unknown one. <Ev source="wp:wp-includes/ms-site.php#L212-L297" hash="5843b3f23cfb19f21aafeb83b63e1c4048a160f2e19ccd069eb223508e799868"/>
+
+## Override
+
+`wp_validate_site_deletion`, `delete_blog`, `wp_uninitialize_site`, `wp_delete_site`, `deleted_blog` fire.

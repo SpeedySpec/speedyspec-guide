@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'twentytwentyone/large-text',\n  1 => 'twentytwentyone/links-area',\n  2 => 'twentytwentyone/media-text-article-title',\n  3 => 'twentytwentyone/overlapping-images',\n  4 => 'twentytwentyone/two-images-showcase',\n  5 => 'twentytwentyone/overlapping-images-and-text',\n  6 => 'twentytwentyone/portfolio-list',\n  7 => 'twentytwentyone/contact-information',\n)",
+ "error": null
+}

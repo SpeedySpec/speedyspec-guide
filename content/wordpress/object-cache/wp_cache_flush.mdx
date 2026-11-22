@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_flush"
+---
+
+## Behaviour
+
+Empties every group of the cache and returns `true`. <Ev scenario="flush" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_sitemaps_get_server"
+---
+
+## Behaviour
+
+The sitemaps server, in the `$wp_sitemaps` global: created and initialized on first use, firing `wp_sitemaps_init` with it. <Ev source="wp:wp-includes/sitemaps.php#L22-L43" hash="6fa3111d253254273ef279d3d152ef17b2833d5c22d95bc66d109a781dc430f0"/>
+
+## Override
+
+`wp_sitemaps_init` is where providers are added or removed.

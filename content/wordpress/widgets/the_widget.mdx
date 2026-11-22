@@ -1,0 +1,11 @@
+---
+symbol: "function:the_widget"
+---
+
+## Behaviour
+
+Prints a registered widget class anywhere, with an instance (array or query string) and wrapper arguments; the wrapper gets the widget's class name. An unregistered class is reported with `_doing_it_wrong()`. <Ev source="wp:wp-includes/widgets.php#L1226-L1278" hash="58574d5ad14dd9cec268625fcb81face5aa9366cc8326669ab6712f66ab7b8c1"/>
+
+## Override
+
+`widget_display_callback` can change the instance or skip it with `false`; `the_widget` fires before it prints.

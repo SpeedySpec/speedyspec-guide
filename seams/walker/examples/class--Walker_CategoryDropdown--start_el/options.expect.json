@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'\t<option class=\"level-0\" value=\"1\">NEWS&nbsp;&nbsp;(1,200)</option>\n\t<option class=\"level-1\" value=\"2\" selected=\"selected\">&nbsp;&nbsp;&nbsp;LOCAL&nbsp;&nbsp;(3)</option>\n'",
+ "error": null
+}

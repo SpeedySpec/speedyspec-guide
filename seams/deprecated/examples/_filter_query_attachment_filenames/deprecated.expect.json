@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'where' => '',\n  ),\n  1 => 'deprecated _filter_query_attachment_filenames since 6.0.3, use add_filter( \"wp_allow_query_attachment_by_filename\", \"__return_true\" )',\n)",
+ "error": null
+}

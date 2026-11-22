@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'AND',\n  1 => \n  array (\n    'taxonomy' => 'category',\n    'terms' => \n    array (\n      0 => 3,\n    ),\n    'field' => 'term_id',\n    'operator' => 'IN',\n    'include_children' => true,\n  ),\n  2 => 'OR',\n  3 => 'AND',\n)",
+ "error": null
+}

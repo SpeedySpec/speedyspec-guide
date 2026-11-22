@@ -1,0 +1,7 @@
+---
+symbol: "filter:get_entity_view_config_root_site"
+---
+
+## Behaviour
+
+Fired by `wp_get_entity_view_config()` (as `get_entity_view_config_{$kind}_{$name}`) for the site settings entity; WordPress attaches `_wp_get_entity_view_config_root_site()` at priority 5, which sets the form with the title, description, logo and icon fields. <Ev source="wp:wp-includes/default-filters.php#L855-L855" hash="9920b05527b2cfd976ad139f473ea6563b5914678aaed5ec41c41b48b6b1d2a1"/>

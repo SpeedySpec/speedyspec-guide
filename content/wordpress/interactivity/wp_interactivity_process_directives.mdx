@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_interactivity_process_directives"
+---
+
+## Behaviour
+
+Runs the server side of the Interactivity API on markup: it reads the `data-wp-*` directives and applies the ones the server can, using the store's state and the elements' context. Markup without `data-wp-` is returned untouched. The client-side script does the rest in the browser. It is `WP_Interactivity_API::process_directives()`. <Ev source="wp:wp-includes/interactivity-api/interactivity-api.php#L39-L41" hash="9897f16fd92c2e65a418132160fed032ede23285ae064c7aebabfc21251565d3"/>
+
+## Override
+
+Directives are fixed; change the state, config or context they read.

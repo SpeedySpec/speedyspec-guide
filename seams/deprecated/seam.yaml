@@ -5,4 +5,8 @@ files:
   - 'wp-includes/class-json.php'
   - 'wp-includes/deprecated.php'
   - 'wp-includes/pluggable-deprecated.php'
-wordpress: []
+# WordPress is booted by the setup (see boot.php); the runner needs one file to load first.
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true

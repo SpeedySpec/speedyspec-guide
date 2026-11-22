@@ -16,6 +16,13 @@ describe('the WordPress API section', () => {
     expect(p.text('.seam-list .count')).toEqual(['2 of 5 documented', '0 of 2 documented']);
   });
 
+  test('test_guides_seam_hidden_from_seam_lists', async () => {
+    expect((await html(dist, '/wordpress/')).text('.seam-list a')).not.toContain('Guides');
+    expect((await html(dist, '/speedyspec/')).raw).not.toContain('/speedyspec/guides/');
+    expect((await html(dist, '/coverage/')).text('table.coverage a')).not.toContain('Guides');
+    expect((await html(dist, '/')).raw).not.toContain('/speedyspec/porting/guides/');
+  });
+
   test('a seam page has its introduction, diagram and members by role', async () => {
     const p = await html(dist, '/wordpress/hooks/');
     expect(p.text('h1')).toEqual(['Hooks']);
@@ -23,6 +30,14 @@ describe('the WordPress API section', () => {
     expect(p.count('figure.diagram picture')).toBe(1);
     expect(p.text('.members h2')).toEqual(['Register', 'Run', 'Classes and state', 'Other']);
     expect(p.text('.members .member a')).toEqual(['add_filter', 'apply_filters', 'WP_Hook', 'wp_filter', 'the_content']);
+  });
+
+  test('a_seam_page_links_the_apis_documented_elsewhere', async () => {
+    const p = await html(dist, '/wordpress/options/');
+    expect(p.text('.elsewhere a')).toEqual(['The Sodium extension']);
+    expect(p.raw).toContain('href="https://www.php.net/manual/en/book.sodium.php"');
+    expect(p.raw).toContain('sodium_compat is a pure-PHP polyfill of the extension.');
+    expect((await html(dist, '/wordpress/hooks/')).count('.elsewhere')).toBe(0);
   });
 
   test('a function page has every part, in order', async () => {

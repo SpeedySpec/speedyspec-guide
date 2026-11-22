@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_trigger_error"
+---
+
+## Behaviour
+
+Raises a PHP error with the function's name before the message, at a level (a notice by default), when WP_DEBUG is on; wp_trigger_error_always_run fires first and wp_trigger_error_trigger_error can stop it. <Ev source="wp:wp-includes/functions.php#L6307-L6374" hash="24a366134fbd92cc296cd691133694d771dcf66b55ad03c96cf723db63c870a2"/>
+
+## Override
+
+`wp_trigger_error_trigger_error` filters it; `wp_trigger_error_always_run`, `wp_trigger_error_run` fire.

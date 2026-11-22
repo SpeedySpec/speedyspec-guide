@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"posted-by\"><span class=\"posted-on\">Published <time class=\"entry-date published updated\" datetime=\"2026-03-01T09:00:00+00:00\">March 1, 2026</time></span><span class=\"byline\">By <a href rel=\"author\">Admin</a></span></div><div class=\"post-taxonomies\"><span class=\"cat-links\">Categorized as <a href rel=\"category\">Uncategorized</a> </span></div>'",
+ "error": null
+}

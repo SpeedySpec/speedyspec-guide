@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'word',\n  1 => 'deprecated _search_terms_tidy since 3.7.0',\n)",
+ "error": null
+}

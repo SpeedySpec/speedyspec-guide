@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_set_object_terms"
+---
+
+## Behaviour
+
+Sets an object's terms in a taxonomy by IDs, slugs or names, creating missing ones; with $append, keeps the others. Returns the term_taxonomy_ids; set_object_terms fires. <Ev source="wp:wp-includes/taxonomy.php#L2980-L3139" hash="1b800643307e7ddde71945268dde8bb69808310f432fef1c402cffcccd03c4f3"/>
+
+## Override
+
+`add_term_relationship`, `added_term_relationship`, `set_object_terms` fire.

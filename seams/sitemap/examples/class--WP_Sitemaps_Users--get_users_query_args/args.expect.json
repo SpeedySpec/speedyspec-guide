@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'has_published_posts' => \n  array (\n    0 => 'post',\n    1 => 'guide_note',\n  ),\n  'number' => 2000,\n  'guide' => true,\n)",
+ "error": null
+}

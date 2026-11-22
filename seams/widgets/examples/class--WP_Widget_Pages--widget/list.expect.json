@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<section class=\"widget_pages\"><h2>Pages</h2> <ul> <li class=\"page_item page-item-2\"><a href=\"http://example.org/?page_id=2\">About</a></li> </ul> </section>'",
+ "error": null
+}

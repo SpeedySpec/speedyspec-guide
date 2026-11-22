@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated add_custom_image_header since 3.4.0, use add_theme_support( \\'custom-header\\', $args )',\n)",
+ "error": null
+}

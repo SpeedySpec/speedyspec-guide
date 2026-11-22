@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => 'deprecated wp_skip_spacing_serialization since 6.0.0, use wp_should_skip_block_supports_serialization()',\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:_deprecated_class"
+---
+
+## Behaviour
+
+Reports a deprecated class: fires deprecated_class_run, then raises a notice when debugging allows it. <Ev source="wp:wp-includes/functions.php#L5919-L5976" hash="14ed075c7c6787efc0aa495ace2652d5be07d586a0d66865831e23d3b89d8146"/>
+
+## Override
+
+`deprecated_class_trigger_error` filters it; `deprecated_class_run` fires.

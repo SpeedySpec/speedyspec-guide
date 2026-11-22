@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Abilities_Content::execute_content_query"
+---
+
+Runs the query with `WP_Query`. A filter it can't honour is refused before querying, so the query never widens: a `where` that isn't an object, a type not exposed (`content_not_found`), `parent` on a flat type, and `author` on a type without authors or without a usable `id` or `slug`. So are `ids`, `slugs` or `status` with nothing valid left, and statuses no longer registered. An author slug naming no visible user matches no post. Posts are ordered newest first, ten a page or up to 100 when listing IDs or slugs, and each is withheld unless the user may read it. The totals come from the query and can count withheld posts. A page past the last is an error. <Ev source="wp:wp-includes/abilities/class-wp-abilities-content.php#L401-L698" hash="68cd58b848cd56f69644dc8816405365023cfc658c0d5b85818c9c321f90da7f"/>

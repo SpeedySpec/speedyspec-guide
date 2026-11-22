@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_register_entity_field_collection"
+---
+
+## Behaviour
+
+Registers a field collection, a folder, on `wp_entity_fields_api_init`. The folder's `index.php` returns its `origin`, `kind`, `name` and optional `module`, and each subfolder's `field.php` returns one field, whose `id` defaults to the subfolder's name. It returns whether every field in the collection was registered. A collection with a bad `index.php` is skipped and reported, as are fields that aren't arrays or repeat an id. It is `WP_Entity_Fields_Registry::register_collection()`. <Ev source="wp:wp-includes/entity-fields.php#L201-L203" hash="8e262b4ed4855d076662f14244c66dc62f7b6ffbfce4c586ec53cfa08076a415"/>
+
+## Override
+
+Not overridable.

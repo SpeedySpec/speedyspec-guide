@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'twentytwenty/call-to-action',\n  1 => 'twentytwenty/double-call-to-action',\n  2 => 'twentytwenty/event-details',\n  3 => 'twentytwenty/featured-content',\n  4 => 'twentytwenty/introduction',\n)",
+ "error": null
+}

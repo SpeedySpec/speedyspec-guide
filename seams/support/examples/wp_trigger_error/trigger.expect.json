@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "some_function: Something is off.\n",
+ "return": "false",
+ "error": null
+}

@@ -1,0 +1,5 @@
+---
+symbol: "method:wp_xmlrpc_server::mw_editPost"
+---
+
+The `metaWeblog.editPost` method: changes a post or page from the MetaWeblog struct, if the user may edit (and publish) it, firing `xmlrpc_call_success_mw_editPost`. It logs the user in first, answering a 403 fault to wrong credentials. <Ev source="wp:wp-includes/class-wp-xmlrpc-server.php#L5892-L6229" hash="1bf5b0ebf35368749768ab1d7a2a629fb34f60075eb706fa25618cfc99ae9436"/>

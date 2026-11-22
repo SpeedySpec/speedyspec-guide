@@ -1,0 +1,6 @@
+{
+ "sides": ["wordpress"],
+ "output": "Hello",
+ "return": null,
+ "error": null
+}

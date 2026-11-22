@@ -1,0 +1,4 @@
+---
+---
+
+New in WordPress 7.2 (trunk): the entity API describes, for each kind of entity (a post type such as `postType`/`page`, or `root`/`site`), the **fields** the editor's data views show and the **actions** they offer. Plugins register them on `wp_entity_fields_api_init` and `wp_entity_actions_api_init`, which the two registries fire the first time they are read after `init`; the fields and actions themselves render and run in script modules, which WordPress adds to the editor as dynamic imports. <Ev source="wp:wp-includes/entity-fields.php#L52-L54" hash="498ae8f2f452434de286144321aa20d833d23dda8d9d415880697e118253a560"/> <Ev source="wp:wp-includes/entity-actions.php#L44-L46" hash="2fc7fc912fcff5d60737df3f7a68b4d65d4da5a953511b10352a606b992ce6c8"/> WordPress 7.1.5 has none of this.

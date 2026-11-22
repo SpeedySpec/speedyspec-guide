@@ -1,0 +1,7 @@
+---
+symbol: "filter:user_{$field}"
+---
+
+## Behaviour
+
+Filters a field whose name lacks `user_` (such as `user_description`) when it is sanitized for display, with the user's ID and the context. <Ev source="wp:wp-includes/user.php#L2009-L2009" hash="433ced57b6acfd4caafdf69d5bb4e4cab6b87a9596e0761a7d7865afea596819"/>

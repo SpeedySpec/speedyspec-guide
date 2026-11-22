@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_https_detection_errors"
+---
+
+## Behaviour
+
+Requests the home page over `https`, verifying the certificate and retrying without verification to tell a bad certificate apart from no HTTPS, and gives the errors by code: a failed request, a status other than 200, or a page `wp_is_local_html_output()` says came from elsewhere. No errors gives an empty array. <Ev source="wp:wp-includes/https-detection.php#L94-L158" hash="c7da5f1fd507e8b5fe3b43d2269deafb07172c8485d94ac53e44c5e6119e0971"/>
+
+## Override
+
+`pre_wp_get_https_detection_errors` can answer with a `WP_Error` instead of requesting.

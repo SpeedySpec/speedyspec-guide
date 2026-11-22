@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'item',\n    1 => 'items',\n    'singular' => 'item',\n    'plural' => 'items',\n    'context' => NULL,\n    'domain' => NULL,\n  ),\n  1 => 'deprecated __ngettext_noop since 2.8.0, use _n_noop()',\n)",
+ "error": null
+}

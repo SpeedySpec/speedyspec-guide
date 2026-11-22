@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "WP_Entity_Fields_Registry::initialize ",
+ "return": "array (\n)",
+ "error": null
+}

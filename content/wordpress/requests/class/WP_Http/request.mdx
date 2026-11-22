@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Http::request"
+---
+
+Sends a request: merges the arguments over the defaults (`GET`, 5-second timeout, 5 redirects, HTTP 1.0, the WordPress user agent, `sslverify` on), runs `http_request_args` and `pre_http_request`, refuses an invalid or blocked URL, then sends it through `WpOrg\Requests\Requests` with the proxy and cookies, firing `http_api_debug` and `http_response`. A failure is a `WP_Error`; a non-blocking request gives an empty response. <Ev source="wp:wp-includes/class-wp-http.php#L170-L470" hash="d20f0a28ef4198a26db0dd515999ef8da740ac437853c2204b1bdd51dcd485cb"/>

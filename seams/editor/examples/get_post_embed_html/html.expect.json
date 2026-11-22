@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<blockquote class=\"wp-embedded-content\" data-secret=\"SECRET\"><a href=\"http://example.org/?p=1\">Hello</a></blockquote><iframe sandbox=\"allow-scripts\" security=\"restricted\" src=\"http://example.org/?p=1&#038;embed=true#?secret=SECRET\" width=\"600\" height=\"400\" title=\"&#8220;Hello&#8221; &#8212; Guide\" data-secret=\"SECRET\" frameborder=\"0\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\" class=\"wp-embedded-content\"></iframe>',\n  1 => false,\n)",
+ "error": null
+}

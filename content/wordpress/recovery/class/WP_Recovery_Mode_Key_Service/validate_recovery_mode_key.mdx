@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Recovery_Mode_Key_Service::validate_recovery_mode_key"
+---
+
+Checks a key against its token's record, removing the record whatever the outcome so it can't be tried again. Returns `true`, or a `WP_Error`: `token_not_found`, `invalid_recovery_key_format`, `hash_mismatch` or `key_expired`. <Ev source="wp:wp-includes/class-wp-recovery-mode-key-service.php#L82-L106" hash="9d3e9c73d79f2e2eb41ebbb4e7197cec435ce27a0255ebba7c1a1bd700ce6654"/>

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'id_base' => 'text',\n    'number' => 3,\n  ),\n  1 => \n  array (\n    'id_base' => 'legacy',\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'core/columns' => \n  array (\n    0 => 'twentytwentyone-columns-overlap',\n  ),\n  'core/cover' => \n  array (\n    0 => 'twentytwentyone-border',\n  ),\n  'core/group' => \n  array (\n    0 => 'twentytwentyone-border',\n  ),\n  'core/image' => \n  array (\n    0 => 'twentytwentyone-border',\n    1 => 'twentytwentyone-image-frame',\n  ),\n  'core/latest-posts' => \n  array (\n    0 => 'twentytwentyone-latest-posts-dividers',\n    1 => 'twentytwentyone-latest-posts-borders',\n  ),\n  'core/media-text' => \n  array (\n    0 => 'twentytwentyone-border',\n  ),\n  'core/separator' => \n  array (\n    0 => 'twentytwentyone-separator-thick',\n  ),\n  'core/social-links' => \n  array (\n    0 => 'twentytwentyone-social-icons-color',\n  ),\n)",
+ "error": null
+}

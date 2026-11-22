@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "widgets_init\n",
+ "return": "array (\n  0 => 'WP_Widget_Pages',\n  1 => 'WP_Widget_Calendar',\n  2 => 'WP_Widget_Archives',\n  3 => 'WP_Widget_Media_Audio',\n  4 => 'WP_Widget_Media_Image',\n  5 => 'WP_Widget_Media_Gallery',\n  6 => 'WP_Widget_Media_Video',\n  7 => 'WP_Widget_Meta',\n  8 => 'WP_Widget_Search',\n  9 => 'WP_Widget_Text',\n  10 => 'WP_Widget_Categories',\n  11 => 'WP_Widget_Recent_Posts',\n  12 => 'WP_Widget_Recent_Comments',\n  13 => 'WP_Widget_RSS',\n  14 => 'WP_Widget_Tag_Cloud',\n  15 => 'WP_Nav_Menu_Widget',\n  16 => 'WP_Widget_Custom_HTML',\n  17 => 'WP_Widget_Block',\n)",
+ "error": null
+}

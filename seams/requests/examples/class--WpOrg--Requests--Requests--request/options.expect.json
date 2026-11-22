@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 302,\n  1 => true,\n  2 => \n  array (\n    0 => 'http://example.org/?a=1&hooked=1',\n    1 => 'http://example.org/',\n  ),\n  3 => \n  array (\n    0 => 'DELETE',\n    1 => 'GET',\n  ),\n  4 => 'WpOrg\\\\Requests\\\\Requests::request(): Argument #1 ($url) must be of type string|Stringable, integer given',\n)",
+ "error": null
+}

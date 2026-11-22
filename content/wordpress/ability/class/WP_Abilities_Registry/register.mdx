@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Abilities_Registry::register"
+---
+
+Registers an ability. A name must be `namespace/name` in lowercase letters, digits and dashes, and not taken. After `wp_register_ability_args`, the properties must name a registered `category`; `ability_class`, when given, must extend `WP_Ability`. An `InvalidArgumentException` from the ability's constructor becomes a notice. Every refusal returns `null` with a notice. <Ev source="wp:wp-includes/abilities-api/class-wp-abilities-registry.php#L93-L206" hash="6c29f02b7959985469916f4bf61ad23e5b5adca44b23f94aff4305c356ad20a6"/>

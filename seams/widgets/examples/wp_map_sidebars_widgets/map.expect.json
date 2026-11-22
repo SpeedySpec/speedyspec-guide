@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'wp_inactive_widgets' => \n  array (\n    0 => 'd-2',\n    1 => 'c-2',\n  ),\n  'primary-sidebar' => \n  array (\n    0 => 'a-2',\n  ),\n  'footer-area' => \n  array (\n    0 => 'b-2',\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 8,\n  1 => 'server error. invalid method parameters',\n  2 => 'server error. wrong number of method parameters',\n  3 => 'Doubles a number',\n  4 => \n  array (\n    0 => 42,\n    1 => 42,\n  ),\n  5 => -32601,\n)",
+ "error": null
+}

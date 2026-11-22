@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "doing_it_wrong: WP_Abilities_Registry::get_instance: Ability API should not be initialized before the init action has fired.\ndoing_it_wrong: WP_Abilities_Registry::get_instance: Ability API should not be initialized before the init action has fired.\n",
+ "return": "array (\n  0 => NULL,\n  1 => false,\n)",
+ "error": null
+}

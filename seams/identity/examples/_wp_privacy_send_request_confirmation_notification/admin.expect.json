@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "email to admin@example.org: [Guide] Action Confirmed: Export Personal Data\n",
+ "return": "true",
+ "error": null
+}

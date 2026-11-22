@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'install_plugins' => true,\n    'view_site_health_checks' => true,\n  ),\n  1 => \n  array (\n  ),\n)",
+ "error": null
+}

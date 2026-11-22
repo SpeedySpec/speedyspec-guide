@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "get_dashboard_blog is deprecated since 3.1.0 for get_site()\n",
+ "return": "'1'",
+ "error": null
+}

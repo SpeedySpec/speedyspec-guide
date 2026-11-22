@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div id=\"saved\" class=\"notice notice-success is-dismissible\"><p>Saved.</p></div>'",
+ "error": null
+}

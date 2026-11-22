@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'Local' => 1,\n  'News' => 1,\n)",
+ "error": null
+}

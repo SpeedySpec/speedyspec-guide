@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'url(#wp-duotone-dark)',\n  1 => 'deprecated wp_render_duotone_filter_preset since 5.9.1, use wp_get_duotone_filter_property() deprecated wp_get_duotone_filter_property since 6.3.0 deprecated get_filter_css_property_value_from_preset since 6.3.0 deprecated get_filter_id_from_preset since 6.3.0',\n)",
+ "error": null
+}

@@ -1,4 +1,4 @@
-import type { ContentPage, Example, ExampleRun, GuideSymbol, Inventory, PageCitation, PageVersion, Seam, Side } from '@speedyspec-guide/domain';
+import type { ContentPage, Example, Guide, ExampleRun, GuideSymbol, Inventory, PageCitation, PageVersion, Seam, Side } from '@speedyspec-guide/domain';
 
 /** Extracts the inventory of a code base. */
 export interface SymbolSource {
@@ -51,6 +51,11 @@ export interface ContentPages {
   pages(): Promise<ContentPage[]>;
   citations(): Promise<PageCitation[]>;
   versions(): Promise<PageVersion[]>;
+}
+
+/** The developer guides under `content/guides/`. Repository. */
+export interface GuideSource {
+  guides(): Promise<Guide[]>;
 }
 
 /** A problem with an example file, reported rather than skipped. */

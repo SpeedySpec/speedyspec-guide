@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<script id=\"@guide/app-js-module\" src=\"https://cdn.example/app.js?ver=1.0\" type=\"module\"></script>'",
+ "error": null
+}

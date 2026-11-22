@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'object',\n  1 => \n  array (\n    0 => 'theme',\n    1 => 'colorScheme',\n    2 => 'colors',\n    3 => 'gradients',\n    4 => 'duotone',\n    5 => 'typography',\n    6 => 'spacing',\n    7 => 'layout',\n    8 => 'styleVariations',\n    9 => 'blockStyles',\n    10 => 'patterns',\n    11 => 'templates',\n    12 => 'templateParts',\n    13 => 'templatePartAreas',\n    14 => 'guidelines',\n  ),\n)",
+ "error": null
+}

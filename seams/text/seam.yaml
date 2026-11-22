@@ -4,7 +4,49 @@ ported: false
 files:
   - 'wp-includes/formatting.php'
   - 'wp-includes/kses.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side; there is no database (basic-setup.php supplies blog_charset).
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/class-wp-token-map.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/kses.php
+  - wp-includes/http.php
+  # links_add_base_url() makes URLs absolute with WP_Http.
+  - wp-includes/class-wp-http.php
+  - wp-includes/link-template.php
+  - wp-includes/shortcodes.php
+  # kses's default pre_kses hook reaches filter_block_content().
+  - wp-includes/class-wp-block-processor.php
+  - wp-includes/class-wp-block-parser-block.php
+  - wp-includes/class-wp-block-parser-frame.php
+  - wp-includes/class-wp-block-parser.php
+  - wp-includes/blocks.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  # WordPress's default hooks, such as sanitize_title_with_dashes() on sanitize_title.
+  - wp-includes/default-filters.php
+  # addslashes_gpc() and wp_kses_html_error(), deprecated.
+  - wp-includes/deprecated.php
+  - wp-includes/html-api/html5-named-character-references.php
+  - wp-includes/html-api/class-wp-html-attribute-token.php
+  - wp-includes/html-api/class-wp-html-span.php
+  - wp-includes/html-api/class-wp-html-doctype-info.php
+  - wp-includes/html-api/class-wp-html-text-replacement.php
+  - wp-includes/html-api/class-wp-html-decoder.php
+  - wp-includes/html-api/class-wp-html-tag-processor.php
+  - wp-includes/html-api/class-wp-html-unsupported-exception.php
+  - wp-includes/html-api/class-wp-html-active-formatting-elements.php
+  - wp-includes/html-api/class-wp-html-open-elements.php
+  - wp-includes/html-api/class-wp-html-token.php
+  - wp-includes/html-api/class-wp-html-stack-event.php
+  - wp-includes/html-api/class-wp-html-processor-state.php
+  - wp-includes/html-api/class-wp-html-processor.php
+setup: setup.php
 # Symbols whose file belongs to another seam.
 symbols:
   - "function:addslashes_gpc"

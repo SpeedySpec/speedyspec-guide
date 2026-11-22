@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'Usernames can only contain lowercase letters (a-z) and numbers.',\n    1 => 'Username must be at least 4 characters.',\n    2 => 'Please enter a valid email address.',\n  ),\n  1 => false,\n  2 => 'grace',\n)",
+ "error": null
+}

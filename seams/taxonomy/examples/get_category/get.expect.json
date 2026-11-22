@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WP_Term',\n  1 => 'Local',\n  2 => 2,\n  3 => 1,\n  4 => 'local',\n  5 => NULL,\n)",
+ "error": null
+}

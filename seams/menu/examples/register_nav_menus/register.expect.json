@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "doing_it_wrong_run register_nav_menus\n",
+ "return": "array (\n  0 => \n  array (\n    'primary' => 'Primary',\n    'footer' => 'Footer',\n    'social' => 'Social links',\n    0 => 'Bad location',\n  ),\n  1 => true,\n)",
+ "error": null
+}

@@ -1,0 +1,5 @@
+---
+symbol: "method:wp_xmlrpc_server::mw_newPost"
+---
+
+The `metaWeblog.newPost` method: creates a post or page from the MetaWeblog struct (title, description, more text, excerpt, keywords, categories, dates, slug, password, author, comment and ping status, format, thumbnail, custom fields and enclosure). It fires `xmlrpc_call_success_mw_newPost`. It logs the user in first, answering a 403 fault to wrong credentials. <Ev source="wp:wp-includes/class-wp-xmlrpc-server.php#L5497-L5822" hash="33db7c33821ba2cae0b369ee787c77c71f785a8c17f103f8fe5b5fea3d290c99"/>

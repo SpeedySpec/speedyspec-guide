@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_update_entity_fields"
+---
+
+## Behaviour
+
+Merges new settings into fields already registered, on `wp_entity_fields_api_init`, adding the origin to the field's `updatedBy` list, and returns the ids it updated. A field that isn't registered is skipped and reported. It is `WP_Entity_Fields_Registry::update()`. <Ev source="wp:wp-includes/entity-fields.php#L75-L77" hash="bed0338d13718964d062afe700791b8dfd962c502992814b2b89c0e77ed3f994"/>
+
+## Override
+
+Not overridable.

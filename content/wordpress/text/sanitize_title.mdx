@@ -1,0 +1,11 @@
+---
+symbol: "function:sanitize_title"
+---
+
+## Behaviour
+
+Makes a slug from a title: accents removed, then the `sanitize_title` filter, where WordPress hooks `sanitize_title_with_dashes()`. An empty result falls back to the second argument. <Ev source="wp:wp-includes/formatting.php#L2232-L2255" hash="96abcf38cd0a70a3f386489776219bf979ceb2a48ae58ab09acabaea6eff5766"/>
+
+## Override
+
+`sanitize_title` filters the slug; without its default callback, a title is only stripped of accents.

@@ -10,14 +10,14 @@ export interface ExamplesFile {
 
 /**
  * Runs every example on each side it declares (one runner call per side) and compares it with what it expects. A
- * seam with a setup file needs a MySQL database (`mysqlUrl`, which the runner reads from its environment as
+ * seam marked `mysql` needs a MySQL database (`mysqlUrl`, which the runner reads from its environment as
  * `GUIDE_MYSQL_URL`): without one this throws before running anything.
  */
 export async function runExamples(source: ExampleSource, runner: ExampleRunner, seams: Seam[], wordpressDir: string, mysqlUrl: string | null): Promise<ExamplesFile> {
   const { examples, problems } = await source.all();
   const seamOf = (id: string) => seams.find((s) => s.id === id);
   if (mysqlUrl === null) {
-    const needing = examples.find((e) => e.sides.includes('wordpress') && seamOf(e.seam)?.setup !== undefined);
+    const needing = examples.find((e) => e.sides.includes('wordpress') && seamOf(e.seam)?.mysql === true);
     if (needing) throw new Error(`the ${needing.seam} seam's examples need a MySQL database: set GUIDE_MYSQL_URL (see README)`);
   }
   const results: ExampleResult[] = [];

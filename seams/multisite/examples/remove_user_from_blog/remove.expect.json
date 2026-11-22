@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "remove_user_from_blog 2 2\n",
+ "return": "false",
+ "error": null
+}

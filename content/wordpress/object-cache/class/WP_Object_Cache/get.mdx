@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Object_Cache::get"
+---
+
+`wp_cache_get()`'s implementation: it returns the value, cloning an object, and counts a hit; or returns `false`, sets `$found` to `false` and counts a miss. <Ev scenario="found_flag" area="object-cache"/> <Ev scenario="get_miss_counts" area="object-cache"/>

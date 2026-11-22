@@ -1,0 +1,11 @@
+---
+symbol: "function:unregister_taxonomy"
+---
+
+## Behaviour
+
+Unregisters a taxonomy, removing its hooks and query variable; unregistered_taxonomy fires. A built-in taxonomy is refused, with the same error code as a missing one. <Ev source="wp:wp-includes/taxonomy.php#L615-L645" hash="c24d516580bb6e905bb49d1751231876a687b7677e681a0b2a7361c2a22ced2f"/>
+
+## Override
+
+`unregistered_taxonomy` fires.

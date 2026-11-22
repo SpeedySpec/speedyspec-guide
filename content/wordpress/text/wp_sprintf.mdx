@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_sprintf"
+---
+
+## Behaviour
+
+`sprintf()` with a hook: each `%` fragment, numbered or not, goes through `wp_sprintf` with its argument, and is formatted by `sprintf()` only when the filter leaves it. `%%` is a literal `%`. By default `wp_sprintf_l()` handles `%l`. <Ev source="wp:wp-includes/formatting.php#L5389-L5453" hash="fcdade58fd77168d43eb56ecf433c837037aac5a53f0c4fcfcc184715e162dda"/>
+
+## Override
+
+`wp_sprintf` can format any fragment.

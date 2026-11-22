@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'[audio src=\"https://example.org/song.mp3\" /]'",
+ "error": null
+}

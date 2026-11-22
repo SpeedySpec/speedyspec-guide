@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '',\n  1 => '<div class=\"wp-embed-comments\"> <a href=\"http://example.org/?p=1#respond\" target=\"_top\"> <span class=\"dashicons dashicons-admin-comments\"></span> 0 <span class=\"screen-reader-text\">Comments</span> </a> </div>',\n)",
+ "error": null
+}

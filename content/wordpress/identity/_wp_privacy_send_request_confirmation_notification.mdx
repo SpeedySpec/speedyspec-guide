@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_privacy_send_request_confirmation_notification"
+---
+
+## Behaviour
+
+After a request is confirmed, emails the site admin once (recording that it was sent). <Ev source="wp:wp-includes/user.php#L4316-L4518" hash="48012f3d400430e01ccbff236446e2dd35e6760dd772455aeb22c7d77d32324b"/>
+
+## Override
+
+`user_request_confirmed_email_to`, `user_request_confirmed_email_subject`, `user_confirmed_action_email_content`, `user_request_confirmed_email_content`, `user_request_confirmed_email_headers` filter it.

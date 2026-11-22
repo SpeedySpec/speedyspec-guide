@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_remote_post"
+---
+
+## Behaviour
+
+`wp_remote_request()` with the method `POST`; an array body is sent as form data. <Ev source="wp:wp-includes/http.php#L208-L211" hash="1c2f5efa4ef13210c9c84e64736d6ab882dbca8677a81cc91d5ecc757f9eeaec"/>
+
+## Override
+
+As for `wp_remote_request()`: `pre_http_request`, `http_request_args` and `http_response`.

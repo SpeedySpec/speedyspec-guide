@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_maybe_load_embeds"
+---
+
+## Behaviour
+
+Registers the built-in embed handlers: YouTube `/embed/` and `/v/` URLs, and audio and video file URLs by extension; hooked to `plugins_loaded`. <Ev source="wp:wp-includes/embed.php#L191-L224" hash="68647aa22d1e7c3b85bd8f8641e690187da23c06c79556d73b9097078026f63a"/>
+
+## Override
+
+`load_default_embeds` can turn it off; `wp_audio_embed_handler` and `wp_video_embed_handler` change the callbacks.

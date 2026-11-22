@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_should_replace_insecure_home_url"
+---
+
+## Behaviour
+
+Whether content should have the site's `http` home URLs replaced: the site uses HTTPS, the `https_migration_required` option is set, and the home and site URLs share a host. <Ev source="wp:wp-includes/https-migration.php#L20-L38" hash="802ac367f031fb3eab7ffe1aee185787de44a5b95748837955a2522d200aeafd"/>
+
+## Override
+
+`wp_should_replace_insecure_home_url` filters the answer.

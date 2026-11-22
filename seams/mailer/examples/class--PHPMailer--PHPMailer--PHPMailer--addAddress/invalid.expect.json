@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => true,\n  2 => \n  array (\n    0 => \n    array (\n      0 => 'Ok@Example.org',\n      1 => 'Ok',\n    ),\n  ),\n  3 => 'Invalid address:  (to): bad',\n)",
+ "error": null
+}

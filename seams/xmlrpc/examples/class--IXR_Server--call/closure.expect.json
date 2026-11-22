@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": null,
+ "error": "TypeError: function_exists(): Argument #1 ($function) must be of type string, Closure given"
+}

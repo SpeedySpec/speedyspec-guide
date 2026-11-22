@@ -1,0 +1,11 @@
+---
+symbol: "function:rest_handle_doing_it_wrong"
+---
+
+## Behaviour
+
+Hooked to doing_it_wrong_run while serving a REST request: with WP_DEBUG and headers not yet sent, reports the call in an X-WP-DoingItWrong header instead of a notice; otherwise does nothing. <Ev source="wp:wp-includes/rest-api.php#L795-L811" hash="3be9dc36686ea931a678da602e26597a4f913a359a49c7d384811d054529e9a9"/>
+
+## Override
+
+Not overridable.

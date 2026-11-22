@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Fish &amp; &quot;Chips&quot; &lt;b&gt;here&lt;/b&gt;',\n  1 => 'deprecated attribute_escape since 2.8.0, use esc_attr()',\n)",
+ "error": null
+}

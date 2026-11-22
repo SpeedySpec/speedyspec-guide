@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_interactivity_as_dangerous_html"
+---
+
+## Behaviour
+
+Marks a string as trusted HTML, as a `WP_Interactivity_Dangerous_HTML` token, so the `data-wp-html` directive renders it unescaped. A plain string given to `data-wp-html` isn't rendered. New in WordPress 7.2 (trunk). <Ev source="wp:wp-includes/interactivity-api/interactivity-api.php#L161-L163" hash="42d599d57a06534661465f3eeb9af8594ba6ae996a6f8ab5990454636df0227d"/>
+
+## Override
+
+Not overridable; the token carries the HTML only on the server.

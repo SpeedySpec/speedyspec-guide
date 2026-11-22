@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "WP_Ability_Categories_Registry\n",
+ "return": "array (\n  0 => true,\n  1 => \n  array (\n  ),\n  2 => false,\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_parse_url"
+---
+
+## Behaviour
+
+`parse_url()`, made consistent for protocol-relative URLs (`//host/path`) and relative URLs with a colon in the query; with a `PHP_URL_` component it gives that part, or `null` when missing. A URL that can't be parsed gives `false`. <Ev source="wp:wp-includes/http.php#L763-L789" hash="e8b1c5ca18f6d72fd3b43da38e49af3d4bd8c221c4137e147a3c1c43fa4ece88"/>
+
+## Override
+
+Not overridable.

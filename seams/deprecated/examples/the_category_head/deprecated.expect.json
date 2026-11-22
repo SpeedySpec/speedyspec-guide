@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated the_category_head since 0.71, use get_the_category_by_ID()',\n)",
+ "error": null
+}

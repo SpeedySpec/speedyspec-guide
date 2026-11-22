@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'mail',\n  1 => 'smtp',\n  2 => 'mail',\n)",
+ "error": null
+}

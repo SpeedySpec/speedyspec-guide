@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<script defer src=\"http://a.js\"></script>'",
+ "error": null
+}

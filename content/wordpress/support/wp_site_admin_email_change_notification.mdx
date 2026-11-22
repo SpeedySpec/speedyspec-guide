@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_site_admin_email_change_notification"
+---
+
+## Behaviour
+
+Emails the old admin address that the site's admin email changed, unless send_site_admin_email_change_email says no; the email is filtered by site_admin_email_change_email. <Ev source="wp:wp-includes/functions.php#L8461-L8547" hash="f298000634397b8c0337c039d4507e32e5889877806498ee1c9eade01c342678"/>
+
+## Override
+
+`send_site_admin_email_change_email`, `site_admin_email_change_email` filter it.

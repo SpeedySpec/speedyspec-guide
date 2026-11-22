@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "activated\n",
+ "return": "10",
+ "error": null
+}

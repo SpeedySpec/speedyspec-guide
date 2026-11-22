@@ -1,0 +1,11 @@
+---
+symbol: "function:update_metadata_by_mid"
+---
+
+## Behaviour
+
+Changes a meta row's value (and key when given) by its meta ID; false for a missing ID. <Ev source="wp:wp-includes/meta.php#L935-L1046" hash="2540da08e557ba53aafc8028e68763c5c7428fa82af3eb84eb4cad9266325062"/>
+
+## Override
+
+`update_{$meta_type}_metadata_by_mid` filters it; `update_{$meta_type}_meta`, `update_postmeta`, `updated_{$meta_type}_meta`, `updated_postmeta` fire.

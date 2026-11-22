@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "_wp_json_prepare_data is deprecated\n",
+ "return": "array (\n  0 => 1,\n)",
+ "error": null
+}

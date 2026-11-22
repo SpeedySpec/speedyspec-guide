@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_unschedule_event"
+---
+
+## Behaviour
+
+Removes one event by timestamp, hook and arguments, dropping a hook or timestamp left empty, and saves the events. Returns whether the save succeeded, so removing an event that isn't there fails. <Ev source="wp:wp-includes/cron.php#L499-L561" hash="77b66af222bb5655495ab5945b1b60c205c817b12a01be3a9863459542344dd2"/>
+
+## Override
+
+`pre_unschedule_event` can answer instead.

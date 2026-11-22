@@ -1,0 +1,11 @@
+---
+symbol: "function:sanitize_term_field"
+---
+
+## Behaviour
+
+Cleans one term field for a context: IDs and counts as integers; raw untouched; edit, db, display and attribute contexts run the `{$field}` filters `(pre_term_{$field}` for db, `term_{$field}` for display). <Ev source="wp:wp-includes/taxonomy.php#L1865-L2021" hash="459800c24c64db6774e287fe614720ee5c05179133f2468ccaab9773dee4288c"/>
+
+## Override
+
+`edit_term_{$field}`, `edit_{$taxonomy}_{$field}`, `pre_term_{$field}`, `pre_{$taxonomy}_{$field}`, `pre_category_nicename`, `term_{$field}_rss`, `{$taxonomy}_{$field}_rss`, `term_{$field}`, `{$taxonomy}_{$field}` filter it.

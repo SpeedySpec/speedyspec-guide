@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 405,\n  1 => 'XML-RPC services are disabled on this site.',\n)",
+ "error": null
+}

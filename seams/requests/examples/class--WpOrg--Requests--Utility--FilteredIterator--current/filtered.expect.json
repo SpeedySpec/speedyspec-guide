@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'A',\n    1 => 'B',\n  ),\n  1 => 'WpOrg\\\\Requests\\\\Utility\\\\FilteredIterator',\n  2 => \n  array (\n  ),\n)",
+ "error": null
+}

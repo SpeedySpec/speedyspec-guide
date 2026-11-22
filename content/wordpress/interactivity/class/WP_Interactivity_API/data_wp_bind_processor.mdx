@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Interactivity_API::data_wp_bind_processor"
+---
+
+Sets each `data-wp-bind--<attribute>` to its evaluated value, or removes the attribute when the value is `null` or `false`. Numbers are JSON-encoded, `aria-` and `data-` attributes get `true`/`false` as text, and values that aren't scalar are reported and removed. On `object` elements only safe attributes can be bound, and `data-wp-bind--on…` is removed and reported in favour of `data-wp-on--…`. <Ev source="wp:wp-includes/interactivity-api/class-wp-interactivity-api.php#L1243-L1405" hash="a4c8dd59ba29d2eab173e1842a7b715d995958a8db9e49e9262181de687ad923"/>

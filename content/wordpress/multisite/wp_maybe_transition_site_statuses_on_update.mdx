@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_maybe_transition_site_statuses_on_update"
+---
+
+## Behaviour
+
+Fires the status actions when a site's flags change: make_spam_blog or make_ham_blog, archive_blog or unarchive_blog, make_delete_blog or make_undelete_blog, mature_blog or unmature_blog, and update_blog_public. <Ev source="wp:wp-includes/ms-site.php#L1210-L1327" hash="0e5f859f4b958a1e1eb07eff6aec02960ed897920fa782e6105ac1308ba894fc"/>
+
+## Override
+
+`make_spam_blog`, `make_ham_blog`, `mature_blog`, `unmature_blog`, `archive_blog`, `unarchive_blog`, `make_delete_blog`, `make_undelete_blog`, `update_blog_public` fire.

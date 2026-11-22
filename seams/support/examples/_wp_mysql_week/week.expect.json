@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WEEK( post_date, 1 )',\n  1 => 'WEEK( post_date, 0 )',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "Old_Class is deprecated since 6.4.0 for New_Class\n",
+ "return": "'reported'",
+ "error": null
+}

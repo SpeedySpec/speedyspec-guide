@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "update rewrite_rules: 72 rules\n",
+ "return": "'stopped before the database'",
+ "error": null
+}

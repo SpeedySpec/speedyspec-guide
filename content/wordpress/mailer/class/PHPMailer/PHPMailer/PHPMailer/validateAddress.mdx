@@ -1,0 +1,5 @@
+---
+symbol: "method:PHPMailer\\PHPMailer\\PHPMailer::validateAddress"
+---
+
+Checks an address with a pattern: by default `php`, PHP's `filter_var()` check, which needs a dot in the domain; others include `pcre8` and `html5`, or a callable, though not one given as a string (CVE-2021-3603). An address with a line break is always invalid. <Ev source="wp:wp-includes/PHPMailer/PHPMailer.php#L1512-L1588" hash="a80119bee76ce5acda20565ad9723f5150ff41b888b1c184dbeb0135f7e135af"/>

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'data-wp-context=\\'my-plugin::{\"open\":true,\"label\":\"it\\\\u0027s\"}\\''",
+ "error": null
+}

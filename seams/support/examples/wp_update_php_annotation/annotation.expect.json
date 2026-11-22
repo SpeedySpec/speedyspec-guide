@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<p>This resource is provided by your web host, and is specific to your site. For more information, <a href=\"https://wordpress.org/support/update-php/\" target=\"_blank\">see the official WordPress documentation</a>.</p>'",
+ "error": null
+}

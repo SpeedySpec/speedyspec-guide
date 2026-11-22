@@ -1,0 +1,12 @@
+---
+import GuidePage from '../../../../components/GuidePage.astro';
+import { loadGuideData } from '../../../../model/data.ts';
+import { guideTracks } from '../../../../model/guides.ts';
+
+export async function getStaticPaths() {
+  const t = guideTracks(await loadGuideData());
+  return [...t.contributing.wordpress, ...t.contributing.speedyspec].map((guide) => ({ params: { part: guide.part, slug: guide.slug }, props: { guide } }));
+}
+const { guide } = Astro.props;
+---
+<GuidePage guide={guide} />

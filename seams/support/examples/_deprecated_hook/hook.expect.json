@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "old_hook is deprecated since 6.1.0 for new_hook\n",
+ "return": "'reported'",
+ "error": null
+}

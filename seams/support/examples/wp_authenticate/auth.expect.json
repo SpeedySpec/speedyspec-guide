@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 1,\n  1 => 'incorrect_password',\n  2 => \n  array (\n    0 => 'empty_username',\n    1 => 'empty_password',\n  ),\n)",
+ "error": null
+}

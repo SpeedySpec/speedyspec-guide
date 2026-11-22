@@ -1,0 +1,7 @@
+---
+symbol: "filter:flush_rewrite_rules_hard"
+---
+
+## Behaviour
+
+Fired by `WP_Rewrite::flush_rules()`; false makes a hard flush soft, so `.htaccess` isn't written. <Ev source="wp:wp-includes/class-wp-rewrite.php#L2069-L2069" hash="efdc48c25b064742b8f18efbde1ebd2bc73ef762750529195c08be4f58c6d90f"/>

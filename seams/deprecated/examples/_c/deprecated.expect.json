@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Fish & \"Chips\" <b>here</b>',\n  1 => 'deprecated _c since 2.9.0, use _x()',\n)",
+ "error": null
+}

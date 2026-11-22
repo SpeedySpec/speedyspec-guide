@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<?php\nreturn [\\'plural-forms\\'=>\\'nplurals=2; plural=n>1;\\',\\'language\\'=>\\'fr_FR\\',\\'messages\\'=>[\\'Post\\'=>\\'Article\\',\\'verb\u0004Post\\'=>\\'Publier\\',\\'%d item\\'=>\\'%d \u00e9l\u00e9ment\\' . \"\\\\0\" . \\'%d \u00e9l\u00e9ments\\']];\n'",
+ "error": null
+}

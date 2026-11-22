@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_script_polyfill"
+---
+
+## Behaviour
+
+Inline JavaScript that loads each polyfill script whose feature test fails, with document.write. <Ev source="wp:wp-includes/script-loader.php#L216-L256" hash="7d25d933f3dccc2fcc599feeab82ad2bab35904e5b887a1f9bc8f9329895dc92"/>
+
+## Override
+
+`script_loader_src` filters it.

@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => 'site_empty_domain',\n  1 => 'site_invalid_registered',\n)",
+ "error": null
+}

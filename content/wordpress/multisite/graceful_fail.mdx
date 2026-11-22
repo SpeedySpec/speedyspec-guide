@@ -1,0 +1,11 @@
+---
+symbol: "function:graceful_fail"
+---
+
+## Behaviour
+
+Prints a plain error page holding a message (both filtered, by graceful_fail and graceful_fail_template) and ends the request; deprecated in 3.0.0 for wp_die(). Here the graceful_fail filter stops it first. <Ev source="wp:wp-includes/ms-deprecated.php#L91-L119" hash="89fd14a195caaa0f87ff0bd89b564a9ae7a61fcffdfe2a3609ded5a6d05051e7"/>
+
+## Override
+
+`graceful_fail`, `graceful_fail_template` filter it.

@@ -1,0 +1,4 @@
+<?php
+// Reads each plugin's Requires Plugins header: slugs separated by commas, trimmed, kept only when valid, sorted and unique. A plugin's slug is its folder, or its file name without .php (hello.php is hello-dolly).
+WP_Plugin_Dependencies::initialize();
+return array( WP_Plugin_Dependencies::has_dependencies( 'shop/shop.php' ), WP_Plugin_Dependencies::has_dependencies( 'payments/payments.php' ), WP_Plugin_Dependencies::get_dependencies( 'shop/shop.php' ), WP_Plugin_Dependencies::has_dependents( 'payments/payments.php' ), WP_Plugin_Dependencies::get_dependents( 'payments' ), WP_Plugin_Dependencies::get_dependent_filepath( 'shop' ), WP_Plugin_Dependencies::get_dependency_filepath( 'payments' ), WP_Plugin_Dependencies::get_dependency_filepath( 'missing-plugin' ), guide_call( 'WP_Plugin_Dependencies', 'convert_to_slug', 'hello.php' ), guide_call( 'WP_Plugin_Dependencies', 'convert_to_slug', 'single.php' ) );

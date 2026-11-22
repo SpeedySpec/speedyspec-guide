@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_admin_headers"
+---
+
+## Behaviour
+
+Sends the headers every admin page gets: the referrer policy (strict-origin-when-cross-origin, filtered by admin_referrer_policy) and X-Frame-Options. <Ev source="wp:wp-includes/functions.php#L7438-L7454" hash="795e654c09028350ce005b53e5efb720fa3f31bd36e3cbc74ae9ff584f58f562"/>
+
+## Override
+
+`admin_referrer_policy` filters it.

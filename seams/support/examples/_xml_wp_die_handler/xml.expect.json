@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<error> <code>wp_die</code> <title><![CDATA[Oops]]></title> <message><![CDATA[Failed.]]></message> <data> <status>400</status> </data> </error>'",
+ "error": null
+}

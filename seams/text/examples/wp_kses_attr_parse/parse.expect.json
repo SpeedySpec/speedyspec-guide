@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<img ',\n  1 => 'src=\"a\" ',\n  2 => 'alt=\"b\"',\n  3 => ' />',\n)",
+ "error": null
+}

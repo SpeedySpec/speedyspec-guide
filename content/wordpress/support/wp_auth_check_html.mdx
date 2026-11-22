@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_auth_check_html"
+---
+
+## Behaviour
+
+Prints the hidden login dialog for when the session expires: the login form in an iframe, or a link when the login page is on another host. <Ev source="wp:wp-includes/functions.php#L7745-L7794" hash="956ba20e1d9bf81d06cb0c7d71ce13ea3db7554d99d50f6e29d4f7a668b31874"/>
+
+## Override
+
+`wp_auth_check_same_domain` filters it.

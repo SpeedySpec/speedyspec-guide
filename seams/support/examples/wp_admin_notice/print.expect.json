@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'notice: Careful. <div class=\"notice notice-warning\"><p>Careful.</p></div>'",
+ "error": null
+}

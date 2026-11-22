@@ -1,0 +1,11 @@
+---
+symbol: "function:register_taxonomy"
+---
+
+## Behaviour
+
+Registers a taxonomy for object types: a WP_Taxonomy with labels, capabilities, rewrite rules and query variables; names over 32 characters are refused. registered_taxonomy fires after; register_taxonomy_args filters the arguments. <Ev source="wp:wp-includes/taxonomy.php#L528-L601" hash="a3c542d8b1628c90a795a82bc802444325a79c86c7e6209f93a8bb19200d1570"/>
+
+## Override
+
+`registered_taxonomy`, `registered_taxonomy_{$taxonomy}` fire.

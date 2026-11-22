@@ -1,0 +1,4 @@
+---
+---
+
+Shortcodes are tags such as `[gallery]` or `[box]…[/box]` that authors write in content and code turns into output. A callback is **registered** for a tag with `add_shortcode()`, and `do_shortcode()` **runs** every registered tag in content, replacing each with its callback's output; `strip_shortcodes()` **strips** them instead. <Ev source="wp:wp-includes/shortcodes.php#L65-L100" hash="994995f09f59cc00626a2294623527a4e413505152005ddab229236088b144c9"/> The registrations live in `$shortcode_tags`. The examples on these pages each start with no shortcodes registered.

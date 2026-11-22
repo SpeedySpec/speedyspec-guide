@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'https://developer.wordpress.org/advanced-administration/security/https/'",
+ "error": null
+}

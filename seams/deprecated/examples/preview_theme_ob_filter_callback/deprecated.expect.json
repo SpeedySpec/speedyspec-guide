@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '',\n  1 => 'deprecated preview_theme_ob_filter_callback since 4.3.0',\n)",
+ "error": null
+}

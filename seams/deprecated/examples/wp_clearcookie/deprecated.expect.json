@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_clearcookie since 2.5.0, use wp_clear_auth_cookie()',\n)",
+ "error": null
+}

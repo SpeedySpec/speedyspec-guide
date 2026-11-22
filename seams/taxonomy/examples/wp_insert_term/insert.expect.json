@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "created_category\ncreated_category\n",
+ "return": "array (\n  0 => \n  array (\n    0 => 'term_id',\n    1 => 'term_taxonomy_id',\n  ),\n  1 => 'travel-travel',\n  2 => 'term_exists',\n  3 => 'empty_term_name',\n  4 => 'missing_parent',\n  5 => 'invalid_taxonomy',\n)",
+ "error": null
+}

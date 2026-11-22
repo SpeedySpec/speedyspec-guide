@@ -66,4 +66,9 @@ files:
   - 'wp-includes/rest-api/search/class-wp-rest-post-search-handler.php'
   - 'wp-includes/rest-api/search/class-wp-rest-search-handler.php'
   - 'wp-includes/rest-api/search/class-wp-rest-term-search-handler.php'
-wordpress: []
+
+# WordPress is booted by the setup (see boot.php); the runner needs one file to load first.
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true

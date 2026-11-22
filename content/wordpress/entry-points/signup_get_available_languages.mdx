@@ -1,0 +1,11 @@
+---
+symbol: "function:signup_get_available_languages"
+---
+
+## Behaviour
+
+The installed languages a new site may choose; the filter can narrow the list but not add languages that aren't installed. It is declared in `wp-signup.php`. <Ev source="wp:wp-signup.php#L915-L938" hash="d8c8377eec3a59e771afb5c0092ea86454645027278b9c0119cd86cdf5f10db3"/>
+
+## Override
+
+`signup_get_available_languages` filters the list.

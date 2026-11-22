@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Entity_Fields_Registry::initialize"
+---
+
+Fires `wp_entity_fields_api_init` once, the first time the registry is read. Before `init` has completed, or while it runs, it reports the read through `_doing_it_wrong()` and fires nothing, so a later read can still initialize. <Ev source="wp:wp-includes/class-wp-entity-fields-registry.php#L555-L594" hash="713dd0c497d4547dd7528d982c25c33375357c5cd8f2814d0b4de051fb9ea436"/>

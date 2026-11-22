@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'image',\n    1 => 'audio',\n    2 => 'video',\n    3 => 'document',\n    4 => 'spreadsheet',\n    5 => 'interactive',\n    6 => 'text',\n    7 => 'archive',\n    8 => 'code',\n  ),\n  1 => \n  array (\n    0 => 'jpg',\n    1 => 'jpeg',\n    2 => 'jpe',\n    3 => 'gif',\n    4 => 'png',\n  ),\n)",
+ "error": null
+}

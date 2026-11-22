@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_die"
+---
+
+## Behaviour
+
+Ends the request with a message (or a WP_Error's messages), a title and a response code (500 by default), through the handler for the request type: AJAX, JSON, JSONP, XML-RPC, XML or the HTML page; the wp_die_*_handler filters pick it. Here the handlers throw. <Ev source="wp:wp-includes/functions.php#L3905-L3976" hash="9b4f724f5c124eb29910b0de7c647103d1ee2f194a90c0451a5cbf8f194cd37e"/>
+
+## Override
+
+`wp_die_ajax_handler`, `wp_die_json_handler`, `wp_die_jsonp_handler`, `wp_die_xmlrpc_handler`, `wp_die_xml_handler`, `wp_die_handler` filter it.

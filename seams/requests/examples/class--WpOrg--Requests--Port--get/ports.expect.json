@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 80,\n  1 => 443,\n  2 => 674,\n  3 => 2628,\n  4 => 'Invalid port type (GOPHER) passed',\n)",
+ "error": null
+}

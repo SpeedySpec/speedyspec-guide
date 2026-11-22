@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Export Personal Data',\n  1 => 'Erase Personal Data',\n  2 => 'Confirm the \"custom\" action',\n)",
+ "error": null
+}

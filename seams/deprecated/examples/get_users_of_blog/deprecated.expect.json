@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => \n    (object) array(\n       'user_id' => '1',\n       'ID' => '1',\n       'user_login' => 'admin',\n       'display_name' => 'Admin',\n       'user_email' => 'admin@example.org',\n       'meta_value' => 'a:1:{s:13:\"administrator\";b:1;}',\n    ),\n  ),\n  1 => 'deprecated get_users_of_blog since 3.1.0, use get_users()',\n)",
+ "error": null
+}

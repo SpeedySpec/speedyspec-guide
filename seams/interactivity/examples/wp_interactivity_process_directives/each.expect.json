@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<ul data-wp-interactive=\"my-plugin\"><template data-wp-each=\"state.items\"><li data-wp-text=\"context.item\"></li></template><li data-wp-each-child=\"my-plugin::state.items\" data-wp-text=\"context.item\">a</li><li data-wp-each-child=\"my-plugin::state.items\" data-wp-text=\"context.item\">b</li></ul>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_add_iframed_editor_assets_html since 6.0.0',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => false,\n  2 => '/author/%author%',\n  3 => 'search/%search%',\n  4 => '%pagename%',\n  5 => 'feed/%feed%',\n  6 => 'comments/feed/%feed%',\n  7 => false,\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'edit_published_posts',\n  ),\n  1 => \n  array (\n    0 => 'edit_others_posts',\n    1 => 'edit_published_posts',\n  ),\n  2 => \n  array (\n    0 => 'delete_users',\n  ),\n  3 => \n  array (\n    0 => 'manage_options',\n  ),\n  4 => \n  array (\n    0 => 'do_not_allow',\n  ),\n)",
+ "error": null
+}

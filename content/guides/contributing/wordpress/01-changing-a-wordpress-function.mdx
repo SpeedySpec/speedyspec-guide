@@ -1,0 +1,95 @@
+---
+title: Changing a WordPress function
+summary: Find where get_option() lives, read how it fires its filters, and change it safely with a PHPUnit test.
+---
+
+This guide is for when a plugin isn't enough and you want to change WordPress itself. It follows one function,
+<Sym id="function:get_option" />, from where it lives to a tested change in `wordpress-develop`, the repository
+WordPress core is developed in. You should already know how options and hooks work from the learning path and the
+[Options](/guides/topics/options/) and [Hooks](/guides/topics/hooks/) topic guides.
+
+The source quoted here is the WordPress trunk this site documents; each citation links to the exact lines.
+
+## Setting up
+
+`wordpress-develop` holds WordPress's code in `src/`, its tests in `tests/phpunit/`, and a Docker environment to run
+them. From a clone of it, install, build and start the environment once:
+
+```bash
+npm install
+npm run build:dev
+npm run env:start
+npm run env:install
+```
+
+Always edit the files in `src/`. The `build/` folder is generated from them.
+
+## Where the code lives
+
+WordPress groups its functions by feature, one file per API, in `src/wp-includes/`. The options API is
+`wp-includes/option.php`: `get_option()`, `add_option()`, `update_option()`, `delete_option()` and the transient
+functions are all there. Each function's reference page names its file; you can also search `src/` for
+`function get_option(`. The function starts by cleaning up the name it was given, and gives up on an empty one.
+<Ev source="wp:wp-includes/option.php#L78-L87" hash="7a8c3b509c8971cc1606ae83843b13a7098e04f78ceb793a206923e782e5b59a"/>
+
+<Example id="options/get_option/empty-name" />
+
+## How it fires its filters
+
+Read a core function as a sequence of points where other code may step in. `get_option()` has four.
+
+First it applies `pre_option_{$option}`, passing `false`, the option's name and the default.
+<Ev source="wp:wp-includes/option.php#L132-L132" hash="31782c2d12cb05c3d13e217b8bb98b1952e8d2b88c78ab742a89d51727fde0bd"/> Then it passes that result through the general
+`pre_option` filter, and returns early if the value is no longer `false`.
+<Ev source="wp:wp-includes/option.php#L150-L154" hash="ae1d3f10430301281cfe243ecf87263effa557e3bedaf4de57d637b730be52ef"/> This example shows both filters firing, in that order,
+with those arguments:
+
+<Example id="guides/changing-a-wordpress-function/pre-option-filters" />
+
+When the option isn't stored, it returns the default through `default_option_{$option}`.
+<Ev source="wp:wp-includes/option.php#L199-L199" hash="a3e09830126c589dbb741e3d67a3775a92b5ee388b33c4152e4da743affd5c5c"/> And when it is found, the value is unserialized and
+passed through `option_{$option}` on its way out. <Ev source="wp:wp-includes/option.php#L256-L256" hash="61c2ec7e78ca77ccb0df22dda87b467c5cccfdc58ea2f65fd93ce0c1ec7bc092"/>
+
+Each of these hooks is a promise to every plugin that uses it: the hook's name, its arguments and when it fires. A
+change to core must keep those promises, or say clearly which one it breaks and why. That is what the tests are for.
+
+## Making a change
+
+Say you want to tidy how `get_option()` applies its two `pre_` filters, without changing what it does. The order and
+the arguments shown in the example above are exactly what must not change. Work in three steps.
+
+**1. Find the tests.** Tests mirror the source: the options API's tests are in `tests/phpunit/tests/option/`, and
+`get_option()`'s general ones in `option.php` there, in the class `Tests_Option_Option`. Its
+`test_get_option_should_call_pre_option_filter` already checks that `pre_option` runs once per call. Run it alone,
+with `--filter` and the test's name:
+
+```bash
+npm run test:php -- --filter test_get_option_should_call_pre_option_filter
+```
+
+**2. Pin the behaviour you are about to touch.** At the time of writing, no options test checks that `pre_option` receives the result of
+`pre_option_{$option}`. Add a test method to the same class that registers both filters, calls `get_option()`, and
+asserts what the example above shows: the specific filter's return value reaches the general one, and a value other
+than `false` is what `get_option()` returns. Run it with `--filter` and see it pass on the unchanged code. A test that
+passes before the change and after it proves the change kept the behaviour.
+
+When you are fixing a bug or adding a feature instead, write the test so that it fails first, for the reason you
+expect, and then make it pass. Tag the test with the Trac ticket it belongs to, as the tests around it do with
+`@ticket`.
+
+**3. Make the change, then run the whole group.** Edit `src/wp-includes/option.php`, run your test again, then run
+every options test. The file's tests carry `@group option`, so:
+
+```bash
+npm run test:php -- --group option
+```
+
+Check your PHP against WordPress's coding standards with `vendor/bin/phpcs src/wp-includes/option.php` before you
+send the patch to the ticket.
+
+## Where to go next
+
+- Each option function's reference page lists its hooks, its examples and the scenarios that back them, which is a
+  quick way to see what a change might affect.
+- To change how SpeedySpec runs a function instead, read
+  [Porting a function to SpeedySpec](/guides/contributing/speedyspec/porting-a-function/).

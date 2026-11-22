@@ -1,0 +1,5 @@
+<?php
+// Reports a function used the wrong way: fires doing_it_wrong_run, then raises a notice when debugging allows it.
+add_action( 'doing_it_wrong_run', fn( $function, $message, $version ) => print( "$function: $message ($version)\n" ), 10, 3 );
+_doing_it_wrong( 'some_function', 'Call it after init.', '6.0.0' );
+return 'reported';

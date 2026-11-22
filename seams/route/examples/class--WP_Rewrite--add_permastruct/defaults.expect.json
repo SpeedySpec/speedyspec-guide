@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'with_front' => true,\n  'ep_mask' => 0,\n  'paged' => true,\n  'feed' => true,\n  'forcomments' => false,\n  'walk_dirs' => true,\n  'endpoints' => true,\n  'struct' => '/blog/guides/%guide%',\n)",
+ "error": null
+}

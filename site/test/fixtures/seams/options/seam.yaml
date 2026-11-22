@@ -2,6 +2,11 @@ name: Options
 job: Stores and reads site settings.
 ported: false
 files: [wp-includes/option.php]
+elsewhere:
+  - name: The Sodium extension
+    docs: https://www.php.net/manual/en/book.sodium.php
+    files: ["wp-includes/sodium_compat/**"]
+    note: sodium_compat is a pure-PHP polyfill of the extension.
 dependencies:
   function:add_filter:
     state: php

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "wp_create_nav_menu 1 Main\n",
+ "return": "array (\n  0 => 1,\n  1 => 'Main',\n  2 => 'main',\n  3 => 'menu_exists',\n  4 => true,\n)",
+ "error": null
+}

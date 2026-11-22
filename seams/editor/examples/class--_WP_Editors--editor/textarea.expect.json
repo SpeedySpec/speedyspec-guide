@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div id=\"wp-notes-wrap\" class=\"wp-core-ui wp-editor-wrap html-active\"><div id=\"wp-notes-editor-container\" class=\"wp-editor-container\"><div id=\"qt_notes_toolbar\" class=\"quicktags-toolbar hide-if-no-js\"></div><textarea class=\"wp-editor-area\" rows=\"20\" cols=\"40\" name=\"notes\" id=\"notes\"><p>Hello</p></textarea></div> </div>'",
+ "error": null
+}

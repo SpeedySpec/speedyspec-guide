@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "file for handle in guide\nfile for x in guide\n",
+ "return": "array (\n  0 => '{\"locale_data\":{\"messages\":{\"Hello\":[\"Bonjour\"]}}}',\n  1 => '{}',\n  2 => false,\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:register_new_user"
+---
+
+## Behaviour
+
+Registers a visitor: checks the login and email (registration_errors), creates the user with a generated password, and sends the new-user emails; returns the ID or a WP_Error. <Ev source="wp:wp-includes/user.php#L3580-L3694" hash="a8f07805bc469363075a8de73187449035e6f0aa5b765bebe640af49125c67ba"/>
+
+## Override
+
+`user_registration_email`, `illegal_user_logins`, `registration_errors` filter it; `register_post`, `register_new_user` fire.

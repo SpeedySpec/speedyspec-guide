@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_speculation_rules"
+---
+
+## Behaviour
+
+The speculation rules to print, or `null` when speculative loading is off. The main document rule speculates on links within the site, except WordPress's own and content paths, URLs with query strings (or nonces with plain permalinks), `nofollow` links and links marked `.no-{mode}`. Then it fires `wp_load_speculation_rules`. <Ev source="wp:wp-includes/speculative-loading.php#L195-L320" hash="06927df670db64b882864310fd2e0bb0ce30f661bdd3d2daff09d945ef6ffabd"/>
+
+## Override
+
+`wp_speculation_rules_href_exclude_paths` adds paths to leave out; `wp_load_speculation_rules` can add rules.

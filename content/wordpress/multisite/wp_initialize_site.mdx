@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_initialize_site"
+---
+
+## Behaviour
+
+Sets up a new site: its tables, options (title, URL, admin email, language, public), the default content and the admin user's role; an error when it is already set up. <Ev source="wp:wp-includes/ms-site.php#L661-L778" hash="8be40b2efd707dafa3b9d0bf3793bdd763cd68bc17ba6543c2be3082253405d9"/>
+
+## Override
+
+`wp_initialize_site_args` filters it.

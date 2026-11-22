@@ -1,0 +1,6 @@
+<?php
+// Whether a term's taxonomy is viewable.
+$news = wp_insert_term( 'News', 'category' );
+$local = wp_insert_term( 'Local', 'category', array( 'parent' => $news['term_id'] ) );
+$post = wp_insert_post( array( 'post_title' => 'A', 'post_status' => 'publish', 'post_category' => array( $local['term_id'] ), 'tags_input' => array( 'alpha' ) ) );
+return array( is_term_publicly_viewable( $local['term_id'] ), is_term_publicly_viewable( 999 ) );

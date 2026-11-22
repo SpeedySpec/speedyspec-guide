@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<li>Admin</li><li>Grace</li>'",
+ "error": null
+}

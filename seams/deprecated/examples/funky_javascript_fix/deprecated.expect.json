@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Fish & \"Chips\" <b>here</b>',\n  1 => 'deprecated funky_javascript_fix since 3.0.0',\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_create_nonce"
+---
+
+## Behaviour
+
+A nonce for an action, tied to the current user, their session token and the tick: ten characters. <Ev source="wp:wp-includes/pluggable.php#L2546-L2558" hash="7850b89be02289798528c6485235a6af6bba6679deba46b6662271902c03c235"/>
+
+## Override
+
+`nonce_user_logged_out` filters it.

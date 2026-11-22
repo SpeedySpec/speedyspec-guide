@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "get_user_id_from_string is deprecated since 3.6.0 for get_user_by()\nget_user_id_from_string is deprecated since 3.6.0 for get_user_by()\nget_user_id_from_string is deprecated since 3.6.0 for get_user_by()\n",
+ "return": "array (\n  0 => 1,\n  1 => 1,\n  2 => 0,\n)",
+ "error": null
+}

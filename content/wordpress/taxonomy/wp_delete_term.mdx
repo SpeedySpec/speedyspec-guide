@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_delete_term"
+---
+
+## Behaviour
+
+Deletes a term: its children move to its parent, its objects keep their other terms (posts left without a category get the default), and a taxonomy's default term can't be deleted (0). delete_term, `delete_{$taxonomy}` and related actions fire; true, or false for a missing term. <Ev source="wp:wp-includes/taxonomy.php#L2141-L2343" hash="c57646328a3f6bc2f72d62cf2156f7fe82cd0af1d3f65c265a3af57cbc1ca095"/>
+
+## Override
+
+`pre_delete_term`, `edit_term_taxonomies`, `edited_term_taxonomies`, `delete_term_taxonomy`, `deleted_term_taxonomy`, `delete_term`, `delete_{$taxonomy}` fire.

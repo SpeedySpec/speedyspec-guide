@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_send_user_request"
+---
+
+## Behaviour
+
+Emails the confirmation link of a privacy request, storing a new key; a missing request is a WP_Error. <Ev source="wp:wp-includes/user.php#L4943-L5090" hash="1fa45d57e39e153b23973eaadc968f47ed147c4d4c05081cfee2df30054e0a60"/>
+
+## Override
+
+`user_request_action_email_subject`, `user_request_action_email_content`, `user_request_action_email_headers` filter it.

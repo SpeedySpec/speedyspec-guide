@@ -1,0 +1,11 @@
+---
+symbol: "function:get_oembed_response_data"
+---
+
+## Behaviour
+
+A post's oEmbed data: version, provider, author (its author, else the site) and title, as a link. The width is clamped to the allowed range (200 to 600) and the height is 16:9 of it, at least 200. `false` for a post that isn't public or embeddable. <Ev source="wp:wp-includes/embed.php#L561-L630" hash="3e8d62fd2932945ca91e1d145844f54564ede28d1449dad6e22345f5f053f2a2"/>
+
+## Override
+
+`oembed_response_data` filters the data (WordPress attaches `get_oembed_response_data_rich()`); `oembed_min_max_width` changes the range.

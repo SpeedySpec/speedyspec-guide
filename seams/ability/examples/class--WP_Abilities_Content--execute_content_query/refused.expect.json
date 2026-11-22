@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'The where filter must be an object.',\n  1 => 'The requested content was not found.',\n  2 => 'The parent filter is only supported for hierarchical post types.',\n  3 => 'The author filter is only supported for post types that support authors.',\n  4 => 'The ids filter must list one or more valid post IDs.',\n  5 => 'The slugs filter must list one or more valid post slugs.',\n  6 => 'The status filter must list valid post statuses.',\n)",
+ "error": null
+}

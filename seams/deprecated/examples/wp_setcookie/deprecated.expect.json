@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'deprecated wp_setcookie since 2.5.0, use wp_set_auth_cookie()'",
+ "error": null
+}

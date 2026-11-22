@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'POT-Creation-Date' => '',\n  'PO-Revision-Date' => '',\n  'Project-Id-Version' => 'Guide 1.0',\n  'X-Generator' => '',\n)",
+ "error": null
+}

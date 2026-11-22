@@ -1,0 +1,5 @@
+---
+symbol: "method:wp_xmlrpc_server::login"
+---
+
+Logs a user in with `wp_authenticate()` and makes them the current user. When XML-RPC is off it is a 405 fault; non-scalar credentials are a 400. A failed login is a 403, and once one fails, every later login in the request fails too. <Ev source="wp:wp-includes/class-wp-xmlrpc-server.php#L299-L345" hash="8b757f2e6e1f136440adaac1b7b29aad18aa7a0d54b0b25e5180019fda88d438"/>

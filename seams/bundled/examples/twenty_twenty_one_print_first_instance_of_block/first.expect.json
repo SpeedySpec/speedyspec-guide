@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => '<figure class=\"wp-block-image\"><img decoding=\"async\" src=\"a.jpg\"/></figure>',\n  2 => false,\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_cache_decr"
+---
+
+## Behaviour
+
+Subtracts `$offset` (1 by default) from a cached number and returns the new value, never going below 0. A key that isn't cached returns `false`. <Ev scenario="decr_clamps_at_zero" area="object-cache"/>
+
+## Override
+
+A persistent object cache drop-in (`wp-content/object-cache.php`) replaces the whole Object Cache API.

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_oembed_get"
+---
+
+## Behaviour
+
+The embed HTML for a URL from its oEmbed provider, found by known patterns or, when allowed, by discovery; `false` when nothing can embed it. <Ev source="wp:wp-includes/embed.php#L113-L116" hash="b65b8fd37e7c098485cd275b5fd83d12051260c432134a320fab90479bd1f215"/>
+
+## Override
+
+`pre_oembed_result` can answer first; `oembed_result` filters the HTML.

@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_scan_utf8"
+---
+
+## Behaviour
+
+The low-level UTF-8 scanner: from a byte offset it counts valid code points (up to a maximum of bytes or code points) until an invalid span. It sets the offset to where it stopped and the length of the invalid span there. <Ev source="wp:wp-includes/compat-utf8.php#L47-L245" hash="42b6639d9b0f13d07424d36684a941c74cdcec29185fdcfa04fe506da853c5cc"/>
+
+## Override
+
+Not overridable.

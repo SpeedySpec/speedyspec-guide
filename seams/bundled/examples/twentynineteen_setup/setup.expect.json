@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'menu-1' => 'Primary',\n    'footer' => 'Footer Menu',\n    'social' => 'Social Links Menu',\n  ),\n  1 => \n  array (\n    'small' => 19.5,\n    'normal' => 22,\n    'large' => 36.5,\n    'huge' => 49.5,\n  ),\n  2 => \n  array (\n    'primary' => '#0073a8',\n    'secondary' => '#005075',\n    'dark-gray' => '#111',\n    'light-gray' => '#767676',\n    'white' => '#FFF',\n  ),\n  3 => 190,\n)",
+ "error": null
+}

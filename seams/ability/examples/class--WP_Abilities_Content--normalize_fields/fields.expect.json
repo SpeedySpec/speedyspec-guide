@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'id',\n    1 => 'type',\n    2 => 'status',\n    3 => 'date',\n    4 => 'slug',\n    5 => 'title.rendered',\n  ),\n  1 => \n  array (\n    0 => 'id',\n    1 => 'type',\n    2 => 'status',\n    3 => 'date',\n    4 => 'date.site',\n    5 => 'date.gmt',\n    6 => 'modified',\n    7 => 'modified.site',\n    8 => 'modified.gmt',\n    9 => 'slug',\n    10 => 'link',\n    11 => 'title',\n    12 => 'title.raw',\n    13 => 'title.rendered',\n    14 => 'excerpt',\n    15 => 'excerpt.raw',\n    16 => 'excerpt.rendered',\n    17 => 'excerpt.protected',\n    18 => 'content',\n    19 => 'content.raw',\n    20 => 'content.rendered',\n    21 => 'content.protected',\n    22 => 'author',\n    23 => 'author.id',\n    24 => 'author.name',\n    25 => 'author.slug',\n    26 => 'parent',\n  ),\n  2 => true,\n  3 => true,\n  4 => false,\n)",
+ "error": null
+}

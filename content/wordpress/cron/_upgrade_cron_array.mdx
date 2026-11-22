@@ -1,0 +1,11 @@
+---
+symbol: "function:_upgrade_cron_array"
+---
+
+## Behaviour
+
+Rewrites the cron option's first format, one event per hook at a timestamp, into the current one, keying each event by an md5 of its arguments, saves it, and returns it. An array with version 2 is returned as it is. <Ev source="wp:wp-includes/cron.php#L1343-L1363" hash="cf1124e9222106775e27afd0e14e33d29bcb61c8b59459b45fce5043a54b575a"/>
+
+## Override
+
+Not overridable.

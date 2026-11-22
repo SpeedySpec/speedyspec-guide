@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_sensitive_page_meta since 5.7.0, use wp_robots_sensitive_page() <meta name=\\'robots\\' content=\\'noindex,noarchive\\' /> <meta name=\\'referrer\\' content=\\'strict-origin-when-cross-origin\\' />',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'one,<del>two</del><ins>three</ins>\n'",
+ "error": null
+}

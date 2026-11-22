@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated the_content_rss since 2.9.0, use the_content_feed() deprecated make_url_footnote since 2.9.0 The first words of the post.',\n)",
+ "error": null
+}

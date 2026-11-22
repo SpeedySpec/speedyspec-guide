@@ -1,0 +1,7 @@
+---
+symbol: "action:publish_future_post"
+---
+
+## Behaviour
+
+The single cron event scheduled for a future post's date; WordPress attaches `check_and_publish_future_post()`, which publishes it if it is still scheduled and due, else reschedules it. <Ev source="wp:wp-includes/default-filters.php#L362-L362" hash="de3b5dc0ae8b9d8471eae99e5a06cd9cd84e4cad335e8c421bc45a1ab5556689"/>

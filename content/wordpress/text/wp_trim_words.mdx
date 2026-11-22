@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_trim_words"
+---
+
+## Behaviour
+
+Strips tags and keeps the first `$num_words` words (55 by default), appending `$more` (`&hellip;` by default) when there were more. In a locale that counts characters, with a UTF-8 site, it keeps that many characters instead. <Ev source="wp:wp-includes/formatting.php#L4162-L4200" hash="9cc35395d48ca57edb3724d431443c157a87ca5b0920f9c7a38a0902c0bfcf3d"/>
+
+## Override
+
+`wp_trim_words` filters the result.

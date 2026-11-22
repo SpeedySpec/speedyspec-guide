@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<input type=\"hidden\" name=\"_wp_http_referer\" value=\"/wp-admin/edit.php?updated=1&#038;paged=2\" />'",
+ "error": null
+}

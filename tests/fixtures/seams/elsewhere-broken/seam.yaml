@@ -1,0 +1,7 @@
+name: Broken elsewhere
+job: Fixture seam with an elsewhere entry missing its link.
+ported: false
+files: []
+elsewhere:
+  - name: Missing link
+    files: ["x/**"]

@@ -1,0 +1,11 @@
+---
+symbol: "function:sanitize_trackback_urls"
+---
+
+## Behaviour
+
+Splits the URLs to ping on whitespace, keeps those starting with `http://` or `https://`, cleans them with `sanitize_url()`, and joins them with newlines. <Ev source="wp:wp-includes/formatting.php#L5890-L5911" hash="ae8f5916456057cca6c7900745129981e358992354bdbba3e600d3ce3d37d3ed"/>
+
+## Override
+
+`sanitize_trackback_urls` filters the result.

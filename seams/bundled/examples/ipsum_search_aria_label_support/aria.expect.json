@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'name' => 'core/search',\n    'supports' => \n    array (\n      'align' => true,\n      'ariaLabel' => true,\n    ),\n  ),\n  1 => \n  array (\n    'name' => 'core/code',\n  ),\n)",
+ "error": null
+}

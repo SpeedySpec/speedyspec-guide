@@ -1,0 +1,11 @@
+---
+symbol: "function:register_meta"
+---
+
+## Behaviour
+
+Registers a meta key for a type (and optionally an object subtype): its type, description, single, default, sanitize and auth callbacks and REST exposure; register_meta_args filters them (WordPress attaches _wp_register_meta_args_allowed_list, which drops unknown ones). It is false with a mistake reported for show_in_rest without a schema an array needs, or a default of the wrong type. <Ev source="wp:wp-includes/meta.php#L1500-L1630" hash="6468186474ec87f45e14a4c0e68ca175ad509af94f42fa37a3cee19a4b83221f"/>
+
+## Override
+
+`register_meta_args` filters it.

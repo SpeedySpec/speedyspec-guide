@@ -1,0 +1,11 @@
+---
+symbol: "function:_update_post_term_count"
+---
+
+## Behaviour
+
+A post taxonomy's count callback: counts published posts (and attachments of published posts) of the taxonomy's types in each term. <Ev source="wp:wp-includes/taxonomy.php#L4324-L4389" hash="7f00ddc9afdd4a9465d50a2c3104dec600f5a169097df6255e97b7a8045f6bfd"/>
+
+## Override
+
+`update_post_term_count_statuses` filters it; `update_term_count`, `edit_term_taxonomy`, `edited_term_taxonomy` fire.

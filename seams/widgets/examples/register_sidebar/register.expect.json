@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "register_sidebar side\ndoing_it_wrong_run register_sidebar\nregister_sidebar sidebar-2\n",
+ "return": "array (\n  0 => 'side',\n  1 => 'sidebar-2',\n  2 => '<h2 class=\"widgettitle\">',\n  3 => true,\n)",
+ "error": null
+}

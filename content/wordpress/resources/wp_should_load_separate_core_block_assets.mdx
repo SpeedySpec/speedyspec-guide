@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_should_load_separate_core_block_assets"
+---
+
+## Behaviour
+
+Whether core blocks load their own styles only when used, instead of one block library stylesheet: true for block themes (and classic themes that load styles on demand), never in the admin, feeds or REST; should_load_separate_core_block_assets filters it. <Ev source="wp:wp-includes/script-loader.php#L3035-L3052" hash="fbbc653a3253e89bff12d5acd17d9df28a964805a68ee886683eb8ae7a016bbc"/>
+
+## Override
+
+`should_load_separate_core_block_assets` filters it.

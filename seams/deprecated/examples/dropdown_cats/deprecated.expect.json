@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<select  name=\\'cat\\' id=\\'cat\\' class=\\'postform\\'>\n\t<option class=\"level-0\" value=\"1\">Uncategorized</option>\n</select>\n',\n  1 => 'deprecated dropdown_cats since 2.1.0, use wp_dropdown_categories() <select name=\\'cat\\' id=\\'cat\\' class=\\'postform\\'> <option class=\"level-0\" value=\"1\">Uncategorized</option> </select>',\n)",
+ "error": null
+}

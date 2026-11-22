@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "wp_cache_reset 3.5.0 reset 3.5.0 ",
+ "return": "array (\n  0 => false,\n  1 => 'kept',\n)",
+ "error": null
+}

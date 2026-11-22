@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => '^wp-sitemap\\\\.xml$',\n    1 => '^wp-sitemap-([a-z]+?)-([a-z\\\\d_-]+?)-(\\\\d+?)\\\\.xml$',\n    2 => '^wp-sitemap-([a-z]+?)-(\\\\d+?)\\\\.xml$',\n  ),\n  1 => 10,\n  2 => 0,\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'deprecated sanitize_user_object since 3.3.0'",
+ "error": null
+}

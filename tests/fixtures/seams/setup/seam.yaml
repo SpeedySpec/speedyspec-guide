@@ -1,3 +1,4 @@
 name: "Set up"
 job: "Has a setup file."
 setup: setup.php
+mysql: true

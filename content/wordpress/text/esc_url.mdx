@@ -1,0 +1,11 @@
+---
+symbol: "function:esc_url"
+---
+
+## Behaviour
+
+Cleans a URL: removes characters a URL can't have, and `%0d`/`%0a` (except in `mailto:`), adds `http://` (or `https://` when that is the first protocol given) to a URL without a scheme, percent-encodes `[` and `]` after the host, and returns `''` when its protocol is not one allowed (`wp_allowed_protocols()` by default). In the `display` context it also normalizes entities and encodes `&` and `'`. <Ev source="wp:wp-includes/formatting.php#L4597-L4696" hash="0063f6abf902a154b3ebcd8ad1b9e1add066a3487078a05b22b92ce76cefff69"/>
+
+## Override
+
+`clean_url` filters a URL that passes.

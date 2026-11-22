@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/x',\n  1 => 'http://93.184.216.34:8443/',\n  2 => false,\n  3 => false,\n  4 => false,\n  5 => false,\n  6 => false,\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:register_sidebar"
+---
+
+## Behaviour
+
+Registers a sidebar over the defaults: a name and `sidebar-N` ID by number, and list-item markup for widgets and their titles. It turns on the `widgets` theme support and returns the ID. An empty ID is reported with `_doing_it_wrong()`. <Ev source="wp:wp-includes/widgets.php#L269-L330" hash="7a1fdb635b992a98afa5c1817a788f096a19edd5d31721a4a98f200ef6fb5f72"/>
+
+## Override
+
+`register_sidebar_defaults` filters the defaults; `register_sidebar` fires after.

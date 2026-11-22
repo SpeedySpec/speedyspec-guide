@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated list_cats since 2.1.0, use wp_list_categories() deprecated wp_list_cats since 2.1.0, use wp_list_categories() <li class=\\'cat-item-all\\'><a href=\\'http://example.org/\\'>All</a></li> <li class=\"cat-item cat-item-1\"><a href=\"http://example.org/?cat=1\">Uncategorized</a> </li>',\n)",
+ "error": null
+}

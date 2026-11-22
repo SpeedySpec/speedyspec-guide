@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'&lt;a href=&quot;x&quot;&gt;Tom &amp; Jerry&#039;s &amp;&lt;/a&gt;'",
+ "error": null
+}

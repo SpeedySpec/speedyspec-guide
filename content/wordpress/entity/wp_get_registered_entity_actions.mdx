@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_registered_entity_actions"
+---
+
+## Behaviour
+
+Returns an entity's registered actions, as a list. The first read after `init` has completed fires `wp_entity_actions_api_init`. A kind or name that isn't a non-empty string is reported and finds nothing. <Ev source="wp:wp-includes/entity-actions.php#L78-L80" hash="abbe8c0c4f9a745d34d1c2035e646371de4d2ad9f0b3933322de96082c49d6cb"/>
+
+## Override
+
+Register or unregister actions on `wp_entity_actions_api_init`.

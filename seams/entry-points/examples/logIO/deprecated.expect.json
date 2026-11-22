@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "deprecated_function_run logIO error_log() 3.4.0\n",
+ "return": "NULL",
+ "error": null
+}

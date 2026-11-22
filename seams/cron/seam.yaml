@@ -3,4 +3,28 @@ job: "Schedules, reschedules and runs events stored in the cron option."
 ported: false
 files:
   - 'wp-includes/cron.php'
-wordpress: []
+# Loaded before each example on the WordPress side. The HTTP API is there for spawn_cron(), whose request the
+# examples catch on pre_http_request (class-wp-http.php registers the Requests autoloader).
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/general-template.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-error.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/link-template.php
+  - wp-includes/http.php
+  - wp-includes/class-wp-http.php
+  - wp-includes/class-wp-http-proxy.php
+  - wp-includes/class-wp-http-cookie.php
+  - wp-includes/class-wp-http-response.php
+  - wp-includes/class-wp-http-requests-response.php
+  - wp-includes/class-wp-http-requests-hooks.php
+  - wp-includes/cron.php
+setup: setup.php

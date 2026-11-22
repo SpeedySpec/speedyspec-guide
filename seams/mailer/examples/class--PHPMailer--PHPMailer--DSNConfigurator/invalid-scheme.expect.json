@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'Invalid scheme: \"ftp\". Allowed values: \"mail\", \"sendmail\", \"qmail\", \"smtp\", \"smtps\".'",
+ "error": null
+}

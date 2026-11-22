@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_register_entity_fields"
+---
+
+## Behaviour
+
+Registers fields for an entity, given by kind and name (for example `postType` and `page`), on `wp_entity_fields_api_init`, and returns the ids it registered. New in WordPress 7.2 (trunk); WordPress 7.1.5 has no entity API. Each field is an array with a non-empty string `id`. The registry stores it with an `origin` recording who registered it, and remembers the script module, if given, that renders it. A field already registered, or given twice, is skipped and reported through `_doing_it_wrong()`; so is a field whose `type` DataViews doesn't provide. Called outside `wp_entity_fields_api_init`, it registers nothing and reports it. It is `WP_Entity_Fields_Registry::register()`. <Ev source="wp:wp-includes/entity-fields.php#L52-L54" hash="498ae8f2f452434de286144321aa20d833d23dda8d9d415880697e118253a560"/>
+
+## Override
+
+Change a registered field with `wp_update_entity_fields()`, or unregister it first to replace it.

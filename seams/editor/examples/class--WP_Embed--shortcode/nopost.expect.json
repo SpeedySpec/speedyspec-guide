@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "request https://www.youtube.com/oembed?maxwidth=300&maxheight=750&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Dabc&dnt=1&format=json\n",
+ "return": "array (\n  0 => '<iframe src=\"https://www.youtube.com/embed/abc\"></iframe>',\n  1 => 1,\n  2 => '<iframe src=\"https://www.youtube.com/embed/abc\"></iframe>',\n)",
+ "error": null
+}

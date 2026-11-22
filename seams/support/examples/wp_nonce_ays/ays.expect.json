@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'output' => '',\n    'message' => 'The link you followed has expired.',\n    'title' => 'An error occurred.',\n    'response' => 403,\n  ),\n  1 => 'You are attempting to log out of Guide</p><p>Do you really want to <a href=\"http://example.org/wp-login.php?action=logout&amp;_wpnonce=NONCE\">log out</a>?',\n)",
+ "error": null
+}

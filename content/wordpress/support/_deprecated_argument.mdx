@@ -1,0 +1,11 @@
+---
+symbol: "function:_deprecated_argument"
+---
+
+## Behaviour
+
+Reports a deprecated argument: fires deprecated_argument_run, then raises a notice when debugging allows it. <Ev source="wp:wp-includes/functions.php#L6086-L6143" hash="9f07bb4d32a14f89b176f197d276cee2a0bf88ddabacc68a2922cfb400902125"/>
+
+## Override
+
+`deprecated_argument_trigger_error` filters it; `deprecated_argument_run` fires.

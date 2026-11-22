@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_unschedule_hook"
+---
+
+## Behaviour
+
+Removes every event of a hook, whatever its arguments, and returns how many it removed; `0` when there were none, without saving. <Ev source="wp:wp-includes/cron.php#L695-L765" hash="d24da368766cb4eadd573950be08f55328b385b7c705d9d5f5dc689559977132"/>
+
+## Override
+
+`pre_unschedule_hook` can answer instead.

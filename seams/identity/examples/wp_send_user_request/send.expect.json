@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "email to admin@example.org: [Guide] Confirm Action: Export Personal Data\n",
+ "return": "array (\n  0 => true,\n  1 => 'invalid_request',\n)",
+ "error": null
+}

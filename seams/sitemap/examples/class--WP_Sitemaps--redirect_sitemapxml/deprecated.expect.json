@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "redirect_sitemapxml 6.7.0\n",
+ "return": "true",
+ "error": null
+}

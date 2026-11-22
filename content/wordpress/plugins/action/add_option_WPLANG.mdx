@@ -1,0 +1,7 @@
+---
+symbol: "action:add_option_WPLANG"
+---
+
+## Behaviour
+
+Fired by `add_option()` (as `add_option_{$option}`) when the site language is first set; WordPress attaches `wp_flush_rewrite_rules_on_site_language_change()`, which clears the rewrite rules so they are rebuilt in the new language. <Ev source="wp:wp-includes/default-filters.php#L503-L503" hash="aec51e9000df5b9f747d0b78ff56cfb6f358360a70791f5ce837a38bc07a650f"/>

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a download href=\"https://example.org/?a=1&#038;b=2\" title=\"Tom &amp; &quot;Jerry&quot;\">link</a>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'rest_no_matching_schema',\n  1 => 'size is not a valid Number. Reason: size is not of type number.',\n)",
+ "error": null
+}

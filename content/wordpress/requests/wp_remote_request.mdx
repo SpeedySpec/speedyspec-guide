@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_remote_request"
+---
+
+## Behaviour
+
+Sends an HTTP request through the shared `WP_Http` and gives back its response array (`headers`, `body`, `response` with the code and message, `cookies`, `filename`, `http_response`), or a `WP_Error` when it fails. <Ev source="wp:wp-includes/http.php#L166-L169" hash="a3385a327dce5f4129c9faf2c77d005e6cfa77e502f34f6b08643f7b293390ae"/>
+
+## Override
+
+`pre_http_request` can answer instead of sending; `http_request_args` changes the arguments and `http_response` the response.

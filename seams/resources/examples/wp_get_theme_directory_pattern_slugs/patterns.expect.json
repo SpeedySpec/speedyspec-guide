@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'three-columns-of-services',\n  1 => 'clients-section',\n)",
+ "error": null
+}

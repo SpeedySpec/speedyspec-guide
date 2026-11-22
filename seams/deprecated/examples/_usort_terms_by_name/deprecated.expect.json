@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 1,\n  1 => 'deprecated _usort_terms_by_name since 4.7.0, use wp_list_sort()',\n)",
+ "error": null
+}

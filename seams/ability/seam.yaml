@@ -9,4 +9,38 @@ files:
   - 'wp-includes/abilities-api/class-wp-ability-category.php'
   - 'wp-includes/abilities-api/class-wp-ability.php'
   - 'wp-includes/abilities.php'
-wordpress: []
+# Loaded in this order before each example on the WordPress side. There is no database and no logged-in user.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-error.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  # Ability input and output are checked against JSON schemas with the REST API's validators.
+  - wp-includes/rest-api.php
+  - wp-includes/class-wp-role.php
+  - wp-includes/class-wp-roles.php
+  - wp-includes/class-wp-user.php
+  - wp-includes/capabilities.php
+  - wp-includes/user.php
+  - wp-includes/pluggable.php
+  - wp-includes/abilities-api/class-wp-ability-category.php
+  - wp-includes/abilities-api/class-wp-ability-categories-registry.php
+  - wp-includes/abilities-api/class-wp-ability.php
+  - wp-includes/abilities-api/class-wp-abilities-registry.php
+  - wp-includes/abilities-api.php
+  # WordPress's own abilities: they read the registered post types, roles and settings.
+  - wp-includes/class-wp-post.php
+  - wp-includes/class-wp-post-type.php
+  - wp-includes/post.php
+  - wp-includes/class-wp-list-util.php
+  # core/get-site-info reads get_bloginfo().
+  - wp-includes/general-template.php
+  - wp-includes/abilities.php
+setup: setup.php

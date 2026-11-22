@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "the_widget Guide_Hello_Widget\n<div class=\"widget widget_guide_hello\">Hello, Ada</div>\nthe_widget Guide_Hello_Widget\n<aside class=\"widget_guide_hello\">Hello, Grace</aside>",
+ "return": "NULL",
+ "error": null
+}

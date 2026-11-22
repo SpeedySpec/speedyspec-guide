@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_check_php_mysql_versions"
+---
+
+## Behaviour
+
+Stops the request with a 500 error page when PHP is older than WordPress requires, or when no database extension is loaded and there is no db.php drop-in; otherwise nothing. <Ev source="wp:wp-includes/load.php#L157-L233" hash="1d664b0b084b5fb41f9fc7eb8596fb747ccafcb515e727e947f122a687f70b6d"/>
+
+## Override
+
+Not overridable.

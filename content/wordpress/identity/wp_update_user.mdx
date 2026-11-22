@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_update_user"
+---
+
+## Behaviour
+
+Updates a user's fields (hashing a new password and logging out other sessions), keeping the rest; a changed email or password sends a notice. profile_update fires. <Ev source="wp:wp-includes/user.php#L2764-L3011" hash="d58fa2a9ab504a438141efd0ae92b181e7f73cafcaa2b6f2a1d2d562ccb8d9e2"/>
+
+## Override
+
+`send_password_change_email`, `send_email_change_email`, `password_change_email`, `email_change_email`, `auth_cookie_expiration` filter it; `wp_set_password`, `wp_update_user` fire.

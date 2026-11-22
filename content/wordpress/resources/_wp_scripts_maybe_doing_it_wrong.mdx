@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_scripts_maybe_doing_it_wrong"
+---
+
+## Behaviour
+
+Reports a doing-it-wrong notice, naming the handle, when a script or style function is called before init, wp_enqueue_scripts, admin_enqueue_scripts or login_enqueue_scripts has run; afterwards, as here, nothing. <Ev source="wp:wp-includes/functions.wp-scripts.php#L41-L69" hash="d3954608447f783886dda4a801448f37b148785e6433aadc6222711708e0600e"/>
+
+## Override
+
+Not overridable.

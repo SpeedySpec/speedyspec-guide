@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_admin_bar_init"
+---
+
+## Behaviour
+
+Creates the admin bar, when it is showing, in the `$wp_admin_bar` global: it loads the class, creates it (`WP_Admin_Bar` unless `wp_admin_bar_class` names another), initializes it and hooks its menus. Returns whether it did. <Ev source="wp:wp-includes/admin-bar.php#L23-L53" hash="77ab29a4b83dd7bd4649386572b3cee7e45e400ffcb884aa2e881f17a14ceb47"/>
+
+## Override
+
+`wp_admin_bar_class` picks the class.

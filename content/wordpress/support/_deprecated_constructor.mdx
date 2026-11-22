@@ -1,0 +1,11 @@
+---
+symbol: "function:_deprecated_constructor"
+---
+
+## Behaviour
+
+Reports a PHP 4 style constructor: fires deprecated_constructor_run, then raises a notice when debugging allows it. <Ev source="wp:wp-includes/functions.php#L5835-L5899" hash="e1294beadb1d3224d06b4593ed0f6a8c93020cac7f4a82c2b8b9752ce627ed90"/>
+
+## Override
+
+`deprecated_constructor_trigger_error` filters it; `deprecated_constructor_run` fires.

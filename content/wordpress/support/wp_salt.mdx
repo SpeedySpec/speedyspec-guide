@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_salt"
+---
+
+## Behaviour
+
+The secret for a scheme (auth, secure_auth, logged_in, nonce): its _KEY and _SALT constants joined, or values made and stored in options when they are missing. <Ev source="wp:wp-includes/pluggable.php#L2594-L2707" hash="5be167c0267ae229c560d89787aa85eb88a7c327af638edfcf9f1bdea40f344f"/>
+
+## Override
+
+`salt` filters it.
