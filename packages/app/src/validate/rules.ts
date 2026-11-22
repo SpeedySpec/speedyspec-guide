@@ -4,10 +4,11 @@ import type { Failure, Rule, ValidationContext } from './rule.ts';
 
 const sha256 = (s: string) => new Bun.CryptoHasher('sha256').update(s).digest('hex');
 
-/** Page citations and seam-edge citations, each with where it is written. */
+/** Page, guide and seam-edge citations, each with where it is written. */
 function allCitations(ctx: ValidationContext): { where: string; citation: Citation }[] {
   return [
     ...ctx.citations.map((c) => ({ where: c.page, citation: c.citation })),
+    ...ctx.guides.flatMap((g) => g.citations.map((citation) => ({ where: g.file, citation }))),
     ...ctx.seams.flatMap((s) => Object.values(s.dependencies ?? {}).map((dep) => ({ where: `seams/${s.id}/seam.yaml`, citation: dep.cite }))),
     ...ctx.seams.flatMap((s) => s.edges.filter((e) => e.at).map((e) => ({ where: `seams/${s.id}/seam.yaml`, citation: e.at! }))),
   ];
@@ -37,6 +38,8 @@ export const CitationExists: Rule = {
       if (c.kind === 'example') {
         const declared = ctx.declaredExamples.find((e) => e.id === c.id);
         if (!declared) f.push({ rule: this.id, where, message: `${citationText(c)} does not exist in seams/*/examples` });
+        // A guide backs no WordPress or SpeedySpec claim with an example; it only shows one, so it must exist.
+        else if (where.startsWith('guides/')) continue;
         else if (where.startsWith('wordpress/')) {
           if (!declared.sides.includes('wordpress')) f.push({ rule: this.id, where, message: `${citationText(c)} does not run on WordPress, so it can't back a WordPress claim` });
         } else if (!declared.sides.includes('runtime')) f.push({ rule: this.id, where, message: `${citationText(c)} does not run on the runtime, so it can't back a SpeedySpec claim` });

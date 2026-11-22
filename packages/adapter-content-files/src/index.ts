@@ -73,7 +73,7 @@ const NUMBERED = /^(\d{2})-(.+)\.mdx$/;
 /**
  * The developer guides under `content/guides/`: the learning path (`path/`), topic guides (`topics/<seam>.mdx`) and the
  *  contributing track (`contributing/{wordpress,speedyspec}/`). Repository, with a Data Mapper from each file's front
- *  matter and its `<Example>`, `<Sym>` and `<OnSpeedySpecNote>` tags to a `Guide`.
+ *  matter and its `<Example>`, `<Sym>`, `<OnSpeedySpecNote>` and `<Ev>` tags to a `Guide`.
  */
 export class GuideFiles implements GuideSource {
   constructor(private readonly dir: string) {}
@@ -99,7 +99,7 @@ export class GuideFiles implements GuideSource {
     const tagged = (name: string) => [...text.matchAll(TAG(name))].map((m) => attrs(m[1]!).id).filter((id): id is string => typeof id === 'string');
     const parts = file.split('/');
     const name = parts[parts.length - 1]!;
-    const base = { file, title: str(data.title), summary: str(data.summary), examples: tagged('Example'), symbols: [...tagged('Sym'), ...tagged('OnSpeedySpecNote')] };
+    const base = { file, title: str(data.title), summary: str(data.summary), examples: tagged('Example'), symbols: [...tagged('Sym'), ...tagged('OnSpeedySpecNote')], citations: [...text.matchAll(TAG('Ev'))].map((m) => parseCitation(attrs(m[1]!))) };
     if (parts[1] === 'topics') {
       const seam = name.slice(0, -'.mdx'.length);
       return { ...base, kind: 'topic', slug: seam, seam };

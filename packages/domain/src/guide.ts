@@ -1,8 +1,11 @@
+import type { Citation } from './citation.ts';
+
 /** Which track a developer guide belongs to. */
 export type GuideKind = 'path' | 'topic' | 'contributing';
 
 /**
- * A developer guide: prose that teaches, with the examples it embeds and the symbols it links. Plain object; it knows
+ * A developer guide: prose that teaches, with the examples it embeds, the symbols it links and the
+ *  sources it cites. Plain object; it knows
  *  nothing of the files it was read from beyond their names.
  */
 export interface Guide {
@@ -23,4 +26,6 @@ export interface Guide {
   examples: string[];
   /** The ids of the symbols it links or notes the SpeedySpec verdict of, in page order. */
   symbols: string[];
+  /** Its `<Ev>` citations, in page order, checked like a reference page's. */
+  citations: Citation[];
 }

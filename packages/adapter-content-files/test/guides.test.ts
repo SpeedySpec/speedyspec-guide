@@ -23,9 +23,9 @@ describe('GuideFiles', () => {
       'guides/contributing/speedyspec/02-port.mdx': front('Port'),
     })).guides();
     expect(guides).toEqual([
-      { file: 'guides/contributing/speedyspec/02-port.mdx', kind: 'contributing', part: 'speedyspec', slug: 'port', order: 2, title: 'Port', summary: 'About Port.', examples: [], symbols: [] },
-      { file: 'guides/path/01-first.mdx', kind: 'path', slug: 'first', order: 1, title: 'First', summary: 'About First.', examples: [], symbols: [] },
-      { file: 'guides/topics/options.mdx', kind: 'topic', slug: 'options', seam: 'options', title: 'Options', summary: 'About Options.', examples: [], symbols: [] },
+      { file: 'guides/contributing/speedyspec/02-port.mdx', kind: 'contributing', part: 'speedyspec', slug: 'port', order: 2, title: 'Port', summary: 'About Port.', examples: [], symbols: [], citations: [] },
+      { file: 'guides/path/01-first.mdx', kind: 'path', slug: 'first', order: 1, title: 'First', summary: 'About First.', examples: [], symbols: [], citations: [] },
+      { file: 'guides/topics/options.mdx', kind: 'topic', slug: 'options', seam: 'options', title: 'Options', summary: 'About Options.', examples: [], symbols: [], citations: [] },
     ]);
   });
 
@@ -35,6 +35,13 @@ describe('GuideFiles', () => {
     })).guides();
     expect(guide!.examples).toEqual(['options/get_option/basic']);
     expect(guide!.symbols).toEqual(['function:get_option']);
+  });
+
+  test('test_collects_citations', async () => {
+    const [guide] = await new GuideFiles(content({
+      'guides/contributing/wordpress/01-change.mdx': front('Change') + 'It filters first. <Ev source="wp:wp-includes/option.php#L132-L132" hash="abc"/>\n',
+    })).guides();
+    expect(guide!.citations).toEqual([{ kind: 'source', base: 'wp', file: 'wp-includes/option.php', from: 132, to: 132, hash: 'abc' }]);
   });
 
   test('test_speedyspec_note_ids_are_symbols', async () => {
