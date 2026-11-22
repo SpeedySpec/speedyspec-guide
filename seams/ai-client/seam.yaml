@@ -8,3 +8,24 @@ files:
   - 'wp-includes/connectors.php'
   - 'wp-includes/class-wp-connector-registry.php'
 wordpress: []
+elsewhere:
+  - name: "PSR-7 HTTP messages (Nyholm PSR-7)"
+    docs: "https://github.com/Nyholm/psr7"
+    files: ["wp-includes/php-ai-client/third-party/Nyholm/**"]
+    note: "The PHP AI Client bundles Nyholm's PSR-7 implementation for its HTTP requests and responses; its classes follow the PSR-7 and PSR-17 standards."
+  - name: "PSR HTTP interfaces (PSR-7, PSR-17, PSR-18)"
+    docs: "https://www.php-fig.org/psr/psr-7/"
+    files: ["wp-includes/php-ai-client/third-party/Psr/Http/**"]
+    note: "The PHP-FIG interfaces for HTTP messages (PSR-7), message factories (PSR-17) and HTTP clients (PSR-18)."
+  - name: "PSR-16 simple cache"
+    docs: "https://www.php-fig.org/psr/psr-16/"
+    files: ["wp-includes/php-ai-client/third-party/Psr/SimpleCache/**"]
+    note: "The PHP-FIG simple cache interfaces."
+  - name: "PSR-14 event dispatcher"
+    docs: "https://www.php-fig.org/psr/psr-14/"
+    files: ["wp-includes/php-ai-client/third-party/Psr/EventDispatcher/**"]
+    note: "The PHP-FIG event dispatcher interfaces."
+  - name: "php-http Discovery"
+    docs: "https://docs.php-http.org/en/latest/discovery.html"
+    files: ["wp-includes/php-ai-client/third-party/Http/Discovery/**"]
+    note: "Finds an installed HTTP client and message factories for the PHP AI Client."
