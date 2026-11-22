@@ -50,7 +50,7 @@ body { margin: 0; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 code, pre, .mono { font-family: var(--mono); font-size: 0.875em; }
-pre { background: var(--code-bg); color: var(--code-text); border-radius: 6px; padding: 0.75rem 1rem; overflow: auto; line-height: 1.5; }
+pre { background: var(--code-bg); color: var(--code-text); border-radius: 6px; padding: 0.75rem 1rem; overflow: auto; line-height: 1.5; tab-size: 4; }
 h1, h2, h3 { line-height: 1.25; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
