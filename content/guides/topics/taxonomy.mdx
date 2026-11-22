@@ -1,0 +1,136 @@
+---
+title: Taxonomies and metadata
+summary: How taxonomies, terms and their links to posts are stored and queried, and the one metadata API every kind of meta goes through.
+---
+
+The Taxonomy seam holds two systems that grew up together. **Taxonomies** group content: categories, tags and any a
+plugin registers. The **Metadata API** stores named values for posts, users, terms and comments alike. This guide
+explains how each is put together. For using a taxonomy in a plugin, read
+[Grouping content with taxonomies](/guides/path/grouping-content-with-taxonomies/) first.
+
+## Three tables behind every taxonomy
+
+A term is spread over three tables, and knowing why explains several functions' arguments.
+
+- `terms` holds the term itself: its name and slug.
+- `term_taxonomy` places a term in one taxonomy, with its description, its parent and a count of the objects it
+  groups. A term's place in a taxonomy has an ID of its own, the `term_taxonomy_id`.
+- `term_relationships` links objects, usually posts, to those places.
+
+That is why <Sym id="function:wp_insert_term" /> returns two IDs, and why some functions ask for a `term_taxonomy_id`
+rather than a term ID. A taxonomy itself isn't stored at all. It exists while the code that registers it runs.
+
+## Registering a taxonomy
+
+<Sym id="function:register_taxonomy" /> creates a <Sym id="class:WP_Taxonomy" /> with labels, capabilities, rewrite
+rules and a query variable, for the object types it groups. Names are limited to 32 characters:
+
+<Example id="taxonomy/register_taxonomy/register" />
+
+<Sym id="function:get_taxonomy" /> returns a registered taxonomy, or `false`, and
+<Sym id="function:get_object_taxonomies" /> lists the taxonomies of a post type:
+
+<Example id="taxonomy/get_taxonomy/get" />
+
+## Terms: adding, changing, removing
+
+`wp_insert_term()` adds a term and makes its slug unique within the taxonomy. It refuses an empty name, a name already
+used at that level of the hierarchy, and a parent that doesn't exist:
+
+<Example id="taxonomy/wp_insert_term/insert" />
+
+<Sym id="function:wp_update_term" /> changes a term's name, slug, description or parent, refusing a slug another term
+uses and a parent that would make a loop:
+
+<Example id="taxonomy/wp_update_term/update" />
+
+<Sym id="function:wp_delete_term" /> removes a term. Its children move up to its parent, posts keep their other terms,
+and a taxonomy's default term, such as Uncategorized, can't be deleted:
+
+<Example id="taxonomy/wp_delete_term/delete" />
+
+## Finding terms
+
+To look up one term:
+
+- <Sym id="function:term_exists" /> answers the common "is there one already?" by ID, slug or name, and returns the
+  IDs.
+- <Sym id="function:get_term_by" /> fetches a term by its slug, name or ID, as a <Sym id="class:WP_Term" />.
+
+<Example id="taxonomy/term_exists/exists" />
+
+<Example id="taxonomy/get_term_by/by" />
+
+<Sym id="function:get_terms" /> lists terms through <Sym id="class:WP_Term_Query" />. By default it hides terms that
+group nothing, so ask for `hide_empty => false` when you want them all:
+
+<Example id="taxonomy/get_terms/query" />
+
+<Sym id="function:get_term_children" /> lists every descendant of a term in a hierarchical taxonomy, and
+<Sym id="function:get_term_link" /> gives a term's archive address:
+
+<Example id="taxonomy/get_term_children/children" />
+
+<Example id="taxonomy/get_term_link/link" />
+
+## Linking terms to posts
+
+<Sym id="function:wp_set_object_terms" /> sets an object's terms in one taxonomy, replacing them unless you append.
+Strings are names or slugs, created when missing, while integers are IDs:
+
+<Example id="taxonomy/wp_set_object_terms/set" />
+
+<Sym id="function:wp_get_object_terms" /> reads an object's terms, and <Sym id="function:wp_remove_object_terms" />
+removes some:
+
+<Example id="taxonomy/wp_get_object_terms/terms" />
+
+<Example id="taxonomy/wp_remove_object_terms/remove" />
+
+Each change updates the term's count, which `get_terms()` uses to hide empty terms. That is why you change links
+through these functions rather than writing `term_relationships` rows yourself. <OnSpeedySpecNote id="function:wp_set_object_terms" />
+
+## Term meta
+
+Terms have meta of their own, which works exactly like post meta: <Sym id="function:add_term_meta" />,
+<Sym id="function:get_term_meta" />, <Sym id="function:update_term_meta" /> and `delete_term_meta()`. Register the
+keys you use with <Sym id="function:register_term_meta" />.
+
+<Example id="taxonomy/add_term_meta/meta" />
+
+## One metadata API for every object
+
+Post meta, user meta, term meta and comment meta are four tables with the same shape, and one set of functions
+serves them all, taking the kind of object as the first argument. `get_post_meta()` is a thin wrapper around
+`get_metadata( 'post', … )`, and the others are the same. So the rules below hold for every kind of meta.
+
+<Sym id="function:add_metadata" /> adds a value. A key may hold several values, unless you ask for it to be unique.
+Arrays and objects are stored serialized:
+
+<Example id="taxonomy/add_metadata/add" />
+
+<Sym id="function:get_metadata" /> returns every key, one key's values, or the first value. A missing key gives the
+registered default, or an empty string (or an empty array) when there is none:
+
+<Example id="taxonomy/get_metadata/get" />
+
+<Sym id="function:update_metadata" /> changes values, and can be limited to rows holding a previous value.
+<Sym id="function:delete_metadata" /> removes them, for one object or, with `delete_all`, for every object at once:
+
+<Example id="taxonomy/update_metadata/update" />
+
+<Example id="taxonomy/delete_metadata/delete" />
+
+Because a registered default makes a missing key look present, use <Sym id="function:metadata_exists" /> when you
+need to know whether a value was really saved:
+
+<Example id="taxonomy/metadata_exists/exists" />
+
+<Sym id="function:register_meta" /> gives a key its type, single or multiple values, default, sanitize and auth
+callbacks, and whether the REST API shows it. Keys starting with an underscore are **protected**:
+<Sym id="function:is_protected_meta" /> says so, and they are hidden from the editor's custom fields box:
+
+<Example id="taxonomy/is_protected_meta/protected" />
+
+The Taxonomy seam isn't ported to SpeedySpec yet, so this guide makes no promise about how taxonomies or meta behave
+there.
