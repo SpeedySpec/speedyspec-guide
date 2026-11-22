@@ -81,27 +81,46 @@ function show(doc: Document, store: KeyValueStore | null): void {
 }
 
 /**
- * Marks the read guides in the sidebar, fills the progress bars, and marks this guide read when its end is seen.
+ * Marks the read guides in the sidebar, fills the progress bars, and marks this guide read once the reader has
+ * scrolled and its end is on screen. Opening a guide whose end already shows, and leaving, doesn't count.
  *
  * @param doc
- *     The page.
+ *     The page; its window (doc.defaultView) supplies scrolling and IntersectionObserver.
  * @param store
  *     Browser storage, or null where there is none.
  */
 export function mount(doc: Document, store: KeyValueStore | null): void {
   show(doc, store);
   const end = doc.querySelector('.guide-end');
-  if (!end || typeof IntersectionObserver === 'undefined') return;
-  const seen = new IntersectionObserver((entries) => {
-    if (!entries.some((e) => e.isIntersecting)) return;
+  const view = doc.defaultView;
+  if (!end || !view || typeof view.IntersectionObserver === 'undefined') return;
+  let endVisible = false;
+  let scrolled = false;
+  const finish = () => {
+    if (!endVisible || !scrolled) return;
     seen.disconnect();
+    view.removeEventListener('scroll', onScroll);
     markRead(store, doc.location.pathname);
     show(doc, store);
+  };
+  const onScroll = () => {
+    scrolled = true;
+    finish();
+  };
+  const seen = new view.IntersectionObserver((entries) => {
+    endVisible = entries.some((e) => e.isIntersecting);
+    finish();
   });
+  view.addEventListener('scroll', onScroll, { passive: true });
   seen.observe(end);
 }
 
-/** Browser storage, or null where reading it throws (some privacy settings do). */
+/**
+ * Browser storage.
+ *
+ * @return
+ *     localStorage, or null where there is none or reading it throws (some privacy settings do).
+ */
 export function browserStore(): KeyValueStore | null {
   try {
     return globalThis.localStorage ?? null;
