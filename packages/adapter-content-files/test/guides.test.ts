@@ -44,6 +44,18 @@ describe('GuideFiles', () => {
     expect(guide!.citations).toEqual([{ kind: 'source', base: 'wp', file: 'wp-includes/option.php', from: 132, to: 132, hash: 'abc' }]);
   });
 
+  test('test_tags_inside_code_are_not_read', async () => {
+    const [guide] = await new GuideFiles(content({
+      'guides/contributing/speedyspec/01-tags.mdx': front('Tags')
+        + 'Cite with `<Ev example="<seam>/<symbol>/<name>"/>` or embed with `<Example id="x/y/z" />`.\n\n'
+        + '```mdx\n<Sym id="function:nope" />\n<Ev source="wp:nope.php#L1"/>\n```\n\n'
+        + 'A real one: <Sym id="function:get_option" /> <Example id="options/get_option/missing" />\n',
+    })).guides();
+    expect(guide!.examples).toEqual(['options/get_option/missing']);
+    expect(guide!.symbols).toEqual(['function:get_option']);
+    expect(guide!.citations).toEqual([]);
+  });
+
   test('test_speedyspec_note_ids_are_symbols', async () => {
     const [guide] = await new GuideFiles(content({
       'guides/path/01-first.mdx': front('First') + 'It works there too. <OnSpeedySpecNote id="function:add_filter" />\n',

@@ -11,6 +11,16 @@ function attrs(text: string): Record<string, string> {
   return Object.fromEntries([...text.matchAll(ATTR)].map((m) => [m[1]!, m[2]!]));
 }
 
+/**
+ * The text with its fenced code blocks and inline code spans removed, so a tag shown as code (`<Ev …/>` written out in
+ *  a guide that explains it) is never read as a real one.
+ */
+export function withoutCode(text: string): string {
+  return text
+    .replace(/^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[^\n]*$/gm, '')
+    .replace(/(`+)(?!`)(?:(?!\n\s*\n)[\s\S])*?[^`]\1(?!`)/g, '');
+}
+
 /** Pages under `content/wordpress/<seam>/` and `content/speedyspec/<seam>/`, read from MDX files. */
 export class ContentFiles implements ContentPages {
   private cache: (ContentPage & { text: string })[] | null = null;
@@ -30,7 +40,7 @@ export class ContentFiles implements ContentPages {
   async citations(): Promise<PageCitation[]> {
     const out: PageCitation[] = [];
     for (const p of await this.read()) {
-      for (const m of p.text.matchAll(TAG('Ev'))) {
+      for (const m of withoutCode(p.text).matchAll(TAG('Ev'))) {
         out.push({ page: p.page, section: p.section, seam: p.seam, citation: parseCitation(attrs(m[1]!)) });
       }
     }
@@ -42,7 +52,7 @@ export class ContentFiles implements ContentPages {
     const out: PageVersion[] = [];
     for (const p of await this.read()) {
       for (const tag of ['Changed', 'Deprecated', 'Removed']) {
-        for (const m of p.text.matchAll(TAG(tag))) {
+        for (const m of withoutCode(p.text).matchAll(TAG(tag))) {
           const a = attrs(m[1]!);
           if (a.version !== undefined) out.push({ page: p.page, version: a.version, base: a.base === 'wp' ? 'wp' : 'ss' });
         }
@@ -96,10 +106,11 @@ export class GuideFiles implements GuideSource {
     const front = /^---\r?\n([\s\S]*?)\r?\n?---/.exec(text)?.[1];
     const data = front ? ((parse(front) as Record<string, unknown> | null) ?? {}) : {};
     const str = (v: unknown) => (typeof v === 'string' ? v : '');
-    const tagged = (name: string) => [...text.matchAll(TAG(name))].map((m) => attrs(m[1]!).id).filter((id): id is string => typeof id === 'string');
+    const body = withoutCode(text);
+    const tagged = (name: string) => [...body.matchAll(TAG(name))].map((m) => attrs(m[1]!).id).filter((id): id is string => typeof id === 'string');
     const parts = file.split('/');
     const name = parts[parts.length - 1]!;
-    const base = { file, title: str(data.title), summary: str(data.summary), examples: tagged('Example'), symbols: [...tagged('Sym'), ...tagged('OnSpeedySpecNote')], citations: [...text.matchAll(TAG('Ev'))].map((m) => parseCitation(attrs(m[1]!))) };
+    const base = { file, title: str(data.title), summary: str(data.summary), examples: tagged('Example'), symbols: [...tagged('Sym'), ...tagged('OnSpeedySpecNote')], citations: [...body.matchAll(TAG('Ev'))].map((m) => parseCitation(attrs(m[1]!))) };
     if (parts[1] === 'topics') {
       const seam = name.slice(0, -'.mdx'.length);
       return { ...base, kind: 'topic', slug: seam, seam };

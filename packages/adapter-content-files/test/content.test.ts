@@ -37,6 +37,11 @@ describe('ContentFiles', () => {
     expect(await c.citations()).toEqual([{ page: 'wordpress/hooks/add_filter.mdx', section: 'wordpress', seam: 'hooks', citation: { kind: 'scenario', area: 'hooks', name: 'add_filter_returns_true' } }]);
   });
 
+  test('Ev tags shown inside code are not citations', async () => {
+    const c = new ContentFiles(content({ 'wordpress/hooks/a.mdx': 'Write `<Ev example="<seam>/<x>"/>`.\n\n```\n<Ev scenario="nope"/>\n```\n\nReal: <Ev scenario="add_filter_returns_true"/>\n' }));
+    expect((await c.citations()).map((x) => x.citation)).toEqual([{ kind: 'scenario', area: 'hooks', name: 'add_filter_returns_true' }]);
+  });
+
   test('reads versions from Changed, Deprecated and Removed', async () => {
     const c = new ContentFiles(content({ 'wordpress/hooks/a.mdx': '<Changed version="6.5.0" base="wp"/> <Deprecated version="1.2.0"/>' }));
     expect(await c.versions()).toEqual([
