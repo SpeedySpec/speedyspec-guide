@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'parent background' => 'var(--wp--preset--color--base)',\n  'child and parent' => \n  array (\n    'background' => 'var(--wp--preset--color--base)',\n    'text' => '#222222',\n  ),\n  'after the user saves' => \n  array (\n    'background' => '#000000',\n    'text' => '#222222',\n  ),\n)",
+ "error": null
+}

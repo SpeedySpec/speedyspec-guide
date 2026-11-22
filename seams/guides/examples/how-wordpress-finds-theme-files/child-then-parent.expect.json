@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'stylesheet (child)' => 'my-child',\n  'template (parent)' => 'twentytwentyone',\n  'page.php' => 'my-child/page.php',\n  'single.php' => 'twentytwentyone/single.php',\n  'missing.php' => '',\n  'theme file' => 'twentytwentyone/assets/js/primary-navigation.js',\n  'parent theme file' => 'twentytwentyone/page.php',\n)",
+ "error": null
+}

@@ -1,0 +1,81 @@
+---
+title: How WordPress finds a theme's files
+summary: The active theme is two themes at once, child and parent. How WordPress looks in each, in order, for templates, parts, assets and functions.php.
+---
+
+A site's active theme is often two themes at once: a **child theme**, which holds a site's changes, and the **parent
+theme** it builds on. WordPress never copies the parent into the child. Instead, every time it needs a file, it looks
+in the child first and falls back to the parent. This guide shows that cascade for each kind of file a theme has, so
+you know which copy WordPress will use, and why your change in a child theme does or doesn't take effect.
+
+The examples on this page build a small child theme of Twenty Twenty-One in a folder of their own, so you can see
+which theme each file comes from.
+
+## Two names for the active theme
+
+A child theme names its parent with the `Template:` line in its `style.css` header. From then on WordPress keeps two
+names:
+
+- <Sym id="function:get_stylesheet" /> is the theme that is switched on, the child.
+  <Sym id="function:get_stylesheet_directory" /> is its folder.
+- <Sym id="function:get_template" /> is the theme whose files the child builds on, the parent.
+  <Sym id="function:get_template_directory" /> is its folder.
+
+Without a child theme, both name the same theme. <Sym id="function:is_child_theme" /> says which case you are in. The
+names are historical: "stylesheet" and "template" don't mean CSS and template files here.
+
+## Child first, then parent
+
+<Sym id="function:locate_template" /> is the cascade itself. Given one file name or a list, it returns the first that
+exists, looking in the child's folder, then the parent's, then WordPress's own fallback templates. It returns an empty
+string when there is none:
+
+<Example id="guides/how-wordpress-finds-theme-files/child-then-parent" />
+
+The child has its own `page.php`, so that one wins. It has no `single.php`, so the parent's is used. For assets and
+included files, <Sym id="function:get_theme_file_path" /> applies the same rule to any file in the theme, and
+<Sym id="function:get_theme_file_uri" /> gives its address. That is how a child theme can replace one script or
+stylesheet of its parent's by putting a file at the same path. <Sym id="function:get_parent_theme_file_path" /> always
+means the parent's copy, for code in the parent that must load its own file.
+
+<Example id="theme/get_theme_file_path/example" />
+
+Use `get_theme_file_path()` rather than building paths from `get_template_directory()` in a parent theme. A path built
+by hand skips the child, so the child can never override that file. <OnSpeedySpecNote id="function:locate_template" />
+
+## Template parts
+
+<Sym id="function:get_template_part" /> loads a reusable piece of a template, such as a card or a sidebar. It takes a
+slug and an optional name, and tries the specific file before the general one: `{slug}-{name}.php`, then
+`{slug}.php`. Each name is looked for in the child, then the parent. A third argument passes an array of values to the
+part, which reads them as `$args`:
+
+<Example id="guides/how-wordpress-finds-theme-files/template-part-fallback" />
+
+There was no `card-book.php`, so the child's `card.php` was loaded, with the size it was given. A part that exists
+nowhere returns `false`. The part fires an action named for its slug first, so plugins can add to it:
+
+<Example id="theme/get_template_part/example" />
+
+## functions.php: both, child first
+
+`functions.php` is the one file that doesn't cascade. Both themes' copies load on every request, the **child's first**.
+<Sym id="function:wp_get_active_and_valid_themes" /> lists the themes whose `functions.php` WordPress will include,
+in that order:
+
+<Example id="guides/how-wordpress-finds-theme-files/functions-load-order" />
+
+Because the child's code runs first, a parent theme can let a child replace one of its functions. It wraps the
+function in `if ( ! function_exists( 'parent_function' ) )`, and a child that defines a function of the same name has
+already won. The other way to change a parent's behaviour from a child is through the parent's hooks: the child adds
+a callback, or removes the parent's, on an action that runs after both files have loaded, such as `after_setup_theme`.
+
+## Where themes live
+
+Themes live in `wp-content/themes/` by default, and <Sym id="function:get_theme_root" /> gives that folder. A plugin
+can add another folder of themes with <Sym id="function:register_theme_directory" />. That is how the examples on
+this page keep their child theme apart from the real ones. Switching theme with
+<Sym id="function:switch_theme" /> changes both names at once, and from the next request on, the new theme's
+`functions.php` files are the ones that load.
+
+The Themes seam isn't ported to SpeedySpec yet, so this guide makes no promise about how themes load there.

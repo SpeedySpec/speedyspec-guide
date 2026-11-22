@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'custom property' => '--wp--preset--color--accent: #c0392b',\n  'link color' => 'var(--wp--preset--color--accent)',\n  'resolved' => '#c0392b',\n)",
+ "error": null
+}

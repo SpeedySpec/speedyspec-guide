@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'candidates' => \n  array (\n    0 => 'page-about.php',\n    1 => 'page-{id}.php',\n    2 => 'page.php',\n  ),\n  'chosen' => 'my-child/page-about.php',\n)",
+ "error": null
+}

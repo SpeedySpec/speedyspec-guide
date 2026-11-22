@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'title' => 'Book card',\n  'categories' => \n  array (\n    0 => 'featured',\n  ),\n  'content' => '<!-- wp:paragraph --><p>A book worth reading.</p><!-- /wp:paragraph -->',\n)",
+ "error": null
+}

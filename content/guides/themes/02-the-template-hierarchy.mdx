@@ -1,0 +1,86 @@
+---
+title: The template hierarchy
+summary: How WordPress turns a request into a list of candidate templates and picks the first that exists, in classic themes and block themes, and where plugins and site owners step in.
+---
+
+Every front-end request ends with one template that draws the page. WordPress picks it by building a list of
+**candidates** for that request, from the most specific (this one post) to the most general (`index`), and taking
+the first that exists. That ordered list is the **template hierarchy**. Classic themes and block themes use the same
+hierarchy. They differ in what a template is: a PHP file, or block markup. Read
+[How WordPress finds a theme's files](/guides/themes/how-wordpress-finds-theme-files/) first, because each candidate
+is looked for in the child theme, then the parent.
+
+## From request to candidates
+
+After the main query has run, WordPress knows what kind of page this is: a single post, a page, a category, a search.
+For each kind, a `get_*_template()` function builds its candidates and hands them to
+<Sym id="function:get_query_template" />. That finds the first one through `locate_template()`. A page, for example,
+tries its page template if one was chosen, then `page-{slug}.php`, `page-{id}.php` and `page.php`:
+
+<Example id="guides/the-template-hierarchy/candidates-for-a-request" />
+
+The child theme had a `page-about.php`, so the About page used it. Other pages fall through to `page.php`. Each kind
+of page has its own list:
+
+- a single post tries `single-{post_type}-{slug}.php`, `single-{post_type}.php` and `single.php`, through
+  <Sym id="function:get_single_template" />;
+- a page tries the ones above, through <Sym id="function:get_page_template" />;
+- category, tag, author, date, search and 404 pages each have their own;
+- when nothing more specific exists, the general fallbacks are `singular.php`, `archive.php`, and last of all
+  `index.php`, which every theme must have.
+
+<Example id="theme/get_single_template/example" />
+
+<Example id="theme/get_page_template/example" />
+
+Every list passes through a filter named for its kind, <Sym id="filter:{$type}_template_hierarchy" />, before files
+are looked for. The example recorded the page list there. A plugin can add a candidate of its own there.
+<OnSpeedySpecNote id="function:get_query_template" />
+
+## The last word: template_include
+
+Once a template is chosen, its path goes through one final filter, <Sym id="filter:template_include" />, just before
+WordPress loads it. That is where a plugin supplies a template for its own content. Do it only when the theme has
+none, so a theme that styles the plugin's content keeps control:
+
+<Example id="guides/the-template-hierarchy/template-include-filter" />
+
+With no `single-my_book.php` in the theme, the plugin's own file is used. Once the child theme adds one, the theme's
+file wins. Check with `locate_template()` before overriding, as the example does. Returning your path unconditionally
+would take every book page away from every theme.
+
+## Block themes: the same hierarchy, different templates
+
+A **block theme** keeps its templates as block markup in `templates/*.html`, and reusable pieces as **template parts**
+in `parts/*.html`. The hierarchy is the same: the candidate `single.php` becomes the template slug `single`. On the
+same filters, <Sym id="function:locate_block_template" /> finds the block template and records it as the one to
+render. It then hands WordPress the template canvas, one PHP file that draws whatever block template was chosen:
+
+<Example id="block/locate_block_template/example" />
+
+<Sym id="function:resolve_block_template" /> does the choosing, walking the candidate slugs in order:
+
+<Example id="block/resolve_block_template/example" />
+
+## Saved templates come first
+
+In a block theme, the site's owner can edit any template in the Site Editor. The edited copy is saved in the database
+as a `wp_template` post, a `wp_template_part` for a part, linked to the theme. From then on it is used instead of the
+theme's file. <Sym id="function:get_block_template" /> reports where a template came from: `theme` for the file, and
+`custom` for a saved copy:
+
+<Example id="guides/the-template-hierarchy/saved-template-wins" />
+
+The theme's file is still there: <Sym id="function:get_block_file_template" /> reads it, ignoring saved copies. That
+is what "Reset" in the Site Editor goes back to. So in a block theme, a change you make to a template file doesn't
+show on a site whose owner has edited that template. Their saved copy wins until they reset it.
+
+<Example id="block/get_block_file_template/example" />
+
+<Sym id="function:get_block_templates" /> lists everything available to the active theme: saved copies, the theme's
+files, and templates plugins register:
+
+<Example id="block/get_block_templates/example" />
+
+The Themes and Blocks seams aren't ported to SpeedySpec yet, so this guide makes no promise about how templates are
+chosen there.
