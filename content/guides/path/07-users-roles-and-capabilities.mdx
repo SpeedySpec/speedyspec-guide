@@ -1,0 +1,82 @@
+---
+title: Users, roles and capabilities
+summary: Check capabilities rather than roles, add roles and capabilities on activation, remove them on uninstall, and store per-person settings.
+---
+
+Everyone who logs in to a WordPress site is a **user**, and every user has a **role**: Administrator, Editor, Author,
+Contributor or Subscriber, plus any a plugin adds. A role is only a named bundle of **capabilities**, the individual
+things a person may do, such as `edit_posts`, `upload_files` or `manage_options`. This guide shows how your plugin
+asks what a person may do, how it adds abilities of its own, and how it remembers settings per person.
+
+## Check capabilities, not roles
+
+When your plugin decides whether someone may do something, ask about the capability the action needs. Never ask
+which role they have. A site's owner can change what each role may do, with a role editor plugin or a line of code,
+and capability checks follow those changes automatically. A role check doesn't:
+
+<Example id="guides/users-roles-and-capabilities/check-capabilities-not-roles" />
+
+The editor was allowed to manage books, and the capability check knew it. The role check refused them, because they
+aren't an administrator. <Sym id="function:current_user_can" /> asks about the person logged in now, and
+<Sym id="function:user_can" /> about any user.
+
+Some capabilities need to know which thing is meant. `edit_post`, `delete_post` and `edit_user` take an ID:
+`current_user_can( 'edit_post', $post_id )`. WordPress turns these into the real checks for that object (whether it
+is theirs, whether it is published) through <Sym id="function:map_meta_cap" />. Use the specific form whenever you
+act on one item. <OnSpeedySpecNote id="function:current_user_can" />
+
+## Your plugin's own capabilities
+
+When your plugin adds something people may or may not be allowed to do, give it a capability of its own, prefixed
+like everything else: `my_plugin_manage_books`. Then site owners decide who gets it, and your code checks only that
+one name.
+
+Roles and their capabilities are saved in the database, not rebuilt on each request like post types. So add them
+once, in your activation hook, with <Sym id="function:add_role" /> for a new role, and the `add_cap()` method of
+<Sym id="class:WP_Role" /> for an existing one:
+
+<Example id="guides/users-roles-and-capabilities/add-role-on-activation" />
+
+Give administrators your capabilities too, or the people running the site can't use the feature. `add_role()` returns
+`null` when the role already exists and leaves it unchanged, so reactivating the plugin is safe. It won't update an
+existing role's capabilities, though. To change them in a later version, use `add_cap()` and `remove_cap()` on the
+role, from an upgrade routine.
+
+## Removing them on uninstall
+
+Because roles live in the database, they outlast your plugin. Remove them in `uninstall.php` with
+<Sym id="function:remove_role" />, and take your capabilities back from the roles you gave them to. Removing a role
+strips its people of every capability, even `read`, so move them to a basic role first:
+
+<Example id="guides/users-roles-and-capabilities/remove-role-on-uninstall" />
+
+Lena kept her account and can still read, as a subscriber. Do this on uninstall, not on deactivation, for the same
+reason as settings: people deactivate a plugin to test something and expect their setup to survive.
+
+## Settings per person
+
+A setting that belongs to one person, such as their reading goal or a preference in your plugin's screen, is
+**user meta**, stored with their account. Register the key with <Sym id="function:register_meta" />, using the
+`user` object type, a type, a sanitize callback and an auth callback, the same way as post meta:
+
+<Example id="guides/users-roles-and-capabilities/user-meta" />
+
+<Sym id="function:update_user_meta" /> ran the sanitizer, so `24 books` was saved as `24`. Look at what
+<Sym id="function:get_user_meta" /> returned, though: the string `'24'`. Meta is stored as text, so cast numbers when
+you read them. The registered default only comes back as the integer `0` because Sam has no value saved. The auth
+callback uses the meta capability `edit_user`, so a person may change their own goal, and administrators anyone's.
+
+## Logged-out visitors
+
+Most visitors to a site aren't logged in. To WordPress they are user `0`, with no roles and no capabilities. Test for
+that with <Sym id="function:is_user_logged_in" /> before using the current user's details:
+
+<Example id="guides/users-roles-and-capabilities/logged-out-visitor" />
+
+<Sym id="function:wp_get_current_user" /> always returns a user object, even for a visitor, so code that reads its
+name without checking prints an empty name instead of failing. A capability check is always false for a visitor,
+which is why the capability checks from [Keeping your plugin safe](/guides/path/keeping-your-plugin-safe/) also turn
+away anyone who isn't logged in.
+
+The Identity seam, which holds users, roles and capabilities, isn't ported to SpeedySpec yet, so this guide makes no
+promise about how they behave there.
