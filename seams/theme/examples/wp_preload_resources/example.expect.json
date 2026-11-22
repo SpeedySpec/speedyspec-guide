@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<link rel=\\'preload\\' href=\\'https://example.org/font.woff2\\' as=\\'font\\' type=\\'font/woff2\\' crossorigin=\\'\\' />'",
+ "error": null
+}

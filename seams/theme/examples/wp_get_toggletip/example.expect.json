@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<span class=\"wp-tooltip wp-is-toggletip\">\n\t\t\t\t<button aria-haspopup=\"dialog\" aria-label=\"About order\" class=\"wp-tooltip__toggle\" popovertarget=\"tip-2\" type=\"button\"><span aria-hidden=\"true\" class=\"dashicons dashicons-editor-help\"></span></button>\n\t\t\t\t<span popover=\"hint\" id=\"tip-2-hint\" class=\"wp-tooltip__bubble wp-tooltip__hint\" aria-hidden=\"true\"><span class=\"wp-tooltip__text\">About order</span></span><span popover=\"auto\" id=\"tip-2\" class=\"wp-tooltip__bubble\" role=\"dialog\" aria-label=\"About order\" tabindex=\"-1\" autofocus><span id=\"tip-2-text\" class=\"wp-tooltip__text\">Used to sort the list.</span><button type=\"button\" class=\"wp-tooltip__close\" popovertarget=\"tip-2\" popovertargetaction=\"hide\" aria-label=\"Close\"><span class=\"dashicons dashicons-no-alt\" aria-hidden=\"true\"></span></button></span></span>'",
+ "error": null
+}

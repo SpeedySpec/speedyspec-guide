@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<form role=\"search\" aria-label=\"Site search\" method=\"get\" id=\"searchform\" class=\"searchform\" action=\"http://example.org/\">\n\t\t\t\t<div>\n\t\t\t\t\t<label class=\"screen-reader-text\" for=\"s\">Search for:</label>\n\t\t\t\t\t<input type=\"text\" value=\"\" name=\"s\" id=\"s\" />\n\t\t\t\t\t<input type=\"submit\" id=\"searchsubmit\" value=\"Search\" />\n\t\t\t\t</div>\n\t\t\t</form>'",
+ "error": null
+}

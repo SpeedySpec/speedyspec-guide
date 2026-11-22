@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<span class=\"wp-tooltip wp-is-tooltip\">\n\t\t\t\t<button aria-label=\"Delete item\" class=\"wp-tooltip__toggle\" type=\"button\"><span aria-hidden=\"true\" class=\"dashicons dashicons-editor-help\"></span></button>\n\t\t\t\t<span popover=\"hint\" id=\"tip-1\" class=\"wp-tooltip__bubble\" role=\"tooltip\"><span id=\"tip-1-text\" class=\"wp-tooltip__text\">Delete item</span></span></span>',\n  1 => '',\n)",
+ "error": null
+}

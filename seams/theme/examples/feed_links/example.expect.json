@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<link rel=\"alternate\" type=\"application/rss+xml\" title=\"Guide &raquo; Feed\" href=\"http://example.org/?feed=rss2\" /> <link rel=\"alternate\" type=\"application/rss+xml\" title=\"Guide &raquo; Comments Feed\" href=\"http://example.org/?feed=comments-rss2\" />'",
+ "error": null
+}

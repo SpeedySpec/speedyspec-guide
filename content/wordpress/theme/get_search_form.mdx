@@ -1,0 +1,11 @@
+---
+symbol: "function:get_search_form"
+---
+
+## Behaviour
+
+The search form: the theme's searchform.php, else WordPress's HTML5 form; printed unless echo is false; filtered by search_form_format and get_search_form. <Ev source="wp:wp-includes/general-template.php#L247-L376" hash="191069992da84e8b490657252d49478ba4729a76278cfa962343e0c0634bf051"/>
+
+## Override
+
+`search_form_args`, `search_form_format`, `get_search_form` filter it; `pre_get_search_form` fires.

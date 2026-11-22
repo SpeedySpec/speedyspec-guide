@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Guide',\n  1 => 'http://example.org',\n  2 => 'UTF-8',\n  3 => 'en-US',\n  4 => 'http://example.org/?feed=rss2',\n)",
+ "error": null
+}

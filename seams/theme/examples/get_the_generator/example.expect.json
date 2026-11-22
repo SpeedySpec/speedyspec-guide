@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<meta name=\"generator\" content=\"WordPress 7.2-RC1-65559-src\">',\n  1 => '<generator uri=\"https://wordpress.org/\" version=\"7.2-RC1-65559-src\">WordPress</generator>',\n  2 => '<!-- generator=\"WordPress/7.2-RC1-65559-src\" -->',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '\t<li><a href=\\'http://example.org/?m=202603\\'>March 2026</a>&nbsp;(1)</li>\n\t<li><a href=\\'http://example.org/?m=202512\\'>December 2025</a>&nbsp;(1)</li>\n',\n  1 => '\t<option value=\\'http://example.org/?m=2026\\'> 2026 </option>\n\t<option value=\\'http://example.org/?m=2025\\'> 2025 </option>\n',\n)",
+ "error": null
+}

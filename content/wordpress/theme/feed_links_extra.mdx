@@ -1,0 +1,11 @@
+---
+symbol: "function:feed_links_extra"
+---
+
+## Behaviour
+
+Hooked to wp_head: prints the feed link tag of the page queried: a post's comments, a category, tag, author, search or post type. <Ev source="wp:wp-includes/general-template.php#L3648-L3879" hash="bb24e61ab4ef1d5c29a14bd74a9962769782a2c6e966e78f9803201345b93f3a"/>
+
+## Override
+
+`feed_links_extra_args`, `feed_links_show_comments_feed`, `feed_links_extra_show_post_comments_feed`, `feed_links_extra_show_post_type_archive_feed`, `feed_links_extra_show_category_feed`, `feed_links_extra_show_tag_feed`, `feed_links_extra_show_tax_feed`, `feed_links_extra_show_author_feed`, `feed_links_extra_show_search_feed` filter it.

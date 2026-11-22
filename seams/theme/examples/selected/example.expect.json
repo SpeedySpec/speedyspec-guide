@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => ' selected=\\'selected\\'',\n  1 => '',\n)",
+ "error": null
+}

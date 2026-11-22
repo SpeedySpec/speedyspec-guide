@@ -1,0 +1,11 @@
+---
+symbol: "function:get_template_part"
+---
+
+## Behaviour
+
+Loads a template part, `{slug}-{name}.php` then `{slug}.php`, from the child then parent theme, passing it arguments; fires `get_template_part_{$slug}` and get_template_part. False when none exists. <Ev source="wp:wp-includes/general-template.php#L167-L209" hash="c0c948f404f0c194a791c9995c56552920b96b524a22e5f9432bc3cd390b0a91"/>
+
+## Override
+
+`get_template_part_{$slug}`, `get_template_part` fire.

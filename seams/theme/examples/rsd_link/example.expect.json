@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<link rel=\"EditURI\" type=\"application/rsd+xml\" title=\"RSD\" href=\"http://example.org/xmlrpc.php?rsd\" />'",
+ "error": null
+}

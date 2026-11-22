@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'http://example.org/wp-login.php?action=logout&amp;redirect_to=http%3A%2F%2Fexample.org%2Fbye&amp;_wpnonce=X'",
+ "error": null
+}
