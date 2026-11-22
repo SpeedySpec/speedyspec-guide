@@ -1,4 +1,7 @@
 import { beforeAll, describe, expect, test } from 'bun:test';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { READ_KEY } from '../src/scripts/read-progress.ts';
 import { fixtureSite } from './fixture-build.ts';
 import { html } from './helpers.ts';
 
@@ -112,7 +115,11 @@ describe('the developer guides', () => {
     const p = await html(dist, '/guides/path/first/');
     expect(p.count('.guide-end')).toBe(1);
     expect(p.count('[data-read-progress]')).toBe(1);
-    expect(p.count('script[type="module"]')).toBeGreaterThanOrEqual(1);
+    // The read script is bundled by Astro: inlined into a module script or in a module file. An unprocessed script
+    // would still hold its import of read-progress.ts, and never the storage key itself.
+    const bundled = [p.text('script[type="module"]:not([src])').join('\n'), ...p.attr('script[type="module"][src]', 'src').map((src) => readFileSync(join(dist, src), 'utf8'))];
+    expect(bundled.some((js) => js.includes(READ_KEY))).toBe(true);
+    expect(p.raw).not.toContain('scripts/read-progress.ts');
     expect((await html(dist, '/reference/')).count('[data-read-progress]')).toBe(0);
   });
 

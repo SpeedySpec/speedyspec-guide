@@ -37,4 +37,20 @@ describe('search and coverage', () => {
     expect(p.text('.legend .pill')).toEqual(['Works as WordPress', 'Works with differences', 'Breaks', 'New in SpeedySpec', 'Not in SpeedySpec yet', 'Not yet compared']);
     expect(p.attr('.porting-links a', 'href')).toEqual(['/speedyspec/porting/hooks/', '/speedyspec/porting/options/']);
   });
+
+  test('no page uses the old shell', async () => {
+    for (const path of ['/', '/coverage/', '/install/', '/wordpress/', '/speedyspec/', '/speedyspec/conversion/', '/speedyspec/runtime/']) {
+      const p = await html(dist, path);
+      expect(p.count('.topbar')).toBe(0);
+      expect(p.count('site-search')).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  test('coverage is not indexed; the reference overviews share the Reference sidebar', async () => {
+    expect((await html(dist, '/coverage/')).count('[data-pagefind-body]')).toBe(0);
+    for (const path of ['/wordpress/', '/speedyspec/', '/coverage/']) {
+      const p = await html(dist, path);
+      expect(p.attr('#starlight__sidebar ul.top-level a', 'href')).toEqual(['/reference/', '/wordpress/', '/speedyspec/', '/speedyspec/conversion/', '/speedyspec/runtime/', '/coverage/']);
+    }
+  });
 });

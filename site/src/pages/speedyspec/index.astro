@@ -1,6 +1,7 @@
 ---
 import VerdictPill from '../../components/VerdictPill.astro';
-import Base from '../../layouts/Base.astro';
+import Page from '../../layouts/Page.astro';
+import { REFERENCE_SIDEBAR } from '../../model/starlight.ts';
 import { loadGuideData } from '../../model/data.ts';
 import type { SpeedySpecVerdict } from '../../model/verdict.ts';
 
@@ -15,9 +16,7 @@ const verdicts: [SpeedySpecVerdict, string][] = [
   ['unknown', 'Not compared yet.'],
 ];
 ---
-<Base title="SpeedySpec API" section="speedyspec">
-  <main class="page">
-    <h1>SpeedySpec API</h1>
+<Page title="SpeedySpec API" sidebar={REFERENCE_SIDEBAR}>
     <p class="muted">What SpeedySpec does with each seam: native or WordPress's PHP, what differs, how to port, and how it is built.</p>
     <ul class="seam-list">
       {d.seams.map((s) => {
@@ -40,5 +39,4 @@ const verdicts: [SpeedySpecVerdict, string][] = [
     <ul class="porting-links">
       {d.seams.map((s) => <li><a href={`/speedyspec/porting/${s.id}/`}>{s.name}</a></li>)}
     </ul>
-  </main>
-</Base>
+</Page>

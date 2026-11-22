@@ -1,14 +1,13 @@
 ---
-import Base from '../../layouts/Base.astro';
+import Page from '../../layouts/Page.astro';
+import { REFERENCE_SIDEBAR } from '../../model/starlight.ts';
 import { loadGuideData } from '../../model/data.ts';
 import { documented } from '../../model/sections.ts';
 import { wordpressSeams } from '../../model/views.ts';
 
 const d = await loadGuideData();
 ---
-<Base title="WordPress API" section="wordpress">
-  <main class="page">
-    <h1>WordPress API</h1>
+<Page title="WordPress API" sidebar={REFERENCE_SIDEBAR}>
     <p class="muted">WordPress {d.inventory.version || ''} as it is, by seam. Each page also says, in one box, how it behaves on SpeedySpec.</p>
     <ul class="seam-list">
       {wordpressSeams(d).map((s) => {
@@ -18,5 +17,4 @@ const d = await loadGuideData();
         );
       })}
     </ul>
-  </main>
-</Base>
+</Page>

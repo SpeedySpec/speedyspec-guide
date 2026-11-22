@@ -1,13 +1,12 @@
-/* The site's colours follow Starlight's theme (light, dark or auto, from its theme selector). The fallbacks are for
- * pages still outside Starlight. */
+/* The site's colours follow Starlight's theme (light, dark or auto, from its theme selector). */
 :root {
-  --text: var(--sl-color-white, #1d1f23);
-  --muted: var(--sl-color-gray-3, #6b7280);
-  --line: var(--sl-color-hairline, #e3e5e8);
-  --surface: var(--sl-color-black, #ffffff);
-  --surface-2: var(--sl-color-gray-6, #f6f7f9);
-  --accent: var(--sl-color-text-accent, #1f45b5);
-  --accent-soft: var(--sl-color-accent-low, #eef2ff);
+  --text: var(--sl-color-white);
+  --muted: var(--sl-color-gray-3);
+  --line: var(--sl-color-hairline);
+  --surface: var(--sl-color-black);
+  --surface-2: var(--sl-color-gray-6);
+  --accent: var(--sl-color-text-accent);
+  --accent-soft: var(--sl-color-accent-low);
   --ok: #17673a;
   --ok-soft: #e7f6ec;
   --warn: #8a5a00;
@@ -20,8 +19,6 @@
   --code-text: #e6e6e6;
   --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: ui-monospace, 'SF Mono', Menlo, monospace;
-  --column: 46rem;
-  --rail: 13rem;
 }
 
 :root[data-theme='dark'] {
@@ -37,20 +34,11 @@
 }
 
 * { box-sizing: border-box; }
-/* Pages still outside Starlight (no data-theme on <html>) style the basics themselves. */
-html:not([data-theme]) { background: var(--surface); color: var(--text); font: 16px/1.6 var(--font); }
-html:not([data-theme]) body { margin: 0; }
-html:not([data-theme]) a { color: var(--accent); text-decoration: none; }
-html:not([data-theme]) a:hover { text-decoration: underline; }
 code, pre, .mono { font-family: var(--mono); font-size: 0.875em; }
 pre { background: var(--code-bg); color: var(--code-text); border-radius: 6px; padding: 0.75rem 1rem; overflow: auto; line-height: 1.5; tab-size: 4; }
 h1, h2, h3 { line-height: 1.25; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-.topbar { display: flex; gap: 1.25rem; align-items: center; padding: 0.6rem 1.25rem; border-bottom: 1px solid var(--line); font-size: 0.875rem; }
-.topbar .brand { font-weight: 600; color: var(--text); }
-.topbar .search { margin-left: auto; }
-.page { max-width: var(--column); margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
 
 .muted { color: var(--muted); }
 .content { min-width: 0; }
@@ -71,6 +59,9 @@ h1, h2, h3 { line-height: 1.25; }
 .panel { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; margin: 1rem 0; padding: 0.75rem 0.9rem; border: 1px solid var(--line); border-radius: 8px; }
 .panel dt { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .panel dd { margin: 0.15rem 0 0; display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.panel-group { min-width: 0; }
+.panel .chip { overflow-wrap: anywhere; }
+@media (max-width: 50rem) { .panel { grid-template-columns: minmax(0, 1fr); } }
 .chip { font-family: var(--mono); font-size: 0.75rem; border: 1px solid var(--line); border-radius: 6px; padding: 0.1rem 0.45rem; color: var(--text); background: var(--surface); }
 .chip.circular, tr.circular td:first-child { background: var(--bad-soft); color: var(--bad); border-color: var(--bad); }
 .chip-note { font-family: var(--font); font-size: 0.6875rem; font-weight: 600; }
@@ -101,7 +92,6 @@ h1, h2, h3 { line-height: 1.25; }
 .seam-list { list-style: none; padding: 0; }
 .seam-list li { padding: 0.5rem 0; border-top: 1px solid var(--line); display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: baseline; }
 .seam-list .count, .seam-list .deps { margin-left: auto; font-size: 0.8125rem; }
-.search-open { font: inherit; font-size: 0.8125rem; color: var(--muted); background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 0.2rem 0.7rem; cursor: pointer; }
 .names { columns: 3; font-size: 0.8125rem; }
 /* Circular dependencies: red background wherever they are listed (the text "circular" is always there too). */
 li.circular, .member.circular, p.path.circular { background: var(--bad-soft); color: var(--bad); border-radius: 4px; padding: 0.1rem 0.4rem; }
@@ -121,18 +111,17 @@ table.conversion td + td { text-align: right; }
 .guide-example figcaption .result { min-width: 0; max-width: 100%; color: var(--muted); }
 .guide-example figcaption .result code { color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; }
 .guide-example figcaption .result-error { color: var(--bad); }
-.guide-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.9375rem; }
-.guide-nav .guide-next { margin-left: auto; text-align: right; }
 .guide-reference, .seam-guide { border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 6px; padding: 0.5rem 0.9rem; margin: 1rem 0; font-size: 0.875rem; background: var(--accent-soft); }
 .speedyspec-note { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8125rem; color: var(--muted); white-space: nowrap; }
 .guide-empty { color: var(--muted); font-style: italic; }
 .guide-prose h2 { margin-top: 2rem; }
 .guide .summary { font-size: 1.0625rem; color: var(--muted); margin-top: -0.25rem; }
 .guide-prose .ev { white-space: normal; overflow-wrap: anywhere; }
+/* On a phone a long scenario name would push the page sideways, so evidence chips wrap there too. */
+@media (max-width: 50rem) { .ev { white-space: normal; overflow-wrap: anywhere; } }
 /* The installation guide. */
 .install-contents ol { padding-left: 1.25rem; }
 .install-contents li { margin: 0.25rem 0; }
-.install-pager { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.875rem; }
 
 /* The header's section links; below Starlight's 50rem breakpoint they live in the mobile menu instead. */
 .site-links { display: none; gap: 1.25rem; margin-inline-start: 1.5rem; align-items: center; font-size: var(--sl-text-sm, 0.875rem); }

@@ -81,7 +81,8 @@ describe('installation guide pages', () => {
     const index = await html(dist, '/install/');
     expect(index.text('h1')).toEqual(['Installing SpeedySpec']);
     expect(index.attr('.install-contents a', 'href')).toEqual(['/install/', '/install/cli/', '/install/server/']);
-    expect(index.attr('.topbar a[aria-current="page"]', 'href')).toEqual(['/install/']);
+    expect(index.attr('.site-links a[aria-current="page"]', 'href')).toEqual(['/install/']);
+    expect(index.attr('#starlight__sidebar ul.top-level a', 'href')).toEqual(['/install/', '/install/cli/', '/install/server/']);
   });
 
   test('a page renders its MDX and links to its neighbours', async () => {
@@ -89,6 +90,7 @@ describe('installation guide pages', () => {
     expect(cli.text('h1')).toEqual(['The CLI']);
     expect(cli.text('.prose p').join(' ')).toContain("The fixture guide’s CLI page.");
     expect(cli.text('.prose pre').join(' ')).toContain('speedyspec --version');
-    expect(cli.attr('.install-pager a', 'href')).toEqual(['/install/', '/install/server/']);
+    expect(cli.attr('.pagination-links a', 'href')).toEqual(['/install/', '/install/server/']);
+    expect(cli.attr('#starlight__sidebar a[aria-current="page"]', 'href')).toEqual(['/install/cli/']);
   });
 });
