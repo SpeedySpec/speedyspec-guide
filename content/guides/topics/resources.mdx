@@ -1,0 +1,134 @@
+---
+title: Scripts, styles and fonts
+summary: How WordPress keeps registries of scripts and styles, resolves their dependencies, prints them with their extra data, and handles script modules, block styles and fonts.
+---
+
+The Resources seam decides what JavaScript, CSS and fonts a page loads, and prints the tags for them. It is built
+around two registries that work the same way, one for scripts and one for styles. Script modules, block styles and
+fonts sit beside them. For loading your plugin's files, read
+[Loading scripts and styles](/guides/path/loading-scripts-and-styles/) first.
+
+## Two registries, one design
+
+Scripts live in a <Sym id="class:WP_Scripts" /> and styles in a <Sym id="class:WP_Styles" />, both built on
+<Sym id="class:WP_Dependencies" />. Each keeps every item by its **handle**, a unique name, with its source,
+dependencies, version and extra data. <Sym id="function:wp_scripts" /> returns the scripts registry, made the first
+time it is needed. Making it registers WordPress's own scripts through <Sym id="function:wp_default_scripts" />:
+
+<Example id="resources/wp_scripts/scripts" />
+
+<Example id="resources/wp_default_scripts/scripts" />
+
+An item moves through four lists as the page is built:
+
+1. **Registered:** known by its handle, through <Sym id="function:wp_register_script" /> or
+   <Sym id="function:wp_register_style" />.
+2. **Enqueued:** asked for on this page, through <Sym id="function:wp_enqueue_script" /> or
+   <Sym id="function:wp_enqueue_style" />.
+3. **To do:** queued for printing, with its dependencies, in order.
+4. **Done:** printed.
+
+<Sym id="function:wp_script_is" /> asks which list a handle is in.
+
+## Registering and enqueuing
+
+Registering records what a file is. It refuses a handle already taken, because the first registration wins:
+
+<Example id="resources/wp_register_script/register" />
+
+<Example id="resources/wp_register_style/register" />
+
+Enqueuing asks for it on this page. Given a source, it registers too, but registering once and enqueuing by handle
+lets several places share one definition:
+
+<Example id="resources/wp_enqueue_script/enqueue" />
+
+<Example id="resources/wp_enqueue_style/enqueue" />
+
+<Example id="resources/wp_script_is/is" />
+
+Enqueue only on the actions made for it, `wp_enqueue_scripts` for the site and `admin_enqueue_scripts` for the
+admin, so items are queued before the tags print. <Sym id="function:wp_dequeue_script" /> takes a script off this page
+but keeps it registered, which is the polite way to stop another plugin's script on a page where it isn't needed:
+
+<Example id="resources/wp_dequeue_script/dequeue" />
+
+## Printing in dependency order
+
+When the page prints, each registry works out the order. Every item comes after its dependencies, and each is
+printed once, however many items need it. <Sym id="function:wp_print_scripts" /> and
+<Sym id="function:wp_print_styles" /> print the queue, or the handles given, and report what they printed:
+
+<Example id="resources/wp_print_scripts/print" />
+
+<Example id="resources/wp_print_styles/print" />
+
+Scripts marked to load in the footer wait until the end of the page. Those with a `defer` or `async` strategy keep
+it only when every script that depends on them allows it. <OnSpeedySpecNote id="function:wp_enqueue_script" />
+
+## Extra data around an item
+
+Each item can carry more than its file:
+
+- <Sym id="function:wp_add_inline_script" /> adds JavaScript before or after a script, and
+  <Sym id="function:wp_add_inline_style" /> adds CSS after a stylesheet. Neither takes `<script>` or `<style>` tags:
+  WordPress prints those itself.
+
+<Example id="resources/wp_add_inline_script/inline" />
+
+<Example id="resources/wp_add_inline_style/inline" />
+
+- <Sym id="function:wp_localize_script" /> prints an object of values before a script. It casts values to strings,
+  so for data, an inline script built with `wp_json_encode()` keeps the types:
+
+<Example id="resources/wp_localize_script/localize" />
+
+- <Sym id="function:wp_set_script_translations" /> attaches a text domain, so the script's translations print before
+  it and its `wp-i18n` calls are translated:
+
+<Example id="resources/wp_set_script_translations/translations" />
+
+- <Sym id="function:wp_script_add_data" /> and <Sym id="function:wp_style_add_data" /> set other properties, such as a
+  loading strategy, or a right-to-left version of a stylesheet:
+
+<Example id="resources/wp_script_add_data/data" />
+
+<Example id="resources/wp_style_add_data/data" />
+
+## Script modules
+
+JavaScript modules, loaded with `import`, have a registry of their own, <Sym id="class:WP_Script_Modules" />. Modules
+are registered by an ID, usually scoped like `@my-plugin/app`, with their dependencies, and print as
+`type="module"` tags. Their dependencies are listed in an import map, which tells the browser where each one is.
+Static dependencies are loaded with the module, and dynamic ones only when the code imports them:
+
+<Example id="resources/wp_register_script_module/register" />
+
+<Example id="resources/wp_enqueue_script_module/enqueue" />
+
+## Block styles and the style engine
+
+For blocks, <Sym id="function:wp_enqueue_block_style" /> attaches a stylesheet to a block type, loaded only on pages
+where that block appears:
+
+<Example id="resources/wp_enqueue_block_style/block" />
+
+The **style engine** turns a block's style settings into CSS. <Sym id="function:wp_style_engine_get_styles" /> takes
+the style object a block stores (spacing, color, typography, borders) and gives back declarations, with preset values
+turned into CSS variables:
+
+<Example id="resources/wp_style_engine_get_styles/styles" />
+
+## Fonts
+
+WordPress's Font Library keeps uploaded fonts in their own folder, which <Sym id="function:wp_get_font_dir" />
+reports without creating it:
+
+<Example id="resources/wp_get_font_dir/dir" />
+
+Plugins can offer whole sets of fonts to install with <Sym id="function:wp_register_font_collection" />:
+
+<Example id="resources/wp_register_font_collection/register" />
+
+The Resources seam isn't ported to SpeedySpec yet, so this guide makes no promise about how scripts and styles
+behave there.
