@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_delete_user"
+---
+
+## Behaviour
+
+Deletes a user from the site, reassigning their posts and links to another user or deleting them; on a network, only removes them from the site. <Ev source="wp:wp-admin/includes/user.php#L351-L472" hash="fb1caf43b257798dfe310ed65b361d30a5995fc5b39ce4a4c751330b9ee8eab2"/>
+
+## Override
+
+`post_types_to_delete_with_user` filters it; `delete_user`, `deleted_user` fire.

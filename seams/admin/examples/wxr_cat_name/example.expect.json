@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<wp:cat_name><![CDATA[Uncategorized]]></wp:cat_name>'",
+ "error": null
+}

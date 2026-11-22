@@ -1,0 +1,11 @@
+---
+symbol: "function:edit_user"
+---
+
+## Behaviour
+
+Creates or updates a user from the user screens' submitted fields: names, email, role, password and preferences; gives their ID or an error. <Ev source="wp:wp-admin/includes/user.php#L30-L256" hash="31fc64a32870d1fa607b472148c14166e213940a578467f6e25cebc6faf38c26"/>
+
+## Override
+
+`illegal_user_logins` filters it; `check_passwords`, `user_profile_update_errors`, `edit_user_created_user` fire.

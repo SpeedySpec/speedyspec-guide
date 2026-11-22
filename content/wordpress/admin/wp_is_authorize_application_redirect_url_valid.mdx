@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_is_authorize_application_redirect_url_valid"
+---
+
+## Behaviour
+
+Checks an application's redirect URL: HTTPS, or HTTP on a local environment, and not a javascript: or data: URL; gives true or an error. <Ev source="wp:wp-admin/includes/user.php#L699-L752" hash="665d7ab6c28a737aeeefcc837c326eaae81f73fbab7a28566353afa4eb61e948"/>
+
+## Override
+
+`wp_authorize_application_redirect_url_invalid_protocols` filters it.

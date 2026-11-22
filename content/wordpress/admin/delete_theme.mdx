@@ -1,0 +1,11 @@
+---
+symbol: "function:delete_theme"
+---
+
+## Behaviour
+
+Deletes a theme's files through $wp_filesystem, then its translation files and update data; true or an error; true when the theme isn't there. <Ev source="wp:wp-admin/includes/theme.php#L21-L138" hash="b515358ad285941dd3eeb525e6159da8a48225d81406043bfcfd8748b34a3814"/>
+
+## Override
+
+`delete_theme`, `deleted_theme` fire.

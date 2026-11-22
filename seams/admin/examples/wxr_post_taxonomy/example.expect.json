@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<category domain=\"post_tag\" nicename=\"oolong\"><![CDATA[oolong]]></category> <category domain=\"category\" nicename=\"uncategorized\"><![CDATA[Uncategorized]]></category>'",
+ "error": null
+}

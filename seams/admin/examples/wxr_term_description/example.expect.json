@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<wp:term_description><![CDATA[Grassy teas.]]></wp:term_description>'",
+ "error": null
+}

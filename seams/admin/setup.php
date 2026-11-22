@@ -29,6 +29,7 @@ require_once ABSPATH . 'wp-admin/includes/ajax-actions.php';
 require_once ABSPATH . 'wp-admin/includes/dashboard.php';
 require_once ABSPATH . 'wp-admin/includes/meta-boxes.php';
 require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
+require_once ABSPATH . 'wp-admin/includes/export.php';
 
 /** Runs a function that prints and gives back what it printed, each run of whitespace collapsed to one space. */
 function guide_render(callable $print): string

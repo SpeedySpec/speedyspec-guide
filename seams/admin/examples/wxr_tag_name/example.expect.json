@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<wp:tag_name><![CDATA[oolong]]></wp:tag_name>'",
+ "error": null
+}
