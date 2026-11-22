@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'&hellip; <a class=\"more-link\" href=\"http://example.org/?p=1\">Continue reading <span class=\"screen-reader-text\">Hello</span></a>'",
+ "error": null
+}

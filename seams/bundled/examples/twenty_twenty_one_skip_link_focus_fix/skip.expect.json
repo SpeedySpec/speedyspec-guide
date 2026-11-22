@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<!-- twenty_twenty_one_skip_link_focus_fix(): Internet Explorer support was removed. -->'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<span class=\"byline\">By <a href=\"http://example.org/?author=1\" rel=\"author\">Admin</a></span>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'Continue reading <span class=\"screen-reader-text\">Hello</span>'",
+ "error": null
+}

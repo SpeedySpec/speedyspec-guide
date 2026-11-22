@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<a>Item</a><button class=\"sub-menu-toggle\" aria-expanded=\"false\" onClick=\"twentytwentyoneExpandSubMenu(this)\"><span class=\"icon-plus\"><svg/></span><span class=\"icon-minus\"><svg/></span><span class=\"screen-reader-text\">Open menu</span></button>',\n  1 => '<a>Leaf</a>',\n)",
+ "error": null
+}

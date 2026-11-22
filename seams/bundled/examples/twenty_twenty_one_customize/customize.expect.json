@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'This theme requires WordPress 5.3 or newer. You are running version 5.2. Please upgrade.'",
+ "error": null
+}

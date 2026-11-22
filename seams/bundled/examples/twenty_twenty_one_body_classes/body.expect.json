@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'no-js',\n  1 => 'hfeed',\n  2 => 'no-widgets',\n)",
+ "error": null
+}

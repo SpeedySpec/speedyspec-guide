@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'link',\n    1 => 'aside',\n    2 => 'gallery',\n    3 => 'image',\n    4 => 'quote',\n    5 => 'status',\n    6 => 'video',\n    7 => 'audio',\n    8 => 'chat',\n  ),\n  1 => \n  array (\n    'primary' => 'Primary menu',\n    'footer' => 'Secondary menu',\n  ),\n  2 => \n  array (\n    'extra-small' => 16,\n    'small' => 18,\n    'normal' => 20,\n    'large' => 24,\n    'extra-large' => 40,\n    'huge' => 96,\n    'gigantic' => 144,\n  ),\n  3 => 'd1e4dd',\n  4 => false,\n  5 => 10,\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'Posts pagination Newer posts Page 1 Page 2 Page 3 Older posts'",
+ "error": null
+}

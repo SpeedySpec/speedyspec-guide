@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'class' => 'x',\n    'style' => 'width:100%;height:75%;max-width:800px;',\n  ),\n  1 => \n  array (\n    'class' => 'custom-logo',\n  ),\n)",
+ "error": null
+}

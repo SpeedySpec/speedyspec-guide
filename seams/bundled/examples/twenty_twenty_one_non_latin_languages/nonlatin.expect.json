@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'.wp-caption-text { font-family: sans-serif; }'",
+ "error": null
+}
