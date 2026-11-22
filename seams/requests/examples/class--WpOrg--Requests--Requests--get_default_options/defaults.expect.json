@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 10,\n  1 => 10,\n  2 => 'php-requests/2.0.21',\n  3 => 10,\n  4 => true,\n  5 => 'ca-bundle.crt',\n  6 => 'ca-bundle.crt',\n  7 => 'WpOrg\\\\Requests\\\\Transport\\\\Curl',\n  8 => true,\n  9 => 'WpOrg\\\\Requests\\\\Transport\\\\Curl',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'WpOrg\\\\Requests\\\\Exception\\\\Http\\\\Status404',\n    1 => 404,\n    2 => 'Not Found',\n  ),\n  1 => true,\n  2 => \n  array (\n    'a' => 1,\n  ),\n  3 => \n  (object) array(\n     'a' => 1,\n  ),\n  4 => 'response.invalid',\n)",
+ "error": null
+}

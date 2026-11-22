@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'FF01::101',\n  1 => '0:0:0:0:0:0:0:1',\n  2 => '::FFFF:129.144.52.38',\n  3 => true,\n  4 => false,\n  5 => true,\n)",
+ "error": null
+}

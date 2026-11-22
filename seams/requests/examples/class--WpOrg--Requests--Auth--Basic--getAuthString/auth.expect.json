@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'user:pass',\n  1 => 'GET / HTTP/1.1\r\nAuthorization: Basic dXNlcjpwYXNz\r\n',\n  2 => 'WpOrg\\\\Requests\\\\Auth\\\\Basic::__construct() expects an array with exactly two elements, 1 given',\n)",
+ "error": null
+}

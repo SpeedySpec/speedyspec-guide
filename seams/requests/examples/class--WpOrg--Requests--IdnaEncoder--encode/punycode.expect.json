@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'xn--bcher-kva.example',\n  1 => 'example.org',\n  2 => 'xn--mnchen-3ya',\n  3 => 'idna.encoded_too_long',\n)",
+ "error": null
+}

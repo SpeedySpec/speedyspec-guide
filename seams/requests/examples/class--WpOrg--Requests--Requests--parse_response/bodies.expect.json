@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nHello\r\n0\r\n\r\n',\n  1 => 100,\n  2 => 'zipped',\n  3 => \n  array (\n    0 => 'requests.no_crlf_separator',\n    1 => 'Missing header/body separator',\n  ),\n)",
+ "error": null
+}

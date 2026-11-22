@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http',\n  1 => 'example.org',\n  2 => 80,\n  3 => '/a/b/c',\n  4 => 'q',\n  5 => 'f',\n  6 => 'user',\n  7 => 'http://user@example.org/a/b/c?q#f',\n  8 => 'http://example.org/a/d/e?x=1',\n  9 => false,\n  10 => 'http://example.org/caf%C3%A9?%C3%BC',\n  11 => 'http://example.org/caf\u00e9?\u00fc',\n  12 => true,\n)",
+ "error": null
+}

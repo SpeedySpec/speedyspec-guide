@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '28 Timed out',\n  1 => 'curlerror',\n  2 => 28,\n  3 => 'Timed out',\n  4 => '::require() expects exactly 2 arguments, 1 given',\n  5 => '::require(): Argument #1 ($url) must be of type string, integer given',\n)",
+ "error": null
+}

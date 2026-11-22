@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'id',\n  1 => 'abc',\n  2 => 'abc',\n  3 => 1060,\n  4 => false,\n  5 => false,\n  6 => false,\n  7 => true,\n  8 => false,\n  9 => true,\n  10 => false,\n  11 => 'id=abc',\n  12 => 'id=abc; max-age=1060; domain=example.org; path=/docs; secure=1',\n)",
+ "error": null
+}

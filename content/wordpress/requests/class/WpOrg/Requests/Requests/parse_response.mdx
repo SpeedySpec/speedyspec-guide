@@ -1,0 +1,5 @@
+---
+symbol: "method:WpOrg\\Requests\\Requests::parse_response"
+---
+
+Turns a raw response into a `Response`: the status line, headers (folded lines joined), body (chunked and compressed bodies decoded) and cookies. It follows redirects up to the limit, turning a 303 (or a 301/302 to a POST) into a GET, and records the history. <Ev source="wp:wp-includes/Requests/src/Requests.php#L724-L822" hash="b71dc9eca1d210fce1fd378592276f0fbd162faaa0764c9afa8fd7a5b1597571"/>
