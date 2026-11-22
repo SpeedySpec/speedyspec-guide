@@ -1,8 +1,9 @@
 <?php
 // The array holds the arguments.
-add_action( 'guide_sum', function ( $a, $b ) {
+function guide_print_sum( $a, $b ) {
 	echo $a + $b;
-}, 10, 2 );
+}
+add_action( 'guide_sum', 'guide_print_sum', 10, 2 );
 do_action_ref_array( 'guide_sum', array( 2, 3 ) );
 
 return null;

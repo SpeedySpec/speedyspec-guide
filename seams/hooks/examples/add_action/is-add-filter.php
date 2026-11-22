@@ -1,5 +1,8 @@
 <?php
 // An action callback is a filter callback: add_action() calls add_filter().
-add_action( 'guide_value', fn( $v ) => $v . '!' );
+function guide_add_mark( $value ) {
+	return $value . '!';
+}
+add_action( 'guide_value', 'guide_add_mark' );
 
 return apply_filters( 'guide_value', 'a' );

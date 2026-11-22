@@ -1,5 +1,6 @@
 <?php
-// A closure is keyed by its object: the same closure has one key, a new closure another.
+// A closure is keyed by its object: the same closure has one key, a new closure another, so a closure added
+// directly can never be removed (add named functions instead).
 $f = function () {};
 $g = function () {};
 

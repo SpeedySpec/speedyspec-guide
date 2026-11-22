@@ -6,9 +6,10 @@ if ( ! function_exists( '_deprecated_hook' ) ) {
 		echo "deprecated: $hook";
 	}
 }
-add_action( 'guide_old_action', function () {
+function guide_say_ran() {
 	echo ' ran';
-} );
+}
+add_action( 'guide_old_action', 'guide_say_ran' );
 do_action_deprecated( 'guide_old_action', array(), '6.0.0', 'guide_new_action' );
 
 return null;
