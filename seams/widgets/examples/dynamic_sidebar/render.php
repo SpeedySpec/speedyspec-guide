@@ -6,6 +6,9 @@ update_option( 'widget_search', array( 2 => array( 'title' => 'Find' ), '_multiw
 update_option( 'widget_text', array( 3 => array( 'title' => 'Hi', 'text' => 'Hello there' ), '_multiwidget' => 1 ) );
 wp_set_sidebars_widgets( array( 'side' => array( 'search-2', 'text-3' ), 'wp_inactive_widgets' => array() ) );
 foreach ( $GLOBALS['wp_widget_factory']->widgets as $widget ) { $widget->_register(); }
-add_action( 'dynamic_sidebar_before', fn( $index, $has ) => print( "<!-- before $index -->" ), 10, 2 );
+function guide_print_dynamic_sidebar_before( $index, $has_widgets ) {
+	echo "<!-- before $index -->";
+}
+add_action( 'dynamic_sidebar_before', 'guide_print_dynamic_sidebar_before', 10, 2 );
 $html = guide_render( fn() => dynamic_sidebar( 'Side' ) );
 return array( $html, dynamic_sidebar( 'empty' ) );
