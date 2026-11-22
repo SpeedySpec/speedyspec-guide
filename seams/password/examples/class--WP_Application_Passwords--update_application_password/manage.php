@@ -1,7 +1,13 @@
 <?php
 // Reading, renaming, recording use of and deleting application passwords by UUID; each change fires its action, and an unknown UUID gives application_password_not_found.
-add_action( 'wp_update_application_password', fn( $user, $item ) => print( "renamed to {$item['name']}\n" ), 10, 2 );
-add_action( 'wp_delete_application_password', fn( $user, $item ) => print( "deleted {$item['name']}\n" ), 10, 2 );
+function guide_report_renamed( $user_id, $item ) {
+	print( "renamed to {$item['name']}\n" );
+}
+function guide_report_deleted( $user_id, $item ) {
+	print( "deleted {$item['name']}\n" );
+}
+add_action( 'wp_update_application_password', 'guide_report_renamed', 10, 2 );
+add_action( 'wp_delete_application_password', 'guide_report_deleted', 10, 2 );
 $_SERVER['REMOTE_ADDR'] = '10.0.0.5';
 list( , $item ) = WP_Application_Passwords::create_new_application_password( 1, array( 'name' => 'Phone' ) );
 WP_Application_Passwords::create_new_application_password( 1, array( 'name' => 'Laptop' ) );
