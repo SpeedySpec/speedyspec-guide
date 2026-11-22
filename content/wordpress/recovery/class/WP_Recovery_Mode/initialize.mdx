@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Recovery_Mode::initialize"
+---
+
+Hooks logout and the exit link, schedules the daily `recovery_mode_clean_expired_keys` event, then starts the session: from `WP_RECOVERY_MODE_SESSION_ID`, else from a recovery cookie, else by handling a recovery link. <Ev source="wp:wp-includes/class-wp-recovery-mode.php#L92-L117" hash="b522d5fdfdc16beefecff2ed53d88e39967c1a7bd89ee37f183f78cca5b806c0"/>

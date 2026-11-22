@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Recovery_Mode::handle_error"
+---
+
+Handles a fatal error: refuses one not from a plugin or theme (or from a network-activated plugin). Outside a session it emails a link, but only for errors on protected pages; in a session it pauses the extension and redirects to the same page, or returns `true` when headers are already sent. <Ev source="wp:wp-includes/class-wp-recovery-mode.php#L168-L197" hash="63b601dbc3eab5b59a74f4c590da2384d93e273c0deb30ffcb9d10c6619bde40"/>

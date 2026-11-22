@@ -7,4 +7,27 @@ files:
   - 'wp-includes/class-wp-recovery-mode-key-service.php'
   - 'wp-includes/class-wp-recovery-mode-link-service.php'
   - 'wp-includes/class-wp-recovery-mode.php'
-wordpress: []
+# Loaded before each example on the WordPress side.
+wordpress:
+  - wp-includes/plugin.php
+  - wp-includes/load.php
+  - wp-includes/compat.php
+  - wp-includes/compat-utf8.php
+  - wp-includes/utf8.php
+  - wp-includes/formatting.php
+  - wp-includes/functions.php
+  - wp-includes/general-template.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-error.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/link-template.php
+  - wp-includes/pluggable.php
+  - wp-includes/cron.php
+  - wp-includes/error-protection.php
+  - wp-includes/class-wp-recovery-mode-cookie-service.php
+  - wp-includes/class-wp-recovery-mode-key-service.php
+  - wp-includes/class-wp-recovery-mode-link-service.php
+  - wp-includes/class-wp-recovery-mode-email-service.php
+  - wp-includes/class-wp-recovery-mode.php
+setup: setup.php

@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Recovery_Mode_Cookie_Service::recovery_mode_hash"
+---
+
+Signs data with HMAC-SHA1, keyed with `AUTH_KEY` and `AUTH_SALT`. When either is missing or the default phrase (or the salt equals the key), it uses a random value stored once in the `recovery_mode_auth_key` or `recovery_mode_auth_salt` site option instead. <Ev source="wp:wp-includes/class-wp-recovery-mode-cookie-service.php#L200-L246" hash="8663d0ec26c9d03ae187bf43c6bd24518ba96613b8060142ec10ab70c6483774"/>

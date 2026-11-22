@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'recovery_mode',\n  1 => true,\n  2 => true,\n  3 => true,\n  4 => 'signature_mismatch',\n  5 => 'expired',\n  6 => 'invalid_format',\n  7 => 'invalid_created_at',\n)",
+ "error": null
+}

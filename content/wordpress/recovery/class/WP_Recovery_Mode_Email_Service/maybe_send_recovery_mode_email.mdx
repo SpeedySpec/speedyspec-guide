@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Recovery_Mode_Email_Service::maybe_send_recovery_mode_email"
+---
+
+Sends the email unless one was sent within the rate limit, by the `recovery_mode_email_last_sent` option, which it updates first. Returns `true`, or a `WP_Error`: `email_sent_already` saying how long ago and how long to wait, `storage_error`, or `email_failed`. <Ev source="wp:wp-includes/class-wp-recovery-mode-email-service.php#L53-L86" hash="b099d05b58d7ac52b320af90c026482de83d2444bec813bd68f8b3c95ae0931c"/>
