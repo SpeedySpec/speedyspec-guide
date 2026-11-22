@@ -128,8 +128,21 @@ table.conversion td + td { text-align: right; }
 .site-links a { color: var(--sl-color-gray-2, var(--muted)); text-decoration: none; }
 .site-links a:hover, .site-links a[aria-current='page'] { color: var(--sl-color-white, var(--text)); }
 @media (min-width: 50rem) { .site-links { display: flex; } }
-.site-links.always { display: flex; }
-@media (max-width: 50rem) { .site-links.always { gap: 0.75rem; margin-inline-start: 0.75rem; font-size: var(--sl-text-xs, 0.8125rem); } }
+/* Pages without a sidebar have no mobile menu: on phones their sections sit in a strip at the top of the page, and the
+ * header shows Starlight's theme selector (normally only in the mobile menu) beside the title and search. */
+.page-site-links { display: flex; gap: 1.25rem; justify-content: center; margin-bottom: 1.5rem; font-size: var(--sl-text-sm); }
+.page-site-links a { color: var(--sl-color-gray-2); text-decoration: none; font-weight: 600; }
+@media (min-width: 50rem) { .page-site-links { display: none; } }
+@media (max-width: 50rem) {
+  html:not([data-has-sidebar]) header .right-group { display: flex; }
+  /* No social icons, so no divider after them: the title keeps its room. */
+  html:not([data-has-sidebar]) header .social-icons { display: none; }
+}
+/* On a phone the selector shrinks to its theme icon and caret (its label stays for screen readers). */
+@media (max-width: 30rem) {
+  html:not([data-has-sidebar]) header starlight-theme-select label { --sl-select-width: 0px !important; }
+  html:not([data-has-sidebar]) header starlight-theme-select select { color: transparent; }
+}
 .mobile-site-links { display: flex; flex-direction: column; gap: 0.5rem; padding-block: 1rem; border-top: 1px solid var(--sl-color-gray-6, var(--line)); }
 .mobile-site-links a { color: var(--sl-color-white, var(--text)); text-decoration: none; font-weight: 600; }
 

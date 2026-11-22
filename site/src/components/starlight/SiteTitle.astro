@@ -1,15 +1,14 @@
 ---
-// Starlight's site title, followed by the site's sections (Decorator). On narrow screens the sections move into the
-// mobile menu (MobileMenuFooter.astro).
+// Starlight's site title, followed by the site's sections (Decorator). On narrow screens the sections move out of the
+// header: into the mobile menu (MobileMenuFooter.astro), or on pages without a sidebar, which have no mobile menu, into
+// a strip at the top of the page (layouts/Page.astro).
 import Default from '@astrojs/starlight/components/SiteTitle.astro';
 import { HEADER_LINKS } from '../../model/starlight.ts';
 
 const here = Astro.url.pathname;
-// Without a sidebar there is no mobile menu, so the links stay in the header on narrow screens too.
-const always = !Astro.locals.starlightRoute.hasSidebar;
 const current = (href: string) => here.startsWith(href) || (href === '/reference/' && /^\/(wordpress|speedyspec|coverage)\//.test(here));
 ---
 <Default><slot /></Default>
-<nav class:list={["site-links", { always }]} aria-label="Sections">
+<nav class="site-links" aria-label="Sections">
   {HEADER_LINKS.map(([label, href]) => <a href={href} aria-current={current(href) ? 'page' : undefined}>{label}</a>)}
 </nav>

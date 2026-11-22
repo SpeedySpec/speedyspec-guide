@@ -5,7 +5,7 @@
  * overrides in components/starlight/ only.
  */
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
-import type { PageLink, SidebarItem } from '../model/starlight.ts';
+import { HEADER_LINKS, type PageLink, type SidebarItem } from '../model/starlight.ts';
 
 interface Props {
   title: string;
@@ -32,5 +32,12 @@ const { title, description, template = 'doc', sidebar, headings = [], prev = fal
   hasSidebar={sidebar !== undefined}
   headings={headings}
 >
+  {sidebar === undefined && (
+    // No sidebar means no mobile menu: on phones the site's sections sit here instead (hidden on wider screens,
+    // where the header shows them).
+    <nav class="page-site-links" aria-label="Sections">
+      {HEADER_LINKS.map(([label, href]) => <a href={href}>{label}</a>)}
+    </nav>
+  )}
   <slot />
 </StarlightPage>

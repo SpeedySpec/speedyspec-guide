@@ -29,12 +29,21 @@ describe('the developer guides', () => {
     expect(home.attr('.home-popular a', 'href')).toEqual(['/guides/topics/hooks/', '/guides/topics/options/']);
   });
 
-  test('test_header_links_stay_visible_without_a_sidebar', async () => {
-    // A page without a sidebar has no mobile menu, so its header keeps the section links on narrow screens too.
+  test('test_page_without_sidebar_puts_section_links_in_the_page', async () => {
+    // A page without a sidebar has no mobile menu. Its section links go in a strip at the top of the page (shown on
+    // phones), so the header keeps room for the whole title and the theme selector.
     const home = await html(dist, '/');
     expect(home.attr('.site-links a', 'href')).toEqual(['/guides/', '/reference/', '/install/']);
-    expect(home.count('.site-links.always')).toBe(1);
+    expect(home.count('.site-links.always')).toBe(0);
+    expect(home.attr('.page-site-links a', 'href')).toEqual(['/guides/', '/reference/', '/install/']);
     expect(home.count('.mobile-site-links')).toBe(0);
+    expect(home.count('header starlight-theme-select')).toBe(1);
+  });
+
+  test('test_page_with_sidebar_keeps_section_links_in_the_menu', async () => {
+    const p = await html(dist, '/guides/path/first/');
+    expect(p.count('.page-site-links')).toBe(0);
+    expect(p.attr('.mobile-site-links a', 'href')).toEqual(['/guides/', '/reference/', '/install/']);
   });
 
   test('test_reference_landing_links_the_references', async () => {
