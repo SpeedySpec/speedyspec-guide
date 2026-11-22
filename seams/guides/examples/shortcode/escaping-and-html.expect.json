@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'double brackets' => 'Type [my_plugin_greet] to greet.',\n  'in an attribute' => '<span title=\"Hello, Ada\">x</span>',\n  'ignore_html' => '<span title=\"[my_plugin_greet name=Ada]\">x</span>',\n)",
+ "error": null
+}
