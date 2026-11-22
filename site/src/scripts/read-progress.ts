@@ -81,6 +81,18 @@ function show(doc: Document, store: KeyValueStore | null): void {
 }
 
 /**
+ * The key this guide is stored under: the path on its own sidebar link (the one Starlight marks as the current page),
+ * so it matches the links' data-guide however the host spells the address. Without that link, the address with the
+ * site's trailing slash.
+ */
+function guideKey(doc: Document): string {
+  const own = doc.querySelector<HTMLAnchorElement>('a[data-guide][aria-current="page"]')?.dataset.guide;
+  if (own) return own;
+  const path = doc.location.pathname;
+  return path.endsWith('/') ? path : `${path}/`;
+}
+
+/**
  * Marks the read guides in the sidebar, fills the progress bars, and marks this guide read once the reader has
  * scrolled and its end is on screen. Opening a guide whose end already shows, and leaving, doesn't count.
  *
@@ -100,7 +112,7 @@ export function mount(doc: Document, store: KeyValueStore | null): void {
     if (!endVisible || !scrolled) return;
     seen.disconnect();
     view.removeEventListener('scroll', onScroll);
-    markRead(store, doc.location.pathname);
+    markRead(store, guideKey(doc));
     show(doc, store);
   };
   const onScroll = () => {

@@ -22,8 +22,17 @@ class FakeBar {
   }
 }
 
-/** A page with guide links, progress bars, a guide end, and a window that scrolls and observes. */
-function fakePage(path: string, withEnd = true) {
+/**
+ * A page with guide links, progress bars, a guide end, and a window that scrolls and observes.
+ *
+ * @param path
+ *     The address the browser shows.
+ * @param withEnd
+ *     Whether the page has a guide end marker.
+ * @param current
+ *     The data-guide of the sidebar link Starlight marks aria-current="page"; by default the link matching `path`.
+ */
+function fakePage(path: string, withEnd = true, current: string | null = path) {
   const links = [
     new FakeLink({ guide: '/guides/path/a/', guideTrack: 'path' }),
     new FakeLink({ guide: '/guides/path/b/', guideTrack: 'path' }),
@@ -54,7 +63,11 @@ function fakePage(path: string, withEnd = true) {
     location: { pathname: path },
     defaultView: view,
     querySelectorAll: (sel: string) => (sel === 'a[data-guide]' ? links : sel === '[data-progress-track]' ? bars : []),
-    querySelector: (sel: string) => (sel === '.guide-end' && withEnd ? end : null),
+    querySelector: (sel: string) => {
+      if (sel === '.guide-end') return withEnd ? end : null;
+      if (sel === 'a[data-guide][aria-current="page"]') return links.find((l) => l.dataset.guide === current) ?? null;
+      return null;
+    },
   };
   return {
     doc: doc as unknown as Document,
@@ -188,6 +201,26 @@ describe('mount', () => {
     mount(page.doc, s);
     page.scroll();
     expect(page.links[0]!.attrs.has('data-read')).toBe(true);
+    expect([...readSet(s)]).toEqual(['/guides/path/a/']);
+  });
+
+  test('test_mount_keys_the_read_by_the_current_sidebar_link_not_the_address', () => {
+    // A host that serves /guides/path/a without the trailing slash: the sidebar's own path is still the key.
+    const s = memory();
+    const page = fakePage('/guides/path/a', true, '/guides/path/a/');
+    mount(page.doc, s);
+    page.scroll();
+    page.endVisible(true);
+    expect([...readSet(s)]).toEqual(['/guides/path/a/']);
+    expect(page.links[0]!.attrs.has('data-read')).toBe(true);
+  });
+
+  test('test_mount_without_a_current_link_adds_the_trailing_slash', () => {
+    const s = memory();
+    const page = fakePage('/guides/path/a', true, null);
+    mount(page.doc, s);
+    page.scroll();
+    page.endVisible(true);
     expect([...readSet(s)]).toEqual(['/guides/path/a/']);
   });
 
