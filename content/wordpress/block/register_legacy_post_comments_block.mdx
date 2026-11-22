@@ -1,0 +1,11 @@
+---
+symbol: "function:register_legacy_post_comments_block"
+---
+
+## Behaviour
+
+Hooked to init: registers the old core/post-comments block for sites that used it, rendered by the Comments block. <Ev source="wp:wp-includes/blocks/comments.php#L159-L226" hash="48be1ae5a88ee85312ec4412062fe60b0a56cb6fb9ef7cb716eeebadb68bee03"/>
+
+## Override
+
+`block_type_metadata` filters it.

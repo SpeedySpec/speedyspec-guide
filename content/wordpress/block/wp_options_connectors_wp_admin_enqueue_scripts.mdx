@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_options_connectors_wp_admin_enqueue_scripts"
+---
+
+## Behaviour
+
+Hooked to admin_enqueue_scripts: enqueues the Connectors settings page's scripts and styles inside wp-admin. <Ev source="wp:wp-includes/build/pages/options-connectors/page-wp-admin.php#L133-L274" hash="6d7724505d83cfe7a9ac16d2f256053f1ed608a6d8622b35738231bed24fe738"/>
+
+## Override
+
+`options-connectors-wp-admin_boot_dependencies` filters it; `options-connectors-wp-admin_init` fires.

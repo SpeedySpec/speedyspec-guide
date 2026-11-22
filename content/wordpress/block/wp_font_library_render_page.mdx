@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_font_library_render_page"
+---
+
+## Behaviour
+
+Prints the full-page Font Library app. <Ev source="wp:wp-includes/build/pages/font-library/page.php#L120-L326" hash="30330d966a7d013011f99e25ba1e274f8863b175a8bd66a9983be0386961ec97"/>
+
+## Override
+
+`font-library_boot_dependencies` filters it; `font-library_init`, `admin_head-{$hook_suffix}`, `admin_head`, `admin_footer`, `admin_footer-{$hook_suffix}` fire.
