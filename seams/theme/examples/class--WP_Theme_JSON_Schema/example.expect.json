@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 3,\n  1 => \n  array (\n    'color' => \n    array (\n      'customGradient' => true,\n    ),\n    'spacing' => \n    array (\n      'padding' => true,\n    ),\n  ),\n)",
+ "error": null
+}

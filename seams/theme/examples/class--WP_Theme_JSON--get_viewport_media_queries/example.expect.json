@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    '@mobile' => '@media (width <= 400px)',\n    '@tablet' => '@media (400px < width <= 60em)',\n  ),\n  1 => \n  array (\n    '@mobile' => '@media (width <= 600px)',\n    '@desktop' => '@media (width > 600px)',\n  ),\n  2 => \n  array (\n    '@mobile' => '@media (width <= 480px)',\n    '@tablet' => '@media (480px < width <= 782px)',\n  ),\n)",
+ "error": null
+}
