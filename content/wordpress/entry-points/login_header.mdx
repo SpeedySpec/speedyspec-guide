@@ -4,7 +4,7 @@ symbol: "function:login_header"
 
 ## Behaviour
 
-Prints the login page up to the form: the head with the title ("{title} ‹ {site} — WordPress", with Recovery Mode in front during a recovery session), the login styles, `login_enqueue_scripts` and `login_head`; the body with its classes (the action, the color scheme, an interim login, the locale); the logo link; the message; then the errors and notices of a `WP_Error`, errors whose data isn't `message` in an error notice and the rest in an info notice. When the first error's code is one of the shake codes, `wp_shake_js()` is hooked to `login_footer`. It is declared in `wp-login.php`. <Ev source="wp:wp-login.php#L41-L313" hash="85fb66f2c8f0eadb05055753e4f1d8a605c8190775dc7524836d64ea5239cdd7"/>
+Prints the login page up to the form: the head with the title `("{title}` ‹ `{site}` — WordPress", with Recovery Mode in front during a recovery session), the login styles, `login_enqueue_scripts` and `login_head`; the body with its classes (the action, the color scheme, an interim login, the locale); the logo link; the message; then the errors and notices of a `WP_Error`, errors whose data isn't `message` in an error notice and the rest in an info notice. When the first error's code is one of the shake codes, `wp_shake_js()` is hooked to `login_footer`. It is declared in `wp-login.php`. <Ev source="wp:wp-login.php#L41-L313" hash="85fb66f2c8f0eadb05055753e4f1d8a605c8190775dc7524836d64ea5239cdd7"/>
 
 ## Override
 
