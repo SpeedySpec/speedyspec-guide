@@ -1,7 +1,7 @@
 <?php
 // Registers a taxonomy for object types: a WP_Taxonomy with labels, capabilities, rewrite rules and query variables; names over 32 characters are refused. registered_taxonomy fires after; register_taxonomy_args filters the arguments.
 function guide_report_registered_taxonomy( $tax, $types ) {
-	echo "registered_taxonomy $tax\n";
+	echo esc_html( "registered_taxonomy $tax\n" );
 }
 add_action( 'registered_taxonomy', 'guide_report_registered_taxonomy', 10, 2 );
 register_taxonomy( 'genre', 'post', array( 'label' => 'Genres', 'hierarchical' => true, 'public' => true ) );

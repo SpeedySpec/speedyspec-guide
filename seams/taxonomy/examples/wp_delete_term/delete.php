@@ -5,7 +5,7 @@ $news = wp_insert_term( 'News', 'category' );
 $local = wp_insert_term( 'Local', 'category', array( 'parent' => $news['term_id'] ) );
 $post = wp_insert_post( array( 'post_title' => 'A', 'post_status' => 'publish', 'post_category' => array( $local['term_id'] ), 'tags_input' => array( 'alpha' ) ) );
 function guide_report_deleted_category( $id ) {
-	echo "delete_category $id\n";
+	echo esc_html( "delete_category $id\n" );
 }
 add_action( 'delete_category', 'guide_report_deleted_category' );
 $deleted = wp_delete_term( $news['term_id'], 'category' );

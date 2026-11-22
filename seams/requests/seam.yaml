@@ -89,6 +89,10 @@ wordpress:
   - wp-includes/plugin.php
   - wp-includes/load.php
   - wp-includes/compat.php
+  # The escaping functions examples print with check UTF-8 with these.
+  - wp-includes/compat-utf8.php
+  - wp-includes/class-wp-token-map.php
+  - wp-includes/utf8.php
   - wp-includes/formatting.php
   - wp-includes/functions.php
   - wp-includes/pluggable.php

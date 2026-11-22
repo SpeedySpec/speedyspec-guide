@@ -4,7 +4,7 @@ switch_to_locale( 'fr_FR' );
 load_plugin_textdomain( 'guide' );
 __( 'Hello', 'guide' );
 function guide_print_unloaded_textdomain( $domain, $reloadable ) {
-	echo "unload_textdomain $domain\n";
+	echo esc_html( "unload_textdomain $domain\n" );
 }
 add_action( 'unload_textdomain', 'guide_print_unloaded_textdomain', 10, 2 );
 $ok = unload_textdomain( 'guide' );

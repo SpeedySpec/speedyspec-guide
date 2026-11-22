@@ -1,7 +1,7 @@
 <?php
 // When an event is due and no other run holds the lock, sets the doing_cron transient and posts a non-blocking request to wp-cron.php; cron_request filters it. Nothing due, or a lock under WP_CRON_LOCK_TIMEOUT old, sends nothing.
 function guide_fake_request( $pre, $args, $url ) {
-	echo "request $url, blocking: ", var_export( $args['blocking'], true ), "\n";
+	echo esc_html( "request $url, blocking: " . var_export( $args['blocking'], true ) ), "\n";
 	return array( 'response' => array( 'code' => 200 ) );
 }
 add_filter( 'pre_http_request', 'guide_fake_request', 10, 3 );

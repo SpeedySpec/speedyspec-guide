@@ -10,6 +10,6 @@ foreach ( array( 1, 2 ) as $read ) {
 		$count = guide_expensive_count();
 		set_transient( 'guide_count', $count, HOUR_IN_SECONDS );
 	}
-	echo "read $read: $count ";
+	echo esc_html( "read $read: $count " );
 }
 return null;
