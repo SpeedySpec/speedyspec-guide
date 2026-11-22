@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'type' => 'constrained',\n  'contentSize' => '640px',\n)",
+ "error": null
+}

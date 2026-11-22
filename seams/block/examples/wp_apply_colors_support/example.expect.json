@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'class' => 'has-text-color has-accent-color has-background',\n  'style' => 'background-color:#fafafa;',\n)",
+ "error": null
+}

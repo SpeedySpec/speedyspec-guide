@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'type' => 'string',\n  'enum' => \n  array (\n    0 => 'left',\n    1 => 'center',\n    2 => 'right',\n    3 => 'wide',\n    4 => 'full',\n    5 => '',\n  ),\n)",
+ "error": null
+}

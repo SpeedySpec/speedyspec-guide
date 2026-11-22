@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_sanitize_block_gap_value"
+---
+
+## Behaviour
+
+A block gap value made safe to put in CSS: numbers zero as '0', CSS variables kept, and values with characters that could break out (backslashes, brackets, = or comments) refused as null, recursively for arrays. <Ev source="wp:wp-includes/block-supports/layout.php#L89-L121" hash="80fb279a6367f91363a27f8a1be662091f09074af9ca57e0a8e76af78f0a5c0c"/>
+
+## Override
+
+Not overridable.

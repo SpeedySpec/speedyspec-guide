@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'link' => '.wp-block-group a:where(:not(.wp-element-button))',\n  'heading' => '.wp-block-group h1,.wp-block-group  h2,.wp-block-group  h3,.wp-block-group  h4,.wp-block-group  h5,.wp-block-group  h6',\n  'h1' => '.wp-block-group h1',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'clamp(16px, 1rem + ((1vw - 3.2px) * 0.938), 28px)'",
+ "error": null
+}

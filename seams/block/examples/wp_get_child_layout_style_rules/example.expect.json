@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'selector' => '.wp-container-content-1',\n    'declarations' => \n    array (\n      'flex-basis' => '200px',\n      'box-sizing' => 'border-box',\n    ),\n  ),\n)",
+ "error": null
+}

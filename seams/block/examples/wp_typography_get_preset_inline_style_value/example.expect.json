@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'var(--wp--preset--font-size--large);',\n  1 => '20px',\n)",
+ "error": null
+}

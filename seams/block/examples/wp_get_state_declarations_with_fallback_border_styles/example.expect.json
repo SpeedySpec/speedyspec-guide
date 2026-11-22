@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'border-width' => '2px',\n  'border-style' => 'solid',\n)",
+ "error": null
+}

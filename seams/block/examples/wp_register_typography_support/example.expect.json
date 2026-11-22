@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'lock',\n  1 => 'metadata',\n  2 => 'style',\n  3 => 'fontSize',\n)",
+ "error": null
+}
