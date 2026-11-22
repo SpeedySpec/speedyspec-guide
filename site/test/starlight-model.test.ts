@@ -7,6 +7,7 @@ import {
   guidePrevNext,
   guideSidebar,
   HEADER_LINKS,
+  progressBars,
   headingsIn,
   installSidebar,
   REFERENCE_SIDEBAR,
@@ -51,6 +52,26 @@ describe('guideSidebar', () => {
     const [, , wp, ss] = groups(guideSidebar(guideTracks(data)));
     expect(links(wp!.items)[0]!.attrs).toEqual({ 'data-guide': guidePath(changing), 'data-guide-track': 'contributing-wordpress' });
     expect(links(ss!.items)[0]!.attrs).toEqual({ 'data-guide': guidePath(porting), 'data-guide-track': 'contributing-speedyspec' });
+  });
+});
+
+describe('progressBars', () => {
+  test('test_progress_bars_for_ordered_tracks_with_guides', () => {
+    expect(progressBars(guideTracks(data))).toEqual([
+      { track: 'path', label: 'Learning path', total: 3 },
+      { track: 'contributing-wordpress', label: 'Contributing to WordPress', total: 1 },
+      { track: 'contributing-speedyspec', label: 'Contributing to SpeedySpec', total: 1 },
+    ]);
+    expect(progressBars(guideTracks({ guides: [first, options] }))).toEqual([{ track: 'path', label: 'Learning path', total: 1 }]);
+  });
+
+  test('test_progress_bars_match_the_sidebar_groups', () => {
+    const t = guideTracks(data);
+    const sidebar = groups(guideSidebar(t));
+    for (const bar of progressBars(t)) {
+      const group = sidebar.find((g) => g.label === bar.label)!;
+      expect(links(group.items).map((l) => l.attrs!['data-guide-track'])).toEqual(Array(bar.total).fill(bar.track));
+    }
   });
 });
 

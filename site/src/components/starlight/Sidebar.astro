@@ -4,16 +4,10 @@
 import Default from '@astrojs/starlight/components/Sidebar.astro';
 import { loadGuideData } from '../../model/data.ts';
 import { guideTracks } from '../../model/guides.ts';
+import { progressBars } from '../../model/starlight.ts';
 
 const onGuide = Astro.url.pathname.startsWith('/guides/');
-const t = onGuide ? guideTracks(await loadGuideData()) : null;
-const bars = t
-  ? [
-      { track: 'path', label: 'Learning path', total: t.path.length },
-      { track: 'contributing-wordpress', label: 'Contributing to WordPress', total: t.contributing.wordpress.length },
-      { track: 'contributing-speedyspec', label: 'Contributing to SpeedySpec', total: t.contributing.speedyspec.length },
-    ].filter((b) => b.total > 0)
-  : [];
+const bars = onGuide ? progressBars(guideTracks(await loadGuideData())) : [];
 ---
 {onGuide && bars.length > 0 && (
   <div class="guide-progress" data-read-progress>

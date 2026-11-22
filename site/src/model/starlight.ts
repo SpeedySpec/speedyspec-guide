@@ -43,6 +43,25 @@ function guideLink(g: Guide, track: Track, label: string): SidebarLink {
   return { label, link: path, attrs: { 'data-guide': path, 'data-guide-track': track } };
 }
 
+/** One guide track, as the sidebar groups it and the progress bars count it. */
+interface TrackInfo {
+  track: Track;
+  label: string;
+  /** Whether its guides are numbered in the sidebar (the learning path's chapters). */
+  numbered: boolean;
+  /** Whether it is read in order, so it gets a progress bar (topics are ticked but not counted). */
+  ordered: boolean;
+  guides: (t: GuideTracks) => Guide[];
+}
+
+/** The guide tracks, in sidebar order: the one place their ids and labels are written. */
+const TRACKS: readonly TrackInfo[] = [
+  { track: 'path', label: 'Learning path', numbered: true, ordered: true, guides: (t) => t.path },
+  { track: 'topics', label: 'Topics', numbered: false, ordered: false, guides: (t) => t.topics },
+  { track: 'contributing-wordpress', label: 'Contributing to WordPress', numbered: false, ordered: true, guides: (t) => t.contributing.wordpress },
+  { track: 'contributing-speedyspec', label: 'Contributing to SpeedySpec', numbered: false, ordered: true, guides: (t) => t.contributing.speedyspec },
+];
+
 /**
  * Every guide, by track. Learning-path guides are numbered; each link carries its path and track for the read ticks.
  *
@@ -52,15 +71,23 @@ function guideLink(g: Guide, track: Track, label: string): SidebarLink {
  *     One group per track that has guides: Learning path, Topics, Contributing to WordPress, Contributing to SpeedySpec.
  */
 export function guideSidebar(t: GuideTracks): SidebarItem[] {
-  const tracks: [string, Track, Guide[], boolean][] = [
-    ['Learning path', 'path', t.path, true],
-    ['Topics', 'topics', t.topics, false],
-    ['Contributing to WordPress', 'contributing-wordpress', t.contributing.wordpress, false],
-    ['Contributing to SpeedySpec', 'contributing-speedyspec', t.contributing.speedyspec, false],
-  ];
-  return tracks
-    .filter(([, , guides]) => guides.length > 0)
-    .map(([label, track, guides, numbered]) => ({ label, items: guides.map((g, i) => guideLink(g, track, numbered ? `${i + 1} · ${g.title}` : g.title)) }));
+  return TRACKS.map((info) => ({ info, guides: info.guides(t) }))
+    .filter(({ guides }) => guides.length > 0)
+    .map(({ info, guides }) => ({ label: info.label, items: guides.map((g, i) => guideLink(g, info.track, info.numbered ? `${i + 1} · ${g.title}` : g.title)) }));
+}
+
+/**
+ * The progress bars above the guide sidebar: one per ordered track that has guides, in sidebar order.
+ *
+ * @param t
+ *     The guides by track.
+ * @return
+ *     Each bar's track id (matching the links' data-guide-track), label and number of guides.
+ */
+export function progressBars(t: GuideTracks): { track: Track; label: string; total: number }[] {
+  return TRACKS.filter((info) => info.ordered)
+    .map((info) => ({ track: info.track, label: info.label, total: info.guides(t).length }))
+    .filter((b) => b.total > 0);
 }
 
 /**
