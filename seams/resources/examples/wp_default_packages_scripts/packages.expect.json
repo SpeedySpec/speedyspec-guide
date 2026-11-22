@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'react-jsx-runtime',\n    1 => 'wp-autop',\n    2 => 'wp-blob',\n    3 => 'wp-block-serialization-default-parser',\n    4 => 'wp-data',\n    5 => 'wp-deprecated',\n    6 => 'wp-dom',\n    7 => 'wp-element',\n    8 => 'wp-hooks',\n    9 => 'wp-html-entities',\n    10 => 'wp-i18n',\n    11 => 'wp-is-shallow-equal',\n    12 => 'wp-private-apis',\n    13 => 'wp-rich-text',\n    14 => 'wp-shortcode',\n    15 => 'wp-warning',\n  ),\n  1 => NULL,\n)",
+ "error": null
+}

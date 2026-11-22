@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'.a{background:url(/wp-content/themes/t/img/a.png)} .b{background:url(https://x/b.png)} .c{background:url(data:image/png;base64,AA)}'",
+ "error": null
+}

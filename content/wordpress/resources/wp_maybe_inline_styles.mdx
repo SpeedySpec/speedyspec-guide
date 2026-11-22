@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_maybe_inline_styles"
+---
+
+## Behaviour
+
+Turns small stylesheets that have a path into inline styles, up to 40,000 bytes in all (styles_inline_size_limit), smallest first, fixing relative URLs. <Ev source="wp:wp-includes/script-loader.php#L3436-L3546" hash="8d25cba97754c7f717dab110c6f78cdaa71166bbd52e9b5192b3c0f750150f57"/>
+
+## Override
+
+`styles_inline_size_limit` filters it.

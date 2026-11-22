@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<script id=\"x\">\nconsole.log( 1 );\n</script>\n'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "enqueue_block_assets\n",
+ "return": "true",
+ "error": null
+}

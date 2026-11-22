@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'/**\n * Core styles: block-supports\n */\n.guide {\n\tmargin: 7px;\n}\n'",
+ "error": null
+}

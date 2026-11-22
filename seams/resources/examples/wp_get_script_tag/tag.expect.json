@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<script async id=\"a-js\" src=\"https://cdn.example/a.js\"></script>\n'",
+ "error": null
+}

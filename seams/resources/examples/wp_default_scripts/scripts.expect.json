@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org',\n  1 => \n  array (\n    0 => '/wp-admin/js/',\n    1 => '/wp-includes/js/',\n  ),\n  2 => \n  array (\n    0 => 'jquery-core',\n    1 => 'jquery-migrate',\n  ),\n  3 => true,\n)",
+ "error": null
+}

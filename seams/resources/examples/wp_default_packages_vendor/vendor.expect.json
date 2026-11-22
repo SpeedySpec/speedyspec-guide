@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'react',\n  1 => 'react-dom',\n  2 => 'lodash',\n  3 => 'moment',\n  4 => 'regenerator-runtime',\n  5 => 'wp-polyfill',\n)",
+ "error": null
+}
