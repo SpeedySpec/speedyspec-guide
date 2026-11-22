@@ -3,5 +3,8 @@
 $expiration = time() + 3600;
 $token = WP_Session_Tokens::get_instance( 1 )->create( $expiration );
 $cookie = wp_generate_auth_cookie( 1, $expiration, 'auth', $token );
-add_action( 'auth_cookie_malformed', fn() => print( "malformed\n" ) );
+function guide_print_malformed() {
+	echo "malformed\n";
+}
+add_action( 'auth_cookie_malformed', 'guide_print_malformed' );
 return array( wp_validate_auth_cookie( $cookie, 'auth' ), wp_validate_auth_cookie( 'junk', 'auth' ) );
