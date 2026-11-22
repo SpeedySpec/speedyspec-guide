@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": null,
+ "error": "TypeError: Cannot access offset of type array*"
+}

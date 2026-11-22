@@ -1,0 +1,115 @@
+---
+title: Adding examples to the guide
+summary: Write a checked example and its expected result, choose the sides it runs on, run one seam on its own, accept the result, and keep examples fit to copy.
+---
+
+Every snippet in this guide is an **example**: a small PHP file that the guide's runner runs on a real WordPress, and
+on SpeedySpec too when its seam is ported. The result is compared with what the example's `.expect.json` file says.
+An example that stops matching fails the build, so the guide can't quietly drift from what WordPress does. This guide
+shows how to add one. Read [Porting a function to SpeedySpec](/guides/contributing/speedyspec/porting-a-function/)
+first for how the seams fit together.
+
+## Where examples live
+
+A reference example lives at `seams/<seam>/examples/<symbol>/<name>.php`, in a folder named for the function, or for
+a method as `class--<Class>--<method>`. Its expected result sits beside it, in `<name>.expect.json`. A guide's own
+examples live under `seams/guides/examples/<guide-slug>/` instead. That seam boots all of WordPress, so a guide's
+examples can use any API together.
+
+The file's first comment is its title, shown above the code on every page that embeds it. Write it as one sentence
+saying what the example shows. The rest of the file is ordinary PHP that ends by returning a value, or `null` when
+the example only prints.
+
+## The three results
+
+An example is compared on three things, each optional: what it **returns**, what it **prints**, and the **error** it
+ends with.
+
+What it returns is compared as PHP's `var_export()` of the value, so the types count: `3` and `'3'` differ, and
+arrays are compared key by key.
+
+<Example id="guides/adding-examples-to-the-guide/returns-a-value" />
+
+What it prints is compared separately. This one returns `null` so that only its output matters:
+
+<Example id="guides/adding-examples-to-the-guide/prints-output" />
+
+An example may end in an error, for behaviour that is a refusal. Error messages often change between PHP versions,
+so an expected error that ends in `*` matches only the start of the message:
+
+<Example id="guides/adding-examples-to-the-guide/throws-an-error" />
+
+## The expect file
+
+`<name>.expect.json` holds the result the example must match:
+
+- `sides`: where it runs. `wordpress` always; `runtime` as well only when the seam is ported, so SpeedySpec must give
+  the same result.
+- `output`: the printed text, or an empty string.
+- `return`: the `var_export()` text, or `null` when the example ends in an error.
+- `error`: the error as `ClassName: message`, or `null`.
+- `multisite`: `true` to run on a network's main site instead of a single site (WordPress side only).
+
+Never write these values by hand from what you expect WordPress to do. Run the example and accept what it actually
+did, as below, then check the result says what the title claims.
+
+## What a seam loads
+
+A seam's `seam.yaml` lists the WordPress files loaded before each of its examples (`wordpress:`), an optional
+`setup` file that prepares a site, and `mysql: true` when its examples need a database. Seams load only the files
+their functions need, so an example calling something outside them fails with an undefined function. Add the missing
+file to the seam's list, rather than avoiding the function, when the function is the right one to show.
+
+## Running one seam
+
+`bun run guide examples` runs every seam, which takes a long time. To run one, copy just that seam into a scratch
+folder that looks like the guide, and run the stage there. The folder holds `sources.json`, a `guide.config.json`
+that allows unassigned symbols, the shared `seams/*.php` files, the one seam's folder, and a link to the guide's
+`.cache` folder of WordPress sources:
+
+```bash
+RUN=$(mktemp -d)
+mkdir -p "$RUN/seams" "$RUN/generated"
+cp sources.json "$RUN/"
+echo '{"requireAllAssigned": false}' > "$RUN/guide.config.json"
+cp seams/*.php "$RUN/seams/"
+cp -R seams/options "$RUN/seams/options"
+ln -s "$PWD/.cache" "$RUN/.cache"
+```
+
+Then run the stage from that folder, pointing it at a MySQL database of your own (each example recreates its tables,
+so never use one holding a site), the pinned WordPress, and the runner:
+
+```bash
+(cd "$RUN" && GUIDE_MYSQL_URL=mysql://user:pass@127.0.0.1:3306/guide_scratch GUIDE_WORDPRESS_DIR="$OLDPWD/.cache/wordpress-ce78d2d6eb8b" GUIDE_RUNNER="$OLDPWD/runner/target/release/speedyspec-guide-examples" bun "$OLDPWD/packages/cli/src/main.ts" examples --offline)
+```
+
+The results are in `$RUN/generated/examples.json`, one entry per example and side, each with what it `expected`, what
+it did (`actual`) and whether they matched.
+
+## Accepting a result
+
+For a new example, start its `.expect.json` with empty values, run the seam **twice**, and check the two runs gave
+identical results. A difference means the example depends on time, randomness or order, so fix it before going on:
+return booleans, counts and fixed strings instead of timestamps, nonces or generated IDs. Then copy the `actual`
+result into the `.expect.json`, run once more, and see it pass.
+
+## Examples readers can copy
+
+Readers copy what examples show, so every example is code a plugin should ship:
+
+- Add hook and shortcode callbacks as **named, prefixed functions**, or methods of an object kept in a variable. A
+  closure or `array( new Foo(), 'bar' )` can never be removed. `bun run guide validate` fails such an example
+  (`ExampleCallbackRemovable`), unless its point is exactly that and it carries the comment
+  `// guide: closure on purpose`.
+- **Escape** what it prints and **sanitize** what it saves.
+- Put every value in SQL through `$wpdb->prepare()`.
+- Keep it short and focused on one behaviour, so its title can say exactly what it shows.
+
+## Citing and embedding
+
+An example's id is its seam, its folder and its name, joined with slashes, such as `options/get_option/missing`. A
+reference page cites an example as evidence with an `Ev` tag whose `example` attribute is the id. A guide embeds one
+with an `Example` tag whose `id` attribute is the id. `bun run guide validate` checks that every cited or embedded
+example exists, and that it has run and passed on each of its sides. So an example is only finished when validate
+reports nothing against it.
