@@ -8,6 +8,19 @@ beforeAll(() => {
 }, 240_000);
 
 describe('the developer guides', () => {
+  test('test_home_leads_with_guides', async () => {
+    const home = await html(dist, '/');
+    const h2 = home.text('h2');
+    expect(h2[0]).toBe('Guides');
+    expect(h2).toContain('Reference');
+    expect(h2.indexOf('Reference')).toBeGreaterThan(0);
+    expect(home.text('.home-path a')).toEqual(['First', 'Second']);
+    expect(home.attr('.home-guides a', 'href')).toContain('/guides/');
+    expect(home.attr('.home-reference a', 'href')).toEqual(expect.arrayContaining(['/wordpress/', '/speedyspec/']));
+    expect(home.count('dl.legend')).toBe(1);
+    expect(home.attr('.porting-links a', 'href')).toContain('/speedyspec/porting/hooks/');
+  });
+
   test('test_index_lists_tracks', async () => {
     const p = await html(dist, '/guides/');
     expect(p.text('.guide-path a')).toEqual(['First', 'Second']);
