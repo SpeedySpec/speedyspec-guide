@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "email to lead@example.org: [Guide Network] Activate http://example.org/team/\n",
+ "return": "true",
+ "error": null
+}

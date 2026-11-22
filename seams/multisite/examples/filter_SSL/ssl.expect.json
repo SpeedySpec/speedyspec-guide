@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => 'https://example.org/a.jpg',\n  1 => 'https://example.org/x',\n)",
+ "error": null
+}

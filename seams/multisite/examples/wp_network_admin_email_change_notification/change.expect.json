@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "email to admin@example.org: [Guide Network] Network Admin Email Changed\n",
+ "return": "NULL",
+ "error": null
+}

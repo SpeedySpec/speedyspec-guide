@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "email to newbie@example.org: [Guide Network] Activate newbie\n",
+ "return": "true",
+ "error": null
+}

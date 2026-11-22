@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "add_user_to_blog 2 editor 2\n",
+ "return": "array (\n  0 => true,\n  1 => '2',\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:add_user_to_blog"
+---
+
+## Behaviour
+
+Gives a user a role on a site, making it their primary site when they had none; fires add_user_to_blog. can_add_user_to_blog can refuse with an error. <Ev source="wp:wp-includes/ms-functions.php#L162-L220" hash="b562a435ed44abbfe0d249939e12fcf29202ebec435cbf17e283cd81efe94498"/>
+
+## Override
+
+`can_add_user_to_blog` filters it; `add_user_to_blog` fires.

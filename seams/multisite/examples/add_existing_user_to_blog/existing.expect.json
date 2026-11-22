@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "added_existing_user 2\n",
+ "return": "array (\n  0 => true,\n  1 => NULL,\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wpmu_activate_signup"
+---
+
+## Behaviour
+
+Activates a sign-up by its key: creates the user (and site), marks the sign-up active and fires wpmu_activate_user or wpmu_activate_blog; an error for an unknown or used key. <Ev source="wp:wp-includes/ms-functions.php#L1205-L1332" hash="cd72eb2790e5060264284422506e771ab41c3b6e0a0ec985aa842935c9d0605a"/>
+
+## Override
+
+`wpmu_activate_user`, `wpmu_activate_blog` fire.

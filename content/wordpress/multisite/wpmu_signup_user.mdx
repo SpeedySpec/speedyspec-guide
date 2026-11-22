@@ -1,0 +1,11 @@
+---
+symbol: "function:wpmu_signup_user"
+---
+
+## Behaviour
+
+Records a user sign-up in the signups table with an activation key and emails the confirmation (through after_signup_user). <Ev source="wp:wp-includes/ms-functions.php#L868-L915" hash="fb5b290f7ef0b67e321dbd1a23540fe141591329aaffe3d7937f77c651ddfa75"/>
+
+## Override
+
+`signup_user_meta` filters it; `after_signup_user` fires.

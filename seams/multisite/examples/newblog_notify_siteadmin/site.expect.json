@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "email to admin@example.org: New Site Registration: http://example.org/second\nemail to admin@example.org: New Site Registration: http://example.org/second\n",
+ "return": "true",
+ "error": null
+}

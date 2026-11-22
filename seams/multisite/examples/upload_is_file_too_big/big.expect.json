@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => 'This file is too big. Files must be less than 1 KB in size.<br />',\n  1 => \n  array (\n    'bits' => 'x',\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:update_network_option_new_admin_email"
+---
+
+## Behaviour
+
+Asks the new network admin address to confirm itself by email before it changes, storing the request in network_admin_hash; on update_site_option_new_admin_email. <Ev source="wp:wp-includes/ms-functions.php#L2804-L2881" hash="b4bef1ac01f31166daf2e65a385e13daa326cf9d6eb45282d4cc95362fad859a"/>
+
+## Override
+
+`new_network_admin_email_content` filters it.

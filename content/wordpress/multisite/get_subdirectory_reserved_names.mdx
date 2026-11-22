@@ -1,0 +1,11 @@
+---
+symbol: "function:get_subdirectory_reserved_names"
+---
+
+## Behaviour
+
+The names subdirectory sites can't take, because WordPress's paths use them (page, comments, blog, files, feed, wp-admin and others); subdirectory_reserved_names filters them. <Ev source="wp:wp-includes/ms-functions.php#L2768-L2792" hash="3df068c81faefb6b5003a34d1f7e326f471e3355b135242b0e267d28f67a92c2"/>
+
+## Override
+
+`subdirectory_reserved_names` filters it.

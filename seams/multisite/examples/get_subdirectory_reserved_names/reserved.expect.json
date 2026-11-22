@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => 'page',\n  1 => 'comments',\n  2 => 'blog',\n  3 => 'files',\n  4 => 'feed',\n  5 => 'wp-admin',\n  6 => 'wp-content',\n  7 => 'wp-includes',\n  8 => 'wp-json',\n  9 => 'embed',\n)",
+ "error": null
+}

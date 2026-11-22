@@ -1,0 +1,11 @@
+---
+symbol: "function:wpmu_create_user"
+---
+
+## Behaviour
+
+Creates a network user without a role on any site (their capabilities and level are removed); fires wpmu_new_user. False when the user can't be made. <Ev source="wp:wp-includes/ms-functions.php#L1366-L1393" hash="cec3bc6566aa778de251d93e5804514f56ed68f681500be9fe1b59dbb45d5aa4"/>
+
+## Override
+
+`wpmu_new_user` fires.

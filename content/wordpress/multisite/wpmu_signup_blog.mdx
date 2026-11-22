@@ -1,0 +1,11 @@
+---
+symbol: "function:wpmu_signup_blog"
+---
+
+## Behaviour
+
+Records a site sign-up in the signups table with an activation key and emails the confirmation (through wpmu_signup_blog_notification on after_signup_site). <Ev source="wp:wp-includes/ms-functions.php#L802-L852" hash="2448b57a63c1caee0f78162d8792ec85d960513b3494059e4a97a1108d73f3a6"/>
+
+## Override
+
+`signup_site_meta` filters it; `after_signup_site` fires.

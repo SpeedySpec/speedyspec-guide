@@ -1,0 +1,11 @@
+---
+symbol: "function:wpmu_validate_user_signup"
+---
+
+## Behaviour
+
+Checks a sign-up's username and email: lowercase letters and digits, 4 to 60 characters, not all digits or reserved, and neither taken nor pending; wpmu_validate_user_signup filters the result. <Ev source="wp:wp-includes/ms-functions.php#L469-L603" hash="4bc192a6d59e9e83c69d177ca406010bf93ff30346caa6274352fa52bbbc5579"/>
+
+## Override
+
+`illegal_user_logins`, `wpmu_validate_user_signup` filter it.

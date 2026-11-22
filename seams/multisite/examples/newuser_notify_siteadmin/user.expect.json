@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "email to admin@example.org: New User Registration: grace\nemail to admin@example.org: New User Registration: grace\n",
+ "return": "true",
+ "error": null
+}

@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "email to grace@example.org: New Guide Network User: grace\n",
+ "return": "true",
+ "error": null
+}

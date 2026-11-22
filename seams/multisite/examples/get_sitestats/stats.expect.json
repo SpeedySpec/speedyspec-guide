@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  'blogs' => 2,\n  'users' => 1,\n)",
+ "error": null
+}
