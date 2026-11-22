@@ -13,6 +13,7 @@ import { loadGuideData } from '../../../model/data.ts';
 import { wordpressPaths } from '../../../model/sections.ts';
 import { methodAnchor } from '../../../model/slug.ts';
 import { pageOf, symbolView, railView } from '../../../model/views.ts';
+import { symbolTitle } from '../../../model/wording.ts';
 
 export async function getStaticPaths() {
   const d = await loadGuideData();
@@ -28,7 +29,7 @@ const firedBy = isHook ? d.graph.edges.filter((e) => e.kind === 'fires' && e.to 
 const runs = isHook ? d.graph.edges.filter((e) => e.kind === 'runs' && e.from === id).map((e) => e.to) : [];
 const name = (x: string) => x.slice(x.indexOf(':') + 1);
 ---
-<Reference title={view.name} rail={railView(id, 'wordpress', d)} section="wordpress" current={id}>
+<Reference title={symbolTitle(view)} rail={railView(id, 'wordpress', d)} section="wordpress" current={id}>
   <Head view={view} section="wordpress" />
   <RelationshipPanel edges={view.edges} callsInto={view.callsInto} />
   <Signature signature={view.signature} />

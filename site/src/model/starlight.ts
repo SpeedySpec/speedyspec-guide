@@ -134,3 +134,48 @@ export function seamSidebar(rail: RailView, section: Section, current?: string):
 export function installSidebar(pages: InstallPage[]): SidebarItem[] {
   return inReadingOrder(pages).map((p) => ({ label: p.title, link: installPath(p.slug) }));
 }
+
+/** A heading for Starlight's "On this page". */
+export type Heading = { depth: number; slug: string; text: string };
+
+const ENTITIES: Record<string, string> = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'", '&#x27;': "'" };
+const plainText = (html: string) =>
+  html
+    .replace(/<[^>]*>/g, '')
+    .replace(/&(amp|lt|gt|quot|#39|#x27);/g, (e) => ENTITIES[e]!)
+    .trim();
+const slugOf = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s_-]/gu, '')
+    .trim()
+    .replace(/\s+/g, '-');
+
+/**
+ * The level-2 headings of rendered page HTML, for "On this page", giving each heading without an id one made from its
+ * text (unique within the page).
+ *
+ * @param html
+ *     The page body as rendered.
+ * @return
+ *     The body with every h2 carrying an id, and the h2s in page order.
+ */
+export function headingsIn(html: string): { html: string; headings: Heading[] } {
+  const taken = new Set([...html.matchAll(/<h2\s[^>]*\bid="([^"]*)"/g)].map((m) => m[1]!));
+  const headings: Heading[] = [];
+  const out = html.replace(/<h2(\s[^>]*)?>([\s\S]*?)<\/h2>/g, (whole, attrs: string | undefined, inner: string) => {
+    const text = plainText(inner);
+    const existing = attrs?.match(/\bid="([^"]*)"/)?.[1];
+    if (existing !== undefined) {
+      headings.push({ depth: 2, slug: existing, text });
+      return whole;
+    }
+    const base = slugOf(text) || 'section';
+    let slug = base;
+    for (let n = 2; taken.has(slug); n++) slug = `${base}-${n}`;
+    taken.add(slug);
+    headings.push({ depth: 2, slug, text });
+    return `<h2 id="${slug}"${attrs ?? ''}>${inner}</h2>`;
+  });
+  return { html: out, headings };
+}

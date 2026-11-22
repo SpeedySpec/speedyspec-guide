@@ -7,6 +7,7 @@ import {
   guidePrevNext,
   guideSidebar,
   HEADER_LINKS,
+  headingsIn,
   installSidebar,
   REFERENCE_SIDEBAR,
   type SidebarGroup,
@@ -164,5 +165,32 @@ describe('fixed navigation', () => {
       ['Reference', '/reference/'],
       ['Install', '/install/'],
     ]);
+  });
+});
+
+describe('headingsIn', () => {
+  test('test_headings_in_adds_ids_from_text', () => {
+    const r = headingsIn('<section><h2>Fired by</h2><p>x</p></section>');
+    expect(r.html).toBe('<section><h2 id="fired-by">Fired by</h2><p>x</p></section>');
+    expect(r.headings).toEqual([{ depth: 2, slug: 'fired-by', text: 'Fired by' }]);
+  });
+
+  test('test_headings_in_keeps_existing_ids_and_strips_tags', () => {
+    const r = headingsIn('<h2 id="apply_filters" class="mono">::apply_filters()</h2><h2 class="x">A <code>b</code> &amp; c&#39;s</h2>');
+    expect(r.html).toBe('<h2 id="apply_filters" class="mono">::apply_filters()</h2><h2 id="a-b-cs" class="x">A <code>b</code> &amp; c&#39;s</h2>');
+    expect(r.headings).toEqual([
+      { depth: 2, slug: 'apply_filters', text: '::apply_filters()' },
+      { depth: 2, slug: 'a-b-cs', text: "A b & c's" },
+    ]);
+  });
+
+  test('test_headings_in_dedupes_slugs', () => {
+    const r = headingsIn('<h2>Examples</h2><h2>Examples</h2><h2 id="examples-2">Other</h2>');
+    expect(r.headings.map((h) => h.slug)).toEqual(['examples', 'examples-3', 'examples-2']);
+  });
+
+  test('test_headings_in_leaves_other_levels_alone', () => {
+    const r = headingsIn('<h1>T</h1><h3>Sub</h3>');
+    expect(r).toEqual({ html: '<h1>T</h1><h3>Sub</h3>', headings: [] });
   });
 });

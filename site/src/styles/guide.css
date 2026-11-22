@@ -53,22 +53,9 @@ h1, h2, h3 { line-height: 1.25; }
 .page { max-width: var(--column); margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
 
 .muted { color: var(--muted); }
-.reference { display: grid; grid-template-columns: var(--rail) minmax(0, var(--column)); gap: 2rem; max-width: calc(var(--rail) + var(--column) + 4rem); margin: 0 auto; padding: 1.25rem; }
 .content { min-width: 0; }
-@media (max-width: 52rem) { .reference { grid-template-columns: 1fr; } .rail { border-right: 0; border-bottom: 1px solid var(--line); } }
-
-.rail { border-right: 1px solid var(--line); padding-right: 0.75rem; font-size: 0.8125rem; position: sticky; top: 0; align-self: start; max-height: 100vh; overflow: auto; }
-.rail-seam { display: block; color: var(--muted); margin-bottom: 0.5rem; }
-.rail-seam b { color: var(--text); }
-.rail-role { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 0.9rem 0 0.2rem; }
-/* A role whose members aren't listed here is a link to them on the seam page: one per line, like the expanded ones. */
-.rail-role-link { display: block; padding: 0.1rem 0; }
-.rail-role-link + .rail-role-link { margin-top: 0.35rem; }
-.rail-role-link:hover { color: var(--accent); }
-.rail-member { display: block; font-family: var(--mono); padding: 0.1rem 0.4rem; border-radius: 4px; color: var(--text); overflow-wrap: anywhere; }
-.rail-member[aria-current='page'] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
-.rail-member.circular { background: var(--bad-soft); color: var(--bad); }
-.rail-methods { padding-left: 0.6rem; }
+/* A seam member in a dependency cycle, in the reference sidebar. */
+#starlight__sidebar a.circular { background: var(--bad-soft); color: var(--bad); }
 .cycle-mark { margin-left: 0.3rem; }
 
 .head h1 { font-size: 1.5rem; margin: 0.1rem 0 0.4rem; }

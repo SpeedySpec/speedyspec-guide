@@ -1,21 +1,24 @@
 ---
-import SeamRail from '../components/SeamRail.astro';
+/**
+ * A reference page: the seam's sidebar on the left, the page in the middle, its sections under "On this page". The
+ * body is rendered once to find its h2s (and give those without an id one), so the contents list always matches what
+ * the page shows.
+ */
+import { headingsIn, seamSidebar } from '../model/starlight.ts';
 import type { RailView, Section } from '../model/views.ts';
-import Base from './Base.astro';
+import Page from './Page.astro';
 
 interface Props {
   title: string;
   rail: RailView;
   section: Section;
+  /** The page's symbol id, on a symbol page. */
   current?: string;
+  description?: string;
 }
-const { title, rail, section, current } = Astro.props;
+const { title, rail, section, current, description } = Astro.props;
+const { html, headings } = headingsIn(await Astro.slots.render('default'));
 ---
-<Base title={title} section={section}>
-  <div class="reference">
-    <SeamRail rail={rail} section={section} current={current} />
-    <main class="content" data-pagefind-body>
-      <slot />
-    </main>
-  </div>
-</Base>
+<Page title={title} description={description} sidebar={seamSidebar(rail, section, current)} headings={headings}>
+  <div class="content"><Fragment set:html={html} /></div>
+</Page>
