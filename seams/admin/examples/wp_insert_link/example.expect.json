@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Example',\n  1 => '_blank',\n  2 => 'Y',\n)",
+ "error": null
+}

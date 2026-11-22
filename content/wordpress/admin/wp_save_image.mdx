@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_save_image"
+---
+
+## Behaviour
+
+Saves the image editor's changes to an attachment: a new file for the full size or chosen sizes, keeping the original as a backup; gives a message object. <Ev source="wp:wp-admin/includes/image-edit.php#L939-L1192" hash="63dc4ab95ddf8a4c0c7529434fe8081a136eae7bea1cd1d58ce91b9fb609d8f2"/>
+
+## Override
+
+`image_edit_thumbnails_separately` filters it.

@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'blogname',\n  ),\n  1 => 'deprecated mu_options since 3.0.0',\n)",
+ "error": null
+}
