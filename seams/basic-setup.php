@@ -68,6 +68,26 @@ if (!function_exists('__'))
     {
         echo esc_attr($text);
     }
+    function _nx($single, $plural, $number, $context, $domain = 'default')
+    {
+        return 1 === $number ? $single : $plural;
+    }
+    function _n_noop($singular, $plural, $domain = null)
+    {
+        return ['singular' => $singular, 'plural' => $plural, 'context' => null, 0 => $singular, 1 => $plural, 'domain' => $domain];
+    }
+    function _nx_noop($singular, $plural, $context, $domain = null)
+    {
+        return ['singular' => $singular, 'plural' => $plural, 'context' => $context, 0 => $singular, 1 => $plural, 2 => $context, 'domain' => $domain];
+    }
+    function wp_get_word_count_type()
+    {
+        return 'words';
+    }
+    function translate_nooped_plural($nooped_plural, $count, $domain = 'default')
+    {
+        return 1 === $count ? $nooped_plural['singular'] : $nooped_plural['plural'];
+    }
 }
 
 // There is no database: the one option escaping reads, blog_charset, is supplied as an installed site stores it.
@@ -80,3 +100,21 @@ if (function_exists('wp_cache_init'))
 }
 
 unset($guide_name, $guide_value);
+
+/**
+ * Calls a private or protected method, as WordPress calls it from inside the class, so an example can show it.
+ *
+ * @param object|string $target
+ *   The object, or the class for a static method.
+ * @return mixed
+ *   What the method returns.
+ */
+function guide_call(object|string $target, string $method, mixed ...$args): mixed
+{
+    $class = is_object($target) ? $target::class : $target;
+    return Closure::bind(
+        fn () => is_object($target) ? $target->$method(...$args) : $class::$method(...$args),
+        is_object($target) ? $target : null,
+        $class
+    )();
+}

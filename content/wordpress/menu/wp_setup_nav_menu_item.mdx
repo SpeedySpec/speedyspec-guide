@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_setup_nav_menu_item"
+---
+
+## Behaviour
+
+Adds the display fields to a menu item (`db_id`, `menu_item_parent`, `object_id`, `object`, `type`, `type_label`, `title`, `url`, `target`, `attr_title`, `description`, `classes`, `xfn`), taking an item for a post or term from the object; it marks the item `_invalid` when the object or its type is missing. A post or term that isn't a menu item becomes an unsaved item pointing at it. <Ev source="wp:wp-includes/nav-menu.php#L834-L1032" hash="de40ea7a9ff65bbb2c206f8db033977b16a81c10dbc6463d9d27e9d8a231a07d"/>
+
+## Override
+
+`pre_wp_setup_nav_menu_item` can answer first; `wp_setup_nav_menu_item` filters the result; `nav_menu_attr_title` and `nav_menu_description` filter those fields.

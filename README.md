@@ -68,12 +68,12 @@ A seam's `seam.yaml` may name a `setup` file, run after its `wordpress` files an
 side; it sees `GUIDE_MULTISITE`, which an example sets with `"multisite": true` (WordPress side only). A seam whose
 examples need the database says `mysql: true`.
 
-### Options examples need MySQL
+### Some examples need MySQL
 
-Options' setup reads and writes through `$wpdb`, so its examples need a MySQL database, given as `GUIDE_MYSQL_URL`.
-Each example gets fresh `guide_` tables: `setup.php` drops and recreates `guide_options`, `guide_sitemeta`,
-`guide_users` and `guide_usermeta`, so give it a database of its own, never one holding a site. Without the variable,
-`bun run guide examples` stops before running anything.
+The seams with `mysql: true` (Options, Navigation menus) store through `$wpdb`, so their examples need a MySQL
+database, given as `GUIDE_MYSQL_URL`. Each example gets fresh `guide_` tables: Options' `setup.php` recreates the four
+tables it uses, and `seams/database.php` recreates every WordPress table from `wp_get_db_schema()`. Give it a database
+of its own, never one holding a site. Without the variable, `bun run guide examples` stops before running anything.
 
 ```bash
 docker run -d --name guide-mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=guide_examples -p 3307:3306 mysql:8.4
@@ -82,6 +82,12 @@ docker run -d --name guide-mysql -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABA
 ```bash
 export GUIDE_MYSQL_URL=mysql://root:password@127.0.0.1:3307/guide_examples
 ```
+
+Without Docker, a local `mysqld` (such as Homebrew's) works too: initialize a data directory with
+`mysqld --initialize-insecure --datadir=<dir>`, start it on a free port, and create a database and user for the guide.
+
+Seams that only read and write options, such as Cron and Recovery mode, need no database: `seams/cached-options.php`
+keeps their options in the object cache.
 
 CI runs a MySQL 8.4 service for the examples job and the nightly run.
 

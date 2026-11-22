@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_update_nav_menu_object"
+---
+
+## Behaviour
+
+Creates a menu (for ID 0 or a menu that doesn't exist) or updates one's name, description and parent, as a `nav_menu` term. A name another menu has is refused with `menu_exists`. Returns the menu ID, or a `WP_Error`. <Ev source="wp:wp-includes/nav-menu.php#L312-L401" hash="d43dccdbb56fe3cdad22d18e72e4cdfea8ccd5a35c714cd351b83aeba141fe13"/>
+
+## Override
+
+`wp_create_nav_menu` fires after a create, `wp_update_nav_menu` after an update.

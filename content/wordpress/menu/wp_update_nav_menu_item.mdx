@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_update_nav_menu_item"
+---
+
+## Behaviour
+
+Creates or updates a menu item: a `nav_menu_item` post in the menu's term, with its type, parent, object, target, classes, XFN and URL in post meta. A new item is a draft unless its status is `publish`, and goes one after the last item (position 0 for the first); a custom link becomes its own object; an item for a post, term or archive keeps no URL and an empty title when it matches the object's. A menu ID of 0 makes an orphaned item. Returns the item ID, or a `WP_Error` for an ID that isn't a menu item or a menu that doesn't exist. <Ev source="wp:wp-includes/nav-menu.php#L418-L627" hash="e6496474c759777a653dd7eefc70f89639e0a6b3e9c74a91f95b9f6b3435b018"/>
+
+## Override
+
+`wp_add_nav_menu_item` fires for a new item; `wp_update_nav_menu_item` after every save.

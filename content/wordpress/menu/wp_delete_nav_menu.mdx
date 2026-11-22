@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_delete_nav_menu"
+---
+
+## Behaviour
+
+Deletes a menu: its items, its term, and its assignment to any location (set to 0). Returns what `wp_delete_term()` returns, or `false` for a menu that doesn't exist. <Ev source="wp:wp-includes/nav-menu.php#L262-L299" hash="f9b1ccefd36bcd63abbb265edc0eaf4e09858dc6fadc8d0dc1221208a9f78131"/>
+
+## Override
+
+`wp_delete_nav_menu` fires after a successful delete.

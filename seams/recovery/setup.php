@@ -35,14 +35,3 @@ guide_cached_options([
     'admin_email' => 'admin@example.org',
     'cron' => ['version' => 2],
 ]);
-
-/**
- * Calls a private or protected method, as WordPress calls it from inside the class.
- *
- * @return mixed
- *   What the method returns.
- */
-function guide_call(object $object, string $method, mixed ...$args): mixed
-{
-    return Closure::bind(fn () => $this->$method(...$args), $object, $object::class)();
-}
