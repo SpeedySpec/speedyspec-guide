@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "is_user_option_local is deprecated since 4.9.0\n",
+ "return": "true",
+ "error": null
+}

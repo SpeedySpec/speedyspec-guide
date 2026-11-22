@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "insert_blog is deprecated since 5.1.0 for wp_insert_site()\n",
+ "return": "'/inserted/'",
+ "error": null
+}

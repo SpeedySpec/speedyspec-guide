@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "validate_email is deprecated since 3.0.0 for is_email()\nvalidate_email is deprecated since 3.0.0 for is_email()\n",
+ "return": "array (\n  0 => 'ada@example.org',\n  1 => false,\n)",
+ "error": null
+}

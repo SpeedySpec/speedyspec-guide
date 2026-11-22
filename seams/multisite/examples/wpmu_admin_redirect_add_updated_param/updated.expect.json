@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "wpmu_admin_redirect_add_updated_param is deprecated since 3.3.0 for add_query_arg()\n",
+ "return": "'http://example.org/wp-admin/network/sites.php?updated=true'",
+ "error": null
+}

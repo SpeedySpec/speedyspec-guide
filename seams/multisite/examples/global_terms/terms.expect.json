@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "global_terms is deprecated since 6.1.0\n",
+ "return": "5",
+ "error": null
+}

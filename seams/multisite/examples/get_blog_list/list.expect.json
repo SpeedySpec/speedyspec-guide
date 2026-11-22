@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "get_blog_list is deprecated since 3.0.0 for wp_get_sites()\n",
+ "return": "array (\n  0 => '/second/',\n  1 => '/',\n)",
+ "error": null
+}

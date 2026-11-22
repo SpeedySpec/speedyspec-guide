@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "graceful_fail is deprecated since 3.0.0 for wp_die()\n",
+ "return": "'graceful_fail: Something broke.'",
+ "error": null
+}

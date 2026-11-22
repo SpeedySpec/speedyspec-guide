@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "get_most_active_blogs is deprecated since 3.0.0\nget_blog_list is deprecated since 3.0.0 for wp_get_sites()\n",
+ "return": "2",
+ "error": null
+}

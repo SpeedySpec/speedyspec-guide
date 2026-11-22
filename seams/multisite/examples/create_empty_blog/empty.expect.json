@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "create_empty_blog is deprecated since 4.4.0\n",
+ "return": "'<strong>Error:</strong> Site URL you&#8217;ve entered is already taken.'",
+ "error": null
+}

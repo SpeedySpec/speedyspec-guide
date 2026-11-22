@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "get_user_details is deprecated since 3.0.0 for get_user_by()\n",
+ "return": "'admin@example.org'",
+ "error": null
+}

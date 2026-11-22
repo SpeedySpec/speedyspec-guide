@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "get_admin_users_for_domain is deprecated since 4.4.0\n",
+ "return": "array (\n)",
+ "error": null
+}
