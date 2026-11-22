@@ -1,0 +1,11 @@
+---
+symbol: "function:get_categories"
+---
+
+## Behaviour
+
+Categories, as get_terms() with the category taxonomy; empty ones are hidden by default. get_categories filters the list; the old 'type' => 'link' argument maps to link categories. <Ev source="wp:wp-includes/category.php#L44-L85" hash="9272c341af8a2cf098133c725cc2b4b1986da2aa36fb7b927df0d7f2b71ab1eb"/>
+
+## Override
+
+`get_categories_taxonomy` filters it.

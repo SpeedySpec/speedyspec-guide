@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "unregistered_taxonomy genre\n",
+ "return": "array (\n  0 => true,\n  1 => false,\n  2 => 'invalid_taxonomy',\n  3 => 'invalid_taxonomy',\n)",
+ "error": null
+}

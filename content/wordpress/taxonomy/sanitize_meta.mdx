@@ -1,0 +1,11 @@
+---
+symbol: "function:sanitize_meta"
+---
+
+## Behaviour
+
+A meta value through its sanitizers: sanitize_{$type}_meta_{$key}_for_{$subtype}, then sanitize_{$type}_meta_{$key}; register_meta()'s sanitize_callback is attached there. <Ev source="wp:wp-includes/meta.php#L1405-L1441" hash="3f2508709b9d326501ca3a5d84e3962f1e6919ec2182e9dbc7db530b78da149f"/>
+
+## Override
+
+`sanitize_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`, `sanitize_{$object_type}_meta_{$meta_key}` filter it.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'OR',\n  1 => 'LEFT JOIN guide_term_relationships ON (guide_posts.ID = guide_term_relationships.object_id)',\n  2 => 'AND ( guide_term_relationships.term_taxonomy_id IN (1,2) OR NOT EXISTS ( SELECT 1 FROM guide_term_relationships INNER JOIN guide_term_taxonomy ON guide_term_taxonomy.term_taxonomy_id = guide_term_relationships.term_taxonomy_id WHERE guide_term_taxonomy.taxonomy = \\'post_tag\\' AND guide_term_relationships.object_id = guide_posts.ID ) )',\n  3 => \n  array (\n    0 => 'category',\n    1 => 'post_tag',\n  ),\n)",
+ "error": null
+}

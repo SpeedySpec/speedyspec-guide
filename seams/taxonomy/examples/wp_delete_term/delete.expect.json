@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "delete_category 2\n",
+ "return": "array (\n  0 => true,\n  1 => 0,\n  2 => 0,\n  3 => false,\n)",
+ "error": null
+}

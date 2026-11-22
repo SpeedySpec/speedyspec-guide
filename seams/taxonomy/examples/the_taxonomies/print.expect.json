@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<p>Categories: <a href=\"http://example.org/?cat=2\">Local</a>.; Tags: <a href=\"http://example.org/?tag=alpha\">alpha</a>.</p>'",
+ "error": null
+}

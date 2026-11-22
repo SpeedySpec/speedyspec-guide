@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "registered_taxonomy genre\n",
+ "return": "array (\n  0 => 'Genres',\n  1 => 'edit_posts',\n  2 => 'genre',\n  3 => \n  array (\n    0 => 'post',\n  ),\n  4 => 'taxonomy_length_invalid',\n)",
+ "error": null
+}

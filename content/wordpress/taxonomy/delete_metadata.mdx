@@ -1,0 +1,11 @@
+---
+symbol: "function:delete_metadata"
+---
+
+## Behaviour
+
+Deletes an object's meta for a key, only rows with a value when given; with $delete_all, the key on every object. delete_{$meta_type}_metadata can answer first; delete_ and deleted_{$meta_type}_meta fire. <Ev source="wp:wp-includes/meta.php#L403-L569" hash="51e438ea040bfddbab2902d91d875353b00e50ca763ebc342d3d12929467cbf4"/>
+
+## Override
+
+`delete_{$meta_type}_metadata` filters it; `delete_{$meta_type}_meta`, `delete_postmeta`, `deleted_{$meta_type}_meta`, `deleted_postmeta` fire.

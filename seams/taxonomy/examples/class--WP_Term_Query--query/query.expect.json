@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "pre_get_terms\npre_get_terms\npre_get_terms\n",
+ "return": "array (\n  0 => \n  array (\n    0 => 'Local',\n    1 => 'News',\n    2 => 'Sport',\n  ),\n  1 => \n  array (\n    0 => 'news',\n    1 => 'sport',\n  ),\n  2 => \n  array (\n    0 => 'Local',\n  ),\n  3 => true,\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:get_term"
+---
+
+## Behaviour
+
+A term by ID or object (in a taxonomy when given), as a WP_Term, array or with a filter context; get_term and get_{$taxonomy} filter it. A term of a shared ID in another taxonomy, or a missing term, gives null; a missing taxonomy an error. <Ev source="wp:wp-includes/taxonomy.php#L998-L1080" hash="388183721e54c3df65453dd48c3ad42ce4d261463104e714641a5e83dd741cb0"/>
+
+## Override
+
+`get_term`, `get_{$taxonomy}` filter it.

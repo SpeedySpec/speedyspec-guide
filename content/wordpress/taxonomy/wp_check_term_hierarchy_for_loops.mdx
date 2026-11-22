@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_check_term_hierarchy_for_loops"
+---
+
+## Behaviour
+
+On wp_update_term_parent: a parent that would put the term in a loop is refused with 0; a loop elsewhere in the ancestry is broken by setting its members' parents to 0. A parent without a loop is kept. <Ev source="wp:wp-includes/taxonomy.php#L5236-L5264" hash="6bdcba7c597cc8d95b9636502ab2b523f5bd7494c8ecdd419b24567afed5dd8e"/>
+
+## Override
+
+Not overridable.

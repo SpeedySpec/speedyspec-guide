@@ -1,0 +1,11 @@
+---
+symbol: "function:create_initial_taxonomies"
+---
+
+## Behaviour
+
+Registers WordPress's taxonomies: category, post_tag, nav_menu, link_category, post_format, wp_theme, wp_template_part_area and wp_pattern_category, with their rewrite slugs from the category_base and tag_base options. <Ev source="wp:wp-includes/taxonomy.php#L25-L264" hash="8ae4d433260c4b0c4715efbb9dd84aafa3978abe924c7c73b1f58918c8f4a305"/>
+
+## Override
+
+`post_format_rewrite_base` filters it.

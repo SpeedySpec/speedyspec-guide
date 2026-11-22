@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "clean_term_cache category\n",
+ "return": "array (\n  1 => \n  array (\n    0 => 2,\n  ),\n)",
+ "error": null
+}

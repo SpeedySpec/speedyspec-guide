@@ -1,0 +1,11 @@
+---
+symbol: "function:get_metadata_by_mid"
+---
+
+## Behaviour
+
+A meta row by its meta ID, as an object with the value unserialized, or false. update_metadata_by_mid() and delete_metadata_by_mid() change or remove it by ID. <Ev source="wp:wp-includes/meta.php#L862-L917" hash="27712a7140a24b065fa3f35c71a518abb7ea200750c4623e7a90d04018ce61bb"/>
+
+## Override
+
+`get_{$meta_type}_metadata_by_mid` filters it.

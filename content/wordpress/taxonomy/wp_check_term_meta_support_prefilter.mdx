@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_check_term_meta_support_prefilter"
+---
+
+## Behaviour
+
+On the term meta filters, stops term meta before database version 34370 (when its table arrived) by returning false; otherwise passes the value on. <Ev source="wp:wp-includes/taxonomy.php#L5322-L5328" hash="a324174f4600e1a63860673f06373a6d90926f4d69263846d9ee78268c42c70f"/>
+
+## Override
+
+Not overridable.

@@ -1,0 +1,11 @@
+---
+symbol: "function:delete_metadata_by_mid"
+---
+
+## Behaviour
+
+Deletes a meta row by its meta ID; false for a missing ID. <Ev source="wp:wp-includes/meta.php#L1062-L1172" hash="cd85fa83f7fc8a57898065fb0847841e7ae880c00952cf57be91c0da1ceb1ff8"/>
+
+## Override
+
+`delete_{$meta_type}_metadata_by_mid` filters it; `delete_{$meta_type}_meta`, `delete_{$meta_type}meta`, `deleted_{$meta_type}_meta`, `deleted_{$meta_type}meta` fire.

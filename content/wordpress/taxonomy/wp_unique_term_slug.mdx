@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_unique_term_slug"
+---
+
+## Behaviour
+
+A slug unique for a term: in hierarchical taxonomies its parents' slugs are added first, then a number; wp_unique_term_slug filters it. <Ev source="wp:wp-includes/taxonomy.php#L3271-L3351" hash="7618b17edbf66e867573d5b6ad8a4c8df271262cb665fb5ae6c0fbfb08976834"/>
+
+## Override
+
+`wp_unique_term_slug_is_bad_slug`, `wp_unique_term_slug` filter it.

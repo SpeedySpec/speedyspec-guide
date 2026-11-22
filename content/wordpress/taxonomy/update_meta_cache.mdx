@@ -1,0 +1,11 @@
+---
+symbol: "function:update_meta_cache"
+---
+
+## Behaviour
+
+Loads the meta of objects into the cache in one query and returns it by object ID; objects already cached are skipped. update_{$meta_type}_metadata_cache can answer first. <Ev source="wp:wp-includes/meta.php#L1187-L1298" hash="87d0816e4259523b980e7a6fb4e68f80af5879550f722275bd0751ed5146cc03"/>
+
+## Override
+
+`update_{$meta_type}_metadata_cache` filters it.

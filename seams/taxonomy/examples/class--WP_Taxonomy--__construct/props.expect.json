@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Kinds',\n  1 => true,\n  2 => true,\n  3 => 'genre',\n  4 => true,\n  5 => false,\n  6 => 'manage_categories',\n  7 => \n  array (\n    0 => 'post',\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Sport & Games',\n  1 => 'display',\n)",
+ "error": null
+}
