@@ -4,6 +4,9 @@ $results = array();
 foreach ( array( '<!DOCTYPE x><methodCall/>', '<other/>', '<methodCall><params>', '' ) as $xml ) {
 	$results[] = ( new IXR_Message( $xml ) )->parse();
 }
-add_filter( 'xmlrpc_element_limit', fn() => 2 );
+function guide_element_limit( $limit ) {
+	return 2;
+}
+add_filter( 'xmlrpc_element_limit', 'guide_element_limit' );
 $results[] = ( new IXR_Message( '<methodCall><methodName>a</methodName><params><param><value>x</value></param></params></methodCall>' ) )->parse();
 return $results;

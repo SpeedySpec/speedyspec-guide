@@ -1,6 +1,9 @@
 <?php
 // Authenticates with wp_authenticate(); a failure is a 403 fault, xmlrpc_login_error can change it, and after one failure every later login in the request fails too. Non-scalar credentials are a 400.
-add_filter( 'xmlrpc_login_error', fn( $error, $user ) => new IXR_Error( 403, 'No: ' . $user->get_error_code() ), 10, 2 );
+function guide_login_error( $error, $user ) {
+	return new IXR_Error( 403, 'No: ' . $user->get_error_code() );
+}
+add_filter( 'xmlrpc_login_error', 'guide_login_error', 10, 2 );
 $server = new wp_xmlrpc_server();
 $first = $server->login( 'admin', 'secret' );
 $message = $server->error->message;
