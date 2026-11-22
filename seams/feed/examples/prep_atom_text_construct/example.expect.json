@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'text',\n    1 => 'Plain words',\n  ),\n  1 => \n  array (\n    0 => 'xhtml',\n    1 => '<div xmlns=\\'http://www.w3.org/1999/xhtml\\'><p>Some <b>bold</b></p></div>',\n  ),\n  2 => \n  array (\n    0 => 'html',\n    1 => '<![CDATA[Fish & chips < 5]]>',\n  ),\n)",
+ "error": null
+}

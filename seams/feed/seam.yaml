@@ -14,4 +14,7 @@ files:
   - 'wp-includes/class-wp-simplepie-sanitize-kses.php'
   - 'wp-includes/feed.php'
   - 'wp-includes/rss.php'
-wordpress: []
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true

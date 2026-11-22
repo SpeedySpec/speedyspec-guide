@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<category><![CDATA[Uncategorized]]></category> <category><![CDATA[grassy]]></category>'",
+ "error": null
+}

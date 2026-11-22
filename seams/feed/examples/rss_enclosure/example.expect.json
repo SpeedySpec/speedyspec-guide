@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<enclosure url=\"https://example.org/episode-1.mp3\" length=\"12345\" type=\"audio/mpeg\" />'",
+ "error": null
+}

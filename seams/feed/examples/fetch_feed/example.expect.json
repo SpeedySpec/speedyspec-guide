@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "request https://example.org/feed/\n",
+ "return": "array (\n  0 => 'Tea News',\n  1 => 2,\n  2 => 'Sencha season',\n)",
+ "error": null
+}

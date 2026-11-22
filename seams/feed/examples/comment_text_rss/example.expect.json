@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'Lovely &lt;b&gt;tea&lt;/b&gt; &amp; cake'",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:fetch_feed"
+---
+
+## Behaviour
+
+Fetches and parses an RSS or Atom feed with SimplePie, cached in transients for 12 hours; gives the SimplePie object or an error. wp_feed_options and wp_feed_cache_transient_lifetime adjust it. <Ev source="wp:wp-includes/feed.php#L974-L1080" hash="577c33d992cc763f558630c8a1ab127f7f2c1f53ec829d2bd5f1a9fa06bf171a"/>
+
+## Override
+
+`wp_feed_cache_transient_lifetime` filters it; `wp_feed_options` fires.
