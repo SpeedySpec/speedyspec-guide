@@ -5,16 +5,17 @@
   "scripts": {
     "dev": "bunx --bun astro dev",
     "build": "bunx --bun astro build && bunx --bun pagefind --site dist",
-    "check": "astro check"
+    "check": "bunx --bun astro check"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4",
+    "@astrojs/mdx": "^8.1.6",
     "@speedyspec-guide/adapter-content-files": "workspace:*",
     "@speedyspec-guide/adapter-example-files": "workspace:*",
     "@speedyspec-guide/adapter-seam-files": "workspace:*",
     "@speedyspec-guide/app": "workspace:*",
     "@speedyspec-guide/domain": "workspace:*",
-    "astro": "^5",
+    "astro": "^7.4.13",
+    "cookie": "^2.0.2",
     "mermaid-isomorphic": "^3.1.0",
     "playwright": "^1.65.1",
     "yaml": "^2.9.1"

@@ -4,12 +4,26 @@
  * the whole build.
  */
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { guideRoot } from './root.ts';
 
-// Next to this file in the sources; in a build this file is bundled into dist/, so fall back to the sources.
-const beside = fileURLToPath(new URL('./mermaid-cli.ts', import.meta.url));
-const CLI = existsSync(beside) ? beside : join(fileURLToPath(new URL('../../../', import.meta.url)), 'site', 'src', 'model', 'mermaid-cli.ts');
+/**
+ * Where mermaid-cli.ts is, starting from a file's path: next to it in the sources, else in the guide root's site.
+ *
+ * @param from
+ *     Path of the file asking (this module's path, sources or bundled).
+ * @return
+ *     Absolute path of mermaid-cli.ts.
+ * @throws Error
+ *     If the guide root can't be found either.
+ */
+export function findMermaidCli(from: string): string {
+  const beside = join(dirname(from), 'mermaid-cli.ts');
+  return existsSync(beside) ? beside : join(guideRoot(from), 'site', 'src', 'model', 'mermaid-cli.ts');
+}
+
+const CLI = findMermaidCli(fileURLToPath(import.meta.url));
 /** A diagram Mermaid can't lay out in this time is shown as too large to draw, like one over the size caps. */
 const LIMIT_MS = 30_000;
 const cache = new Map<string, Promise<{ light: string; dark: string } | null>>();
