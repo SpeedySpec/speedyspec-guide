@@ -1,0 +1,11 @@
+---
+symbol: "function:edit_post"
+---
+
+## Behaviour
+
+Saves a post from the edit form's submitted fields: its content, meta, terms, sticky state and status; gives the post ID. <Ev source="wp:wp-admin/includes/post.php#L269-L492" hash="00a0678a06169ac62fdb7fdfaa264bbe202c6e6e7d8d915e4b92a1a18a38a6de"/>
+
+## Override
+
+`attachment_fields_to_save` filters it.

@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_get_allowed_postdata"
+---
+
+## Behaviour
+
+The submitted post fields allowed to reach wp_insert_post(): all but meta_input, file and guid, which a form mustn't set. <Ev source="wp:wp-admin/includes/post.php#L240-L251" hash="dbcee8b6b547f8ee6df54056e89a14b5d5d660387cc4c69116abf457870a4349"/>
+
+## Override
+
+Not overridable.

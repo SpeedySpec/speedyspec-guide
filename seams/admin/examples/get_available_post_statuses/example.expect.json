@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'auto-draft',\n  1 => 'draft',\n  2 => 'future',\n  3 => 'inherit',\n  4 => 'pending',\n  5 => 'private',\n  6 => 'publish',\n  7 => 'request-completed',\n  8 => 'request-confirmed',\n  9 => 'request-failed',\n  10 => 'request-pending',\n  11 => 'trash',\n)",
+ "error": null
+}

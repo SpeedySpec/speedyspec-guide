@@ -1,0 +1,11 @@
+---
+symbol: "function:redirect_post"
+---
+
+## Behaviour
+
+Redirects back to the edit screen after a post is saved, with the message to show, then ends with exit; filtered by redirect_post_location. <Ev source="wp:wp-admin/includes/post.php#L2217-L2259" hash="ec3b82bdf7ecc260b0ecaa8272177ae6345a062458648164848f030f1c52b2c4"/>
+
+## Override
+
+`redirect_post_location` filters it.
