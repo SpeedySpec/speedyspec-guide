@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'HTTP/1.1 200 OK\r\nA: 1\r\nA: 2\r\nSet-Cookie: c=d\r\n\r\nbody',\n  1 => \n  array (\n    'code' => 301,\n    'message' => 'Moved',\n  ),\n  2 => \n  array (\n    'location' => '/x',\n  ),\n  3 => \n  array (\n  ),\n  4 => '4\r\nWiki\r\n5\r\npedia\r\n0\r\n\r\n',\n  5 => 'Wikipedia',\n  6 => 'plain',\n)",
+ "error": null
+}

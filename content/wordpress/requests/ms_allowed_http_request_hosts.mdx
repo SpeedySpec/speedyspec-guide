@@ -1,0 +1,11 @@
+---
+symbol: "function:ms_allowed_http_request_hosts"
+---
+
+## Behaviour
+
+A `http_request_host_is_external` callback for multisite: it allows the network's domain and any domain of a site in the `blogs` table, remembering each answer for the request. <Ev source="wp:wp-includes/http.php#L706-L720" hash="4bdece4c1281045b74e9942f312bd15f69000bd685308e681a14bbb99f1700c8"/>
+
+## Override
+
+Not overridable.

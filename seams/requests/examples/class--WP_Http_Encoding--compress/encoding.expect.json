@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'text',\n  1 => 'gz',\n  2 => 'zlib',\n  3 => 'deflate;q=1.0, compress;q=0.5, gzip;q=0.5',\n  4 => '',\n  5 => 'deflate',\n  6 => true,\n  7 => false,\n  8 => true,\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_replace_insecure_home_url"
+---
+
+## Behaviour
+
+When `wp_should_replace_insecure_home_url()` says so, rewrites the `http` home URL in content to `https`, in plain and JSON-escaped form; otherwise returns the content as it is. <Ev source="wp:wp-includes/https-migration.php#L51-L74" hash="7c942b8fbbb8f9b1ca4a8219d0f466e95f3f6f818b6d601adade7189d4a5ae9b"/>
+
+## Override
+
+`wp_should_replace_insecure_home_url` turns it on or off.

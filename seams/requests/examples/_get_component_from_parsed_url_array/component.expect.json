@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'example.org',\n  1 => NULL,\n  2 => \n  array (\n    'scheme' => 'https',\n    'host' => 'example.org',\n    'path' => '/x',\n    'query' => 'y',\n  ),\n  3 => 'query',\n  4 => false,\n)",
+ "error": null
+}

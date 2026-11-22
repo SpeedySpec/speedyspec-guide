@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => false,\n  1 => true,\n  2 => true,\n  3 => 'proxy.example',\n  4 => '3128',\n  5 => 'u',\n  6 => 'p',\n  7 => 'u:p',\n  8 => 'Proxy-Authorization: Basic dTpw',\n  9 => true,\n  10 => false,\n  11 => false,\n  12 => false,\n  13 => false,\n)",
+ "error": null
+}

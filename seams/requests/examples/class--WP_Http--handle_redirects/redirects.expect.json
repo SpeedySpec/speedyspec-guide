@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  \\WP_Error::__set_state(array(\n     'errors' => \n    array (\n      'http_request_failed' => \n      array (\n        0 => 'Too many redirects.',\n      ),\n    ),\n     'error_data' => \n    array (\n    ),\n     'additional_data' => \n    array (\n    ),\n  )),\n  1 => false,\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'bad_response_code' => \n    array (\n      0 => 'Service Unavailable',\n    ),\n  ),\n  1 => 'https://example.org/',\n  2 => \n  array (\n    'forced' => \n    array (\n      0 => 'Forced.',\n    ),\n  ),\n  3 => false,\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:send_origin_headers"
+---
+
+## Behaviour
+
+For an allowed origin, sends `Access-Control-Allow-Origin` and `Access-Control-Allow-Credentials` and returns the origin. A preflight `OPTIONS` request ends there; from an origin not allowed it gets status 403 first. Otherwise returns `false`. <Ev source="wp:wp-includes/http.php#L515-L533" hash="181b502d662d883ab445b3528c2ee9c3f26fc36deb7daf1b5af4decc8cc1bffd"/>
+
+## Override
+
+Through the origin filters: `http_origin`, `allowed_http_origins` and `allowed_http_origin`.

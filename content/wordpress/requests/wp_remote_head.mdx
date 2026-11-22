@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_remote_head"
+---
+
+## Behaviour
+
+`wp_remote_request()` with the method `HEAD`, which follows no redirects by default. <Ev source="wp:wp-includes/http.php#L229-L232" hash="e01db31dfe4e642d20c05edbcfadc0ba5bf4a306e8e9a2d52b9c7d692c3e3256"/>
+
+## Override
+
+As for `wp_remote_request()`: `pre_http_request`, `http_request_args` and `http_response`.

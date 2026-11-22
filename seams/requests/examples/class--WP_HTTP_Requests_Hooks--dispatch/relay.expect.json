@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "requests-requests.before_parse\nrequests-requests.after_request\n",
+ "return": "NULL",
+ "error": null
+}

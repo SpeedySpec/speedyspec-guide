@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_safe_remote_request"
+---
+
+## Behaviour
+
+`wp_remote_request()` with `reject_unsafe_urls` on, so the URL must pass `wp_http_validate_url()`: http or https, no credentials, an allowed port, and a host that isn't private, loopback or reserved unless it is the site's own. Redirects are checked the same way. <Ev source="wp:wp-includes/http.php#L52-L56" hash="dd9e007d5f89bdfce79727fd4054bcf63aaf60201c82c97b1d5a7508464497b1"/>
+
+## Override
+
+`http_request_host_is_external` and `http_allowed_safe_ports` widen what is allowed; the filters of `wp_remote_request()` apply too.

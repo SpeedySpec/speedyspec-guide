@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_update_https_migration_required"
+---
+
+## Behaviour
+
+On a change of the `home` option, sets `https_migration_required` when only the scheme changed from `http` to `https` (to `false` for a fresh site); any other change deletes it. It does nothing while WordPress is installing. <Ev source="wp:wp-includes/https-migration.php#L126-L142" hash="c864e5d1a7d9a841688c9b6ae51f502942abb34a8f885a9de79e53d4cc9d52cd"/>
+
+## Override
+
+Not overridable.

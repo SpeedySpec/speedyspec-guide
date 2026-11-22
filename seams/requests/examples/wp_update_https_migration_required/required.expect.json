@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "save https_migration_required: true\n",
+ "return": "NULL",
+ "error": null
+}

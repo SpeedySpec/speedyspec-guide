@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'A valid URL was not provided.',\n  1 => 'Hello',\n  2 => true,\n  3 => true,\n)",
+ "error": null
+}

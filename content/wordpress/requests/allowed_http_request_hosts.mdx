@@ -1,0 +1,11 @@
+---
+symbol: "function:allowed_http_request_hosts"
+---
+
+## Behaviour
+
+A `http_request_host_is_external` callback: it allows a host that `wp_validate_redirect()` accepts, such as the site's own and those of `allowed_redirect_hosts`. <Ev source="wp:wp-includes/http.php#L685-L690" hash="97910734bc5ec836ed950c559d8350c748146016051e50b390850e504fbee25c"/>
+
+## Override
+
+`allowed_redirect_hosts` widens the hosts it accepts.

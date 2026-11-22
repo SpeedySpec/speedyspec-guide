@@ -83,12 +83,38 @@ files:
   - 'wp-includes/https-detection.php'
   - 'wp-includes/https-migration.php'
 # Loaded in this order before each example on the WordPress side. No request leaves the machine: setup.php gives a
-# transport that answers with prepared raw HTTP responses.
+# transport that answers with prepared raw HTTP responses, and answers the options the HTTP API reads. The deprecated
+# class-snoopy.php and class-requests.php report their deprecation when included, so their examples include them.
 wordpress:
   - wp-includes/plugin.php
   - wp-includes/load.php
   - wp-includes/compat.php
   - wp-includes/formatting.php
   - wp-includes/functions.php
-  - wp-includes/Requests/src/Autoload.php
+  - wp-includes/pluggable.php
+  - wp-includes/general-template.php
+  - wp-includes/kses.php
+  - wp-includes/class-wp-error.php
+  - wp-includes/class-wp-object-cache.php
+  - wp-includes/cache.php
+  - wp-includes/link-template.php
+  # class-wp-http.php registers the Requests autoloader, as wp-settings.php loads it.
+  - wp-includes/http.php
+  - wp-includes/class-wp-http.php
+  - wp-includes/class-wp-http-streams.php
+  - wp-includes/class-wp-http-curl.php
+  - wp-includes/class-wp-http-proxy.php
+  - wp-includes/class-wp-http-cookie.php
+  - wp-includes/class-wp-http-encoding.php
+  - wp-includes/class-wp-http-response.php
+  - wp-includes/class-wp-http-requests-response.php
+  - wp-includes/class-wp-http-requests-hooks.php
+  - wp-includes/IXR/class-IXR-value.php
+  - wp-includes/IXR/class-IXR-message.php
+  - wp-includes/IXR/class-IXR-request.php
+  - wp-includes/IXR/class-IXR-error.php
+  - wp-includes/IXR/class-IXR-client.php
+  - wp-includes/class-wp-http-ixr-client.php
+  - wp-includes/https-detection.php
+  - wp-includes/https-migration.php
 setup: setup.php

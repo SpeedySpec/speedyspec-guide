@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "save home: 'https://example.org'\nsave siteurl: 'https://example.org'\nsave home: 'http://example.org'\nsave siteurl: 'http://example.org'\n",
+ "return": "false",
+ "error": null
+}
