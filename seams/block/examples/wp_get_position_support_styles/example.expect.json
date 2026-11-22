@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'selector' => '.wp-container-1',\n    'declarations' => \n    array (\n      'top' => 'calc(0px + var(--wp-admin--admin-bar--position-offset, 0px))',\n    ),\n  ),\n  1 => \n  array (\n    'selector' => '.wp-container-1',\n    'declarations' => \n    array (\n      'position' => 'sticky',\n      'z-index' => '10',\n    ),\n  ),\n)",
+ "error": null
+}

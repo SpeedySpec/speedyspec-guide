@@ -16,13 +16,13 @@ An **action** announces that something happened. Callbacks run for their side ef
 sending, and whatever they return is ignored. You register one with <Sym id="function:add_action" />, and WordPress
 fires the action with <Sym id="function:do_action" />, passing along any arguments:
 
-<Example id="hooks/do_action/runs-callbacks" />
+<Example id="guides/hooks/run-on-an-action" />
 
 A **filter** passes a value through its callbacks. Each callback receives the value, and returns it, changed or not;
 the next callback gets what the previous one returned. You register one with <Sym id="function:add_filter" />, and
 WordPress runs it with <Sym id="function:apply_filters" />, using whatever comes back:
 
-<Example id="hooks/add_filter/change-a-value" />
+<Example id="guides/hooks/change-a-value" />
 
 A filter callback must always return the value, even when it has nothing to change; one that returns nothing
 replaces the value with `null`. With no callbacks at all, the value comes back as it went in:
@@ -32,18 +32,32 @@ replaces the value with `null`. With no callbacks at all, the value comes back a
 The two are closer than they look: an action is a filter whose result nobody uses, and `add_action()` simply calls
 `add_filter()`.
 
-<Example id="hooks/add_action/is-add-filter" />
+<Example id="guides/hooks/action-is-a-filter" />
 
-A callback can be any PHP callable: a function's name, a closure, or an object's method.
+## Callbacks you can remove
 
-<Example id="hooks/add_filter/method-callback" />
+A callback can be any PHP callable, but choose one that can be taken off the hook again. Other plugins, themes and
+site owners rely on `remove_filter()` and `remove_action()` to switch off behaviour they don't want, and they can only
+do that if they can name your callback. So:
+
+- Use a **named function**, prefixed with your plugin's prefix, as the examples on this page do. It is removed by its
+  name.
+- Or use a **method of an object you keep**, in a variable or a property your plugin exposes. Removing it needs that
+  same object: a new object of the same class doesn't match.
+
+<Example id="guides/hooks/method-callback" />
+
+Don't add a closure or a new object directly in the `add_filter()` call. Nothing can name it afterwards, so it can
+never be removed, not even by your own plugin:
+
+<Example id="guides/hooks/closure-cannot-be-removed" />
 
 ## Priority: who runs first
 
 The third argument of `add_action()` and `add_filter()` is the **priority**, `10` by default. Lower numbers run
 first. Callbacks at the same priority run in the order they were added.
 
-<Example id="hooks/add_filter/order-at-one-priority" />
+<Example id="guides/hooks/order" />
 
 Choose a high priority, such as `20` or `999`, when your callback should have the last word on a filter's value, and
 a low one when it must run before others.
@@ -53,28 +67,27 @@ a low one when it must run before others.
 A hook can pass more than one argument, but a callback receives only as many as it asks for. The fourth argument of
 `add_filter()` and `add_action()`, the **accepted arguments**, is `1` by default:
 
-<Example id="hooks/add_filter/accepted-args-limit" />
+<Example id="guides/hooks/accepted-args" />
 
 Ask for more when you need them. WordPress passes the post's ID along with its title, for example:
 
-<Example id="hooks/add_filter/receive-more-arguments" />
+<Example id="guides/hooks/receive-more-arguments" />
 
 ## Removing a callback
 
 <Sym id="function:remove_filter" /> and <Sym id="function:remove_action" /> take a callback off a hook. They need
 the same hook name, the same callback and the same priority it was added with; the priority is easy to forget.
 
-<Example id="hooks/remove_filter/same-priority" />
+<Example id="guides/hooks/remove-a-function" />
 
-A closure can only be removed if you kept it in a variable, because a new closure with the same code is a different
-callback:
+Remove another plugin's callback after that plugin has added it: from a hook that runs later, such as `init` or
+`plugins_loaded`, rather than as your plugin's file loads.
 
-<Example id="hooks/remove_action/remove-a-callback" />
+To clear a hook your plugin owns, <Sym id="function:remove_all_filters" /> removes every callback, or only those at
+one priority. Don't use it on WordPress's own hooks or other plugins' hooks: you would remove callbacks you don't know
+about.
 
-To clear a hook you own, <Sym id="function:remove_all_filters" /> removes every callback, or only those at one
-priority. Don't use it on WordPress's own hooks: you would remove other plugins' callbacks too.
-
-<Example id="hooks/remove_all_filters/one-priority" />
+<Example id="guides/hooks/remove-all-at-a-priority" />
 
 <Sym id="function:has_filter" /> tells you whether a callback is registered, and at which priority.
 
@@ -95,7 +108,7 @@ An action is counted even when no callback is registered on it:
 Inside a callback, <Sym id="function:current_filter" /> names the hook that is running, which helps when one callback
 is added to several hooks, and <Sym id="function:doing_action" /> says whether an action is running right now.
 
-<Example id="hooks/doing_action/during-and-after" />
+<Example id="guides/hooks/doing-action" />
 
 ## On SpeedySpec
 
@@ -103,4 +116,5 @@ Hooks are ported: SpeedySpec runs them natively, and the functions on this page 
 <OnSpeedySpecNote id="function:add_filter" /> The difference to know about is in WordPress's internals. The global
 `$wp_filter` that holds every hook's callbacks is an object on SpeedySpec, not an array, so code that changes it
 directly instead of calling these functions may need changing. <OnSpeedySpecNote id="global:wp_filter" /> Its
-reference page lists what differs and what to do instead.
+reference page lists what differs and what to do instead. Calling the functions on this page, rather than reaching
+into `$wp_filter`, is the better practice on WordPress too.

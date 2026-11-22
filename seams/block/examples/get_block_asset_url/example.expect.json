@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/wp-includes/blocks/paragraph/style.css',\n  1 => false,\n)",
+ "error": null
+}

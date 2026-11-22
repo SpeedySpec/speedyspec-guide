@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'templates/template-cover.php' => 'Cover Template',\n    'templates/template-full-width.php' => 'Full Width Template',\n  ),\n  1 => \n  array (\n  ),\n)",
+ "error": null
+}

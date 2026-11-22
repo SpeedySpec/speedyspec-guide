@@ -145,7 +145,7 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
         versionsOnPages: await deps.content.versions(),
         config: deps.config,
         examples: await store.read<ExamplesFile>('examples'),
-        declaredExamples: (await deps.examples.all()).examples.map((e) => ({ id: e.id, sides: e.sides })),
+        declaredExamples: (await deps.examples.all()).examples.map((e) => ({ id: e.id, sides: e.sides, code: e.code })),
         // Offline, the released versions are those recorded in the committed speedyspec-history.json.
         evidenceIndex: await evidenceIndexes(deps, store),
         runtimeIds: (await store.read<GuideSymbol[]>('inventory-runtime'))?.map((s) => s.id) ?? null,

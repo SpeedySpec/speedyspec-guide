@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a class=\"prev page-numbers\" href=\"/?p=1&#038;cpage=1#comments\">&laquo; Previous</a>\n<a class=\"page-numbers\" href=\"/?p=1&#038;cpage=1#comments\">1</a>\n<span aria-current=\"page\" class=\"page-numbers current\">2</span>\n<a class=\"page-numbers\" href=\"/?p=1&#038;cpage=3#comments\">3</a>\n<a class=\"next page-numbers\" href=\"/?p=1&#038;cpage=3#comments\">Next &raquo;</a>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'http://example.org/wp-admin/user/profile.php'",
+ "error": null
+}

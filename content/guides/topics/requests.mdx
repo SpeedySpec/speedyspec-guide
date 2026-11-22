@@ -1,0 +1,116 @@
+---
+title: HTTP
+summary: How a wp_remote_ call travels through WP_Http and the Requests library, the filters on the way, how responses are read safely, and how WordPress limits where requests go.
+---
+
+The HTTP seam is how WordPress talks to other servers: update checks, oEmbed, feeds, and every plugin's call to a
+service. It also holds the checks on requests coming in from other origins, and whether the site uses HTTPS. This
+guide follows a request through its layers. For calling a service from a plugin, read
+[Talking to other sites](/guides/path/talking-to-other-sites/) first.
+
+## The layers of a request
+
+A request passes through three layers:
+
+1. **The `wp_remote_` functions** are thin wrappers that only set the method:
+   - <Sym id="function:wp_remote_get" />, <Sym id="function:wp_remote_post" /> and <Sym id="function:wp_remote_head" />;
+   - <Sym id="function:wp_remote_request" /> for any other method.
+2. **<Sym id="class:WP_Http" />** fills in defaults, applies WordPress's filters and checks, and turns the result into
+   WordPress's response array.
+3. **The Requests library**, bundled under `WpOrg\Requests`, opens the connection with cURL or PHP streams, follows
+   redirects and decodes the body.
+
+<Example id="requests/wp_remote_get/get" />
+
+A POST sends an array body as form data:
+
+<Example id="requests/wp_remote_post/post" />
+
+The response is an array of the headers, body, status code and message, cookies and the response object. A request
+that couldn't be completed returns a `WP_Error` instead:
+
+<Example id="requests/wp_remote_request/request" />
+
+## Defaults and filters on the way
+
+`WP_Http::request()` merges the arguments with defaults: a 5-second timeout, up to 5 redirects, HTTP/1.0, and a user
+agent naming WordPress and the site. Each default has a filter, and <Sym id="filter:http_request_args" /> sees the
+whole set:
+
+<Example id="requests/class--WP_Http--request/defaults" />
+
+The example changes each default through its filter, so the values it shows are its own, not WordPress's. Unfiltered,
+the HTTP version is `1.0`. <Ev source="wp:wp-includes/class-wp-http.php#L202-L202" hash="87e506aaefe753af98946fc19aba823aea1763b796fc868bcecdaf8884260615"/>
+
+Then come the hooks other code uses to watch or replace requests:
+
+- <Sym id="filter:pre_http_request" /> runs before anything is sent. A value other than `false` becomes the response,
+  which is how tests and caching plugins answer requests themselves.
+- <Sym id="action:http_api_debug" /> fires with the raw result, for logging.
+- <Sym id="filter:http_response" /> can change the final response.
+
+<Example id="requests/class--WP_Http--request/args" />
+
+## Reading the response
+
+Always read a response through the `wp_remote_retrieve_` helpers rather than the array itself. Each returns an empty
+value for a `WP_Error`, so code that checks the status code first can't fail on a missing key.
+<Sym id="function:wp_remote_retrieve_response_code" /> gives the status:
+
+<Example id="requests/wp_remote_retrieve_response_code/code" />
+
+<Sym id="function:wp_remote_retrieve_header" /> gives one header, matched without regard to case, and a header sent
+twice comes back as an array:
+
+<Example id="requests/wp_remote_retrieve_header/one" />
+
+<Example id="requests/wp_remote_retrieve_headers/retrieve" />
+
+<Sym id="function:wp_remote_retrieve_body" /> gives the body. <OnSpeedySpecNote id="function:wp_remote_get" />
+
+## Limiting where requests go
+
+Two separate checks keep a site from requesting what it shouldn't.
+
+**Safe URLs.** The `wp_safe_remote_` functions set `reject_unsafe_urls`. `WP_Http` then checks the address with
+<Sym id="function:wp_http_validate_url" /> before sending it. The URL must be `http` or `https` with no credentials,
+and on a usual web port. Its host must not resolve to a loopback, private or reserved address, unless it is the site's
+own host. The <Sym id="filter:http_request_host_is_external" /> filter can allow chosen internal hosts.
+
+<Example id="requests/wp_http_validate_url/validate" />
+
+<Example id="requests/wp_safe_remote_get/safe" />
+
+**Blocking external hosts.** A site can set the `WP_HTTP_BLOCK_EXTERNAL` constant in `wp-config.php` to block every
+request to other hosts. It then lists the ones it still allows in `WP_ACCESSIBLE_HOSTS`, wildcards included. Requests
+to the site itself stay allowed unless <Sym id="filter:block_local_requests" /> says otherwise:
+
+<Example id="requests/class--WP_Http--block_request/block" />
+
+The first check protects against addresses someone supplied. The second is the site owner's choice of what the whole
+site may reach. A plugin should work with both.
+
+## Requests coming in: origins
+
+When a browser on another site calls this site's API, it says where it came from in an `Origin` header.
+<Sym id="function:get_http_origin" /> reads that header. <Sym id="function:is_allowed_http_origin" /> keeps it only
+when it is one of the site's own addresses, or one added through <Sym id="filter:allowed_http_origins" />.
+WordPress uses the answer to decide which cross-origin responses the browser may read:
+
+<Example id="requests/get_http_origin/origin" />
+
+<Example id="requests/is_allowed_http_origin/check" />
+
+## HTTPS and URL parsing
+
+<Sym id="function:wp_is_using_https" /> says whether the site serves over HTTPS, which needs both its home and site
+addresses to be `https`. WordPress checks it before offering to move the site to HTTPS:
+
+<Example id="requests/wp_is_using_https/https" />
+
+<Sym id="function:wp_parse_url" /> is PHP's `parse_url()` made consistent across PHP versions, for protocol-relative
+and relative URLs too. Use it whenever a plugin takes an address apart:
+
+<Example id="requests/wp_parse_url/parse" />
+
+The HTTP seam isn't ported to SpeedySpec yet, so this guide makes no promise about how requests behave there.

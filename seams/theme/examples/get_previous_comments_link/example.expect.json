@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"http://example.org/?p=1&#038;cpage=1#comments\" >Back</a>'",
+ "error": null
+}

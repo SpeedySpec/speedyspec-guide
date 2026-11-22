@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"http://example.org/?paged=2\" >Older</a>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'good answer' => 'Dune',\n  'not JSON at all' => NULL,\n)",
+ "error": null
+}

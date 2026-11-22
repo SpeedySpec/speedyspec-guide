@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a rel=\"shortlink\" href=\"http://example.org/?p=1\">Short</a>'",
+ "error": null
+}

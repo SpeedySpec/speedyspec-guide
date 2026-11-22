@@ -39,4 +39,8 @@ files:
   - 'wp-includes/class-wp-block.php'
   - 'wp-includes/class-wp-classic-to-block-menu-converter.php'
   - 'wp-includes/class-wp-duotone.php'
-wordpress: []
+# WordPress is booted by the setup (see boot.php); the runner needs one file to load first.
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true

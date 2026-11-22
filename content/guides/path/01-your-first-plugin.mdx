@@ -1,22 +1,33 @@
 ---
 title: Your first plugin
-summary: A plugin header, a hook, an activation hook, and a setting saved and read back.
+summary: A plugin header, a hook, an activation hook, a setting saved safely and read back, and cleaning up on uninstall.
 ---
 
 A WordPress plugin is a PHP file that WordPress loads on every request. It never edits WordPress's own files. Instead
 it asks WordPress to run its code at the right moments, and it keeps what it needs to remember in the database. This
-guide builds a small plugin that shows a greeting on every admin screen, and lets the greeting be changed. Along the
-way you meet the four things almost every plugin uses: the plugin header, hooks, the activation hook and options.
+guide builds a small plugin that shows a greeting on every admin screen and lets the greeting be changed. Along the
+way you meet what almost every plugin uses: the plugin header, hooks, the activation hook, options, and the habits
+that keep a plugin safe.
 
 Every example on this page was run on a freshly installed WordPress, and what it printed or returned is shown under
-it.
+it. Each one is written the way you should write your own plugin.
+
+## Prefix everything
+
+Every plugin shares one PHP program with WordPress and every other plugin, so two functions called `notice()` can't
+both exist. Give every function, option, hook and class your plugin creates a prefix of its own. This guide uses
+`my_first_plugin_` for functions and options, and `my-first-plugin` as the plugin's text domain.
 
 ## The plugin header
 
 A plugin lives in its own folder under `wp-content/plugins/`, for example
 `wp-content/plugins/my-first-plugin/my-first-plugin.php`. What makes that file a plugin is the comment at its top: the
-plugin header. WordPress reads it to list the plugin on the Plugins screen. Only `Plugin Name` is required; the other
-fields describe the plugin to the people installing it.
+plugin header. WordPress reads it to list the plugin on the Plugins screen. Only `Plugin Name` is required, but give
+the others too. `Requires at least` and `Requires PHP` stop the plugin from being activated where it can't run,
+`License` says how others may use it, and `Text Domain` names the plugin's translations.
+
+Straight after the header, stop if the file is opened directly instead of loaded by WordPress, so nothing in it runs
+on its own: `defined( 'ABSPATH' ) || exit;`. Every PHP file in your plugin should start this way.
 
 <Example id="guides/your-first-plugin/header" />
 
@@ -36,14 +47,20 @@ page, where WordPress shows its own messages.
 plugin you only write the `add_action()` call: WordPress fires `admin_notices` itself. The example fires it so the
 notice can be captured and shown. <OnSpeedySpecNote id="function:add_action" />
 
-Hooks are the heart of WordPress plugins. The [Hooks topic guide](/guides/topics/hooks/) explains actions, filters,
-priorities and removing callbacks.
+Three habits are already in this small function:
+
+- The callback is a **named function**, not a closure, so another plugin or a theme can take it off the hook with
+  `remove_action( 'admin_notices', 'my_first_plugin_notice' )`. The [Hooks topic guide](/guides/topics/hooks/)
+  explains why that matters.
+- The text is **translatable**: <Sym id="function:esc_html__" /> looks the string up in the plugin's translations,
+  using its text domain.
+- The text is **escaped** as it is printed. `esc_html__()` translates and escapes in one call.
 
 ## Doing something once, on activation
 
-Some work should happen once, when someone activates the plugin, not on every request: creating a database table,
-or storing default settings. <Sym id="function:register_activation_hook" /> takes the path of your plugin's main file
-and a callback. Inside the main file you pass `__FILE__`, the path of the file itself.
+Some work should happen once, when someone activates the plugin, not on every request: storing default settings, for
+example. <Sym id="function:register_activation_hook" /> takes the path of your plugin's main file and a callback.
+Inside the main file you pass `__FILE__`, the path of the file itself.
 
 <Example id="guides/your-first-plugin/activation" />
 
@@ -53,30 +70,59 @@ plugin is activated. That is why the example can fire it directly. Here the call
 <Sym id="function:add_option" />, which never overwrites a value that is already saved, so reactivating the plugin
 keeps whatever greeting the site's owner chose.
 
-## Saving and reading a setting
+## Saving a setting safely
 
 WordPress stores settings as **options**: named values in the `wp_options` table. <Sym id="function:get_option" />
 reads one, and its second argument is the value to use when nothing is saved yet.
 <Sym id="function:update_option" /> saves a value, adding the option if it doesn't exist.
 
+A setting's new value comes from a person, through a form, and anything that comes from a request has to be checked
+before it is saved. Three checks, every time:
+
+1. **A nonce** proves the request came from your own form, and not from a page elsewhere tricking a logged-in
+   administrator into sending it. The form prints one with `wp_nonce_field()`, and the save checks it with
+   <Sym id="function:wp_verify_nonce" />.
+2. **A capability** proves the person may change the setting. <Sym id="function:current_user_can" /> with
+   `manage_options` allows administrators only.
+3. **Sanitizing** makes the value safe to store. <Sym id="function:sanitize_text_field" /> keeps one line of plain
+   text, dropping tags and surrounding space. Request data arrives slashed, so <Sym id="function:wp_unslash" /> it
+   first.
+
 <Example id="guides/your-first-plugin/save-a-setting" />
 
-This guide doesn't count the Options seam as ported to SpeedySpec yet, so it can't promise that options behave the
-same there. <OnSpeedySpecNote id="function:get_option" />
+The save without a nonce is refused, and the saved greeting has lost its tags and spaces. This guide doesn't count the
+Options seam as ported to SpeedySpec yet, so it can't promise that options behave the same there.
+<OnSpeedySpecNote id="function:get_option" />
 
 ## The whole plugin
 
-Put together, the plugin's notice reads its greeting from the option. Anything that came from the database, or from
-a person, is escaped before it is printed: <Sym id="function:esc_html" /> turns characters that mean something in
-HTML, such as `&` and `<`, into text that displays as itself.
+Put together, the plugin's notice reads its greeting from the option. The greeting was sanitized when it was saved,
+and it is still escaped when it is printed: escape at output, every time, whatever you believe about where the value
+came from. <Sym id="function:esc_html" /> turns characters that mean something in HTML, such as `&` and `<`, into
+text that displays as itself.
 
 <Example id="guides/your-first-plugin/notice-from-setting" />
 
-The plugin's main file holds the header, the `register_activation_hook()` call and the `add_action()` call. That is a
-complete plugin: activate it, and every admin screen greets you.
+The plugin's main file holds the header, the `ABSPATH` guard, the two functions, and the
+`register_activation_hook()` and `add_action()` calls. That is a complete plugin: activate it, and every admin screen
+greets you.
+
+## Cleaning up on uninstall
+
+When someone deletes the plugin, it should take its data with it. Put an `uninstall.php` file next to the main file.
+WordPress loads it when the plugin is deleted, after defining `WP_UNINSTALL_PLUGIN`, and the file exits straight away
+if that constant isn't defined, so it can't be run any other way. It deletes the plugin's options with
+<Sym id="function:delete_option" />.
+
+<Example id="guides/your-first-plugin/uninstall" />
+
+Clean up on uninstall, not on deactivation. People deactivate a plugin to try something and expect their settings to
+still be there when they turn it back on.
 
 ## Where to go next
 
+- The next guide, [Keeping your plugin safe](/guides/path/keeping-your-plugin-safe/), goes further into validating,
+  sanitizing, escaping, nonces and capabilities, the habits this plugin already uses.
 - The [Options topic guide](/guides/topics/options/) explains adding, updating and deleting options, autoloading,
   the option filters and transients.
 - The [Hooks topic guide](/guides/topics/hooks/) explains filters, priorities, arguments and removing callbacks.

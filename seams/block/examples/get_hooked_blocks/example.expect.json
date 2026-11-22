@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'after' => \n  array (\n    0 => 'guide/like',\n  ),\n)",
+ "error": null
+}

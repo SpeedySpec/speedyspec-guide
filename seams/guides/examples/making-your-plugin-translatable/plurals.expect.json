@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '0 livre',\n  1 => '1 livre',\n  2 => '2 livres',\n  1500 => '1,500 livres',\n)",
+ "error": null
+}

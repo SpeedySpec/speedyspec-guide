@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/breadcrumbs',\n  1 => 'Breadcrumbs',\n  2 => 'render_block_core_breadcrumbs',\n)",
+ "error": null
+}

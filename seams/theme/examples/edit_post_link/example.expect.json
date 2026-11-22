@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<span><a class=\"post-edit-link\" href=\"http://example.org/wp-admin/post.php?post=1&#038;action=edit\">Edit</a></span>'",
+ "error": null
+}

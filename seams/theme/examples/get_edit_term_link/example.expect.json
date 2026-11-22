@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/wp-admin/term.php?taxonomy=post_tag&tag_ID=2&post_type=post',\n  1 => NULL,\n)",
+ "error": null
+}

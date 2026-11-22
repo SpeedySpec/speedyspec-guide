@@ -1,0 +1,7 @@
+---
+symbol: "filter:rest_authentication_errors"
+---
+
+## Behaviour
+
+Filters whether the request is authenticated: null when no method applied, true for success, or a WP_Error; WordPress checks the cookie nonce and application passwords here. <Ev source="wp:wp-includes/rest-api/class-wp-rest-server.php#L244-L244" hash="32bda0cb29c5475b03f9e7a4948f830fe9c40506b8d5db0141ba290adb427716"/>

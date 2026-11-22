@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'AND ( ( <posts>.post_date >= \\'2026-01-01 00:00:00\\' AND <posts>.post_date <= \\'2026-06-30 23:59:59\\' ) AND HOUR( <posts>.post_date ) >= 9 )'",
+ "error": null
+}

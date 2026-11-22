@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/post-title',\n  1 => 'Title',\n  2 => 'render_block_core_post_title',\n)",
+ "error": null
+}

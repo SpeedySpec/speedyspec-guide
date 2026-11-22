@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<content>/themes/guide/functions.php'",
+ "error": null
+}

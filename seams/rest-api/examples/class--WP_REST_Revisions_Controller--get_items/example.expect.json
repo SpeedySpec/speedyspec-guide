@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'v3',\n    1 => 'v2',\n  ),\n  1 => true,\n  2 => 403,\n  3 => 'rest_cannot_delete',\n)",
+ "error": null
+}

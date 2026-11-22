@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 201,\n  1 => 'guide-sans',\n  2 => 201,\n  3 => 'http://example.org/fonts/guide.woff2',\n  4 => true,\n  5 => 'rest_duplicate_font_family',\n)",
+ "error": null
+}

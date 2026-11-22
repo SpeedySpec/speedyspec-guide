@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'\n\t<nav class=\"navigation pagination\" aria-label=\"Posts pagination\">\n\t\t<h2 class=\"screen-reader-text\">Posts pagination</h2>\n\t\t<div class=\"nav-links\"><a class=\"prev page-numbers\" href=\"http://example.org/\">Previous</a>\n<a class=\"page-numbers\" href=\"http://example.org/\">1</a>\n<span aria-current=\"page\" class=\"page-numbers current\">2</span>\n<a class=\"page-numbers\" href=\"http://example.org/?paged=3\">3</a>\n<a class=\"next page-numbers\" href=\"http://example.org/?paged=3\">Next</a></div>\n\t</nav>'",
+ "error": null
+}

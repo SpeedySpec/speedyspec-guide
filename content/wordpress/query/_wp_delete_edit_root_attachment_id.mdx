@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_delete_edit_root_attachment_id"
+---
+
+## Behaviour
+
+Hooked to deleted_post: clears the edit root recorded on copies of an attachment deleted for good, so they don't point at a reused ID. <Ev source="wp:wp-includes/post.php#L9037-L9050" hash="a795d06b8edd850cb9326b103c46d58e86136769aa48ab39a658b05d25748336"/>
+
+## Override
+
+Not overridable.

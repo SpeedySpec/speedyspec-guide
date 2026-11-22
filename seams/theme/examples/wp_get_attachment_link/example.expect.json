@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<a href=\\'http://example.org/wp-content/uploads/photo.jpg\\'><img width=\"150\" height=\"113\" src=\"http://example.org/wp-content/uploads/photo.jpg\" class=\"attachment-thumbnail size-thumbnail\" alt=\"\" decoding=\"async\" loading=\"lazy\" /></a>',\n  1 => '<a href=\\'http://example.org/?attachment_id=1\\'>View</a>',\n)",
+ "error": null
+}

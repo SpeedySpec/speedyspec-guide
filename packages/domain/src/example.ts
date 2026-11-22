@@ -21,6 +21,8 @@ export interface Example {
   /** Whether its seam's setup makes a multisite install (WordPress side only). */
   multisite: boolean;
   expect: ExampleOutcome;
+  /** The example's PHP, as written. */
+  code: string;
 }
 
 export interface ExampleRun extends ExampleOutcome {

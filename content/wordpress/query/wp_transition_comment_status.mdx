@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_transition_comment_status"
+---
+
+## Behaviour
+
+Fires the status change hooks (the new status first, then the old) when a comment's status changes: transition_comment_status, `comment_{$old}_to_{$new}`, and `comment_{$new}_{$type}`. <Ev source="wp:wp-includes/comment.php#L2038-L2117" hash="9e36b39a936a7d84d722a69259f6b035da23ed597b078805d9ac150219949db1"/>
+
+## Override
+
+`transition_comment_status`, `comment_{$old_status}_to_{$new_status}`, `comment_{$new_status}_{$comment->comment_type}` fire.

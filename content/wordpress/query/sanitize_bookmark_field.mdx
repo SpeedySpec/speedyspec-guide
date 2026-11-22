@@ -1,0 +1,11 @@
+---
+symbol: "function:sanitize_bookmark_field"
+---
+
+## Behaviour
+
+Sanitizes one link field for a context: raw, edit, db, display or attribute; IDs and ratings are cast to integers, targets must be _top or _blank, visibility keeps only Y or N, and the field's filters run for the context. <Ev source="wp:wp-includes/bookmark.php#L407-L466" hash="4ffe8b0c1983bd9c2e8e524648994d8ed2028f782faa36365e4790800ab5ae0f"/>
+
+## Override
+
+`edit_{$field}`, `pre_{$field}`, `{$field}` filter it.

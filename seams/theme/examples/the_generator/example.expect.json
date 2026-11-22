@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<meta name=\"generator\" content=\"WordPress 7.2-RC1-65559-src\" />'",
+ "error": null
+}

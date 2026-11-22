@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "' readonly=\\'readonly\\''",
+ "error": null
+}

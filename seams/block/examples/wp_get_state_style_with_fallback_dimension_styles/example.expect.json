@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'dimensions' => \n  array (\n    'aspectRatio' => '1',\n    'minHeight' => 'unset',\n    'height' => 'unset',\n  ),\n)",
+ "error": null
+}

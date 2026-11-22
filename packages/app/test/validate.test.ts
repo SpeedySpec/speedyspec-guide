@@ -61,6 +61,49 @@ const guide = (over: Partial<Guide>): Guide => ({ file: 'guides/path/01-first.md
 const withSymbol: Inventory = { ...inventory, symbols: [{ id: 'function:get_option', kind: 'function', name: 'get_option', file: 'wp-includes/option.php', line: 1 } as Inventory['symbols'][number]] };
 
 describe('guide rules', () => {
+  const withCode = (code: string) => ({ declaredExamples: [{ id: 'hooks/add_filter/a', sides: ['wordpress' as const], code }] });
+  const callbackFindings = async (code: string) => (await runRules(ALL_RULES, await ctx({}, withCode(code)))).filter((x) => x.rule === 'ExampleCallbackRemovable');
+  const CALLBACK_MESSAGE = 'adds a closure, arrow function or new object as a hook or shortcode callback; add a named function or a kept object';
+
+  test('example_closure_callback_fails', async () => {
+    expect(await callbackFindings("<?php\nadd_filter( 'x', function ( $v ) {\n\treturn $v;\n} );\n")).toEqual([{ rule: 'ExampleCallbackRemovable', where: 'hooks/add_filter/a', message: CALLBACK_MESSAGE }]);
+  });
+
+  test('example_arrow_and_inline_new_fail', async () => {
+    expect(await callbackFindings("<?php\nadd_action( 'x', fn() => 1 );\n")).toHaveLength(1);
+    expect(await callbackFindings("<?php\nadd_filter( 'x', array( new Foo(), 'bar' ) );\n")).toHaveLength(1);
+    expect(await callbackFindings("<?php\n$hook->add_filter( 'x', static function () {}, 10, 1 );\n")).toHaveLength(1);
+    expect(await callbackFindings("<?php\nadd_filter(\n\t'x',\n\tfunction () {}\n);\n")).toHaveLength(1);
+  });
+
+  test('example_closure_shortcode_fails', async () => {
+    expect(await callbackFindings("<?php\nadd_shortcode( 'x', fn( $atts ) => 'y' );\n")).toHaveLength(1);
+    expect(await callbackFindings("<?php\nadd_shortcode( 'x', 'guide_x_shortcode' );\n")).toEqual([]);
+  });
+
+  test('example_new_object_and_first_class_callables_fail', async () => {
+    expect(await callbackFindings("<?php\nadd_action( 'x', new Guide_Invokable() );\n")).toHaveLength(1);
+    expect(await callbackFindings("<?php\nadd_filter( 'x', guide_up(...) );\n")).toHaveLength(1);
+    expect(await callbackFindings("<?php\nadd_filter( 'x', $kept->up( ... ) );\n")).toHaveLength(1);
+    expect(await callbackFindings("<?php\nadd_filter( 'x', Closure::fromCallable( 'guide_up' ) );\n")).toHaveLength(1);
+  });
+
+  test('example_comments_and_strings_are_not_code', async () => {
+    expect(await callbackFindings("<?php\nadd_filter(\n\t'x', // it's the hook\n\t'guide_up'\n);\n")).toEqual([]);
+    expect(await callbackFindings("<?php\n// Don't write add_filter( 'x', fn() => 1 ); like this.\nadd_filter( 'x', 'guide_up' );\n")).toEqual([]);
+    expect(await callbackFindings("<?php\n/* add_action( 'x', function () {} ); */\nadd_action( 'x', 'guide_up' );\n")).toEqual([]);
+    expect(await callbackFindings("<?php\n$doc = <<<'PHP'\nadd_filter( 'x', fn() => 1 );\nPHP;\nadd_filter( 'x', 'guide_up' );\n")).toEqual([]);
+    expect(await callbackFindings("<?php\n$doc = <<<EOT\nadd_filter( 'x', fn() => 1 );\nEOT;\nadd_filter( 'y', fn() => 2 );\n")).toHaveLength(1);
+  });
+
+  test('example_named_callback_passes', async () => {
+    expect(await callbackFindings("<?php\nadd_filter( 'x', 'guide_up' );\nadd_filter( 'x', array( $kept, 'm' ), 10, 2 );\n$hook->add_filter( 'x', 'trim', 10, 1 );\n")).toEqual([]);
+  });
+
+  test('example_marked_deliberate_passes', async () => {
+    expect(await callbackFindings("<?php\n// guide: closure on purpose\nadd_filter( 'x', function () {} );\n")).toEqual([]);
+  });
+
   test('guide_citations_are_checked', async () => {
     const citations = [
       parseCitation({ source: 'wp:wp-includes/plugin.php#L2', hash: sha('old text') }),

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/playlist-track',\n  1 => 'Playlist track',\n  2 => 'render_block_core_playlist_track',\n)",
+ "error": null
+}

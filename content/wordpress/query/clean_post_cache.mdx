@@ -1,0 +1,11 @@
+---
+symbol: "function:clean_post_cache"
+---
+
+## Behaviour
+
+Removes a post from the cache, with its terms and children, and bumps the posts' last changed time; fires clean_post_cache. <Ev source="wp:wp-includes/post.php#L8182-L8227" hash="741d5f0d28875cefc9a3453e3ce6e941be5228a69c9c25063a46d48f6f6ba601"/>
+
+## Override
+
+`clean_post_cache`, `clean_page_cache` fire.

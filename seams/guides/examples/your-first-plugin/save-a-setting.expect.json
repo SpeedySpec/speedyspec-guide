@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "array (\n  0 => 'Hello!',\n  1 => 'Howdy, partner!',\n)",
+ "return": "array (\n  'without a nonce' => false,\n  'saved' => true,\n  'stored' => 'Howdy, partner!',\n)",
  "error": null
 }

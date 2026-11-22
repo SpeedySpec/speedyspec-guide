@@ -1,0 +1,81 @@
+---
+title: Making your plugin translatable
+summary: Wrap every string in a translation function with your text domain, handle plurals and context, use placeholders, and escape translations.
+---
+
+Most WordPress sites aren't in English. When your plugin marks every string people read as translatable, translators
+can turn it into any language without touching your code, and the site shows it in the site's own language, or in
+each person's chosen language in the admin. This is called **internationalization**, and it costs almost nothing
+if you do it from the start.
+
+Every example below loads a small French translation of the plugin, the kind of object WordPress builds from a
+translation file, so you can see the strings change.
+
+## Text domains
+
+Each plugin's translations are kept apart by its **text domain**, a name that must match the plugin's slug: the
+folder name, `my-plugin`. Name it in the plugin header's `Text Domain` field, as in
+[Your first plugin](/guides/path/your-first-plugin/), and pass it to every translation function, as a plain string.
+Translation tools read your code without running it, so a variable or constant there hides the string from them.
+
+<Sym id="function:__" /> returns a string's translation and <Sym id="function:_e" /> prints it:
+
+<Example id="guides/making-your-plugin-translatable/translate-with-a-domain" />
+
+The same string under another plugin's domain wasn't translated: domains keep plugins from overwriting each
+other's translations. A string never wrapped at all can't be translated by anyone.
+
+WordPress loads your plugin's translation the first time it is needed, from the site's languages folder, so you
+don't need to call <Sym id="function:load_plugin_textdomain" /> for translations from WordPress.org. Don't translate
+before the `init` action, though: WordPress warns that translation loading was triggered too early.
+<OnSpeedySpecNote id="function:__" />
+
+## Escaping and translating at once
+
+Most strings are printed, and translations are text you didn't write, so translate and escape together:
+<Sym id="function:esc_html__" /> and <Sym id="function:esc_html_e" /> for text, <Sym id="function:esc_attr__" /> for
+attributes. When a value goes into the string, escape the finished result:
+
+<Example id="guides/making-your-plugin-translatable/translated-text-is-escaped" />
+
+The translation that tried to add a script was printed as text. A careless or malicious translation can't break your
+page.
+
+## Plurals
+
+Never build plurals with `if ( 1 === $count )`. Languages have different rules: French uses the singular for zero,
+others have three or more forms. <Sym id="function:_n" /> takes the singular and plural English strings and the
+number, and returns the right form for the language:
+
+<Example id="guides/making-your-plugin-translatable/plurals" />
+
+Zero books is `0 livre` in French, which an English-only check would get wrong. The number itself is formatted with
+<Sym id="function:number_format_i18n" />, which uses the site's own digit grouping. The example site is in English,
+so it shows `1,500`.
+
+## Context
+
+One English word can mean two things that other languages translate differently. "Post" on a button is a verb, and
+as a heading a noun. <Sym id="function:_x" /> adds a **context**, a short note that tells translators which meaning you
+mean, and each meaning gets its own translation:
+
+<Example id="guides/making-your-plugin-translatable/context" />
+
+## Placeholders, not variables
+
+Strings with values in them use `sprintf()` placeholders. Number them (`%1$s`, `%2$s`) whenever there is more than one,
+so translators can reorder them for their language's grammar. Add a comment starting `translators:` on the line
+before, saying what each placeholder holds, because translators see the string without your code around it.
+
+<Example id="guides/making-your-plugin-translatable/placeholders" />
+
+The French translation put the author first. The second function put variables inside the string, so the string
+looked up was `Dune by Frank Herbert`, which no translation file can contain, and it stayed in English.
+
+## Strings in JavaScript
+
+Translate strings in your scripts with the `wp-i18n` package's `__()` and `_n()`, and tell WordPress to load their
+translations with <Sym id="function:wp_set_script_translations" />, as
+[Loading scripts and styles](/guides/path/loading-scripts-and-styles/) mentions.
+
+The I18n seam isn't ported to SpeedySpec yet, so this guide makes no promise about how translations behave there.

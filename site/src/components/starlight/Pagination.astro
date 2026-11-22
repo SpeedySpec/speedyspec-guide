@@ -1,0 +1,10 @@
+---
+// Starlight's previous/next links; on guide pages, also large arrows at the page edges on wide screens (Decorator).
+import Default from '@astrojs/starlight/components/Pagination.astro';
+
+const { prev, next } = Astro.locals.starlightRoute.pagination;
+const onGuide = Astro.url.pathname.startsWith('/guides/');
+---
+<Default><slot /></Default>
+{onGuide && prev && <a class="edge-prev" href={prev.href} aria-label={`Previous: ${prev.label}`}>‹</a>}
+{onGuide && next && <a class="edge-next" href={next.href} aria-label={`Next: ${next.label}`}>›</a>}

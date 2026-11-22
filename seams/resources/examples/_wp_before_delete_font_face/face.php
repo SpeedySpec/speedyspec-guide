@@ -1,6 +1,10 @@
 <?php
 // Deletes a font face's files from the fonts folder before the face is deleted.
-add_filter( 'font_dir', function ( $dir ) { $dir['basedir'] = sys_get_temp_dir() . '/guide-fonts-' . getmypid(); return $dir; } );
+function guide_temporary_font_dir( $dir ) {
+	$dir['basedir'] = sys_get_temp_dir() . '/guide-fonts-' . getmypid();
+	return $dir;
+}
+add_filter( 'font_dir', 'guide_temporary_font_dir' );
 $dir = wp_get_font_dir()['basedir'];
 wp_mkdir_p( $dir );
 file_put_contents( "$dir/inter.woff2", 'x' );

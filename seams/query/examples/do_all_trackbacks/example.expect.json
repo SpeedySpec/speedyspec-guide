@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://elsewhere.test/trackback',\n)",
+ "error": null
+}

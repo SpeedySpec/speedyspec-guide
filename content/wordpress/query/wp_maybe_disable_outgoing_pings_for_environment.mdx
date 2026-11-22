@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_maybe_disable_outgoing_pings_for_environment"
+---
+
+## Behaviour
+
+Hooked to do_all_pings first: outside production, removes the pingback, trackback and update service callbacks, keeping enclosures. <Ev source="wp:wp-includes/comment.php#L3579-L3585" hash="64c40058b3d6ed4ef135656159a288eccef3afc2722feaf0580d5cdfeacbeb51"/>
+
+## Override
+
+Not overridable.

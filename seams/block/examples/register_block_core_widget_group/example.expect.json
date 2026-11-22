@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/widget-group',\n  1 => 'Widget Group',\n  2 => 'render_block_core_widget_group',\n)",
+ "error": null
+}

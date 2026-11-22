@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'menu title' => 'My Plugin',\n  'capability' => 'manage_options',\n  'slug' => 'my-plugin',\n  'page title' => 'My Plugin settings',\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_random_content_pre_get_posts"
+---
+
+## Behaviour
+
+Hooked to pre_get_posts while a random request runs: limits the query to randomable types, published posts without a password, and a sample of random IDs. <Ev source="wp:wp-includes/query.php#L1413-L1428" hash="ea011d9e9a605ba4a6db5b73add8fdf8f004fd3373523a89791a6a732d4845cc"/>
+
+## Override
+
+Not overridable.

@@ -1,0 +1,71 @@
+---
+title: Grouping content with taxonomies
+summary: Register a taxonomy for your post type, add terms and assign them, query posts by term, and print terms safely.
+---
+
+A **taxonomy** is a way of grouping content, and each group in it is a **term**. WordPress comes with two: categories
+and tags. Your plugin can add its own, so the books from [Storing your own content](/guides/path/storing-your-own-content/)
+can be grouped by genre. Every taxonomy gets an admin screen for its terms, a box in the editor, archive pages and a
+place in queries, all from one registration.
+
+## Categories or tags
+
+The first choice is whether terms nest.
+
+- A **hierarchical** taxonomy works like categories. Terms can have parents (Fiction, then Science fiction under it),
+  and people pick from a list of existing terms.
+- A **flat** taxonomy works like tags. Terms stand alone, and people type new ones freely.
+
+Choose hierarchical when the groups form a fixed outline you or the site's owner control, and flat when people label
+content as they go.
+
+## Registering a taxonomy
+
+Call <Sym id="function:register_taxonomy" /> on `init`, after the post type, giving the taxonomy's name (your prefix
+plus a noun, at most 32 characters), the post types it groups, and its settings:
+
+<Example id="guides/grouping-content-with-taxonomies/register-a-taxonomy" />
+
+`show_in_rest` gives the block editor its genre box, and `show_admin_column` adds a Genres column to the list of
+books. By default, anyone who may edit posts may assign terms, while managing the terms themselves needs
+`manage_categories`. To group a post type you registered earlier, or a core one such as `post`, list it here, or call
+<Sym id="function:register_taxonomy_for_object_type" /> later. <OnSpeedySpecNote id="function:register_taxonomy" />
+
+## Adding and assigning terms
+
+<Sym id="function:wp_insert_term" /> adds a term, with a parent for a hierarchy. It returns the new term's IDs, or a
+`WP_Error` when the name is empty or already taken at that level. <Sym id="function:wp_set_object_terms" /> sets a
+post's terms. By default it replaces them; pass `true` as its fourth argument to add to them instead.
+
+<Example id="guides/grouping-content-with-taxonomies/assign-terms" />
+
+Pass term IDs as integers. `wp_set_object_terms()` reads a string as a term's name or slug, and creates the term if
+none matches. A numeric string would quietly create a new term called `12`, so cast the IDs, as the example does.
+
+In plugin code you rarely create terms yourself. People add genres in the admin, and your plugin reads them. Creating
+terms is for an import, or for a default term your plugin sets up on activation.
+
+## Querying by term
+
+To find posts by term, give `WP_Query` a `tax_query`: the taxonomy, which field you are matching (`slug`, `name` or
+`term_id`), and the terms.
+
+<Example id="guides/grouping-content-with-taxonomies/query-by-term" />
+
+In a hierarchical taxonomy, asking for a parent term includes its children's posts too. Dune is in Science fiction,
+yet it appears under Fiction. Set `include_children` to `false` when you want only the posts filed directly under the
+term.
+
+## Printing terms safely
+
+<Sym id="function:get_the_terms" /> returns a post's terms, `false` when it has none, or an error when the taxonomy
+doesn't exist, so check before looping. <Sym id="function:get_term_link" /> gives each term's archive address.
+
+<Example id="guides/grouping-content-with-taxonomies/list-terms-escaped" />
+
+When the term was saved, WordPress stripped the tags out of its name and stored the `&` as the entity `&amp;`.
+`esc_html()` leaves an entity that is already there as it is, and escapes anything else. Escape every name with
+`esc_html()` and every link with `esc_url()` as you print them. Terms are typed by people, and may come from an
+import that didn't clean them.
+
+The Taxonomy seam isn't ported to SpeedySpec yet, so this guide makes no promise about how taxonomies behave there.

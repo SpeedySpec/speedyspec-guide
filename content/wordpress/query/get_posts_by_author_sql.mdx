@@ -1,0 +1,11 @@
+---
+symbol: "function:get_posts_by_author_sql"
+---
+
+## Behaviour
+
+The SQL WHERE clause for posts of types, optionally by an author and only public ones, with the private posts the user may read. <Ev source="wp:wp-includes/post.php#L7918-L7986" hash="24a7af1fd8a85fc60b52b697db57034cb04cffe9af26088fd5a06170ab3f37b4"/>
+
+## Override
+
+`pub_priv_sql_capability` filters it.

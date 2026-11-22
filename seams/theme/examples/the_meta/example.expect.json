@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<ul class=\\'post-meta\\'> <li><span class=\\'post-meta-key\\'>mood:</span> happy</li> </ul>'",
+ "error": null
+}

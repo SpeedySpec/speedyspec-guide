@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'role exists' => true,\n  'librarian can' => \n  array (\n    0 => 'read',\n    1 => 'my_plugin_manage_books',\n  ),\n  'administrator can too' => true,\n  'adding it again' => NULL,\n)",
+ "error": null
+}

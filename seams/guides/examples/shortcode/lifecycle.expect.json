@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'exists' => true,\n  'used in content' => true,\n  'run' => 'Say Hello, Ada and [unregistered].',\n  'stripped' => 'Say  and [unregistered].',\n  'after removal' => 'Say [my_plugin_greet name=\"Ada\"] and [unregistered].',\n)",
+ "error": null
+}

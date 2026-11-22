@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'logged out' => \n  array (\n    0 => 401,\n    1 => 'rest_forbidden',\n  ),\n  'logged out, blank title' => \n  array (\n    0 => 400,\n    1 => 'rest_invalid_param',\n  ),\n  'subscriber' => \n  array (\n    0 => 403,\n    1 => 'rest_forbidden',\n  ),\n  'public list' => 200,\n  'books created' => \n  array (\n  ),\n)",
+ "error": null
+}

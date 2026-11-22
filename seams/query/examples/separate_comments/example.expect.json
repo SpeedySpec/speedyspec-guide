@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'comment' => 1,\n  'trackback' => 1,\n  'pingback' => 1,\n  'pings' => 2,\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'routes' => \n  array (\n    0 => '/my-plugin/v1',\n    1 => '/my-plugin/v1/books',\n  ),\n  'methods' => \n  array (\n    0 => \n    array (\n      0 => 'GET',\n    ),\n    1 => \n    array (\n      0 => 'POST',\n    ),\n  ),\n)",
+ "error": null
+}

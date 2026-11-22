@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<span class=\\'wp-block-comments-pagination-next-arrow is-arrow-arrow\\' aria-hidden=\\'true\\'>\u2192</span>'",
+ "error": null
+}

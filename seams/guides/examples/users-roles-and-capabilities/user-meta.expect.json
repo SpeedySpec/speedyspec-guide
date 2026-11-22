@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'admin goal' => '24',\n  'Sam goal, not set' => 0,\n  'admin may edit Sam' => true,\n)",
+ "error": null
+}

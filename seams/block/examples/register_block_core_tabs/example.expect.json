@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/tabs',\n  1 => 'Tabs',\n  2 => 'block_core_tabs_render_block_callback',\n)",
+ "error": null
+}

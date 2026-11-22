@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'name' => 'Things',\n  'singular_name' => 'Things',\n  'name_admin_bar' => 'Things',\n  'menu_name' => 'Things',\n  'all_items' => 'Things',\n  'archives' => 'Things',\n)",
+ "error": null
+}

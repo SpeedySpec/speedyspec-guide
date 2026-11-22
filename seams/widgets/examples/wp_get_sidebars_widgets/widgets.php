@@ -6,5 +6,8 @@ update_option( 'widget_search', array( 2 => array( 'title' => 'Find' ), '_multiw
 update_option( 'widget_text', array( 3 => array( 'title' => 'Hi', 'text' => 'Hello there' ), '_multiwidget' => 1 ) );
 wp_set_sidebars_widgets( array( 'side' => array( 'search-2', 'text-3' ), 'wp_inactive_widgets' => array() ) );
 foreach ( $GLOBALS['wp_widget_factory']->widgets as $widget ) { $widget->_register(); }
-add_filter( 'sidebars_widgets', fn( $w ) => $w + array( 'extra' => array() ) );
+function guide_add_extra_sidebar( $sidebars_widgets ) {
+	return $sidebars_widgets + array( 'extra' => array() );
+}
+add_filter( 'sidebars_widgets', 'guide_add_extra_sidebar' );
 return wp_get_sidebars_widgets();

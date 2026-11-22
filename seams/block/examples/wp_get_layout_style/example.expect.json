@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'.wp-container-1{gap:1em;justify-content:center;}'",
+ "error": null
+}

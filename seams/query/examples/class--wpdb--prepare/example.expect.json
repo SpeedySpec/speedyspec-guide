@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'SELECT `post_title` FROM `<posts>` WHERE post_title = \\'O\\\\\\'Reilly\\' AND ID > 0',\n  1 => 'Renamed',\n  2 => 1,\n  3 => '50\\\\%\\\\_off',\n)",
+ "error": null
+}

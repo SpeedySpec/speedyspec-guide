@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "Greeting changed from nothing to Hello. Greeting changed from Hello to Howdy. ",
+ "return": "NULL",
+ "error": null
+}

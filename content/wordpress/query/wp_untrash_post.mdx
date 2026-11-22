@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_untrash_post"
+---
+
+## Behaviour
+
+Takes a post out of the trash, as a draft by default (wp_untrash_post_status can restore its old status), with its comments; fires untrash_post and untrashed_post. <Ev source="wp:wp-includes/post.php#L4359-L4447" hash="bbe294bab62268ca6c47f92b3645c90b5bf51c556c47a154df3a20c979d61639"/>
+
+## Override
+
+`pre_untrash_post`, `wp_untrash_post_status` filter it; `untrash_post`, `untrashed_post` fire.

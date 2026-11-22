@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/?feed=rss2&amp;tag=red',\n  1 => false,\n)",
+ "error": null
+}

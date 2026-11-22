@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'code' => 'http_request_failed',\n  'message' => 'cURL error 28: Operation timed out after 5000 milliseconds',\n)",
+ "error": null
+}

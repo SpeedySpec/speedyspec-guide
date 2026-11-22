@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div style=\"aspect-ratio:16/9;height:unset;min-height:unset;\" class=\"wp-block-cover is-layout-flow wp-block-cover-is-layout-flow has-aspect-ratio\"></div>'",
+ "error": null
+}

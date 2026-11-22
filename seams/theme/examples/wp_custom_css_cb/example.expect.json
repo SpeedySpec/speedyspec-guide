@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<style id=\"wp-custom-css\"> body { color: red; } </style>'",
+ "error": null
+}

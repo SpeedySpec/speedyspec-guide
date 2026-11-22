@@ -1,0 +1,11 @@
+---
+symbol: "function:_add_template_loader_filters"
+---
+
+## Behaviour
+
+Hooked to wp_loaded: when the site editor asks which template a new post would use (_wp-find-template) on a theme with block templates, hooks _resolve_template_for_new_post into pre_get_posts. <Ev source="wp:wp-includes/block-template.php#L14-L18" hash="3934d90dde233526edb64c977c83f197656a7cee403565f6af0484b91850cb82"/>
+
+## Override
+
+Not overridable.

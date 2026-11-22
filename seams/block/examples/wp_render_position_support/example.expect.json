@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"wp-block-group\"><div class=\"wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow\"></div></div>'",
+ "error": null
+}

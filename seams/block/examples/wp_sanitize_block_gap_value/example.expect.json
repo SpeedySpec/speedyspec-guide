@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '1rem',\n  1 => 'var(--wp--preset--spacing--40)',\n  2 => NULL,\n  3 => \n  array (\n    'top' => '2em',\n  ),\n)",
+ "error": null
+}

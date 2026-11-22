@@ -1,0 +1,114 @@
+---
+title: Users and roles
+summary: How users, roles, capabilities and user meta fit together, how WordPress decides who is logged in, and how a capability check is answered.
+---
+
+The Identity seam holds WordPress's people: their accounts, the roles that bundle what they may do, the capability
+checks every other part of WordPress asks, and logging in. This guide explains how those pieces depend on each other.
+For using them in a plugin, read [Users, roles and capabilities](/guides/path/users-roles-and-capabilities/) first.
+
+## Accounts
+
+A user is a row in the `users` table, with the fields every account has: login, hashed password, email, display
+name. Everything else about a person (their names, preferences, roles) is **user meta**, rows in `usermeta` keyed by
+the user's ID. <Sym id="function:wp_insert_user" /> creates the account and its meta together, hashes the password,
+fills in derived fields such as the display name and the address-safe nicename, and refuses a login or email
+that is already taken:
+
+<Example id="identity/wp_insert_user/insert" />
+
+The example reads back the display name made from the first and last names, the nicename, the role, and a password
+check against the stored hash. It then tries three accounts that are refused. The `user_register` action fired for
+the new account. <Sym id="function:wp_update_user" /> changes an account the same way, keeping the fields it isn't
+given, and fires `profile_update`:
+
+<Example id="identity/wp_update_user/update" />
+
+To find people, <Sym id="function:get_users" /> queries by role, search terms, meta and more, through
+<Sym id="class:WP_User_Query" />. Ask for only the fields you need:
+
+<Example id="identity/get_users/query" />
+
+<Sym id="function:username_exists" /> and <Sym id="function:email_exists" /> answer the common question before
+creating an account:
+
+<Example id="identity/username_exists/exists" />
+
+## User meta
+
+Per-person values are read and written with <Sym id="function:get_user_meta" /> and
+<Sym id="function:update_user_meta" />, which work like post meta. `update_user_meta()` returns the new row's ID when
+it adds a value, `true` when it changes one, and `false` when the value was already there:
+
+<Example id="identity/update_user_meta/update" />
+
+WordPress keeps its own per-person data in user meta too. The roles themselves are stored there, under
+`<prefix>capabilities`:
+
+<Example id="identity/get_user_meta/get" />
+
+## Roles and capabilities
+
+A **role** is a named set of capabilities, stored once for the whole site in an option and loaded into
+<Sym id="class:WP_Roles" />. Each person's user meta lists their roles, and may also list capabilities granted to
+them alone. When WordPress builds a <Sym id="class:WP_User" />, it merges the two into one list of everything that
+person may do. <Sym id="function:get_role" /> returns a role as a <Sym id="class:WP_Role" />:
+
+<Example id="identity/get_role/role" />
+
+<Sym id="function:add_role" /> creates one, and refuses a role that already exists:
+
+<Example id="identity/add_role/add" />
+
+Because roles are stored, changes to them persist. That is why plugins change roles on activation and undo the
+changes on uninstall, not on every request.
+
+## How a capability check is answered
+
+<Sym id="function:current_user_can" /> and <Sym id="function:user_can" /> look simple, but they answer in two steps.
+
+1. **Mapping.** The capability asked for may be a **meta capability**, about one thing: `edit_post` for post 12,
+   `delete_user` for user 7. <Sym id="function:map_meta_cap" /> turns it into the **primitive capabilities** a person
+   would need for that particular thing. To edit your own published post you need `edit_published_posts`. Someone
+   else's needs `edit_others_posts` as well.
+2. **Checking.** The person must have every primitive capability the mapping returned. Plugins can adjust the result
+   through the <Sym id="filter:user_has_cap" /> and <Sym id="filter:map_meta_cap" /> filters.
+
+<Example id="identity/map_meta_cap/map" />
+
+The same post needs different capabilities for its author and for an administrator, and asking about a post that
+doesn't exist maps to `do_not_allow`, which nobody has. That is the reason to pass the object's ID for meta
+capabilities: the check then knows whose post it is and what state it is in.
+
+<Example id="identity/current_user_can/can" />
+
+The administrator may do everything here. The editor may edit the post and publish pages but not manage options, and
+someone logged out may not even `read`. <Sym id="function:user_can" /> asks the same question about any user:
+
+<Example id="identity/user_can/user" />
+
+## Who is logged in
+
+WordPress doesn't know who is making a request until something asks. The first call to
+<Sym id="function:wp_get_current_user" />, made while `wp-settings.php` loads, runs the
+<Sym id="filter:determine_current_user" /> filter. Its callbacks look at the request's evidence in turn: the login
+cookie, or an application password for API requests. They return a user ID, or nothing for a visitor.
+<Sym id="function:wp_set_current_user" /> then records the person and fires <Sym id="action:set_current_user" />, which
+other code uses to set itself up per person. Kses, for example, decides there whether this person's content is
+filtered.
+
+Logging in is the other direction. <Sym id="function:wp_signon" /> passes the credentials through the
+<Sym id="filter:authenticate" /> filter, which checks the password and lets plugins add steps such as a second factor.
+It then sets the login cookies and fires `wp_login`:
+
+<Example id="identity/wp_signon/signon" />
+
+A wrong password and an unknown user give different error codes, `incorrect_password` and `invalid_username`, and
+the login screen turns each into its own message.
+
+Code that needs the current person during the request reads it with `wp_get_current_user()` or
+`get_current_user_id()`, after `init`, and checks `is_user_logged_in()` first, as
+[Users, roles and capabilities](/guides/path/users-roles-and-capabilities/) shows.
+
+The Identity seam isn't ported to SpeedySpec yet, so this guide makes no promise about how users and roles behave
+there. <OnSpeedySpecNote id="function:current_user_can" />

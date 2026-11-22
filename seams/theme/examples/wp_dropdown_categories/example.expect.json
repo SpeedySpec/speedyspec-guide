@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<select  name=\\'cat\\' id=\\'cat\\' class=\\'postform\\'>\n\t<option value=\\'-1\\'>Pick one</option>\n\t<option class=\"level-0\" value=\"1\">Uncategorized</option>\n\t<option class=\"level-0\" value=\"2\">News</option>\n\t<option class=\"level-1\" value=\"3\">&nbsp;&nbsp;&nbsp;Local</option>\n</select>\n'",
+ "error": null
+}

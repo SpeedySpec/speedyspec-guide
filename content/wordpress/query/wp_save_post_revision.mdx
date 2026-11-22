@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_save_post_revision"
+---
+
+## Behaviour
+
+Saves a revision of a post when revisions are on and a revisioned field changed since the last one, then drops revisions beyond the number to keep; the new revision's ID, or nothing. <Ev source="wp:wp-includes/revision.php#L132-L264" hash="395e5e3dbbcdd5143fb2c333e796befa17a470c514126a8e3bae18ee05eacffa"/>
+
+## Override
+
+`wp_save_post_revision_check_for_changes`, `wp_save_post_revision_post_has_changed`, `wp_save_post_revision_revisions_before_deletion` filter it.

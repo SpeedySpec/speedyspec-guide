@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/query-pagination-next',\n  1 => 'Next Page',\n  2 => 'render_block_core_query_pagination_next',\n)",
+ "error": null
+}

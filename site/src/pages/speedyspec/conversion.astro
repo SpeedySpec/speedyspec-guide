@@ -1,5 +1,6 @@
 ---
-import Base from '../../layouts/Base.astro';
+import Page from '../../layouts/Page.astro';
+import { REFERENCE_SIDEBAR } from '../../model/starlight.ts';
 import MaybeLink from '../../components/MaybeLink.astro';
 import { conversionView, STATE_LABELS } from '../../model/conversion.ts';
 import { loadGuideData } from '../../model/data.ts';
@@ -7,10 +8,8 @@ import { loadGuideData } from '../../model/data.ts';
 const d = await loadGuideData();
 const { withRust, phpOnly } = conversionView(d);
 ---
-<Base title="Rust or PHP" section="speedyspec">
-  <main class="page" data-pagefind-body>
+<Page title="Rust or PHP" sidebar={REFERENCE_SIDEBAR}>
     <div class="crumbs"><a href="/speedyspec/">SpeedySpec API</a></div>
-    <h1>Rust or PHP</h1>
     <p>Which WordPress functions, classes, methods and constants SpeedySpec has converted to Rust. Each is in one of three states:</p>
     <ul>
       <li><strong>{STATE_LABELS.runtime}:</strong> the SpeedySpec runtime registers it, so WordPress's PHP for it doesn't run.</li>
@@ -48,5 +47,4 @@ const { withRust, phpOnly } = conversionView(d);
         {phpOnly.map((r) => <li><a href={`/wordpress/${r.seam}/`}>{r.name}</a> <span class="muted">{r.php} in PHP</span></li>)}
       </ul>
     </section>
-  </main>
-</Base>
+</Page>

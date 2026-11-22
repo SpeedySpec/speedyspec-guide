@@ -1,6 +1,9 @@
 <?php
 // Adds a prefetch or prerender rule with a source of list (urls) or document (where), refusing bad modes, IDs, eagerness and duplicates with a notice; immediate eagerness is only for list rules.
-add_action( 'doing_it_wrong_run', fn( $f, $m ) => print( wp_strip_all_tags( $m ) . "\n" ), 10, 2 );
+function guide_print_doing_it_wrong( $function_name, $message ) {
+	print( wp_strip_all_tags( $message ) . "\n" );
+}
+add_action( 'doing_it_wrong_run', 'guide_print_doing_it_wrong', 10, 2 );
 add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
 $rules = new WP_Speculation_Rules();
 $results = array(

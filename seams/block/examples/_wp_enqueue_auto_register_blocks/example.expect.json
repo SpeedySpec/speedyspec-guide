@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'[\"window.__unstableAutoRegisterBlocks = [\\\\\"guide\\\\\\\\\\\\/auto\\\\\"];\"]'",
+ "error": null
+}

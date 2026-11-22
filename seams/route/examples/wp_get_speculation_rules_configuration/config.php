@@ -3,5 +3,8 @@
 $plain = wp_get_speculation_rules_configuration();
 guide_permalinks( '/%postname%/' );
 $pretty = wp_get_speculation_rules_configuration();
-add_filter( 'wp_speculation_rules_configuration', fn() => array( 'mode' => 'prerender', 'eagerness' => 'immediate' ) );
+function guide_prerender_immediately() {
+	return array( 'mode' => 'prerender', 'eagerness' => 'immediate' );
+}
+add_filter( 'wp_speculation_rules_configuration', 'guide_prerender_immediately' );
 return array( $plain, $pretty, wp_get_speculation_rules_configuration() );

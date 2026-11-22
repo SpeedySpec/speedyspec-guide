@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'archive rule after activation' => true,\n  'after deactivation' => false,\n)",
+ "error": null
+}

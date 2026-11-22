@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_update_comment"
+---
+
+## Behaviour
+
+Updates a comment's fields after filtering them, keeping its approval decided by the moderation checks; 1 on success, 0 when nothing changed, an error for a bad post. <Ev source="wp:wp-includes/comment.php#L2982-L3134" hash="235eb1b7179476f4c7f0ba5472d8bbc675367505930deb7fb7d1cc91bb28e9d9"/>
+
+## Override
+
+`comment_save_pre`, `wp_update_comment_data` filter it; `edit_comment` fires.

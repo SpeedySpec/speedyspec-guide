@@ -6,6 +6,9 @@ if ( ! function_exists( '_deprecated_hook' ) ) {
 		echo "deprecated: $hook";
 	}
 }
-add_filter( 'guide_old', fn( $v ) => $v . '!' );
+function guide_add_mark( $value ) {
+	return $value . '!';
+}
+add_filter( 'guide_old', 'guide_add_mark' );
 
 return apply_filters_deprecated( 'guide_old', array( 'value' ), '6.0.0', 'guide_new' );

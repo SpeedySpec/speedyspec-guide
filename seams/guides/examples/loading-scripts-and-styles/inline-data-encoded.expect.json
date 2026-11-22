@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "<script id=\"my-plugin-books-js-before\">\nconst myPluginSettings = {\"restRoot\":\"http:\\/\\/example.org\\/index.php?rest_route=\\/my-plugin\\/v1\\/\",\"greeting\":\"Say \\\"hi\\\" <\\/script><\\u0073cript>alert(1)<\\/script>\",\"perPage\":10};\n//# sourceURL=my-plugin-books-js-before\n</script>\n<script id=\"my-plugin-books-js\" src=\"http://example.org/wp-content/plugins/my-plugin/js/books.js?ver=1.2.0\"></script>\n",
+ "return": "NULL",
+ "error": null
+}

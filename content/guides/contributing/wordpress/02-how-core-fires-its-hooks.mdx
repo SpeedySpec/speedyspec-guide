@@ -1,0 +1,71 @@
+---
+title: How core fires its own hooks
+summary: How a WordPress core function documents and fires its hooks, the conventions a hook's docblock follows, and how to add a hook in a core patch.
+---
+
+Every hook a plugin uses is a line in WordPress core that calls `do_action()` or `apply_filters()`, with a docblock
+above it. Those docblocks are the hooks' documentation: the developer reference is generated from them. This guide
+reads a few in the options API, then shows what a patch that adds a new hook needs. Read
+[Changing a WordPress function](/guides/contributing/wordpress/changing-a-wordpress-function/) first for setting up
+`wordpress-develop` and running its tests.
+
+## A filter, documented where it fires
+
+`get_option()` applies `pre_option_{$option}` before reading the database. The docblock sits directly above the
+call. It opens with a one-line summary, then says what the dynamic part of the name means and what returning a value
+does. After that come `@since` lines for when the hook was added and each time its arguments changed, and one
+`@param` per argument, in order, with its type and meaning. <Ev source="wp:wp-includes/option.php#L112-L132" hash="46342124ed2586dd4ee2b0c6b5247771d74d1e3954e259c4196139dcc0e80563"/>
+
+A filter's first `@param` is the value being filtered. The others are context the callback may ask for, and
+callbacks only receive them if they ask, through `add_filter()`'s fourth argument. Here the three arguments
+`default_option_{$option}` documents arrive just as listed:
+
+<Example id="guides/how-core-fires-its-hooks/documented-arguments" />
+
+The third argument tells the callback whether the caller passed a default at all. That was added later, which its
+docblock records with a second `@since` line. <Ev source="wp:wp-includes/option.php#L185-L199" hash="9fe63a4cee23b91d4cac7dc881d42aafa548060d335c0a36157803c2c3f3fb21"/>
+
+## The same hook in several places
+
+When one hook fires from more than one place in a function, only the first call carries the full docblock. Each other
+call has a one-line comment pointing back to it, so the reference lists the hook once.
+<Ev source="wp:wp-includes/option.php#L216-L217" hash="08a866b6f96aff47ee06f71c33a07deb1135a2a6cc86aa1f2797c0b9c5c04f89"/>
+
+## An action, documented the same way
+
+Actions follow the same rules. `delete_option()` fires `delete_option` just before it deletes the row: a summary, the
+version it arrived in, and its one argument. <Ev source="wp:wp-includes/option.php#L1222-L1229" hash="1a702d3f62b50b9cd9ff37ad354ee9cf622265731c0e53e69115a49bb6b72bc3"/> The
+function fires three actions in order, a general one before the change and a specific and a general one after it,
+which is the usual pattern for writes in core:
+
+<Example id="options/delete_option/hooks" />
+
+## Naming
+
+Core's hook names follow a few habits worth copying in a patch:
+
+- **Dynamic names** put a variable part in braces in the documentation, `option_{$option}`, with a sentence saying
+  what it is. Code that only cares about one option hooks the specific name. Code that cares about all of them hooks
+  a general name, such as `pre_option`, when core offers one.
+- **Before and after** pairs use a present-tense name for the moment before (`delete_option`) and a past tense for
+  after (`deleted_option`). Filters on a value about to be used start `pre_`.
+- **No plugin prefix.** Core hooks are WordPress's own, so they carry no prefix.
+
+## Adding a hook in a patch
+
+A new hook is a promise core keeps for years, so a patch that adds one needs:
+
+1. **A reason.** The ticket says what a plugin can't do today without it, and why an existing hook doesn't serve.
+2. **The call**, placed where the value or moment is final, with every argument a callback will plausibly need. A
+   hook is hard to widen later without adding a second one.
+3. **The docblock**, written as above. Its `@since` names the next major version, the one the patch is for.
+4. **A test** that the hook fires, with the arguments its docblock promises. Core's tests use `MockAction` to count
+   calls and record arguments, as the existing `test_get_option_should_call_pre_option_filter` does. Run it with
+   `npm run test:php -- --filter <test name>`.
+
+Changing an existing hook's arguments follows the same path. Only add arguments at the end, and add a `@since` line
+saying when. Never remove or reorder arguments, because callbacks rely on their positions. To rename a hook, keep the
+old name working through `apply_filters_deprecated()` or `do_action_deprecated()`, as
+[Letting other code extend your plugin](/guides/path/letting-others-extend-your-plugin/) shows for plugins.
+
+On SpeedySpec, hooks are ported, and they behave as WordPress's do. <OnSpeedySpecNote id="function:apply_filters" />

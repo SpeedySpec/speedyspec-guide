@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'http://example.org/?feed=rss2&amp;author=1'",
+ "error": null
+}

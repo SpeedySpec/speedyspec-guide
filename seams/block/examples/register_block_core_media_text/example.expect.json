@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/media-text',\n  1 => 'Media & Text',\n  2 => 'render_block_core_media_text',\n)",
+ "error": null
+}

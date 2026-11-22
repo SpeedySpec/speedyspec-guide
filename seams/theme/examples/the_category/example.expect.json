@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"http://example.org/?cat=3\" rel=\"category\">Local</a>'",
+ "error": null
+}

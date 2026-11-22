@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'guide/notice',\n  1 => 'info',\n  2 => \n  array (\n    0 => 'guide-notice-editor-script',\n  ),\n  3 => \n  array (\n    0 => 'guide-notice-style',\n  ),\n  4 => true,\n)",
+ "error": null
+}

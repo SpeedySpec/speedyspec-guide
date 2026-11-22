@@ -55,6 +55,9 @@ And it fires three actions, in this order:
 
 <Example id="options/delete_option/hooks" />
 
+That example's closures only record which actions fire; it is a test of WordPress, not plugin code. In a plugin, add
+named functions, so they can be removed, as the [Hooks topic guide](/guides/topics/hooks/) explains.
+
 Read the PHP alongside them. `delete_option()` protects WordPress's special option names, looks up the option's
 autoload value (which doubles as "does it exist?"), and fires `delete_option` before it deletes.
 <Ev source="wp:wp-includes/option.php#L1214-L1229" hash="3e9d16130f72c409c8ebf70395d03ab835ac79ae64292628fcb8c471d5ed8401"/> After the delete it updates the cache, and only if a row

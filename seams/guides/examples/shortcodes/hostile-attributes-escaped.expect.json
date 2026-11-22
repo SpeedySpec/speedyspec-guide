@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'normal' => '<a class=\"button\" href=\"https://example.org/books/\">See the books</a>',\n  'hostile' => '',\n  'no url' => '',\n)",
+ "error": null
+}

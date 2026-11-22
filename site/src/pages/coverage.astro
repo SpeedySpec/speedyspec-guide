@@ -1,6 +1,7 @@
 ---
 import { computeCoverage } from '@speedyspec-guide/app';
-import Base from '../layouts/Base.astro';
+import Page from '../layouts/Page.astro';
+import { REFERENCE_SIDEBAR } from '../model/starlight.ts';
 import { loadGuideData } from '../model/data.ts';
 import { seamHref } from '../model/views.ts';
 
@@ -16,9 +17,7 @@ for (const id of d.assignment.unassigned) {
 }
 const n = coverage.unassigned;
 ---
-<Base title="Coverage">
-  <main class="page">
-    <h1>Coverage</h1>
+<Page title="Coverage" sidebar={REFERENCE_SIDEBAR} search={false}>
     <p class="muted">How much of each seam is written. A ported seam needs every member documented on both sides.</p>
     <table class="compat coverage">
       <thead><tr><th>Seam</th><th>SpeedySpec</th><th>Members</th><th>WordPress pages</th><th>SpeedySpec pages</th><th>Missing</th></tr></thead>
@@ -38,5 +37,4 @@ const n = coverage.unassigned;
         </>
       ))}
     </section>
-  </main>
-</Base>
+</Page>

@@ -53,7 +53,7 @@ describe('the SpeedySpec API section', () => {
 
   test('a SpeedySpec class page has a section per method, and its page content from a nested file', async () => {
     const p = await html(dist, '/speedyspec/hooks/class/WP_Hook/');
-    expect(p.attr('.method h2', 'id')).toEqual(['add_filter', 'apply_filters']);
+    expect(p.attr('.method > h2', 'id')).toEqual(['add_filter', 'apply_filters']);
     expect(p.text('.method .signature')).toEqual(['public add_filter($hook_name, $callback, $priority, $accepted_args)', 'public apply_filters($value, $args)']);
     expect(p.raw).toContain('The same class, backed by the native store.');
   });

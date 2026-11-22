@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a rel=\"nofollow\" id=\"cancel-comment-reply-link\" href=\"/?p=1#respond\" style=\"display:none;\">Cancel</a>'",
+ "error": null
+}

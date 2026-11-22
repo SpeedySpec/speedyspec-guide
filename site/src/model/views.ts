@@ -209,6 +209,23 @@ export function railView(id: string, section: Section, d: GuideData): RailView {
   };
 }
 
+/**
+ * The rail for a seam's own pages (the seam index and the pages about it): every role, none expanded.
+ *
+ * @param seamId
+ *     The seam.
+ * @param section
+ *     Which reference the page is in.
+ * @param d
+ *     The guide's data.
+ * @return
+ *     A rail with each role linking to its place on the seam page.
+ */
+export function seamRailView(seamId: string, section: Section, d: GuideData): RailView {
+  const view = seamView(seamId, section, d);
+  return { seam: { id: view.id, name: view.name }, roles: view.roles.map((r) => ({ role: r.role, href: `/${section}/${view.id}/#role-${r.role}`, members: null })) };
+}
+
 function link(id: string, from: string, section: Section, d: GuideData): Link {
   return { id, name: nameOf(id, d), href: pageOf(id, section, d), circular: together(from, id, d) };
 }

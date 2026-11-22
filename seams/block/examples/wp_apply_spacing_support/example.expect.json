@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'style' => 'padding-top:1em;padding-left:var(--wp--preset--spacing--40);',\n)",
+ "error": null
+}

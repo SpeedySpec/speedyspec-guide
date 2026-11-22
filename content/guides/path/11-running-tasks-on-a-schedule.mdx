@@ -1,0 +1,75 @@
+---
+title: Running tasks on a schedule
+summary: Schedule recurring work with WP-Cron on activation, never twice, clear it on deactivation, and add intervals of your own.
+---
+
+Some work shouldn't happen while someone waits for a page: deleting old drafts, syncing with another service, sending
+a weekly summary. WordPress's scheduler, **WP-Cron**, runs that work in the background at the times you choose.
+
+## Page loads, not the clock
+
+WP-Cron isn't a clock. A server's own scheduler runs tasks at exact times; WP-Cron can't, because WordPress only runs
+when someone requests a page. On each request, WordPress checks (from `init`) whether any event is due. If one is, it
+starts a separate background request to `wp-cron.php` to run it, so the visitor's page isn't slowed. On a quiet site
+a "daily" event may run hours late, and on a site with no visitors it doesn't run at all.
+
+So schedule work that can tolerate running late. Many hosts turn WP-Cron's page-load trigger off with
+`DISABLE_WP_CRON` and call `wp-cron.php` from the server's scheduler instead. Your plugin needs no changes for that.
+
+## Scheduling on activation
+
+An event is a **hook name**, a **recurrence** and a first time to run. Schedule it once, in your activation hook,
+with <Sym id="function:wp_schedule_event" />:
+
+<Example id="guides/running-tasks-on-a-schedule/schedule-once" />
+
+The schedule is saved in the database, in the `cron` option, so it survives between requests. That is why you
+schedule it on activation and not on every page load.
+
+## Never twice
+
+Always ask <Sym id="function:wp_next_scheduled" /> whether the event is already scheduled before scheduling it.
+Without that check, every activation adds another copy, and the task runs once per copy:
+
+<Example id="guides/running-tasks-on-a-schedule/does-not-double-schedule" />
+
+After three activations, the guarded event is scheduled once and the careless one three times. WordPress refuses a
+duplicate only for one-off events, and only within ten minutes of an identical one, so never rely on it.
+<OnSpeedySpecNote id="function:wp_schedule_event" />
+
+## Clearing on deactivation
+
+A deactivated plugin's code no longer runs, but its scheduled events stay in the database and keep firing an action
+nobody handles. Remove them in your deactivation hook with <Sym id="function:wp_clear_scheduled_hook" />:
+
+<Example id="guides/running-tasks-on-a-schedule/clear-on-deactivation" />
+
+Clear on deactivation, not only on uninstall: a deactivated plugin should leave nothing running behind it. Activating
+again schedules the event afresh.
+
+## Intervals of your own
+
+WordPress knows four recurrences: `hourly`, `twicedaily`, `daily` and `weekly`. Add your own through the
+<Sym id="filter:cron_schedules" /> filter, giving it a prefixed name, its length in seconds and a translated label for
+screens that list schedules:
+
+<Example id="guides/running-tasks-on-a-schedule/custom-interval" />
+
+Add the filter on every request, not only on activation. `wp_schedule_event()` refuses a recurrence it doesn't know,
+so the name must exist whenever your plugin schedules, and screens that list scheduled events show it by its label.
+<Sym id="function:wp_get_schedule" /> tells you which recurrence an event uses.
+
+## Doing the work
+
+When an event is due, WP-Cron fires the action named by the event's hook. So the work goes in a named function added
+to that action, like any other hook:
+
+<Example id="guides/running-tasks-on-a-schedule/event-runs-its-action" />
+
+The example does by hand what `wp-cron.php` does for each due event: it schedules a recurring event's next run,
+removes the run that is due, and fires the action. Afterwards the next run is scheduled for later and nothing is due.
+Keep the work short, or split a long job into batches that each scheduled run continues, because the background request
+has a time limit like any other. For work that should happen once, later, rather than on repeat, use
+<Sym id="function:wp_schedule_single_event" />.
+
+The Cron seam isn't ported to SpeedySpec yet, so this guide makes no promise about how scheduled events behave there.

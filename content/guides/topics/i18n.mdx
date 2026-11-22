@@ -1,0 +1,122 @@
+---
+title: Internationalization
+summary: How translation functions find a string's translation, how translation files are loaded per text domain, and how WordPress chooses and switches the locale.
+---
+
+The Internationalization seam makes WordPress speak the reader's language. It has three parts that work together:
+the **translation functions** your code calls, the **translation files** loaded for each text domain, and the
+**locale** that decides which language's files are used. This guide explains how a string gets from one to the
+other. For making a plugin translatable, read
+[Making your plugin translatable](/guides/path/making-your-plugin-translatable/) first.
+
+Every example here runs on a site with French translation files installed for WordPress and for a plugin.
+
+## From a string to its translation
+
+Every translation function ends in <Sym id="function:translate" />. It gets the translations loaded for the text
+domain and looks the string up. Then it runs the result through the <Sym id="filter:gettext" /> filter, and a filter
+named for the domain, so other code can adjust a translation. With nothing loaded, the original comes back:
+
+<Example id="i18n/translate/translate" />
+
+The everyday functions are short names for combinations of three choices: translate, add a context, and escape for
+HTML or an attribute.
+
+- <Sym id="function:__" /> returns the translation, and <Sym id="function:_e" /> prints it.
+- <Sym id="function:_x" /> adds a context, for words with more than one meaning.
+- <Sym id="function:esc_html__" /> and <Sym id="function:esc_attr__" /> escape as they translate.
+
+<Example id="i18n/__/translations" />
+
+<Example id="i18n/_e/echo" />
+
+## Plurals
+
+<Sym id="function:_n" /> takes a singular and a plural form, and the number. The translation file's own plural rule
+picks the form for that language, so French can use the singular for zero and one:
+
+<Example id="i18n/_n/plurals" />
+
+The example's filters, on `ngettext` and `ngettext_with_context`, add the number and context to each result, so you
+can see which form was chosen for which number.
+
+Sometimes the number isn't known where the string is written, as with a list of labels defined up front.
+<Sym id="function:_n_noop" /> marks the strings for translation without translating them yet, and
+<Sym id="function:translate_nooped_plural" /> translates them later, when the number is known:
+
+<Example id="i18n/_n_noop/noop" />
+
+<Example id="i18n/translate_nooped_plural/example" />
+
+## Translation files and text domains
+
+Translations are loaded per **text domain**: `default` for WordPress itself, and one per plugin and theme. A domain's
+file can be a `.mo` file, or a faster `.l10n.php` file beside it. <Sym id="function:load_textdomain" /> loads one for
+the current locale. It runs filters that let plugins choose a different file or take over loading entirely:
+
+<Example id="i18n/load_textdomain/load" />
+
+Plugins rarely call it themselves. WordPress loads a domain **just in time**, the first time one of its strings is
+translated, from the languages folder where translations from WordPress.org are installed. Until then, and for a
+domain with no file, the functions return the originals:
+
+<Example id="i18n/_load_textdomain_just_in_time/jit" />
+
+<Sym id="function:load_plugin_textdomain" /> only registers a plugin's own folder of translations, for plugins that
+ship them. Loading still happens just in time:
+
+<Example id="i18n/load_plugin_textdomain/plugin" />
+
+<Sym id="function:is_textdomain_loaded" /> says whether real translations are loaded, and
+<Sym id="function:unload_textdomain" /> unloads a domain and keeps it from loading again just in time:
+
+<Example id="i18n/is_textdomain_loaded/loaded" />
+
+<Example id="i18n/unload_textdomain/unload" />
+
+Behind these functions, <Sym id="class:WP_Translation_Controller" /> keeps the loaded files for each domain and
+locale, and answers the lookups:
+
+<Example id="i18n/class--WP_Translation_Controller--load_file/controller" />
+
+## Choosing the locale
+
+The **locale**, such as `en_US` or `fr_FR`, decides which language's files load.
+
+- <Sym id="function:get_locale" /> gives the site's locale, from its settings.
+- <Sym id="function:get_user_locale" /> gives a person's own choice from their profile, or the site's when they have
+  none.
+- <Sym id="function:determine_locale" /> decides which one this request uses: the site's on the front end, the
+  person's in the admin, and the one asked for on the login and install screens.
+
+<Example id="i18n/get_locale/locale" />
+
+<Example id="i18n/get_user_locale/user" />
+
+<Example id="i18n/determine_locale/determine" />
+
+Some work needs another language for a moment, such as an email to a person who reads French, sent while the
+request is in English. <Sym id="function:switch_to_locale" /> switches the translations, and
+<Sym id="function:restore_previous_locale" /> switches back. <Sym id="function:switch_to_user_locale" /> switches to
+a given person's language. Switches stack, so code can switch inside a switch and still get back to where it was:
+
+<Example id="i18n/switch_to_locale/switch" />
+
+Always restore after switching, or every string translated afterwards in the request comes out in the wrong
+language. <OnSpeedySpecNote id="function:switch_to_locale" />
+
+## Dates, numbers and directions
+
+Translations cover more than sentences. <Sym id="class:WP_Locale" />, kept in the `$wp_locale` global, holds the
+locale's weekday and month names, their abbreviations, and the words for morning and afternoon:
+
+<Example id="i18n/class--WP_Locale--get_weekday/dates" />
+
+It also holds the number format, the text direction (`ltr` or `rtl`) and the word-count style. Functions such as
+`number_format_i18n()` and `wp_date()` read them, so use those instead of PHP's `number_format()` and `date()` for
+anything people read:
+
+<Example id="i18n/class--WP_Locale--init/init" />
+
+The Internationalization seam isn't ported to SpeedySpec yet, so this guide makes no promise about how translations
+behave there.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/loginout',\n  1 => 'Login/out',\n  2 => 'render_block_core_loginout',\n)",
+ "error": null
+}

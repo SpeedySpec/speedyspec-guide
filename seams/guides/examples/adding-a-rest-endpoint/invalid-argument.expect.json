@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'missing title' => \n  array (\n    0 => 400,\n    1 => 'rest_missing_callback_param',\n  ),\n  'blank title' => \n  array (\n    0 => 400,\n    1 => 'rest_invalid_param',\n  ),\n  'title a list' => \n  array (\n    0 => 400,\n    1 => 'rest_invalid_param',\n  ),\n  'only tags' => \n  array (\n    0 => 400,\n    1 => 'rest_invalid_param',\n  ),\n  'per_page 500' => \n  array (\n    0 => 400,\n    1 => 'per_page must be between 1 (inclusive) and 100 (inclusive)',\n  ),\n)",
+ "error": null
+}

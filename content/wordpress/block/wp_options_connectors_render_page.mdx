@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_options_connectors_render_page"
+---
+
+## Behaviour
+
+Prints the full-page Connectors settings app. <Ev source="wp:wp-includes/build/pages/options-connectors/page.php#L120-L326" hash="8eee7ad205d1a6d09d4a0a2ec3d027e54ec7b3e73301706aadbb7c64c620d6c2"/>
+
+## Override
+
+`options-connectors_boot_dependencies` filters it; `options-connectors_init`, `admin_head-{$hook_suffix}`, `admin_head`, `admin_footer`, `admin_footer-{$hook_suffix}` fire.

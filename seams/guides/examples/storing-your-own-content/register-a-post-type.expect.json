@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'exists' => true,\n  'name' => 'Books',\n  'add new item' => 'Add new book',\n  'in the REST API' => true,\n  'edit capability' => 'edit_posts',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Category: <span>Uncategorized</span>',\n  1 => 'Author: <span>Admin</span>',\n  2 => 'Year: <span>2026</span>',\n)",
+ "error": null
+}

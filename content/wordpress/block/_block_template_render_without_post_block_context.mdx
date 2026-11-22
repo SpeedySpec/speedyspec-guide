@@ -1,0 +1,11 @@
+---
+symbol: "function:_block_template_render_without_post_block_context"
+---
+
+## Behaviour
+
+Hooked to render_block_context: drops the post from a block's context when rendering a template itself, so Post Content doesn't recurse. <Ev source="wp:wp-includes/block-template.php#L436-L449" hash="18a76c99317b37ff45323e891b4e5c5e8ae0ea2d870546ff7023cdfcb493c5d4"/>
+
+## Override
+
+Not overridable.

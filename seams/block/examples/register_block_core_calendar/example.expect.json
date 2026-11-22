@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/calendar',\n  1 => 'Calendar',\n  2 => 'render_block_core_calendar',\n)",
+ "error": null
+}

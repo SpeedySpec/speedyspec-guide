@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<label for=\"my-plugin-bio\">About you</label><input type=\"hidden\" name=\"my_plugin_bio_preview\" value=\"Fan of &quot;Dune&quot; &amp; &lt;b&gt;sci-fi&lt;/b&gt;.\nSee &amp; read.\" /><textarea id=\"my-plugin-bio\" name=\"my_plugin_bio\">Fan of &quot;Dune&quot; &amp; &lt;b&gt;sci-fi&lt;/b&gt;.\nSee &amp;amp; read.</textarea>'",
+ "error": null
+}

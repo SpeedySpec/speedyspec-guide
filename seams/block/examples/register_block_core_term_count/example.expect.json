@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/term-count',\n  1 => 'Term Count',\n  2 => 'render_block_core_term_count',\n)",
+ "error": null
+}

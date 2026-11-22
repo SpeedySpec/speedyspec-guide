@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_filter_comment"
+---
+
+## Behaviour
+
+Filters a new comment's fields through their pre_* filters: user ID, agent, author, content, IP, URL and email. <Ev source="wp:wp-includes/comment.php#L2360-L2412" hash="bd35d95b5b731c2895c322483649bc89597fb462f9d7d2bb8e19fa58b13a1915"/>
+
+## Override
+
+`pre_user_id`, `pre_comment_user_agent`, `pre_comment_author_name`, `pre_comment_content`, `pre_comment_user_ip`, `pre_comment_author_url`, `pre_comment_author_email` filter it.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'title' => 'Site & more',\n  'icon' => 'http://example.org/favicon.ico',\n  'description' => 'A test site',\n  'image' => 'http://example.org/og.png',\n)",
+ "error": null
+}

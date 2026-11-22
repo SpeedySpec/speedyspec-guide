@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_new_comment"
+---
+
+## Behaviour
+
+Adds a comment as a submission: fills the author fields, filters it (preprocess_comment), decides its approval, inserts it and fires comment_post; the ID or an error. <Ev source="wp:wp-includes/comment.php#L2481-L2598" hash="a14a8fec38feb07f5675d7b190dbecdcb2f38ab59c2a5f1d8052f584f625d8ee"/>
+
+## Override
+
+`preprocess_comment` filters it; `comment_post` fires.

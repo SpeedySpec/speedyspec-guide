@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<a class=\"page-numbers\" href=\"/page/1/\">1</a>\n<span class=\"page-numbers dots\">&hellip;</span>\n<a class=\"page-numbers\" href=\"/page/4/\">4</a>\n<span aria-current=\"page\" class=\"page-numbers current\">5</span>\n<a class=\"page-numbers\" href=\"/page/6/\">6</a>\n<span class=\"page-numbers dots\">&hellip;</span>\n<a class=\"page-numbers\" href=\"/page/9/\">9</a>',\n  1 => 4,\n)",
+ "error": null
+}

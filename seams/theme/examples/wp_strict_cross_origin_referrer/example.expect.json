@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<meta name=\\'referrer\\' content=\\'strict-origin-when-cross-origin\\' />'",
+ "error": null
+}

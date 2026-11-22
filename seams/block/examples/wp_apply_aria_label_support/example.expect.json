@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'aria-label' => 'Main navigation',\n)",
+ "error": null
+}

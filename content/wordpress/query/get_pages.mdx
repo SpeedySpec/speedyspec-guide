@@ -1,0 +1,11 @@
+---
+symbol: "function:get_pages"
+---
+
+## Behaviour
+
+Pages (or posts of another hierarchical type) matching arguments: parent, child_of, authors, include and exclude trees, sorting, hierarchical order; through WP_Query, cached. <Ev source="wp:wp-includes/post.php#L6772-L6948" hash="5646375a22d8e2574686953a3470bf8554b44b3410fa0e06c1854c29a612b3c5"/>
+
+## Override
+
+`get_pages_query_args`, `get_pages` filter it.

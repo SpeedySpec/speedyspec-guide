@@ -1,0 +1,43 @@
+---
+/**
+ * Every page's shell: the one place that knows about Starlight (Facade). Routes pass plain sidebar items, headings
+ * and previous/next links from src/model/starlight.ts; replacing or upgrading Starlight touches this file and the
+ * overrides in components/starlight/ only.
+ */
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { HEADER_LINKS, type PageLink, type SidebarItem } from '../model/starlight.ts';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** 'splash' is a wide page with no sidebars, for landing pages. */
+  template?: 'doc' | 'splash';
+  /** The page's sidebar; omitted, the page has none. */
+  sidebar?: SidebarItem[];
+  /** The page's headings for "On this page"; none, no contents list. */
+  headings?: { depth: number; slug: string; text: string }[];
+  /** Previous and next pages; omitted, none. */
+  prev?: PageLink | false;
+  next?: PageLink | false;
+  /** A learning-path guide's chapter number. */
+  chapter?: number;
+  /** Whether search indexes the page. */
+  search?: boolean;
+}
+const { title, description, template = 'doc', sidebar, headings = [], prev = false, next = false, chapter, search = true } = Astro.props;
+---
+<StarlightPage
+  frontmatter={{ title, description, template, prev, next, chapter, pagefind: search, tableOfContents: headings.length > 0 ? undefined : false }}
+  sidebar={sidebar ?? []}
+  hasSidebar={sidebar !== undefined}
+  headings={headings}
+>
+  {sidebar === undefined && (
+    // No sidebar means no mobile menu: on phones the site's sections sit here instead (hidden on wider screens,
+    // where the header shows them).
+    <nav class="page-site-links" aria-label="Sections">
+      {HEADER_LINKS.map(([label, href]) => <a href={href}>{label}</a>)}
+    </nav>
+  )}
+  <slot />
+</StarlightPage>

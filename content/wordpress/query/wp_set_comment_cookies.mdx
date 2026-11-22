@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_set_comment_cookies"
+---
+
+## Behaviour
+
+Remembers a visitor commenter's name, email and URL in cookies for the comment form; not for logged-in users, and with cookie consent only when given. <Ev source="wp:wp-includes/comment.php#L654-L685" hash="78305bdbd1d34b4e64ab9d9b1a47f96f60a38c8d7644d342404bce4dfb86cd4f"/>
+
+## Override
+
+`comment_cookie_lifetime` filters it.

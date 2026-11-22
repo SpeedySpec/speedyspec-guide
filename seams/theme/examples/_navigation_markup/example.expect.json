@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'\n\t<nav class=\"navigation my-nav\" aria-label=\"Pages\">\n\t\t<h2 class=\"screen-reader-text\">More</h2>\n\t\t<div class=\"nav-links\"><a href=\"#\">Next</a></div>\n\t</nav>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    'default' => false,\n    'option' => 'guide_size',\n    'passed a default' => false,\n  ),\n  1 => \n  array (\n    'default' => 'small',\n    'option' => 'guide_size',\n    'passed a default' => true,\n  ),\n)",
+ "error": null
+}

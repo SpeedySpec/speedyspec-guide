@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<link rel=\\'preconnect\\' href=\\'https://cdn.example.test\\' />'",
+ "error": null
+}

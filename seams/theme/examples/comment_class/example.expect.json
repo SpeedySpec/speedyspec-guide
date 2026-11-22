@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'class=\"comment even thread-even depth-1 mine\"'",
+ "error": null
+}

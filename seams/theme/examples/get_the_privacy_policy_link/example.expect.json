@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a class=\"privacy-policy-link\" href=\"http://example.org/?page_id=1\" rel=\"privacy-policy\">Privacy</a>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<content>/themes/guide/inc/setup.php'",
+ "error": null
+}

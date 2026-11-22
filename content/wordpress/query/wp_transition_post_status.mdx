@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_transition_post_status"
+---
+
+## Behaviour
+
+Fires a post's status change hooks: transition_post_status, `{$old}_to_{$new}`, and `{$new}_{$post_type}`. <Ev source="wp:wp-includes/post.php#L6128-L6205" hash="41f775a725fa8c7a4f2effed4257ba174d8088c6e4d923315441d9b9121027ff"/>
+
+## Override
+
+`transition_post_status`, `{$old_status}_to_{$new_status}`, `{$new_status}_{$post->post_type}` fire.

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_delete_post"
+---
+
+## Behaviour
+
+Deletes a post (trashing it first when trash is on and not forced) with its meta, terms, comments and revisions; children move to its parent. Fires before_delete_post, delete_post and deleted_post; the deleted post. <Ev source="wp:wp-includes/post.php#L4025-L4213" hash="0c07ef59bacf38f6458099eab91f08f027b58c68d300144f8090588835a55877"/>
+
+## Override
+
+`pre_delete_post` filters it; `before_delete_post`, `delete_post_{$post->post_type}`, `delete_post`, `deleted_post_{$post->post_type}`, `deleted_post`, `after_delete_post` fire.

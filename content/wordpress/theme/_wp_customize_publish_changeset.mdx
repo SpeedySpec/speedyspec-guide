@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_customize_publish_changeset"
+---
+
+## Behaviour
+
+Hooked to transition_post_status: publishes a Customizer changeset when its post becomes published, applying its settings. <Ev source="wp:wp-includes/theme.php#L3666-L3725" hash="f61f0137494d6732e1eedf26f70464bcc8e4b9252ccad43b017abf04fc21d9c6"/>
+
+## Override
+
+`customize_register` fires.

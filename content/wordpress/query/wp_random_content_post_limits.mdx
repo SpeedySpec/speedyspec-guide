@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_random_content_post_limits"
+---
+
+## Behaviour
+
+Hooked to post_limits while a random request runs: removes the limit, so paging doesn't affect the pick. <Ev source="wp:wp-includes/query.php#L1557-L1563" hash="c562bb2113fc4a7fd52dfa3eabf689069e3efe220a635c33c48de5e086fdf34a"/>
+
+## Override
+
+Not overridable.

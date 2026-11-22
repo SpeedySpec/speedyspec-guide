@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_new_comment_notify_moderator"
+---
+
+## Behaviour
+
+Hooked to comment_post: emails the moderators about a pending comment when moderation notification is on. <Ev source="wp:wp-includes/comment.php#L2608-L2622" hash="1c32f0fc41b7318ee8af4d7a5cb2d71d058f5c4a1076d465f93f0a2760578baa"/>
+
+## Override
+
+`notify_moderator` filters it.

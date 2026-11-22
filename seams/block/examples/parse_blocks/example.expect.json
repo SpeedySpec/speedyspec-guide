@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'blockName' => 'core/heading',\n  'attrs' => \n  array (\n    'level' => 3,\n  ),\n  'innerBlocks' => \n  array (\n  ),\n  'innerHTML' => '<h3>Title</h3>',\n  'innerContent' => \n  array (\n    0 => '<h3>Title</h3>',\n  ),\n)",
+ "error": null
+}

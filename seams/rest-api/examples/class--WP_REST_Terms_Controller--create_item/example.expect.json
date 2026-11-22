@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 201,\n  1 => 'guides',\n  2 => true,\n  3 => 501,\n  4 => 'rest_trash_not_supported',\n  5 => 200,\n  6 => true,\n)",
+ "error": null
+}

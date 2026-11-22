@@ -1,4 +1,7 @@
 <?php
 // esc_xml gets the escaped text and the original.
-add_filter( 'esc_xml', fn( $safe, $text ) => "[$safe]", 10, 2 );
+function guide_bracket_xml( $safe, $text ) {
+	return "[$safe]";
+}
+add_filter( 'esc_xml', 'guide_bracket_xml', 10, 2 );
 return esc_xml( '"' );

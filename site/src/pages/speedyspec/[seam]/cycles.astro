@@ -1,7 +1,8 @@
 ---
 // Every row of the seam page's "Circular dependencies" list, which the seam page shortens.
 import SeamCycles from '../../../components/SeamCycles.astro';
-import Base from '../../../layouts/Base.astro';
+import Reference from '../../../layouts/Reference.astro';
+import { seamRailView } from '../../../model/views.ts';
 import { loadGuideData } from '../../../model/data.ts';
 import { seamCycles } from '../../../model/sections.ts';
 
@@ -13,10 +14,7 @@ export async function getStaticPaths() {
 const d = await loadGuideData();
 const seam = d.seams.find((s) => s.id === Astro.params.seam)!;
 ---
-<Base title={`Circular dependencies · ${seam.name} · SpeedySpec API`} section="speedyspec">
-  <main class="page" data-pagefind-body>
+<Reference title={`${seam.name}: Circular dependencies`} rail={seamRailView(seam.id, 'speedyspec', d)} section="speedyspec">
     <div class="crumbs"><a href="/speedyspec/">SpeedySpec API</a> › <a href={`/speedyspec/${seam.id}/`}>{seam.name}</a> › Circular dependencies</div>
-    <h1>{seam.name}: Circular dependencies</h1>
     <SeamCycles cycles={seamCycles(seam.id, d)} data={d} />
-  </main>
-</Base>
+</Reference>

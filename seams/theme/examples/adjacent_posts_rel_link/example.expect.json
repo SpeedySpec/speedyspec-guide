@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<link rel=\\'prev\\' title=\\'First\\' href=\\'http://example.org/?p=1\\' /> <link rel=\\'next\\' title=\\'Third\\' href=\\'http://example.org/?p=3\\' />'",
+ "error": null
+}

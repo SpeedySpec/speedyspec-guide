@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "Cleaning up old drafts. ",
+ "return": "array (\n  'ran' => 1,\n  'next run is later' => true,\n  'still due' => 0,\n)",
+ "error": null
+}

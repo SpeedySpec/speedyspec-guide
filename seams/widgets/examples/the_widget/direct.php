@@ -5,7 +5,10 @@ class Guide_Hello_Widget extends WP_Widget {
     public function widget( $args, $instance ) { echo $args['before_widget'], 'Hello, ', esc_html( $instance['name'] ?? 'world' ), $args['after_widget']; }
 }
 register_widget( 'Guide_Hello_Widget' );
-add_action( 'the_widget', fn( $widget ) => print( "the_widget $widget\n" ) );
+function guide_print_the_widget( $widget ) {
+	echo "the_widget $widget\n";
+}
+add_action( 'the_widget', 'guide_print_the_widget' );
 the_widget( 'Guide_Hello_Widget', array( 'name' => 'Ada' ) );
 echo "\n";
 the_widget( 'Guide_Hello_Widget', 'name=Grace', array( 'before_widget' => '<aside class="%s">', 'after_widget' => '</aside>' ) );

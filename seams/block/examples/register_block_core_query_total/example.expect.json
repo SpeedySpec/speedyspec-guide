@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/query-total',\n  1 => 'Query Total',\n  2 => 'render_block_core_query_total',\n)",
+ "error": null
+}

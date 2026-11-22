@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WP_Post_Type',\n  1 => 'library',\n  2 => true,\n  3 => true,\n  4 => 'WP_REST_Posts_Controller',\n  5 => 'Posts',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"http://example.org/?p=1&#038;page=2\" class=\"post-page-numbers\">'",
+ "error": null
+}

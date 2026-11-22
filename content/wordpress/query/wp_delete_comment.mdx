@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_delete_comment"
+---
+
+## Behaviour
+
+Trashes a comment, or deletes it with force or when trash is off, with its meta; its children move to its parent. Fires delete_comment and deleted_comment. <Ev source="wp:wp-includes/comment.php#L1582-L1667" hash="67511c21714c6d0d2c035f12de38bc5d25d5c953c7449e5a42734ea9a781adea"/>
+
+## Override
+
+`delete_comment`, `deleted_comment`, `wp_set_comment_status` fire.

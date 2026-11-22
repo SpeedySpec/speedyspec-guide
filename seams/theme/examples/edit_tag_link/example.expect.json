@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'[<a href=\"http://example.org/wp-admin/term.php?taxonomy=post_tag&tag_ID=2&post_type=post\">Edit tag</a>]'",
+ "error": null
+}

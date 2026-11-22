@@ -1,0 +1,11 @@
+---
+symbol: "function:insert_hooked_blocks_into_rest_response"
+---
+
+## Behaviour
+
+Hooked to `rest_prepare_{$post_type}`: inserts hooked blocks into a post's raw content in the REST response, for the editor. <Ev source="wp:wp-includes/blocks.php#L1528-L1568" hash="630491f1313a0677ea02ec02ebfc9bc2e4c5b4be1a25cb7072bf6c80e816755c"/>
+
+## Override
+
+`the_content` filters it.

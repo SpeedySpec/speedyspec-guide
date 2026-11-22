@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'background-color' => 'red',\n  'background-image' => 'unset',\n)",
+ "error": null
+}

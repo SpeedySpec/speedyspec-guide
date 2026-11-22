@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"http://example.org/?feed=rss2&#038;p=1\">Comments feed</a>'",
+ "error": null
+}

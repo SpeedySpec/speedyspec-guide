@@ -1,0 +1,11 @@
+---
+symbol: "function:do_trackbacks"
+---
+
+## Behaviour
+
+Sends a post's trackbacks to the URLs in its to_ping, moving each to pinged; private and password posts send none. <Ev source="wp:wp-includes/comment.php#L3469-L3516" hash="48ba2aaec675880e9722dd88adf65b78ccd2d319c3cf572343d0f370d78199ad"/>
+
+## Override
+
+`the_content`, `the_excerpt`, `the_title` filter it.

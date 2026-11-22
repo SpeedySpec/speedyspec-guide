@@ -1,0 +1,7 @@
+---
+symbol: "filter:rest_pre_serve_request"
+---
+
+## Behaviour
+
+Filters whether the response was already sent: true stops the server from printing it, with the result, request and server; WordPress sends CORS headers here. <Ev source="wp:wp-includes/rest-api/class-wp-rest-server.php#L564-L564" hash="aa4352a9ecccbedb07fbae8d19405bfe3d4fa9188842d0712963c3e9e5b1ffd1"/>

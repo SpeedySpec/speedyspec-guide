@@ -1,0 +1,11 @@
+---
+symbol: "function:check_theme_switched"
+---
+
+## Behaviour
+
+Hooked to init: fires after_switch_theme (or the old theme's switch hook) once after a theme switch, then clears the flag. <Ev source="wp:wp-includes/theme.php#L3502-L3540" hash="58830539dce3a3fe91090797f795fbf0304bf9ecf22b6d692a7066489c40426c"/>
+
+## Override
+
+`after_switch_theme` fires.

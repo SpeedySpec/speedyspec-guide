@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<link rel=\"canonical\" href=\"http://example.org/?p=1\" />'",
+ "error": null
+}

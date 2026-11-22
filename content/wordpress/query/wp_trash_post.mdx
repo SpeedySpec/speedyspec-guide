@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_trash_post"
+---
+
+## Behaviour
+
+Moves a post to the trash, remembering its status and time, trashing its comments; deletes it when trash is off. Fires wp_trash_post and trashed_post. <Ev source="wp:wp-includes/post.php#L4275-L4347" hash="960052fa141915ccf2eb3da304bcfbde32b9471dc2e0db70b077a57c7bdc800f"/>
+
+## Override
+
+`pre_trash_post` filters it; `wp_trash_post`, `trashed_post` fire.

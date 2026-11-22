@@ -1,0 +1,11 @@
+---
+symbol: "function:comments_template"
+---
+
+## Behaviour
+
+Loads the comments template on singular views (the theme's comments.php, else the compatibility one), with the post's comments queried and threaded; filtered by comments_template_query_args and comments_template. <Ev source="wp:wp-includes/comment-template.php#L1441-L1655" hash="d0bf7626426eb640c7399a23574ca77ea5d7117a4c7f35cf8b799c057a8b5b82"/>
+
+## Override
+
+`comments_template_top_level_query_args`, `comments_template_query_args`, `comments_array`, `comments_template` filter it.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<h1>Hello &#038; World</h1>'",
+ "error": null
+}

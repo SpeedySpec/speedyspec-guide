@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/tag-cloud',\n  1 => 'Tag Cloud',\n  2 => 'render_block_core_tag_cloud',\n)",
+ "error": null
+}

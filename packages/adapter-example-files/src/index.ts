@@ -38,7 +38,7 @@ export class ExampleFiles implements ExampleSource {
         problems.push({ where: expectFile, message: parsed });
         continue;
       }
-      examples.push({ id: `${seamId}/${symbol}/${name}`, seam: seamId, symbol, name, file: where, ...parsed });
+      examples.push({ id: `${seamId}/${symbol}/${name}`, seam: seamId, symbol, name, file: where, ...parsed, code: await Bun.file(where).text() });
     }
     return { examples, problems };
   }

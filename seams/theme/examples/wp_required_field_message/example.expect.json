@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<span class=\"required-field-message\">Required fields are marked <span class=\"required\">*</span></span>'",
+ "error": null
+}

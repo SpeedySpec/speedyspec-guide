@@ -1,0 +1,11 @@
+---
+symbol: "function:_publish_post_hook"
+---
+
+## Behaviour
+
+Hooked to publish_post: in XML-RPC requests fires xmlrpc_publish_post, and marks the post to ping. <Ev source="wp:wp-includes/post.php#L8462-L8491" hash="ef700f6cf188cbed5dc55ad19fdac25edf0a7b642052213e6121ed99fca46a68"/>
+
+## Override
+
+`xmlrpc_publish_post` fires.

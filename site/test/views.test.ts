@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, test } from 'bun:test';
 import { join } from 'node:path';
 import { type GuideData, readGuideData } from '../src/model/data.ts';
 import { speedyspecProvenance, speedyspecVerdict, wordpressProvenance } from '../src/model/verdict.ts';
-import { exampleFolder, seamView, symbolView } from '../src/model/views.ts';
+import { exampleFolder, seamRailView, seamView, symbolView } from '../src/model/views.ts';
 
 const fixtures = join(import.meta.dir, 'fixtures');
 let d: GuideData;
@@ -93,5 +93,16 @@ describe('example order', () => {
     const base = pair.examples.files.find((e) => e.seam === 'hooks')!;
     pair.examples.files = ['porting-x-after', 'porting-x-before', 'a-plain-one'].map((name) => ({ ...base, id: `hooks/add_filter/${name}`, name }));
     expect(symbolView('function:add_filter', 'wordpress', pair).examples.map((e) => e.name)).toEqual(['a-plain-one', 'porting-x-before', 'porting-x-after']);
+  });
+});
+
+describe('seamRailView', () => {
+  test('test_seam_rail_lists_every_role_collapsed', () => {
+    const rail = seamRailView('hooks', 'wordpress', d);
+    expect(rail.seam).toEqual({ id: 'hooks', name: 'Hooks' });
+    expect(rail.roles.map((r) => r.role)).toEqual(seamView('hooks', 'wordpress', d).roles.map((r) => r.role));
+    expect(rail.roles.every((r) => r.members === null)).toBe(true);
+    expect(rail.roles[0]!.href).toBe(`/wordpress/hooks/#role-${rail.roles[0]!.role}`);
+    expect(seamRailView('hooks', 'speedyspec', d).roles[0]!.href).toStartWith('/speedyspec/hooks/#role-');
   });
 });

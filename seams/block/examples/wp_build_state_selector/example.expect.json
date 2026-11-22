@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'.wp-states-abc .wp-block-button__link:hover'",
+ "error": null
+}

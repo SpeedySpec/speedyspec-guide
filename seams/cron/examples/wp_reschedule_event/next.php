@@ -5,5 +5,8 @@ $next = wp_next_scheduled( 'guide_ping' ) - time();
 $past = time() - 5400;
 wp_reschedule_event( $past, 'hourly', 'guide_late' );
 $late = wp_next_scheduled( 'guide_late' ) - time();
-add_filter( 'pre_reschedule_event', fn( $pre, $event ) => 'guide_skip' === $event->hook ? false : $pre, 10, 2 );
+function guide_skip_reschedule( $pre, $event ) {
+	return 'guide_skip' === $event->hook ? false : $pre;
+}
+add_filter( 'pre_reschedule_event', 'guide_skip_reschedule', 10, 2 );
 return array( abs( $next - 3600 ) <= 1, abs( $late - 1800 ) <= 1, wp_reschedule_event( time(), 'nope', 'guide_none', array(), true )->get_error_code(), wp_reschedule_event( time(), 'hourly', 'guide_skip', array(), true )->get_error_code() );

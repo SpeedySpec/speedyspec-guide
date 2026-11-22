@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<!-- wp:group {\"tagName\":\"main\"} --><!-- /wp:group -->'",
+ "error": null
+}

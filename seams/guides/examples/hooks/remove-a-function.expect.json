@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'filtered' => 'HI',\n  'removed at 10' => false,\n  'removed at 20' => true,\n  'after' => 'hi',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"wp-block-group is-style-x\"></div>'",
+ "error": null
+}

@@ -5,7 +5,10 @@ ob_start();
 login_header( 'Log In', '', new WP_Error( 'incorrect_password', 'Wrong.' ) );
 ob_end_clean();
 $shakes = has_action( 'login_footer', 'wp_shake_js' );
-add_filter( 'shake_error_codes', fn( $codes ) => array() );
+function guide_no_shake_error_codes( $codes ) {
+	return array();
+}
+add_filter( 'shake_error_codes', 'guide_no_shake_error_codes' );
 remove_action( 'login_footer', 'wp_shake_js', 12 );
 ob_start();
 login_header( 'Log In', '', new WP_Error( 'incorrect_password', 'Wrong.' ) );

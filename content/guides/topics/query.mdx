@@ -1,0 +1,125 @@
+---
+title: Query
+summary: How posts are stored, changed and queried, how a request becomes the main query and the Loop, and where meta and wpdb fit in.
+---
+
+The Query seam holds WordPress's content and the way it is found. Posts of every type, and their meta, comments and
+the database layer under them, all live here. So does the machinery that turns a visitor's request into the list of
+posts a page shows. This guide explains how those parts connect. For storing your own content type, read
+[Storing your own content](/guides/path/storing-your-own-content/) first.
+
+## Posts: one table for all content
+
+Posts, pages, attachments, revisions, menu items and every custom post type are rows in one table, `posts`. The
+`post_type` column tells them apart, and `post_status` says where each one is in its life: `draft`, `publish`,
+`trash` and so on. In PHP, a row is a <Sym id="class:WP_Post" />, which <Sym id="function:get_post" /> returns by
+ID, or `null` when there is none:
+
+<Example id="query/get_post/example" />
+
+## Changing posts
+
+<Sym id="function:wp_insert_post" /> creates a post from its fields. It fills in defaults, makes the slug unique,
+saves terms and meta given with it, and fires actions as it goes. <Sym id="action:save_post" /> is the one plugins
+use most, and <Sym id="action:wp_after_insert_post" /> fires once terms and meta are saved too:
+
+<Example id="query/wp_insert_post/example" />
+
+<Sym id="function:wp_update_post" /> changes only the fields you give, keeping the rest:
+
+<Example id="query/wp_update_post/example" />
+
+Removing a post has two steps. <Sym id="function:wp_trash_post" /> moves it to the trash and remembers its old
+status, so it can be restored:
+
+<Example id="query/wp_trash_post/example" />
+
+<Sym id="function:wp_delete_post" /> deletes a post with its meta, terms, comments and revisions. For posts and
+pages it trashes them first, unless you force it, but **any other post type is deleted at once**, including a
+plugin's own. Call `wp_trash_post()` yourself when a custom type's posts should be recoverable. <Ev source="wp:wp-includes/post.php#L4042-L4046" hash="b158300900169a3c26ede30d872764a7e3be157243a20f4d6f2433fb92b3ddd1"/>
+The example deletes a post, so it shows the trashing:
+
+<Example id="query/wp_delete_post/example" />
+
+Prefer these functions to writing rows yourself. They keep caches, counts, terms, revisions and every hooked plugin
+in step with the change.
+
+## Meta: details of one post
+
+Post meta are named values attached to a post, in the `postmeta` table, and a key may hold one value or several.
+<Sym id="function:add_post_meta" /> adds a value, and can refuse a second one for a unique key:
+
+<Example id="query/add_post_meta/example" />
+
+<Sym id="function:get_post_meta" /> returns one value or all of a key's values. A missing key gives an empty string
+for one value, or an empty array for all:
+
+<Example id="query/get_post_meta/example" />
+
+<Sym id="function:update_post_meta" /> changes a value, adding it when missing. Given a previous value too, it
+changes only rows that hold it:
+
+<Example id="query/update_post_meta/example" />
+
+Register the keys you use with `register_post_meta()`, so each has a type, a sanitizer and an auth check.
+
+## Querying: WP_Query
+
+<Sym id="class:WP_Query" /> is how WordPress finds posts. You give it query variables (type, status, terms, meta,
+dates, order, how many), and it builds the SQL, runs it, and keeps the posts along with counts for paging:
+
+<Example id="query/class--WP_Query--get_posts/example" />
+
+The query found three posts in the category but returned two, as asked, and knows that makes two pages. Meta and
+term conditions are built by <Sym id="class:WP_Meta_Query" /> and <Sym id="class:WP_Tax_Query" />.
+<Sym id="function:get_posts" /> is a shortcut that returns an array of posts. It skips paging and sticky posts, and
+returns five posts unless you ask for more:
+
+<Example id="query/get_posts/example" />
+
+## A request becomes the main query
+
+Every front-end request is answered by one query of its own, the **main query**. As the page loads,
+<Sym id="function:wp" /> runs <Sym id="class:WP" />'s steps. It matches the address against the rewrite rules,
+turns the match into query variables (a post's slug, a category, a page number), and hands them to the main
+`WP_Query`. The main query's results then decide which template shows the page.
+
+To change what a page lists, change the main query before it runs, with the <Sym id="action:pre_get_posts" />
+action. The query object itself is passed in, so check that it is the main query, and the kind of page you mean, before
+changing it:
+
+<Example id="guides/query/pre-get-posts" />
+
+The home page lists three posts, although five exist and the site shows ten by default. The separate query in the
+same request was left alone. Never replace the main query with <Sym id="function:query_posts" />. It runs a second
+query, discards the first, and confuses everything that reads the main query afterwards.
+<Sym id="function:is_main_query" /> says which query is current:
+
+<Example id="query/is_main_query/example" />
+
+## The Loop
+
+Templates walk a query's posts with **the Loop**: while `have_posts()` says there are more, `the_post()` moves to
+the next one and sets it as the global post, so template tags such as `get_the_title()` describe it:
+
+<Example id="query/class--WP_Query--the_post/example" />
+
+A second query on the same page, such as a list of related posts, has a Loop of its own, which changes the global
+post. Call <Sym id="function:wp_reset_postdata" /> after it, so the rest of the page sees the main query's post again:
+
+<Example id="query/wp_reset_postdata/example" />
+
+## wpdb: under everything
+
+Every query above ends in <Sym id="class:wpdb" />, WordPress's connection to MySQL. Use it directly only for what no
+API covers, such as a custom table, or a query the APIs can't express. Then put every value through `prepare()`
+placeholders (`%s` for strings, `%d` for integers, `%i` for table and column names), never into the SQL string:
+
+<Example id="guides/query/wpdb-prepared-read" />
+
+The hostile search found nothing instead of every post. `esc_like()` made the `%` in `100%` a literal character, so it
+matched only the title that contains it. Use `$wpdb->posts` and the other table properties rather than writing table
+names, because every site has its own table prefix.
+
+The Query seam isn't ported to SpeedySpec yet, so this guide makes no promise about how queries behave there.
+<OnSpeedySpecNote id="class:WP_Query" />

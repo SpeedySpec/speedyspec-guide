@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<!-- wp:paragraph {\"dropCap\":true} --><p>Hi</p><!-- /wp:paragraph -->',\n  1 => '<!-- wp:spacer /-->',\n)",
+ "error": null
+}

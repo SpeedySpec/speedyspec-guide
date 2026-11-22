@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_batch_update_comment_type"
+---
+
+## Behaviour
+
+Sets the type of comments with an empty type to comment, a batch at a time (filtered by wp_update_comment_type_batch_size), scheduling more until done; part of an upgrade. <Ev source="wp:wp-includes/comment.php#L4533-L4608" hash="829605024db6ebd95af51f8a5e218e52c6647da83e6ff9a1cd561183b6f1ff15"/>
+
+## Override
+
+`wp_update_comment_type_batch_size` filters it.

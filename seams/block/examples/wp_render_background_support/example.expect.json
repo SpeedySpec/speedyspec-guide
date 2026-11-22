@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div style=\"background-image:url(&apos;http://example.org/bg.jpg&apos;);background-size:cover;\" class=\"wp-block-group has-background\"><div class=\"wp-block-group__inner-container is-layout-flow wp-block-group-is-layout-flow\"></div></div>'",
+ "error": null
+}

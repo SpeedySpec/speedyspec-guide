@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"wp-block-image\"><figure class=\"alignright\"><img src=\"a.jpg\"/></figure></div>'",
+ "error": null
+}

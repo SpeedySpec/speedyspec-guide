@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<h1>Category: <span>Uncategorized</span></h1>'",
+ "error": null
+}

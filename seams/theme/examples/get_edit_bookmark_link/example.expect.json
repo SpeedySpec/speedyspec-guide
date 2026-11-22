@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'http://example.org/wp-admin/link.php?action=edit&amp;link_id=1',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'capability check' => true,\n  'role check' => false,\n)",
+ "error": null
+}

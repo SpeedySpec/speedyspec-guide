@@ -1,0 +1,11 @@
+---
+symbol: "function:register_block_type_from_metadata"
+---
+
+## Behaviour
+
+Registers a block type from its block.json (a folder or file): reads and translates the metadata, registers its scripts, styles and modules from file: paths, and the render file; filtered by block_type_metadata and block_type_metadata_settings. <Ev source="wp:wp-includes/blocks.php#L520-L821" hash="2a04c0b36e165201c550ef03b4e4ef5d756b5fc346b67da75fb115c167734466"/>
+
+## Override
+
+`block_type_metadata`, `block_type_metadata_settings` filter it.

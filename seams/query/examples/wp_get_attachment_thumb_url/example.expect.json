@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'http://example.org/wp-content/uploads/2026/01/pic-150x150.jpg'",
+ "error": null
+}

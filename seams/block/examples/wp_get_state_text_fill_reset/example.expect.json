@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  '-webkit-text-fill-color' => 'currentColor',\n)",
+ "error": null
+}

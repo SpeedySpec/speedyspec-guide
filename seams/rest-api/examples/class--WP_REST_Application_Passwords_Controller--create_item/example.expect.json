@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 201,\n  1 => 'Phone',\n  2 => 29,\n  3 => false,\n  4 => 'rest_no_authenticated_app_password',\n)",
+ "error": null
+}

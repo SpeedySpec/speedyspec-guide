@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "array (\n  'Name' => 'My First Plugin',\n  'Version' => '1.0.0',\n  'Description' => 'Says hello on every admin screen.',\n  'Author' => 'A. Beginner',\n)",
+ "return": "array (\n  'Name' => 'My First Plugin',\n  'Version' => '1.0.0',\n  'TextDomain' => 'my-first-plugin',\n  'RequiresWP' => '6.5',\n  'RequiresPHP' => '7.4',\n)",
  "error": null
 }

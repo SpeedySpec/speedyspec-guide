@@ -1,0 +1,93 @@
+---
+title: Shortcodes
+summary: How shortcodes are registered and found in content, how their attributes are parsed, and the filters and rules around each one that runs.
+---
+
+The Shortcode seam replaces bracketed tags in text, such as `[gallery]` or `[my_plugin_greet name="Ada"]`, with what a
+registered function returns. This guide explains how WordPress finds tags, parses their attributes, and decides
+what to run. For writing a shortcode, read [Shortcodes](/guides/path/shortcodes/) in the learning path first.
+
+## A registry of tags
+
+<Sym id="function:add_shortcode" /> adds a tag and its function to one list, the <Sym id="global:shortcode_tags" />
+global. A shortcode's function receives the parsed attributes, the enclosed content (empty for a self-closing tag)
+and the tag's name, and returns the text that replaces it:
+
+<Example id="guides/shortcodes/returns-not-echoes" />
+
+The registry can be asked and changed at any time:
+
+- <Sym id="function:shortcode_exists" /> asks whether a tag is registered.
+- <Sym id="function:has_shortcode" /> asks whether a piece of content uses one, such as a post before its stylesheet
+  is loaded.
+- <Sym id="function:remove_shortcode" /> takes a tag away, after which it stays in content as written.
+- <Sym id="function:strip_shortcodes" /> removes registered tags from text that shouldn't show them, such as an
+  excerpt, leaving unregistered ones alone.
+
+<Example id="guides/shortcode/lifecycle" />
+
+A shortcode is always removed by its tag, so its function can be found and replaced without a reference to it. Name
+the function and prefix the tag anyway, as with any hook. <OnSpeedySpecNote id="function:add_shortcode" />
+
+## Finding tags in content
+
+<Sym id="function:do_shortcode" /> (and its clearer alias <Sym id="function:apply_shortcodes" />) builds one regular
+expression from the registered tags with <Sym id="function:get_shortcode_regex" />, and replaces each match with its
+function's output. Text without a `[` is returned at once. Unregistered tags are left as they are, which is why a
+deactivated plugin's tags show up as plain text.
+
+Two rules decide what isn't run:
+
+- A tag in **double brackets**, `[[my_plugin_greet]]`, is printed as the single-bracket text. That is how a post
+  shows a shortcode instead of running it.
+- Inside HTML tags, <Sym id="function:do_shortcodes_in_html_tags" /> runs shortcodes only in attribute values, and
+  escapes the brackets elsewhere, so a shortcode can't break the markup around it. Passing `true` as `do_shortcode()`'s
+  second argument skips shortcodes inside HTML tags altogether.
+
+<Example id="guides/shortcode/escaping-and-html" />
+
+## Parsing attributes
+
+<Sym id="function:shortcode_parse_atts" /> turns the text inside the brackets into an array. Named attributes may use
+either quote or none, names are lowercased, and values without a name are kept by position:
+
+<Example id="shortcode/shortcode_parse_atts/forms" />
+
+<Example id="shortcode/shortcode_parse_atts/lowercase-names" />
+
+A value holding an unclosed HTML element is emptied, so an attribute can't open markup that swallows the rest of
+the page:
+
+<Example id="shortcode/shortcode_parse_atts/unclosed-html" />
+
+The function then usually passes the array to <Sym id="function:shortcode_atts" />. That keeps only the attributes it
+knows and fills in defaults for the rest:
+
+<Example id="shortcode/shortcode_atts/defaults" />
+
+Given the tag as its third argument, `shortcode_atts()` runs the `shortcode_atts_{$shortcode}` filter, so other code
+can change the attributes a shortcode receives:
+
+<Example id="shortcode/shortcode_atts/filtered" />
+
+The values are still strings typed by a post's author, so the function sanitizes each one and escapes its output, as
+the learning path shows.
+
+## Filters around each shortcode
+
+Every shortcode that runs passes through two filters, whoever registered it.
+<Sym id="filter:pre_do_shortcode_tag" /> runs first, and a value other than `false` replaces the shortcode without
+calling its function. <Sym id="filter:do_shortcode_tag" /> runs after, on the output. Both receive the tag's name, so
+a callback can pick the shortcodes it means:
+
+<Example id="guides/shortcode/tag-filters" />
+
+## Enclosed content
+
+For an enclosing shortcode, the content between its tags arrives unprocessed. Shortcodes inside it run only if the
+function calls `do_shortcode()` on that content itself. Filtering the content's HTML, with `wp_kses_post()`, is also
+the function's job:
+
+<Example id="guides/shortcodes/enclosing-content" />
+
+The Shortcode seam isn't ported to SpeedySpec yet, so this guide makes no promise about how shortcodes behave there.

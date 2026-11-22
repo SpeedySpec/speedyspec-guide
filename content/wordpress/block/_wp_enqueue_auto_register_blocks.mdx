@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_enqueue_auto_register_blocks"
+---
+
+## Behaviour
+
+Hooked to enqueue_block_editor_assets: passes the editor the dynamic blocks marked autoRegister in their supports, as window.__unstableAutoRegisterBlocks, to register them with server-side rendering. <Ev source="wp:wp-includes/blocks.php#L3329-L3346" hash="53413a65a3c9d50a6b543b39120e4e994319b602f4561bc2bfa36d9c37cade7d"/>
+
+## Override
+
+Not overridable.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'Tags: <a href=\"http://example.org/?tag=blue\" rel=\"tag\">blue</a>, <a href=\"http://example.org/?tag=red\" rel=\"tag\">red</a>.'",
+ "error": null
+}

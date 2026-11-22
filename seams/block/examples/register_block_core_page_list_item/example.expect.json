@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/page-list-item',\n  1 => 'Page List Item',\n  2 => NULL,\n)",
+ "error": null
+}

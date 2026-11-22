@@ -1,0 +1,11 @@
+---
+symbol: "function:sanitize_post_field"
+---
+
+## Behaviour
+
+Sanitizes one post field for a context: raw, edit, db, display, attribute or js; IDs and counts are integers, and the field's filters run for the context. <Ev source="wp:wp-includes/post.php#L3106-L3418" hash="cc80d427fef392a70e73282ef9492303aa8691cd18a11b25bf8225a6faa2353b"/>
+
+## Override
+
+`edit_{$field}`, `{$field_no_prefix}_edit_pre`, `edit_post_{$field}`, `pre_{$field}`, `{$field_no_prefix}_save_pre`, `pre_post_{$field}`, `{$field}_pre`, `{$field}`, `post_{$field}` filter it.

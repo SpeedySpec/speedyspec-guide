@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'align-wide',\n  1 => 'automatic-feed-links',\n  2 => 'block-templates',\n  3 => 'block-template-parts',\n  4 => 'custom-background',\n  5 => 'custom-header',\n)",
+ "error": null
+}

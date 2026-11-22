@@ -1,12 +1,18 @@
 <?php
 // The registered ability, or null with a notice.
-add_action( 'wp_abilities_api_categories_init', fn() => wp_register_ability_category( 'tools', array( 'label' => 'Tools', 'description' => 'Small tools.' ) ) );
-add_action( 'wp_abilities_api_init', fn() => wp_register_ability( 'guide/add', array(
-	'label' => 'Add one', 'description' => 'Adds one to a number.', 'category' => 'tools',
-	'input_schema' => array( 'type' => 'object', 'properties' => array( 'n' => array( 'type' => 'integer', 'minimum' => 0 ) ), 'required' => array( 'n' ) ),
-	'output_schema' => array( 'type' => 'integer' ),
-	'execute_callback' => fn( $input ) => $input['n'] + 1,
-	'permission_callback' => '__return_true',
-	'meta' => array( 'annotations' => array( 'readonly' => true ), 'public' => true ),
-) ) );
+function guide_register_tools_category() {
+	wp_register_ability_category( 'tools', array( 'label' => 'Tools', 'description' => 'Small tools.' ) );
+}
+add_action( 'wp_abilities_api_categories_init', 'guide_register_tools_category' );
+function guide_register_add_one_ability() {
+	wp_register_ability( 'guide/add', array(
+		'label' => 'Add one', 'description' => 'Adds one to a number.', 'category' => 'tools',
+		'input_schema' => array( 'type' => 'object', 'properties' => array( 'n' => array( 'type' => 'integer', 'minimum' => 0 ) ), 'required' => array( 'n' ) ),
+		'output_schema' => array( 'type' => 'integer' ),
+		'execute_callback' => fn( $input ) => $input['n'] + 1,
+		'permission_callback' => '__return_true',
+		'meta' => array( 'annotations' => array( 'readonly' => true ), 'public' => true ),
+	) );
+}
+add_action( 'wp_abilities_api_init', 'guide_register_add_one_ability' );
 return array( wp_get_ability( 'guide/add' )->get_label(), wp_get_ability( 'guide/none' ) );

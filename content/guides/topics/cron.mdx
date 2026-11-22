@@ -1,0 +1,111 @@
+---
+title: Cron
+summary: How WP-Cron stores events, how arguments and schedules identify them, and how a page load ends up running them.
+---
+
+The Cron seam is WordPress's scheduler: a list of events stored in the database, and the code that runs the due ones
+in the background. It is small, but how events are identified and when they run trips plugins up. This guide explains
+both. For scheduling work in a plugin, read [Running tasks on a schedule](/guides/path/running-tasks-on-a-schedule/)
+first.
+
+## Where events live
+
+All events are kept in one option, `cron`, as nested arrays: by **timestamp**, then by **hook name**, then by a
+**key made from the event's arguments**. Each entry holds the arguments, and for a recurring event its schedule and
+interval. <Sym id="function:_get_cron_array" /> reads that structure, which WordPress's own functions work on:
+
+<Example id="cron/_get_cron_array/read" />
+
+The argument key is an `md5()` of the arguments. So two events with the same hook and time but different arguments
+are different events, and the same hook with the same arguments is the same event. Every function that finds,
+reschedules or removes an event therefore needs the **same arguments** it was scheduled with.
+
+## Scheduling
+
+<Sym id="function:wp_schedule_single_event" /> stores a one-off event. It refuses a duplicate: the same hook and
+arguments within ten minutes of an existing one. It also refuses a time that isn't a valid timestamp:
+
+<Example id="cron/wp_schedule_single_event/single" />
+
+<Sym id="function:wp_schedule_event" /> stores a recurring event with its schedule name. The schedule must be one
+<Sym id="function:wp_get_schedules" /> knows, and there is no duplicate check at all. That is why plugins ask
+`wp_next_scheduled()` first:
+
+<Example id="cron/wp_schedule_event/recurring" />
+
+The recurrences are the four built in, plus any added through the `cron_schedules` filter. A plugin can add new ones,
+but can't replace the built-in ones:
+
+<Example id="cron/wp_get_schedules/schedules" />
+
+Both scheduling functions pass through filters (`pre_schedule_event`, `schedule_event`) that let other code change or
+refuse an event, which is how some hosting plugins move events to an outside queue:
+
+<Example id="cron/wp_schedule_single_event/filters" />
+
+## Reading the schedule
+
+To read an event back:
+
+- <Sym id="function:wp_next_scheduled" /> returns the time of a hook's next event with given arguments, or `false`.
+- <Sym id="function:wp_get_scheduled_event" /> returns the whole event.
+- <Sym id="function:wp_get_schedule" /> returns its recurrence name.
+
+<Example id="cron/wp_next_scheduled/next" />
+
+<Example id="cron/wp_get_scheduled_event/event" />
+
+<Example id="cron/wp_get_schedule/schedule" />
+
+Each looks up the event by its hook and arguments, so pass the same arguments the event was scheduled with. A one-off
+event has no recurrence, so `wp_get_schedule()` gives `false` for it, as it does for a hook with no events.
+
+## Removing events
+
+There are three ways, from narrowest to widest:
+
+- <Sym id="function:wp_unschedule_event" /> removes one event, by its timestamp, hook and arguments.
+- <Sym id="function:wp_clear_scheduled_hook" /> removes every event of a hook with given arguments, at any time.
+- <Sym id="function:wp_unschedule_hook" /> removes every event of a hook whatever its arguments. On deactivation,
+  this is the surest way to leave nothing behind.
+
+<Example id="cron/wp_unschedule_event/remove" />
+
+<Example id="cron/wp_clear_scheduled_hook/clear" />
+
+<Example id="cron/wp_unschedule_hook/all" />
+
+## How events run
+
+Nothing runs at the scheduled time by itself. WordPress checks on page loads:
+
+1. On `init`, <Sym id="function:wp_cron" /> arranges a check for the end of the request, at `shutdown`, so it never
+   delays the page being sent.
+
+   <Example id="cron/wp_cron/shutdown" />
+
+2. At shutdown, <Sym id="function:_wp_cron" /> looks for due events, unless this is already a cron request or
+   `DISABLE_WP_CRON` is set:
+
+   <Example id="cron/_wp_cron/run" />
+
+3. If any are due, <Sym id="function:spawn_cron" /> takes a lock (a transient, so two requests don't both run the
+   same events) and sends a quick, non-blocking request to `wp-cron.php`:
+
+   <Example id="cron/spawn_cron/spawn" />
+
+4. `wp-cron.php` gets the due events from <Sym id="function:wp_get_ready_cron_jobs" />. For each one, it schedules a
+   recurring event's next run with <Sym id="function:wp_reschedule_event" />, removes the run that is due, and fires
+   the event's hook as an action, with its arguments.
+
+<Example id="cron/wp_get_ready_cron_jobs/ready" />
+
+<Example id="cron/wp_reschedule_event/next" />
+
+A recurring event that ran late is rescheduled to the next whole interval after its original time, so its runs
+stay on their schedule instead of drifting later each time. Because events run in a separate request, they have the same time limit as any page, and
+they see no logged-in user: work that needs a person's permissions must check them when it is scheduled, not when it
+runs.
+
+The Cron seam isn't ported to SpeedySpec yet, so this guide makes no promise about how scheduled events behave there.
+<OnSpeedySpecNote id="function:wp_schedule_event" />

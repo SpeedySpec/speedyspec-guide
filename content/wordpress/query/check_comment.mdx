@@ -1,0 +1,11 @@
+---
+symbol: "function:check_comment"
+---
+
+## Behaviour
+
+Whether a comment passes the moderation rules: not held by moderation keys or too many links, and with comment_previously_approved on, an author with an approved comment before. <Ev source="wp:wp-includes/comment.php#L43-L203" hash="a89f67ba33e214d0d64ad0ddd829427d99adc0d1d7adabeab2cfae73911dc89c"/>
+
+## Override
+
+`comment_text`, `comment_max_links_url`, `wp_auto_approve_ping` filter it.

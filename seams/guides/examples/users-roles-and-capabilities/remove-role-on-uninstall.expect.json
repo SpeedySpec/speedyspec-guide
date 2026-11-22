@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'role exists' => false,\n  'administrator can' => false,\n  'Lena can still read' => true,\n  'Lena is now' => \n  array (\n    0 => 'subscriber',\n  ),\n)",
+ "error": null
+}

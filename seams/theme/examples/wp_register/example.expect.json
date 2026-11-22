@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => '<li><a href=\"http://example.org/wp-admin/\">Site Admin</a></li>',\n  1 => '<li><a href=\"http://example.org/wp-login.php?action=register\">Register</a></li>',\n)",
+ "error": null
+}

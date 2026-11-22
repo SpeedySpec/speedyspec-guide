@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'color' => \n  array (\n    'text' => 'var(--wp--preset--color--contrast)',\n  ),\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/query',\n  1 => 'Query Loop',\n  2 => 'render_block_core_query',\n)",
+ "error": null
+}

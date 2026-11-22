@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_login_form"
+---
+
+## Behaviour
+
+A log in form posting to wp-login.php, with remember me and a redirect; printed unless echo is false; filtered by login_form_defaults and the login_form_* filters. <Ev source="wp:wp-includes/general-template.php#L766-L894" hash="41aaf5081a9d93f4541380b865102635f2824c13b05d02e8ff419a454cd51ac8"/>
+
+## Override
+
+`login_form_defaults`, `login_form_top`, `login_form_middle`, `login_form_bottom` filter it.

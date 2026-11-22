@@ -1,0 +1,11 @@
+---
+symbol: "function:get_permalink"
+---
+
+## Behaviour
+
+A post's permalink from the permalink structure's tags (%year%, %postname%, %category% and the rest), plain ?p= links for drafts; filtered by post_link, pre_post_link and post_type_link. <Ev source="wp:wp-includes/link-template.php#L174-L313" hash="4e657b3e44bdda680efaa7cb0b555f0c0a00be3463603c5d355e905eb781d3a5"/>
+
+## Override
+
+`pre_post_link`, `post_link_category`, `post_link` filter it.

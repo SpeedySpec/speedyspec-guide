@@ -21,7 +21,7 @@ describe('search and coverage', () => {
   });
 
   test('every page has the search box', async () => {
-    expect((await html(dist, '/')).count('#search')).toBe(1);
+    expect((await html(dist, '/')).count('site-search')).toBeGreaterThanOrEqual(1);
   });
 
   test('the coverage page shows each seam and the unassigned symbols by folder', async () => {
@@ -32,9 +32,25 @@ describe('search and coverage', () => {
     expect(p.text('.unassigned li')).toEqual(['unassigned_thing']);
   });
 
-  test('the home page explains the two sections and how to read a verdict', async () => {
-    const p = await html(dist, '/');
+  test('the SpeedySpec index explains how to read a verdict and where to start porting', async () => {
+    const p = await html(dist, '/speedyspec/');
     expect(p.text('.legend .pill')).toEqual(['Works as WordPress', 'Works with differences', 'Breaks', 'New in SpeedySpec', 'Not in SpeedySpec yet', 'Not yet compared']);
     expect(p.attr('.porting-links a', 'href')).toEqual(['/speedyspec/porting/hooks/', '/speedyspec/porting/options/']);
+  });
+
+  test('no page uses the old shell', async () => {
+    for (const path of ['/', '/coverage/', '/install/', '/wordpress/', '/speedyspec/', '/speedyspec/conversion/', '/speedyspec/runtime/']) {
+      const p = await html(dist, path);
+      expect(p.count('.topbar')).toBe(0);
+      expect(p.count('site-search')).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  test('coverage is not indexed; the reference overviews share the Reference sidebar', async () => {
+    expect((await html(dist, '/coverage/')).count('[data-pagefind-body]')).toBe(0);
+    for (const path of ['/wordpress/', '/speedyspec/', '/coverage/']) {
+      const p = await html(dist, path);
+      expect(p.attr('#starlight__sidebar ul.top-level a', 'href')).toEqual(['/reference/', '/wordpress/', '/speedyspec/', '/speedyspec/conversion/', '/speedyspec/runtime/', '/coverage/']);
+    }
   });
 });

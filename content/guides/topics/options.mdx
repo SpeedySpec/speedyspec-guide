@@ -57,11 +57,11 @@ stored. The three you meet most, in the order `get_option()` fires them:
   anything but `false` short-circuits the read: that value is returned and nothing else happens. It is how a plugin
   forces a setting, whatever is saved.
 
-<Example id="options/get_option/pre-option-short-circuits" />
+<Example id="guides/options/pre-option" />
 
 - <Sym id="filter:default_option_{$option}" /> fires only when the option isn't stored, and supplies the default.
 
-<Example id="options/get_option/default-filter" />
+<Example id="guides/options/default-option" />
 
 - <Sym id="filter:option_{$option}" /> fires last, on every value that was found. The stored value stays as it was.
 
@@ -69,9 +69,14 @@ stored. The three you meet most, in the order `get_option()` fires them:
 
 In each name, `{$option}` is replaced by the option's name, so a callback on `option_blogname` only sees the site's
 title. Writes have filters and actions too: `update_option()` fires `pre_update_option_{$option}` before saving, then
-the actions `update_option`, `update_option_{$option}` and `updated_option`.
+the actions `update_option`, `update_option_{$option}` and `updated_option`. As everywhere, add named, prefixed
+functions to these hooks, so they can be removed.
 
-<Example id="options/update_option/hooks" />
+## Saving what people type
+
+An option's value often comes from a settings form. Before saving it, check a nonce and a capability, and sanitize the
+value, as [Your first plugin](/guides/path/your-first-plugin/) shows. Sanitizing on save keeps bad data out of the
+table; escaping on output, every time the value is printed, keeps it from doing harm even if some gets in.
 
 ## Transients: options that expire
 
@@ -87,7 +92,7 @@ On a site without a persistent object cache, a transient is stored as two option
 expiry time. With a persistent object cache, such as Redis or Memcached, transients live in the cache instead and may
 disappear before they expire. So never use a transient for anything you can't recompute.
 
-<Example id="options/set_transient/stored-as-options" />
+<Example id="guides/options/transient-storage" />
 
 ## On SpeedySpec
 

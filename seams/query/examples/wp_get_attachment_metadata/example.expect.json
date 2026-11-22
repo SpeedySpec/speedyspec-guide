@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'width' => 800,\n  'height' => 600,\n  'file' => '2026/01/pic.jpg',\n)",
+ "error": null
+}

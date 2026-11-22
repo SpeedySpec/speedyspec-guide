@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'class=\"wp-singular post-template-default single single-post postid-1 single-format-standard logged-in admin-bar no-customize-support wp-theme-guide\"'",
+ "error": null
+}

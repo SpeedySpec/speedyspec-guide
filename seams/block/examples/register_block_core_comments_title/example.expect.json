@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/comments-title',\n  1 => 'Comments Title',\n  2 => 'render_block_core_comments_title',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'ipsum' => '/themes',\n  'twentyeleven' => '/themes',\n  'twentyfifteen' => '/themes',\n  'twentyfourteen' => '/themes',\n  'twentynineteen' => '/themes',\n  'twentyseventeen' => '/themes',\n  'twentysixteen' => '/themes',\n  'twentyten' => '/themes',\n  'twentythirteen' => '/themes',\n  'twentytwelve' => '/themes',\n  'twentytwenty' => '/themes',\n  'twentytwentyfive' => '/themes',\n  'twentytwentyfour' => '/themes',\n  'twentytwentyone' => '/themes',\n  'twentytwentythree' => '/themes',\n  'twentytwentytwo' => '/themes',\n)",
+ "error": null
+}

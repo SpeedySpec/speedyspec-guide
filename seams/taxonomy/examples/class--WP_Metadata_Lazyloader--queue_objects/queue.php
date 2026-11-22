@@ -8,7 +8,10 @@ add_term_meta( $news['term_id'], 'a', 1 );
 add_term_meta( $sport['term_id'], 'b', 2 );
 wp_cache_delete( $news['term_id'], 'term_meta' );
 wp_cache_delete( $sport['term_id'], 'term_meta' );
-add_action( 'metadata_lazyloader_queued_objects', fn( $ids, $type ) => print( "queued $type\n" ), 10, 2 );
+function guide_report_queued_objects( $ids, $type ) {
+	echo "queued $type\n";
+}
+add_action( 'metadata_lazyloader_queued_objects', 'guide_report_queued_objects', 10, 2 );
 $loader = wp_metadata_lazyloader();
 $loader->queue_objects( 'term', array( $news['term_id'], $sport['term_id'] ) );
 get_term_meta( $news['term_id'], 'a', true );

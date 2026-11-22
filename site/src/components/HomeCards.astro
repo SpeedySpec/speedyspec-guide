@@ -1,0 +1,24 @@
+---
+// The home page's four goal cards: one per reason someone arrives, each leading to exactly one first page.
+interface Props {
+  /** The first learning-path guide's URL, or the guides index while there is none. */
+  firstGuide: string;
+}
+const { firstGuide } = Astro.props;
+const cards = [
+  { title: 'Write my first plugin', text: 'New to WordPress plugins? Start the learning path, one chapter at a time.', href: firstGuide },
+  { title: 'Run SpeedySpec', text: 'Install the speedyspec CLI and server, from download to first run.', href: '/install/' },
+  { title: 'Look up a function', text: 'Every WordPress function, class and hook, by seam, with checked examples.', href: '/wordpress/' },
+  { title: 'Port or contribute', text: 'Change a WordPress function, or port one to SpeedySpec in Rust.', href: '/guides/#contributing' },
+];
+---
+<ul class="home-cards">
+  {cards.map((c) => (
+    <li>
+      <a href={c.href}>
+        <h2>{c.title}</h2>
+        <p>{c.text}</p>
+      </a>
+    </li>
+  ))}
+</ul>

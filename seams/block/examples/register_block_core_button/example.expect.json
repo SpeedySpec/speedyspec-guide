@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/button',\n  1 => 'Button',\n  2 => 'render_block_core_button',\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_random_content_sample_ids"
+---
+
+## Behaviour
+
+Up to 50 distinct random IDs between 1 and the highest post ID (cached ten minutes), all of them when there are no more; posts with them may not exist. <Ev source="wp:wp-includes/query.php#L1451-L1472" hash="5cdb849c5f318b3436e8ed0b7d16a6cf289869ccd7b004b6d044d2ee27cecdac"/>
+
+## Override
+
+Not overridable.

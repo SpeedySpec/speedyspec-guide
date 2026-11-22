@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_font_library_wp_admin_enqueue_scripts"
+---
+
+## Behaviour
+
+Hooked to admin_enqueue_scripts: enqueues the Font Library page's scripts and styles inside wp-admin. <Ev source="wp:wp-includes/build/pages/font-library/page-wp-admin.php#L133-L274" hash="3de6652d4d3fcc469e597367b9191941f30fc0bd2f55ad69c945e1aa02ca381b"/>
+
+## Override
+
+`font-library-wp-admin_boot_dependencies` filters it; `font-library-wp-admin_init` fires.

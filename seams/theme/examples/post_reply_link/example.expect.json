@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a rel=\\'nofollow\\' class=\\'comment-reply-link\\' href=\\'http://example.org/?p=1#respond\\' onclick=\\'return addComment.moveForm( \"post-1\", \"0\", \"respond\", \"1\" )\\'>Leave a Comment</a>'",
+ "error": null
+}

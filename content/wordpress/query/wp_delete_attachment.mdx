@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_delete_attachment"
+---
+
+## Behaviour
+
+Deletes an attachment with its meta, terms, comments and files (trashing it first when media trash is on and not forced); fires delete_attachment. <Ev source="wp:wp-includes/post.php#L7051-L7140" hash="e67ff6162aee8ab463708f6250217bf90d2ea36ed3f86d9a6a340e883be44cb7"/>
+
+## Override
+
+`pre_delete_attachment` filters it; `delete_attachment`, `delete_post`, `deleted_post` fire.

@@ -1,0 +1,11 @@
+---
+symbol: "function:pingback"
+---
+
+## Behaviour
+
+Sends pingbacks to the links in a post's content that have a pingback server, skipping its own and already pinged URLs; fires pre_ping. <Ev source="wp:wp-includes/comment.php#L3629-L3738" hash="5581df9b30efcfc06601a536be09d995c9fe03e854d72f62058c8db2b63a9770"/>
+
+## Override
+
+`pingback_useragent` filters it; `pre_ping` fires.

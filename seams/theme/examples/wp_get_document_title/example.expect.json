@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Hello World &#8211; Guide',\n  1 => 'Guide &#8211; Just another guide',\n)",
+ "error": null
+}

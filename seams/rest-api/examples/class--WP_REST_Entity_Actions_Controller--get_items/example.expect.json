@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => \n  array (\n    0 => 'kind',\n    1 => 'name',\n    2 => 'actions',\n    3 => 'script_modules',\n  ),\n  2 => 'rest_entity_actions_invalid_entity',\n)",
+ "error": null
+}

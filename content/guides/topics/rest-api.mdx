@@ -1,0 +1,124 @@
+---
+title: REST API
+summary: How a /wp-json/ request reaches the REST server, is authenticated, matched, checked against its schema and answered, and how controllers organize routes.
+---
+
+The REST API seam serves WordPress's data as JSON at `/wp-json/`: posts, users, settings, and every route a plugin
+registers. This guide follows one request from its address to its response, then shows how WordPress organizes
+routes into controllers. For adding a route of your own, read
+[Adding a REST endpoint](/guides/path/adding-a-rest-endpoint/) first.
+
+## From an address to the server
+
+On `init`, <Sym id="function:rest_api_init" /> adds the rewrite rules and the `rest_route` query variable that send
+`/wp-json/…` addresses to the API. With plain links, the address is `?rest_route=/…` instead.
+<Sym id="function:rest_url" /> builds the right form for the site:
+
+<Example id="rest-api/rest_api_init/example" />
+
+<Example id="rest-api/rest_url/example" />
+
+When a request arrives, `rest_api_loaded()` hands it to the one <Sym id="class:WP_REST_Server" />, made by
+<Sym id="function:rest_get_server" />. Making the server fires the <Sym id="action:rest_api_init" /> action. That is
+when every route is registered, which is why plugins register theirs on that action and not on `init`:
+
+<Example id="rest-api/rest_get_server/example" />
+
+## Routes
+
+<Sym id="function:register_rest_route" /> adds a route to a namespace. A route has one or more handlers, each with
+its methods, callback, permission callback and arguments. A route's path can hold named patterns, such as
+`(?P<name>[a-z]+)`, whose matches become parameters:
+
+<Example id="rest-api/register_rest_route/example" />
+
+The query string's `loud=true` arrived as the boolean `true`, because the argument's schema says it is one. The
+second request also matched: the server matches route patterns without regard to case, so `ADA` fits `[a-z]+`. Check
+case in the callback when it matters.
+<OnSpeedySpecNote id="function:register_rest_route" />
+
+## Serving a request
+
+For each request the server goes through the same steps. Plugins can hook into each one.
+
+1. **Authentication.** The <Sym id="filter:rest_authentication_errors" /> filter can refuse the request. For requests
+   that rely on the login cookie, <Sym id="function:rest_cookie_check_errors" /> requires a valid `wp_rest` nonce.
+   Without one, the request runs as a logged-out visitor. With an invalid one, it is refused:
+
+   <Example id="rest-api/rest_cookie_check_errors/example" />
+
+2. **Matching.** The server finds the route and the handler for the method. An unknown route is a `404` with the code
+   `rest_no_route`:
+
+   <Example id="rest-api/class--WP_REST_Server--dispatch/example" />
+
+3. **Arguments.** Each argument is validated and sanitized: by its own callbacks when it has them, otherwise against
+   its schema. This happens before the permission check, so argument callbacks run for every request, allowed or not,
+   and a bad argument is a `400` even for a visitor.
+4. **Permission.** The handler's permission callback runs. A refusal is `401` for a visitor and `403` for a logged-in
+   user, as <Sym id="function:rest_authorization_required_code" /> decides. Only then does the callback run, with a
+   <Sym id="class:WP_REST_Request" />:
+
+   <Example id="rest-api/rest_authorization_required_code/example" />
+5. **Response.** The callback's result becomes a <Sym id="class:WP_REST_Response" />, passes through
+   <Sym id="filter:rest_post_dispatch" />, and is sent as JSON.
+
+<Sym id="function:rest_do_request" /> runs the same steps inside PHP, without HTTP. It is how WordPress preloads data
+for the editor, and how tests call routes:
+
+<Example id="rest-api/rest_do_request/example" />
+
+## Schemas: one description, two uses
+
+An argument's schema (its `type`, `enum`, `format`, ranges and nested `items` or `properties`) does two jobs.
+<Sym id="function:rest_validate_value_from_schema" /> refuses values that don't fit, with a message naming the
+field:
+
+<Example id="rest-api/rest_validate_value_from_schema/example" />
+
+<Sym id="function:rest_sanitize_value_from_schema" /> casts values that pass to their types and formats, and drops
+properties the schema doesn't allow:
+
+<Example id="rest-api/rest_sanitize_value_from_schema/example" />
+
+Describe arguments with schemas rather than checking them by hand in the callback. A `validate_callback` or
+`sanitize_callback` of an argument's own replaces its schema check, so a custom validator should call
+`rest_validate_request_arg()` first. The same description also tells
+clients what the route accepts, when they ask with `OPTIONS`.
+
+## Responses
+
+<Sym id="function:rest_ensure_response" /> turns whatever a callback returns into a response. Responses and errors
+pass through as they are, and anything else becomes a response's data:
+
+<Example id="rest-api/rest_ensure_response/example" />
+
+Clients can ask for less. A request's `_fields` parameter keeps only the named fields, applied after dispatch by
+<Sym id="function:rest_filter_response_fields" />, so a callback never needs to handle it:
+
+<Example id="rest-api/rest_filter_response_fields/example" />
+
+## Controllers
+
+WordPress's own routes are organized into **controllers**, classes that extend <Sym id="class:WP_REST_Controller" />.
+A controller has a namespace and a base path, registers its routes, and supplies the five standard callbacks (list,
+read, create, update, delete), each with a permission check, plus one schema for its items:
+
+<Example id="rest-api/class--WP_REST_Controller--register_routes/example" />
+
+<Sym id="class:WP_REST_Posts_Controller" /> serves every post type that is shown in REST, at its own base path. It
+creates, lists and deletes posts through the same functions PHP code uses, so hooks and caches stay in step:
+
+<Example id="rest-api/class--WP_REST_Posts_Controller--create_item/example" />
+
+Its permission checks mirror the site's rules. A draft is hidden from visitors, and a password-protected post's
+content stays empty until the password is given:
+
+<Example id="rest-api/class--WP_REST_Posts_Controller--get_item_permissions_check/example" />
+
+To add data to another controller's responses, such as a field on posts, use <Sym id="function:register_rest_field" />
+rather than a route of your own. The controller then reads and writes your field as it prepares and saves each item:
+
+<Example id="rest-api/register_rest_field/example" />
+
+The REST API seam isn't ported to SpeedySpec yet, so this guide makes no promise about how routes behave there.

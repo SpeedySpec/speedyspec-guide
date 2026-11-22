@@ -5,5 +5,11 @@ switch_to_blog( $site );
 wp_update_site( $site, array( 'archived' => 1 ) );
 $super = ms_site_check();
 wp_set_current_user( 0 );
-add_filter( 'wp_die_handler', fn() => function ( $message, $title = '', $args = array() ) { throw new RuntimeException( wp_strip_all_tags( is_wp_error( $message ) ? $message->get_error_message() : $message ) ); } );
+function guide_throw_die_message( $message, $title = '', $args = array() ) {
+	throw new RuntimeException( wp_strip_all_tags( is_wp_error( $message ) ? $message->get_error_message() : $message ) );
+}
+function guide_die_handler( $handler ) {
+	return 'guide_throw_die_message';
+}
+add_filter( 'wp_die_handler', 'guide_die_handler' );
 try { ms_site_check(); } catch ( RuntimeException $e ) { return array( $super, $e->getMessage() ); }

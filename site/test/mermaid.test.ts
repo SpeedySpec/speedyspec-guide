@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, test } from 'bun:test';
 import { join } from 'node:path';
 import { type GuideData, readGuideData } from '../src/model/data.ts';
 import { architectureDiagram, escapeLabel, seamDiagram } from '../src/model/mermaid.ts';
-import { renderMermaid } from '../src/model/render-mermaid.ts';
+import { findMermaidCli, renderMermaid } from '../src/model/render-mermaid.ts';
 import { seamView } from '../src/model/views.ts';
 
 const fixtures = join(import.meta.dir, 'fixtures');
@@ -119,5 +119,23 @@ describe('a seam many seams depend on', () => {
     // One link from each other seam, to the member it uses most, counting all of its links.
     const fromS0 = code!.split('\n').filter((l) => /^ {2}n\d+ -->\|"calls 3"\| n\d+$/.test(l));
     expect(fromS0.length).toBe(160);
+  });
+});
+
+describe('findMermaidCli', () => {
+  const site = join(import.meta.dir, '..');
+  const cli = join(site, 'src', 'model', 'mermaid-cli.ts');
+
+  test('test_finds_cli_beside_the_sources', () => {
+    expect(findMermaidCli(join(site, 'src', 'model', 'render-mermaid.ts'))).toBe(cli);
+  });
+
+  test('test_finds_cli_from_a_bundled_chunk_at_any_depth', () => {
+    expect(findMermaidCli(join(site, 'node_modules', '.astro', 'chunks', 'deep', 'render.mjs'))).toBe(cli);
+    expect(findMermaidCli(join(site, 'dist', '.prerender', 'chunks', 'render.mjs'))).toBe(cli);
+  });
+
+  test('test_finds_cli_from_the_repo_root', () => {
+    expect(findMermaidCli(join(site, '..', 'x.mjs'))).toBe(cli);
   });
 });

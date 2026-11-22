@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'partial',\n  1 => 'unsynced',\n)",
+ "error": null
+}

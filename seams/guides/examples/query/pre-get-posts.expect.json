@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'main query, home' => 3,\n  'found in all' => 5,\n  'a secondary query' => 5,\n)",
+ "error": null
+}

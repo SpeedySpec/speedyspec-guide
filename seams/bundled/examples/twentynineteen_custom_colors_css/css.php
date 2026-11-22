@@ -4,6 +4,9 @@ guide_theme( 'twentynineteen' );
 require_once get_template_directory() . '/inc/color-patterns.php';
 set_theme_mod( 'primary_color', 'custom' );
 set_theme_mod( 'primary_color_hue', 10 );
-add_filter( 'twentynineteen_custom_colors_lightness', fn() => 40 );
+function guide_custom_colors_lightness( $lightness ) {
+	return 40;
+}
+add_filter( 'twentynineteen_custom_colors_lightness', 'guide_custom_colors_lightness' );
 $css = twentynineteen_custom_colors_css();
 return array( str_contains( $css, 'hsl( 10, 100%, 40% )' ), str_contains( $css, '::selection' ) );

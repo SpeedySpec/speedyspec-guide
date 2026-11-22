@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<themes>/twentytwentyone/search.php'",
+ "error": null
+}

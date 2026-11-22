@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'video.png',\n  1 => 'default.png',\n)",
+ "error": null
+}

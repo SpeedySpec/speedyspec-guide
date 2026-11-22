@@ -1,0 +1,11 @@
+---
+symbol: "function:validate_current_theme"
+---
+
+## Behaviour
+
+Hooked to setup_theme: switches back to the default theme when the active one is broken (no index.php or missing parent), for front-end requests. <Ev source="wp:wp-includes/theme.php#L898-L948" hash="d6f6f2d0ba7c3d408d9553056e494b4abc99479a1e688a4b4be8ff4c217f0593"/>
+
+## Override
+
+`validate_current_theme` filters it.

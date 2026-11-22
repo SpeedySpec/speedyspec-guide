@@ -1,0 +1,11 @@
+---
+symbol: "function:register_core_block_style_handles"
+---
+
+## Behaviour
+
+Hooked to init: registers the style handles of every core block from their metadata, without reading each block.json. <Ev source="wp:wp-includes/blocks/index.php#L29-L143" hash="0a998723657008a6c1616384f2cc6a4970a3749b0ef1e899a4fc750893b7236f"/>
+
+## Override
+
+`block_type_metadata` filters it.

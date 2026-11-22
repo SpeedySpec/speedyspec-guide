@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'Dune' => \n  array (\n    0 => '100% Dune',\n    1 => 'Dune',\n    2 => 'Dune Messiah',\n  ),\n  'hostile' => \n  array (\n  ),\n  '100%' => \n  array (\n    0 => '100% Dune',\n  ),\n)",
+ "error": null
+}

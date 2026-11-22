@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => '<a href=\"http://example.org/wp-login.php?redirect_to=%2Fback\">Log in</a>',\n)",
+ "error": null
+}

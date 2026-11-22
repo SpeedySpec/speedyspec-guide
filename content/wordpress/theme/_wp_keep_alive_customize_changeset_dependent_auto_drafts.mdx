@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_keep_alive_customize_changeset_dependent_auto_drafts"
+---
+
+## Behaviour
+
+Hooked to transition_post_status: when a changeset is saved as a draft or scheduled, refreshes the dates of the auto-drafts it made, so they aren't deleted with old auto-drafts. <Ev source="wp:wp-includes/theme.php#L3891-L3953" hash="858de9fd939ea08486f47ff752bea4130d05c4b09be5a82531277befe1abccb3"/>
+
+## Override
+
+Not overridable.
