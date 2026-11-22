@@ -4,6 +4,6 @@
  ],
  "multisite": true,
  "output": "",
- "return": "array (\n  0 => true,\n  1 => false,\n)",
+ "return": null,
  "error": null
 }

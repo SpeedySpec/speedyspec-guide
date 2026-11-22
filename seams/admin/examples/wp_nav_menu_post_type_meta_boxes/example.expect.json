@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "array (\n  0 => 'add-post-type-post',\n)",
+ "return": null,
  "error": null
 }

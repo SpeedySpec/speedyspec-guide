@@ -4,6 +4,6 @@
  ],
  "multisite": true,
  "output": "",
- "return": "'tea4'",
+ "return": null,
  "error": null
 }

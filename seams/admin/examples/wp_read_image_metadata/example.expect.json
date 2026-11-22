@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "array (\n  0 => 'aperture',\n  1 => 'credit',\n  2 => 'camera',\n  3 => 'caption',\n  4 => 'created_timestamp',\n  5 => 'copyright',\n  6 => 'focal_length',\n  7 => 'iso',\n  8 => 'shutter_speed',\n  9 => 'title',\n  10 => 'orientation',\n  11 => 'keywords',\n  12 => 'alt',\n)",
+ "return": null,
  "error": null
 }

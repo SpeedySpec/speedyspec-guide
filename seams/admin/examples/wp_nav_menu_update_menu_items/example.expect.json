@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "'Documentation'",
+ "return": null,
  "error": null
 }

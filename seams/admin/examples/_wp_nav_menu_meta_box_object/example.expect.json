@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "array (\n  0 => 'page',\n  1 => \n  array (\n    'orderby' => 'menu_order title',\n    'post_status' => 'publish',\n  ),\n)",
+ "return": null,
  "error": null
 }

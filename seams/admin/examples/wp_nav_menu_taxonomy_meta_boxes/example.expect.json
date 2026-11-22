@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "array (\n  0 => 'add-category',\n  1 => 'add-post_tag',\n)",
+ "return": null,
  "error": null
 }

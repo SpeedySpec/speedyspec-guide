@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "array (\n  0 => 400,\n  1 => 300,\n  2 => \n  array (\n    0 => 'medium',\n    1 => 'thumbnail',\n  ),\n)",
+ "return": null,
  "error": null
 }

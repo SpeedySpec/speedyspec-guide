@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "array (\n  0 => 'Lake',\n  1 => 'A calm lake',\n  2 => 'site-icon',\n)",
+ "return": null,
  "error": null
 }
