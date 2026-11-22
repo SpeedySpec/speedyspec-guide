@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/archives',\n  1 => 'Archives',\n  2 => 'render_block_core_archives',\n)",
+ "error": null
+}

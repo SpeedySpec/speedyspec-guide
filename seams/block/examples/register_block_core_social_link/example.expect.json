@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/social-link',\n  1 => 'Social Icon',\n  2 => 'render_block_core_social_link',\n)",
+ "error": null
+}

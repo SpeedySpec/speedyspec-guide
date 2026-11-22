@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/legacy-widget',\n  1 => 'Legacy Widget',\n  2 => 'render_block_core_legacy_widget',\n)",
+ "error": null
+}

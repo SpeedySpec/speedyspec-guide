@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/search',\n  1 => 'Search',\n  2 => 'render_block_core_search',\n)",
+ "error": null
+}

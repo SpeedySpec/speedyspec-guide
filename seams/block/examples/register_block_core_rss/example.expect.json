@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/rss',\n  1 => 'RSS',\n  2 => 'render_block_core_rss',\n)",
+ "error": null
+}

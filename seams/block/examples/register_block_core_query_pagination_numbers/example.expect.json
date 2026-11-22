@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/query-pagination-numbers',\n  1 => 'Page Numbers',\n  2 => 'render_block_core_query_pagination_numbers',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/site-logo',\n  1 => 'Site Logo',\n  2 => 'render_block_core_site_logo',\n)",
+ "error": null
+}

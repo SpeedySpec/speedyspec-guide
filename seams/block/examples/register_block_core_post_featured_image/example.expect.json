@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'core/post-featured-image',\n  1 => 'Featured Image',\n  2 => 'render_block_core_post_featured_image',\n)",
+ "error": null
+}
