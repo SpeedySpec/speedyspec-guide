@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "signup_header\n",
+ "return": "NULL",
+ "error": null
+}

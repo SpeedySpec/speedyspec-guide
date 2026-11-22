@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'<h2> Congratulations! Your new site, <a href=\\'//example.org/graceblog/\\'>Grace</a>, is almost ready. </h2> <p>But, before you can start using your site, <strong>you must activate it</strong>.</p> <p> Check your inbox at <strong>grace@example.org</strong> and click on the given link. </p> <p>If you do not activate your site within two days, you will have to sign up again.</p> <h2>Still waiting for y'",
+ "error": null
+}

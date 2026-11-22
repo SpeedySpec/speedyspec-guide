@@ -1,0 +1,11 @@
+---
+symbol: "function:validate_another_blog_signup"
+---
+
+## Behaviour
+
+Validates the posted site for the logged-in user (ending the request when no one is logged in); with errors it shows the form again and returns `false`. Otherwise it creates the site at once with `wpmu_create_blog()`, confirms it, and returns `true`. It is declared in `wp-signup.php`. <Ev source="wp:wp-signup.php#L449-L525" hash="bd4f447e27a864c5231162d11ba7cba5d52d7fb271e126e2b663e651e91652c8"/>
+
+## Override
+
+`add_signup_meta` (and the deprecated `signup_create_blog_meta`) change the new site's meta.

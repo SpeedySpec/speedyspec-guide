@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'<style> .mu_register { width: 90%; margin: 0 auto; text-align: start; padding: 24px; box-sizing: border-box; } .mu_regis'",
+ "error": null
+}

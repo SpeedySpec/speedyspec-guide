@@ -1,0 +1,11 @@
+---
+symbol: "function:signup_another_blog"
+---
+
+## Behaviour
+
+Prints the form a logged-in user fills to create another site: a welcome, the sites they belong to, and the site fields. It is declared in `wp-signup.php`. <Ev source="wp:wp-signup.php#L350-L433" hash="a88d69702f45e2c11efd66c26d4efb5acc111731e4bff7fa20cbf3ca8ee40f81"/>
+
+## Override
+
+`signup_another_blog_init` changes the defaults; `signup_hidden_fields` fires in the form.

@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'<h2> grace is your new username </h2> <p>But, before you can start using your new username, <strong>you must activate it</strong>.</p> <p> Check your inbox at <strong>grace@example.org</strong> and click on the given link. </p> <p>If you do not activate your username within two days, you will have to sign up again.</p>'",
+ "error": null
+}

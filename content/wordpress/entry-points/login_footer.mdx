@@ -1,0 +1,11 @@
+---
+symbol: "function:login_footer"
+---
+
+## Behaviour
+
+Closes the login page: outside an interim login, the link back to the site and the privacy policy link; the language switcher when languages are installed; a script that focuses an input when one is named; and the `login_footer` action. It is declared in `wp-login.php`. <Ev source="wp:wp-login.php#L325-L444" hash="a2259c68c503f45f73d47737055535c137a42d8bd2a8722b87b2546bd96b4255"/>
+
+## Override
+
+`login_site_html_link`, `login_display_language_dropdown` and `login_language_dropdown_args` filter its parts; `login_footer` fires at the end.

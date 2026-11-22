@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'<h2>Get <em>another</em> Guide Network site in seconds</h2> <p> Welcome back, Ada. By filling out the form below, you can <strong>add another site to your account</strong>. There is no limit to the number of sites you can have, so create to your heart&#8217;s content, but write responsibly! </p> <p>Sites you are already a member of:</p> <ul> <li><a href=\"http://example.org\">http://example.org</a></li> </ul> <p>If you are not going to use a great site domain, leave it for a new user. Now have at it!</p> <form id=\"setupform\" method=\"post\" action=\"wp-signup.php\"> <input type=\"hidden\" name=\"stage\" value=\"gimmeanotherblog\" /> <label for=\"blogname\">Site Name (subdirectory only)</label><div class=\"wp-signup-blogname\"><span class=\"prefix_address\" id=\"prefix-address\">example.org/</span><input name=\"blogname\" type=\"text\" id=\"blogname\" value=\"second\" maxlength=\"60\" autocomplete=\"off\" required=\"requ'",
+ "error": null
+}

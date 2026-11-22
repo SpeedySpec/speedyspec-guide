@@ -1,0 +1,11 @@
+---
+symbol: "function:validate_user_signup"
+---
+
+## Behaviour
+
+Validates the user step: with errors it shows it again; for a site signup it goes on to the site step; for a username only it stores the signup with `wpmu_signup_user()` and confirms it. Returns whether the signup finished. It is declared in `wp-signup.php`. <Ev source="wp:wp-signup.php#L683-L704" hash="734e1bdf836ad8ddd68994aa26b8fa29d4311c8882aa16162561a113b626c76b"/>
+
+## Override
+
+`add_signup_meta` changes the stored meta.

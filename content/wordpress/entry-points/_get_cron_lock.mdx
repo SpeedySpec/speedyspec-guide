@@ -1,0 +1,11 @@
+---
+symbol: "function:_get_cron_lock"
+---
+
+## Behaviour
+
+The `doing_cron` lock read fresh, so a cron run sees a lock another request just took: from the persistent object cache, forcing a fetch, or straight from the options table, skipping the option caches; `0` without one. It is declared in `wp-cron.php`. <Ev source="wp:wp-cron.php#L64-L82" hash="ea04cd6f141c7e4623c76d3bd788882370fd2e4dbcfe0aaa0e842c3fee0fd843"/>
+
+## Override
+
+Not overridable.

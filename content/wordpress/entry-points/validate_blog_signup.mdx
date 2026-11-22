@@ -1,0 +1,11 @@
+---
+symbol: "function:validate_blog_signup"
+---
+
+## Behaviour
+
+Validates the user, then the site; errors show the matching step again. Otherwise it stores the site signup with `wpmu_signup_blog()`, with its privacy and language as meta, and confirms it. Returns whether the signup finished. It is declared in `wp-signup.php`. <Ev source="wp:wp-signup.php#L807-L857" hash="814223c3086d59cdfcd69614b16e11940bc41775b405aa07c614000ea53775d5"/>
+
+## Override
+
+`add_signup_meta` changes the stored meta.

@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'<label for=\"user_name\">Username</label><p class=\"error\" id=\"wp-signup-username-error\">Taken.</p> <input name=\"user_name\" type=\"text\" id=\"user_name\" value=\"ada\" autocapitalize=\"none\" autocorrect=\"off\" maxlength=\"60\" autocomplete=\"username\" required=\"required\" aria-describedby=\"wp-signup-username-error wp-signup-username-description\" /> <p id=\"wp-signup-username-description\">(Must be at least 4 characters, lowercase letters and numbers only.)</p> <label for=\"user_email\">Email&nbsp;Address</label> <input name=\"user_email\" type=\"email\" id=\"user_email\" value=\"ada@example.org\" maxlength=\"200\" autocomplete=\"email\" required=\"required\" aria-describedby=\"wp-signup-email-description\" /> <p id=\"wp-signup-email-description\">Your registration email is sent to this address. (Double-check your email address before continuing.)</p> <!-- signup_extra_fields -->'",
+ "error": null
+}

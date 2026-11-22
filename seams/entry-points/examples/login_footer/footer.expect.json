@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<p id=\"backtoblog\"> <a href=\"http://example.org/\">&larr; Back to Guide</a> </p> </div> <!-- login_footer --> </body> </html>'",
+ "error": null
+}

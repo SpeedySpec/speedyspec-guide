@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'<h2> Get your own Guide Network account in seconds </h2> <form id=\"setupform\" method=\"post\" action=\"wp-signup.php\" novalidate=\"novalidate\"> <input type=\"hidden\" name=\"stage\" value=\"validate-user-signup\" /> <label for=\"user_name\">Username</label> <input name=\"user_name\" type=\"text\" id=\"user_name\" value=\"grace\" autocapitalize=\"none\" autocorrect=\"off\" maxlength=\"60\" autocomplete=\"username\" required=\"required\" aria-describedby=\"wp-signup-username-description\" /> <p id=\"wp-signup-username-description\">(Must be at least 4 characters, lowercase letters and numbers only.)</p> <label for=\"user_email\">Email&nbsp;Address</label> <input name=\"user_email\" type=\"email\" id=\"user_email\" value=\"grace@example.org\" maxlength=\"200\" autocomplete=\"email\" required=\"required\" aria-describedby=\"wp-signup-email-description\" /> <p id=\"wp-signup-email-description\">Your registration email is sent to this address. (Double-check your email address before continuing.)</p> <fieldset class=\"signup-options\"> <legend>Create a site or only a username:</legend> <p class=\"wp-signup-radio-buttons\"> <span class=\"wp-signup-radio-button\"> <input id=\"signupblog\" type=\"radio\" name=\"signup_for\" value=\"blog\" checked=\\'checked\\' /> <label class=\"checkbox\" for=\"signupblog\">Gimme a site!</label> </span> <span class=\"wp-signup-radio-button\"> <input id=\"signupuser\" type=\"radio\" name=\"signup_for\" value=\"user\" /> <label class=\"checkbox\" for=\"signupuser\">Just a username, please.</label> </span> </p> </fieldset> <p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"Next\" /></p> </form>'",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<!DOCTYPE html> <html lang=\"en-US\"> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /> <title>Log In &lsaquo; Guide &#8212; WordPress</title> <meta name=\\'referrer\\' content=\\'strict-origin-when-cross-origin\\' /> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" /> </head> <body class=\"login no-js login-action- wp-core-ui admin-color-modern locale-en-us\"> <script> document.body.className = document.body.className.replace(\\'no-js\\',\\'js\\'); </script> <h1 class=\"screen-reader-text\">Log In</h1> <div id=\"login\"> <h1 role=\"presentation\" class=\"wp-login-logo\"><a href=\"http://example.org/\">Powered by WordPress</a></h1> <p class=\"message\">Welcome</p> <div id=\"login_error\" class=\"notice notice-error\"><p>Wrong password.</p></div><div id=\"login-message\" class=\"notice notice-info message\"><p>You are now logged out.</p></div>'",
+ "error": null
+}

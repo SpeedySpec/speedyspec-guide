@@ -1,0 +1,11 @@
+---
+symbol: "function:validate_blog_form"
+---
+
+## Behaviour
+
+Validates the posted `blogname` and `blog_title` with `wpmu_validate_blog_signup()`, for the current user when logged in, and returns its result: the domain, path, name, title, user and errors. It is declared in `wp-signup.php`. <Ev source="wp:wp-signup.php#L265-L272" hash="918a1d0187218de8d9341e35b448c214f662288abc12a2eb12bbc9ceb4c277f4"/>
+
+## Override
+
+Through `wpmu_validate_blog_signup`.
