@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'after setting' => \n  array (\n    0 => 'Science fiction',\n  ),\n  'after appending' => \n  array (\n    0 => 'Fiction',\n    1 => 'Science fiction',\n  ),\n  'parent of sci-fi' => true,\n)",
+ "error": null
+}
