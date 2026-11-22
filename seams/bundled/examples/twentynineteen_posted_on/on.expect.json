@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<span class=\"posted-on\"><svg class=\"svg-icon\" width=\"16\" height=\"16\" aria-hidden=\"true\" role=\"img\" focusable=\"false\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><defs>\u2026</svg><a href=\"http://example.org/?p=1\" rel=\"bookmark\"><time class=\"entry-date published updated\" datetime=\"2026-03-01T09:00:00+00:00\">March 1, 2026</time></a></span>'",
+ "error": null
+}

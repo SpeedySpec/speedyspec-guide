@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'Category Archives: <span class=\"page-description\">News</span>'",
+ "error": null
+}

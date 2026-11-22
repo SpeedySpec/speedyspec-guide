@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "(object) array(\n   'authors' => \n  array (\n    0 => 1,\n    1 => 'ada@example.org',\n  ),\n   'responses' => '3',\n)",
+ "error": null
+}

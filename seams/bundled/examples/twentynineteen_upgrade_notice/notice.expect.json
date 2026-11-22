@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"error\"><p>Twenty Nineteen requires at least WordPress version 4.7. You are running version 4.6. Please upgrade and try again.</p></div>'",
+ "error": null
+}
