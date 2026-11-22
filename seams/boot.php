@@ -11,7 +11,8 @@ declare(strict_types=1);
  *  its default filters and `init`. Afterwards it does what an install would: the default options and roles, the
  *  Uncategorized category, and an administrator, `admin`, user 1, logged in. Cron is off, and every HTTP request an
  *  example doesn't answer itself (on `pre_http_request`) fails with `http_request_blocked`, so nothing leaves the
- *  machine: the site's own host, which `WP_HTTP_BLOCK_EXTERNAL` would let through, is a real domain. The seam's `seam.yaml` loads only `wp-includes/version.php` and sets
+ *  machine: the site's own host, which `WP_HTTP_BLOCK_EXTERNAL` would let through, is a real domain. The seam's
+ *  `seam.yaml` loads only `wp-includes/version.php` and sets
  *  `mysql: true`.
  *
  *  Options: siteurl and home `http://example.org`, blogname `Guide`, admin_email `admin@example.org`, plain
