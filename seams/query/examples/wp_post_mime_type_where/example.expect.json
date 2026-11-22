@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "' AND (post_mime_type LIKE \\'image/%\\' OR post_mime_type = \\'video/mp4\\') '",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_unique_post_slug"
+---
+
+## Behaviour
+
+A post slug made unique among its type (and parent for hierarchical types) by adding -2, -3 and so on, avoiding reserved feed and archive slugs; filtered by wp_unique_post_slug. <Ev source="wp:wp-includes/post.php#L5801-L5972" hash="7c9c25203663ff48d74d0d75bc5357e3675824f38075d20d05317bec94c35cba"/>
+
+## Override
+
+`pre_wp_unique_post_slug`, `wp_unique_post_slug_is_bad_attachment_slug`, `wp_unique_post_slug_is_bad_hierarchical_slug`, `wp_unique_post_slug_is_bad_flat_slug`, `wp_unique_post_slug` filter it.

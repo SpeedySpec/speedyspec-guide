@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_insert_post"
+---
+
+## Behaviour
+
+Inserts or updates a post from its fields: defaults filled, slug made unique, dates resolved, author, terms, meta (meta_input) and template saved; fires save_post, wp_insert_post and wp_after_insert_post. The ID, or 0 or an error. <Ev source="wp:wp-includes/post.php#L4839-L5545" hash="f0efe1c290ab8c167e597204c436a86f3f9a0e5d1618bd304857e9b9ba9a6ff9"/>
+
+## Override
+
+`wp_insert_post_empty_content`, `wp_insert_post_parent`, `add_trashed_suffix_to_trashed_posts`, `wp_insert_attachment_data`, `wp_insert_post_data` filter it; `pre_post_update`, `pre_post_insert`, `edit_attachment`, `attachment_updated`, `add_attachment`, `edit_post_{$post->post_type}`, `edit_post`, `post_updated`, `save_post_{$post->post_type}`, `save_post`, `wp_insert_post` fire.

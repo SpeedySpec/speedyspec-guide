@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Books',\n  1 => false,\n  2 => false,\n  3 => true,\n  4 => 'edit_posts',\n  5 => 'post_type_length_invalid',\n)",
+ "error": null
+}

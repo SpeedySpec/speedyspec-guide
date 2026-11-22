@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'( ( post_type = \\'post\\' AND ( post_status = \\'publish\\' OR post_status = \\'private\\' ) ) )'",
+ "error": null
+}

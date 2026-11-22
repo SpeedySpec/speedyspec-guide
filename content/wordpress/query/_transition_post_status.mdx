@@ -1,0 +1,11 @@
+---
+symbol: "function:_transition_post_status"
+---
+
+## Behaviour
+
+Hooked to transition_post_status: on first publish, adds pings and enclosures to do and runs do_pings when needed; updates the last post caches. <Ev source="wp:wp-includes/post.php#L8396-L8432" hash="f0c5ee5168e97292d907f7858fb328ea33f7aad780da8102e70b43de46b6a837"/>
+
+## Override
+
+`private_to_published` fires.

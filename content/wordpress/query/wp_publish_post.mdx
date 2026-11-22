@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_publish_post"
+---
+
+## Behaviour
+
+Publishes a post directly, firing the transition and save hooks without wp_insert_post()'s checks. <Ev source="wp:wp-includes/post.php#L5645-L5711" hash="2c94760c27de96b55c6ad344b50fd1319573d8c5cb243ec5a880604f1969d30c"/>
+
+## Override
+
+`edit_post_{$post->post_type}`, `edit_post`, `save_post_{$post->post_type}`, `save_post`, `wp_insert_post` fire.

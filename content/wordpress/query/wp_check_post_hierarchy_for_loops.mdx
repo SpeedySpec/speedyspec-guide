@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_check_post_hierarchy_for_loops"
+---
+
+## Behaviour
+
+Hooked to wp_insert_post_parent: the parent to save, 0 when it would make the post its own ancestor; a loop elsewhere in the tree is broken by detaching a member. <Ev source="wp:wp-includes/post.php#L8527-L8565" hash="60311011365a42f548b89f0177df80be5c99b8d90a81a82c96798d2c7a6d3c99"/>
+
+## Override
+
+Not overridable.

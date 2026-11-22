@@ -1,0 +1,11 @@
+---
+symbol: "function:_update_term_count_on_transition_post_status"
+---
+
+## Behaviour
+
+Hooked to transition_post_status: updates the term counts of a post whose status changed. <Ev source="wp:wp-includes/post.php#L8687-L8718" hash="c30735926a545dfa7e6f5d8320b3b968575b1b963aa3d05f3ffcd83a8fcb03ad"/>
+
+## Override
+
+`update_post_term_count_statuses` filters it.

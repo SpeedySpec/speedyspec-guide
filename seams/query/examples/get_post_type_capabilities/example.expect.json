@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'edit_post' => 'edit_book',\n  'read_post' => 'read_book',\n  'delete_post' => 'delete_book',\n  'edit_posts' => 'edit_books',\n  'edit_others_posts' => 'edit_others_books',\n  'delete_posts' => 'delete_books',\n  'publish_posts' => 'publish_books',\n  'read_private_posts' => 'read_private_books',\n  'read' => 'read',\n  'delete_private_posts' => 'delete_private_books',\n  'delete_published_posts' => 'delete_published_books',\n  'delete_others_posts' => 'delete_others_books',\n  'edit_private_posts' => 'edit_private_books',\n  'edit_published_posts' => 'edit_published_books',\n  'create_posts' => 'edit_books',\n)",
+ "error": null
+}

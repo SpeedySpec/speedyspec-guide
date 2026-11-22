@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => false,\n  2 => 'invalid_post_type',\n)",
+ "error": null
+}

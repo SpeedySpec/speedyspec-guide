@@ -1,0 +1,11 @@
+---
+symbol: "function:_reset_front_page_settings_for_post"
+---
+
+## Behaviour
+
+Hooked to before_delete_post and wp_trash_post: when the front page or posts page is deleted, resets the reading settings; unsticks deleted posts. <Ev source="wp:wp-includes/post.php#L4226-L4244" hash="c051e3393fdd0a1eae915ff1c2fa56a1d58919044f4fa1926814e5da01806a46"/>
+
+## Override
+
+Not overridable.
