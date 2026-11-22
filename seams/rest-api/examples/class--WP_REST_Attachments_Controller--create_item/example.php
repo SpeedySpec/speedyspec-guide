@@ -5,7 +5,10 @@ $request = new WP_REST_Request( 'POST', '/wp/v2/media' );
 $request->set_header( 'Content-Type', 'text/plain' );
 $request->set_header( 'Content-Disposition', 'attachment; filename="guide-notes.txt"' );
 $request->set_body( 'hello file' );
-add_filter( 'upload_mimes', fn( $m ) => $m + array( 'txt' => 'text/plain' ) );
+function guide_allow_txt( $mimes ) {
+	return $mimes + array( 'txt' => 'text/plain' );
+}
+add_filter( 'upload_mimes', 'guide_allow_txt' );
 $response = rest_get_server()->dispatch( $request );
 $data = $response->get_data();
 $result = array( $response->get_status(), $data['mime_type'], $data['media_type'], $data['title']['raw'], file_get_contents( get_attached_file( $data['id'] ) ) );
