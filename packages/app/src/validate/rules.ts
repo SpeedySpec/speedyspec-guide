@@ -276,18 +276,21 @@ export const GuideSymbolResolves: Rule = {
   },
 };
 
-/** A topic guide explains a seam that exists. */
+/** A topic guide explains a seam that exists; the guides' own example seam is no seam to explain. */
 export const GuideTopicSeamExists: Rule = {
   id: 'GuideTopicSeamExists',
   async check(ctx) {
-    const seams = new Set(ctx.seams.map((s) => s.id));
+    const seams = new Set(ctx.seams.map((s) => s.id).filter((id) => id !== 'guides'));
     return ctx.guides
       .filter((g) => g.kind === 'topic' && !seams.has(g.seam ?? ''))
       .map((g) => ({ rule: this.id, where: g.file, message: `is a topic guide for ${g.seam}, which is no seam` }));
   },
 };
 
-/** A guide has a title and a summary; a numbered track's files have an nn- prefix and no two share a number. */
+/**
+ * A guide has a title and a summary; a numbered track's files have an nn- prefix, and no two in a track share a
+ * number or a slug (they would share a page).
+ */
 export const GuideFrontAndOrder: Rule = {
   id: 'GuideFrontAndOrder',
   async check(ctx) {
@@ -296,6 +299,9 @@ export const GuideFrontAndOrder: Rule = {
     for (const g of ctx.guides) {
       if (g.title === '' || g.summary === '') f.push({ rule: this.id, where: g.file, message: 'needs a title and a summary' });
       if (g.kind === 'topic') continue;
+      for (const other of ctx.guides) {
+        if (other !== g && track(other) === track(g) && other.slug === g.slug) f.push({ rule: this.id, where: g.file, message: `shares slug ${g.slug} with ${other.file}` });
+      }
       if (g.order === undefined) {
         f.push({ rule: this.id, where: g.file, message: 'needs an nn- number prefix' });
         continue;

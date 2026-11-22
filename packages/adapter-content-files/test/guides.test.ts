@@ -37,6 +37,13 @@ describe('GuideFiles', () => {
     expect(guide!.symbols).toEqual(['function:get_option']);
   });
 
+  test('test_speedyspec_note_ids_are_symbols', async () => {
+    const [guide] = await new GuideFiles(content({
+      'guides/path/01-first.mdx': front('First') + 'It works there too. <OnSpeedySpecNote id="function:add_filter" />\n',
+    })).guides();
+    expect(guide!.symbols).toEqual(['function:add_filter']);
+  });
+
   test('test_missing_front_matter_is_empty_strings', async () => {
     const [guide] = await new GuideFiles(content({ 'guides/path/first.mdx': 'No front matter.\n' })).guides();
     expect(guide).toMatchObject({ title: '', summary: '', slug: 'first' });

@@ -83,6 +83,21 @@ describe('guide rules', () => {
     expect(f.filter((x) => x.rule === 'GuideTopicSeamExists')).toEqual([{ rule: 'GuideTopicSeamExists', where: 'guides/topics/nope.mdx', message: 'is a topic guide for nope, which is no seam' }]);
   });
 
+  test('guide_topic_for_the_guides_seam_fails', async () => {
+    const guidesSeam: Seam = { ...hooks, id: 'guides', name: 'Guides', ported: false };
+    const f = await runRules(ALL_RULES, await ctx({}, { seams: [hooks, guidesSeam], guides: [guide({ file: 'guides/topics/guides.mdx', kind: 'topic', slug: 'guides', seam: 'guides', order: undefined })] }));
+    expect(f.filter((x) => x.rule === 'GuideTopicSeamExists')).toEqual([{ rule: 'GuideTopicSeamExists', where: 'guides/topics/guides.mdx', message: 'is a topic guide for guides, which is no seam' }]);
+  });
+
+  test('guide_front_and_order_reports_shared_slugs', async () => {
+    const guides = [guide({}), guide({ file: 'guides/path/02-first.mdx', order: 2 })];
+    const f = (await runRules(ALL_RULES, await ctx({}, { guides }))).filter((x) => x.rule === 'GuideFrontAndOrder');
+    expect(f).toEqual([
+      { rule: 'GuideFrontAndOrder', where: 'guides/path/01-first.mdx', message: 'shares slug first with guides/path/02-first.mdx' },
+      { rule: 'GuideFrontAndOrder', where: 'guides/path/02-first.mdx', message: 'shares slug first with guides/path/01-first.mdx' },
+    ]);
+  });
+
   test('guide_front_and_order_reports_duplicates_on_both', async () => {
     const guides = [
       guide({}),

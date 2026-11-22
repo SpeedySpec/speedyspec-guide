@@ -50,6 +50,11 @@ describe('the developer guides', () => {
     expect(p.text('.guide-example .result-output')).toEqual(['Hello']);
   });
 
+  test('test_embed_shows_its_explanation', async () => {
+    const p = await html(dist, '/guides/path/first/');
+    expect(p.text('.guide-example .example-title')).toEqual(["A plugin's first hook."]);
+  });
+
   test('test_sym_links_nested_pages', async () => {
     const p = await html(dist, '/guides/path/first/');
     expect(p.attr('a.sym', 'href')).toEqual(['/wordpress/hooks/filter/the_content/']);

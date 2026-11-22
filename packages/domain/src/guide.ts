@@ -21,6 +21,6 @@ export interface Guide {
   summary: string;
   /** The ids of the examples it embeds, in page order. */
   examples: string[];
-  /** The ids of the symbols it links, in page order. */
+  /** The ids of the symbols it links or notes the SpeedySpec verdict of, in page order. */
   symbols: string[];
 }

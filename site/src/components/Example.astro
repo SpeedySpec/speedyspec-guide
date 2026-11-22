@@ -14,6 +14,7 @@ const view = embedView(id, await loadGuideData(), range ? [Number(range[1]), Num
 const sideName = { wordpress: 'WordPress', runtime: 'SpeedySpec' } as const;
 ---
 <figure class="guide-example">
+  <p class="example-title">{view.title}</p>
   <pre><code class="language-php">{view.code}</code></pre>
   <figcaption>
     {view.output !== '' && <div class="result">Prints <code class="result-output">{view.output}</code></div>}

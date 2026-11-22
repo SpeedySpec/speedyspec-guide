@@ -1,7 +1,7 @@
 /** What the developer guide pages show: the tracks in reading order, their URLs, and embedded examples and links. */
 import type { Guide, Side } from '@speedyspec-guide/domain';
 import type { GuideData } from './data.ts';
-import { exampleView, pageOf } from './views.ts';
+import { exampleView, pageOf, seamHref } from './views.ts';
 
 export interface GuideTracks {
   path: Guide[];
@@ -36,9 +36,17 @@ export function neighbours(g: Guide, d: Pick<GuideData, 'guides'>): { prev: Guid
   return { prev: i > 0 ? track[i - 1]! : null, next: i >= 0 && i < track.length - 1 ? track[i + 1]! : null };
 }
 
-/** The WordPress reference page of a symbol id (a method's is its class's, with an anchor), or null when it has none. */
+/**
+ * The reference page of a symbol id: its WordPress page, else its SpeedySpec page (a symbol only SpeedySpec has), or
+ * null when it has none. A method's page is its class's, with an anchor.
+ */
 export function symbolHref(id: string, d: GuideData): string | null {
-  return pageOf(id, 'wordpress', d);
+  return pageOf(id, 'wordpress', d) ?? pageOf(id, 'speedyspec', d);
+}
+
+/** The reference index a topic guide's seam has: the WordPress API's, or the SpeedySpec API's for a seam only it has. */
+export function topicReferenceHref(seam: string, d: GuideData): string {
+  return seamHref(seam, d);
 }
 
 export interface EmbedView {
