@@ -1,0 +1,11 @@
+---
+symbol: "function:wpmu_delete_user"
+---
+
+## Behaviour
+
+Deletes a user from the whole network: removes them from every site, reassigning or deleting their posts, and deletes them. <Ev source="wp:wp-admin/includes/ms.php#L145-L214" hash="b7aace46499ee8ca4ebf77e28313c222581a938a93f49ee3d0f15d744d576d2a"/>
+
+## Override
+
+`wpmu_delete_user`, `deleted_user` fire.

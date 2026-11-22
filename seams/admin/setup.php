@@ -28,6 +28,7 @@ require_once ABSPATH . 'wp-admin/includes/update-core.php';
 require_once ABSPATH . 'wp-admin/includes/ajax-actions.php';
 require_once ABSPATH . 'wp-admin/includes/dashboard.php';
 require_once ABSPATH . 'wp-admin/includes/meta-boxes.php';
+require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
 
 /** Runs a function that prints and gives back what it printed, each run of whitespace collapsed to one space. */
 function guide_render(callable $print): string
@@ -159,4 +160,26 @@ function guide_admin_menu(): void
         $submenu_file, $plugin_page, $typenow, $pagenow;
     $pagenow = $pagenow ?: 'index.php';
     require ABSPATH . 'wp-admin/menu.php';
+}
+
+/**
+ * Uploads a real PNG as an attachment with its metadata generated; the example deletes it with
+ * wp_delete_attachment( $id, true ), which removes its files.
+ *
+ * @param string $name
+ *   A file name unique to the example.
+ * @param int $width
+ *   The image's width.
+ * @param int $height
+ *   The image's height.
+ */
+function guide_image_attachment(string $name, int $width = 400, int $height = 300): int
+{
+    $file = wp_upload_dir()['path'] . "/{$name}.png";
+    $image = imagecreatetruecolor($width, $height);
+    imagefill($image, 0, 0, imagecolorallocate($image, 40, 120, 90));
+    imagepng($image, $file);
+    $id = wp_insert_attachment(['post_title' => $name, 'post_mime_type' => 'image/png'], $file);
+    wp_update_attachment_metadata($id, wp_generate_attachment_metadata($id, $file));
+    return $id;
 }

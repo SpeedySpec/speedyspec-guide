@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_nav_menu_item_post_type_meta_box"
+---
+
+## Behaviour
+
+Prints a post type's Add menu items box: Most Recent, View All and Search tabs of checkboxes. <Ev source="wp:wp-admin/includes/nav-menu.php#L414-L842" hash="3fa9e6ec5e3397b5ad58a30bacc9b48cf88d9836e146557d015037fc4619a2c7"/>
+
+## Override
+
+`nav_menu_items_{$post_type_name}_recent`, `nav_menu_items_{$post_type_name}` filter it.

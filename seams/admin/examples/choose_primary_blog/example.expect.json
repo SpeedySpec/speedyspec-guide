@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'<table class=\"form-table\" role=\"presentation\"> <tr> <th scope=\"row\"><label for=\"primary_blog\">Primary Site</label></th> <td> http://example.org </td> </tr> </table>'",
+ "error": null
+}

@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "'<strong> Used: 0% of 100 MB </strong>'",
+ "error": null
+}

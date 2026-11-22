@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'file' => '/uploads/photo-scaled.jpg',\n  'width' => 2560,\n  'height' => 1707,\n  'filesize' => 0,\n  'original_image' => 'photo.jpg',\n)",
+ "error": null
+}
