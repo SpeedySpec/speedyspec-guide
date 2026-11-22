@@ -1,0 +1,77 @@
+---
+title: Adding a REST endpoint
+summary: Give your plugin a REST route of its own, with a permission check, validated and sanitized arguments, and honest status codes.
+---
+
+The **REST API** lets JavaScript in the browser, a mobile app or another site talk to WordPress over HTTP, sending and
+receiving JSON. WordPress serves its own posts, users and settings this way at `/wp-json/`. Your plugin can add
+routes of its own, for a block that loads data, a button that saves without reloading the page, or another service
+that sends updates. For new work, prefer a REST route over the older `admin-ajax.php` approach: routes are
+self-describing and validate their own input.
+
+## A route of your own
+
+Register routes on the <Sym id="action:rest_api_init" /> action with <Sym id="function:register_rest_route" />. A
+route has a **namespace** (your plugin's slug and a version, `my-plugin/v1`), a path, and one entry per HTTP method.
+Each entry has its own callback, permission check and arguments:
+
+<Example id="guides/adding-a-rest-endpoint/register-a-route" />
+
+The version in the namespace lets you change the route's shape later as `v2`, while `v1` keeps working for the code
+that already uses it. `WP_REST_Server::READABLE` and `CREATABLE` stand for `GET` and `POST`. The example's
+`guide_send()` sends requests from PHP with <Sym id="function:rest_do_request" />. It goes through the same checks
+as a request from outside, and shows what a client would get. <OnSpeedySpecNote id="function:register_rest_route" />
+
+## Permission first, always
+
+Every route needs a `permission_callback`, and WordPress warns developers when one is missing. It runs before your
+callback, so your code never runs for someone who isn't allowed. Check a capability, as everywhere else. Use
+`__return_true` only for data you would happily show to anyone, like the public list here:
+
+<Example id="guides/adding-a-rest-endpoint/permission-denied-logged-out" />
+
+A visitor who isn't logged in got `401`, meaning "who are you?", and a subscriber got `403`, meaning "you may not".
+Nothing was created. Anyone could read the list.
+
+From the browser, WordPress knows who is logged in only when the request carries a REST nonce, made with
+<Sym id="function:wp_create_nonce" /> for the action `wp_rest` and sent in an `X-WP-Nonce` header. Without one, a
+cookie-authenticated request counts as logged out. That stops other sites from using a visitor's login to call your
+routes. The `wp-api-fetch` script adds the header for you.
+
+## Arguments: validate, then sanitize
+
+List every argument a route accepts, with its `type`, and whether it is `required`. The REST server checks the types
+and limits before your callback runs. Add a `validate_callback` for rules a type can't express, and a
+`sanitize_callback` to clean what passes:
+
+<Example id="guides/adding-a-rest-endpoint/invalid-argument" />
+
+Each refusal was a `400` with a code and a message saying which argument failed and why. Your callback didn't run for
+any of them. Once an argument has passed, the sanitize callback cleans it:
+
+<Example id="guides/adding-a-rest-endpoint/sanitized-argument" />
+
+The callback received `Dune`, without the script or the spaces, so it never handles raw input. Read arguments from
+the <Sym id="class:WP_REST_Request" /> object, `$request['title']`, never from `$_POST` or `$_GET`, which skip these
+checks.
+
+## Answering with the right status
+
+Return data with <Sym id="function:rest_ensure_response" />, or a <Sym id="class:WP_REST_Response" /> when the status
+should be something other than `200`, such as `201 Created`. When the request can't be done, return a `WP_Error`
+with a `status`: the server turns it into a JSON error with that code.
+
+<Example id="guides/adding-a-rest-endpoint/success-response" />
+
+The first request created the book (`201`), the second was refused as a conflict (`409`) with a translated message,
+and the list shows the one book. Clients rely on these codes to tell success from failure, so choose them honestly
+rather than answering `200` with an error inside.
+
+## Growing beyond one route
+
+When your plugin has several routes for one kind of thing, put them in a class that extends
+<Sym id="class:WP_REST_Controller" />. It gives you one place for the routes, the permission checks and a schema that
+describes your data to clients. The REST API seam's reference documents WordPress's own controllers, which are worked
+examples of the pattern.
+
+The REST API seam isn't ported to SpeedySpec yet, so this guide makes no promise about how routes behave there.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'created' => \n  array (\n    'status' => 201,\n    'data' => \n    array (\n      'title' => 'Dune',\n    ),\n  ),\n  'duplicate' => \n  array (\n    0 => 409,\n    1 => 'my_plugin_book_exists',\n    2 => 'That book is already listed.',\n  ),\n  'list' => \n  array (\n    'status' => 200,\n    'data' => \n    array (\n      0 => 'Dune',\n    ),\n  ),\n)",
+ "error": null
+}
