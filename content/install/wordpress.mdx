@@ -1,0 +1,160 @@
+---
+title: Installing WordPress with the CLI
+summary: How speedyspec downloads and prepares WordPress, on a machine or on Kubernetes, and how to check the result.
+order: 20
+---
+
+This page needs `speedyspec` with the `speedyspec/wordpress` plugin; see [Installing the speedyspec CLI](/install/cli/).
+
+`speedyspec` downloads WordPress and writes its `wp-config.php`.
+It never runs WordPress.
+The rest of the setup, the site title and the admin user, is done in WordPress's own installer.
+
+## The install command
+
+```text
+speedyspec app install [<app>] [--part <id>]... [--driver <id>] [--base <dir>] [--name <install>] [--force] [--<option> <value>]...
+```
+
+The drivers are `zip`, for this machine, and `kubernetes`.
+The `wordpress` app offers both, so give `--driver`.
+Anything missing is asked for when stdin is a terminal and `--no-interaction` was not given.
+Otherwise the command fails and names what is missing; it never waits for input from a script.
+
+The `wordpress` app adds these options:
+
+| Option | Meaning | Default |
+| --- | --- | --- |
+| `--db-name` | Database name | required |
+| `--db-user` | Database user | required |
+| `--db-password` | Database password, read without echo when asked for | required |
+| `--db-host` | Database host | `localhost` |
+| `--table-prefix` | Table prefix | `wp_` |
+
+Give the app before its options.
+`speedyspec app install wordpress --help` lists them.
+
+## On this machine (zip)
+
+```bash
+speedyspec app install wordpress --driver zip --base /srv/blog --name blog \
+    --db-name blog --db-user blog --db-password '…' --db-host localhost --table-prefix wp_
+```
+
+The database and its user must exist already.
+
+What the command does, in order:
+
+1. It downloads `https://wordpress.org/latest.zip` over HTTPS.
+2. It unpacks the archive into a staging directory, then moves the files into `--base`.
+   `--base` defaults to the working directory.
+   A destination that already holds files is refused unless `--force` is given; `--force` replaces files of the same path and deletes nothing.
+3. It records the install as `blog` (`--name` defaults to the app's id) in `$SPEEDYSPEC_HOME/installs/blog.json`, or in the platform data directory's `speedyspec/installs`.
+4. It runs the setup: `wp-config.php` is made from the release's own `wp-config-sample.php`, with the database settings, the table prefix and fresh salts.
+   It keeps the sample's permissions so the web server can read it.
+
+On success it prints one line per destination: the destination and its absolute path, tab-separated.
+
+If setup fails, the command says where it stopped.
+Run the same command again to finish it: nothing is downloaded again, and setup starts at the task that failed.
+Running it again later leaves an existing `wp-config.php` as it is, since new salts would log everyone out.
+
+`SPEEDYSPEC_WORDPRESS_DOWNLOADS` replaces `https://wordpress.org` as the place `latest.zip` comes from.
+
+### Serving the site
+
+The site is served by the machine's own web server and PHP, for example php-fpm, pointed at the `--base` directory.
+Neither the CLI nor its WordPress plugin documents how to configure that web server.
+
+Once it serves the site, open it in a browser to run WordPress's installer: the site title and the admin user.
+Activate plugins and themes in wp-admin.
+
+## On Kubernetes
+
+```text
+speedyspec app install <app> --driver kubernetes --namespace <ns> [--name <install>] [--timeout 10m] [--force-conflicts]
+                             [--server <url> (--token-file <path|-> | SPEEDYSPEC_KUBE_TOKEN=...) [--ca-cert <pem> | --insecure-skip-tls-verify]]
+                             [--context <kubeconfig context>]
+```
+
+For example, with the cluster taken from your kubeconfig:
+
+```bash
+speedyspec app install wordpress --driver kubernetes --namespace web --name blog \
+    --db-name blog --db-user blog --db-password '…' --db-host mysql.web.svc
+```
+
+The cluster comes from `--server` and a token, or from your kubeconfig when neither is given (`--context` picks a context).
+The token is never a flag value: put it in `SPEEDYSPEC_KUBE_TOKEN`, or in a file named by `--token-file`.
+
+For WordPress, the plugin applies three resources named after the install:
+
+- a PersistentVolumeClaim, `<install>-files`, ReadWriteOnce, 2 GiB;
+- a Deployment of the official WordPress image (pinned by digest: WordPress 6.8 on PHP 8.3 with Apache), one replica, with the claim at `/var/www/html`;
+- a Service on port 80.
+
+No database is among them; it must exist already and be reachable from the cluster.
+
+The command waits up to `--timeout` for the Deployment to be ready.
+The image puts WordPress into the empty volume when its pod first starts.
+The CLI then writes `wp-config.php` there from a short-lived runner pod, so the database password is never in the Deployment.
+The install record is a Secret, `speedyspec-install-<install>`, in `--namespace`.
+
+The plugin creates no Ingress.
+How to reach the Service from outside the cluster is not documented.
+
+## Check that it works
+
+List the installs this machine knows (zip installs; Kubernetes installs keep their record in the cluster):
+
+```bash
+speedyspec app installs
+```
+
+It prints `name`, `app`, `driver` and `location`, tab-separated.
+
+Check the database `speedyspec` reads from the install's `wp-config.php`:
+
+```bash
+speedyspec app db tables --install blog
+speedyspec app db check --install blog
+```
+
+`tables` lists each table with its rows, data bytes and index bytes.
+`check` runs `CHECK TABLE` and exits 1 when a table is not `OK`.
+For a Kubernetes install, add the driver's connection flags and the namespace, for example `--namespace web`.
+No `mysql` client is needed.
+
+The tables exist only after WordPress's installer has run.
+
+## Plugins, themes and backups
+
+With `speedyspec/wordpress-org` installed, these fetch from wordpress.org:
+
+```bash
+speedyspec plugin install akismet --install blog
+speedyspec theme install twentytwentyfive --install blog
+```
+
+They place files only; activate them in wp-admin.
+`speedyspec app backup --install blog` writes one gzipped tar of the files and the database, and `speedyspec app restore` puts it back.
+The CLI's README describes both in full.
+
+## Upgrading WordPress
+
+Neither the CLI nor its WordPress plugin documents upgrading WordPress itself.
+`speedyspec plugin update` and `speedyspec theme update` update plugin and theme files.
+
+## Removing an install
+
+A Kubernetes install is removed with:
+
+```bash
+speedyspec app uninstall blog --namespace web
+```
+
+It shows what will go and asks to confirm (`--yes` skips the question).
+It warns when PersistentVolumeClaims, and so data, are among it.
+It deletes the recorded resources, the namespaces the install created, and then the record.
+
+The CLI documents no uninstall command for zip installs.

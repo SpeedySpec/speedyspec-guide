@@ -12,6 +12,7 @@ import { existsSync } from 'node:fs';
 import { join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
+import { type InstallPage, inReadingOrder, installPage } from './install.ts';
 import type { Sources } from './wording.ts';
 
 export type { CratesFile } from '@speedyspec-guide/app';
@@ -66,6 +67,8 @@ export interface GuideData {
   content: ContentEntry[];
   /** The developer guides under content/guides/. */
   guides: Guide[];
+  /** The installation guide's pages (content/install/*.mdx), in reading order. */
+  install: InstallPage[];
   /** sources.json: what the evidence links point at. */
   sources: Sources | null;
 }
@@ -133,6 +136,7 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
     seams,
     content: await readContent(dirs.content),
     guides: await new GuideFiles(dirs.content).guides(),
+    install: await readInstallPages(dirs.content),
     sources: (await Bun.file(dirs.sources).exists()) ? ((await Bun.file(dirs.sources).json()) as Sources) : null,
   };
 }
@@ -157,6 +161,17 @@ async function readContent(dir: string): Promise<ContentEntry[]> {
     }
   }
   return out.sort((a, b) => (a.file < b.file ? -1 : 1));
+}
+
+async function readInstallPages(dir: string): Promise<InstallPage[]> {
+  if (!existsSync(join(dir, 'install'))) return [];
+  const pages: InstallPage[] = [];
+  for await (const file of new Bun.Glob('install/*.mdx').scan({ cwd: dir })) {
+    const rel = file.split(sep).join('/');
+    const slug = rel.slice('install/'.length, -'.mdx'.length);
+    pages.push(installPage(slug, frontmatter(await Bun.file(join(dir, file)).text()), rel));
+  }
+  return inReadingOrder(pages);
 }
 
 /** The YAML between the first two `---` lines, or `{}`. */

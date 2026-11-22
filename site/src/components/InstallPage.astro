@@ -1,0 +1,40 @@
+---
+// One page of the installation guide: its MDX body, the pages before and after it, and on the first page the contents.
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { loadGuideData } from '../model/data.ts';
+import { INSTALL_INDEX, installNeighbours, installPath } from '../model/install.ts';
+
+interface Props {
+  slug: string;
+}
+const { slug } = Astro.props;
+const d = await loadGuideData();
+const page = d.install.find((p) => p.slug === slug) ?? null;
+const entry = page ? await getEntry('install', slug) : undefined;
+if (page && !entry) throw new Error(`no content entry for ${page.file}`);
+const Content = entry ? (await render(entry)).Content : null;
+const { previous, next } = installNeighbours(d.install, slug);
+const title = page?.title ?? 'Installing SpeedySpec';
+---
+<Base title={title} section="install">
+  <main class="page" data-pagefind-body>
+    {slug !== INSTALL_INDEX && <div class="crumbs"><a href="/install/">Installing SpeedySpec</a></div>}
+    <h1>{title}</h1>
+    {Content ? <div class="prose"><Content /></div> : <p class="not-written">Not written yet.</p>}
+    {slug === INSTALL_INDEX && d.install.length > 0 && (
+      <nav class="install-contents" aria-label="Installation guide">
+        <h2>In this guide</h2>
+        <ol>
+          {d.install.map((p) => <li><a href={installPath(p.slug)}>{p.title}</a>{p.summary && <span class="muted"> · {p.summary}</span>}</li>)}
+        </ol>
+      </nav>
+    )}
+    {(previous || next) && (
+      <nav class="install-pager" aria-label="Previous and next">
+        {previous ? <a class="previous" href={installPath(previous.slug)}>← {previous.title}</a> : <span />}
+        {next && <a class="next" href={installPath(next.slug)}>{next.title} →</a>}
+      </nav>
+    )}
+  </main>
+</Base>

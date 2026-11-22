@@ -127,6 +127,9 @@ Hand-written pages are MDX: `content/<wordpress|speedyspec>/<seam>/<slug>.mdx` w
 In them, `<Ev …/>` cites evidence and `<Changed version="…">` records a change. Examples render from
 `seams/<seam>/examples/`.
 
+The installation guide is `content/install/<slug>.mdx`, apart from the seams, with `title:`, `order:` and
+`summary:` in the front matter. It is served at `/install/` (the page `index.mdx`) and `/install/<slug>/`, in `order`.
+
 `docker build -f site/Dockerfile .` builds an image serving the site.
 
 First real build (2026-11-20): 61 pages in 4 seconds, 57 of them indexed for search.

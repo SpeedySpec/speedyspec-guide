@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Guide',\n  1 => 'http://example.org',\n  2 => \n  array (\n    0 => 'oembed/1.0',\n    1 => 'wp/v2',\n    2 => 'wp-site-health/v1',\n  ),\n  3 => true,\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => \n    array (\n      0 => 'Find me',\n      1 => 'post',\n      2 => 'post',\n    ),\n  ),\n  1 => \n  array (\n    0 => \n    array (\n      0 => 'Findable',\n      1 => 'category',\n    ),\n  ),\n  2 => 'post',\n  3 => \n  array (\n    0 => 'post',\n    1 => 'page',\n  ),\n)",
+ "error": null
+}

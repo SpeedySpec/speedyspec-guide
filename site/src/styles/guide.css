@@ -145,3 +145,7 @@ table.conversion td + td { text-align: right; }
 .guide-prose h2 { margin-top: 2rem; }
 .guide .summary { font-size: 1.0625rem; color: var(--muted); margin-top: -0.25rem; }
 .guide-prose .ev { white-space: normal; overflow-wrap: anywhere; }
+/* The installation guide. */
+.install-contents ol { padding-left: 1.25rem; }
+.install-contents li { margin: 0.25rem 0; }
+.install-pager { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.875rem; }

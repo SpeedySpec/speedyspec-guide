@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 201,\n  1 => \n  array (\n    0 => 'self',\n    1 => 'author',\n  ),\n  2 => \n  array (\n    'embeddable' => true,\n  ),\n  3 => \n  array (\n    'fields' => true,\n    'embed' => false,\n    'links' => false,\n  ),\n  4 => false,\n)",
+ "error": null
+}

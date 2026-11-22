@@ -1,0 +1,66 @@
+---
+title: Building from source
+summary: The static PHP build, and building and testing each project.
+order: 40
+---
+
+Both projects embed a static PHP, built from the version in their `php-version` file (8.5.12 in the versions these pages describe).
+Each has a `scripts/build-php.sh` that builds it with static-php-cli into `.php-build/`.
+The build is slow and runs once.
+
+`scripts/build-php.sh` downloads a pinned static-php-cli binary for the host: macOS or Linux, on arm64 or x86_64.
+By default it installs nothing outside the repository: a missing build tool is reported with an install hint, and the script fails.
+Set `SPEEDYSPEC_ALLOW_HOST_INSTALL=1` to let it install them (Homebrew on macOS, the distribution's package manager on Linux).
+
+The CLI's workspace sets Rust 1.99 as its minimum, and the server's `Dockerfile` builds with `rust:1.99-alpine`.
+
+## speedyspec
+
+```bash
+scripts/fetch-contracts.sh          # once per pin: the contracts into .contracts/
+scripts/build-php.sh                # once: builds the static PHP into .php-build/ (slow)
+cargo build --release -p speedyspec-cli
+./target/release/speedyspec --version
+cargo test --workspace
+scripts/linux.sh cargo test --workspace   # the same, in a Linux (musl) container
+scripts/smoke.sh target/release/speedyspec  # the checks a release binary must pass
+```
+
+The binary embeds one release of the plugin contracts, pinned in `contracts-version` with its URL and SHA-256.
+`scripts/fetch-contracts.sh` downloads and checks it; the build stops with a message if it has not been fetched.
+The CLI's `docs/php-embed.md` explains how PHP is built, linked and embedded.
+
+For Kubernetes installs, the runner pod normally gets this release's binary from GitHub.
+A development build has no release, so `--runner-binary <file>` gives the pod a build of your own.
+
+## speedyspec-server
+
+```bash
+scripts/build-php.sh                                   # once: the static PHP, into .php-build/
+cargo test --workspace --features speedyspec-server/test-hooks
+```
+
+On Linux musl, run both through the container script: `scripts/linux-php.sh scripts/build-php.sh`, then `scripts/linux-php.sh cargo test …`.
+
+The static PHP goes into the PHP runtime, not the server.
+The server builds without it; `scripts/check-no-php-in-server.sh` checks that it holds none.
+The server's tests start the runtime's workers, so they run only where PHP is built.
+
+The runtime's PHP has every extension WordPress's Site Health checks for, and what WordPress otherwise relies on:
+
+```text
+bcmath ctype curl dom exif fileinfo filter gd iconv imagick intl mbstring mysqli mysqlnd opcache openssl pdo
+pdo_mysql pdo_sqlite phar session simplexml sodium sqlite3 tokenizer xml xmlreader xmlwriter zip zlib
+```
+
+gd is built with JPEG, PNG, WebP, AVIF and FreeType support.
+`cargo test -p speedyspec-php --test extensions` checks that every one loads.
+
+The README gives no command for building the release binaries of the server or the runtime.
+The `Dockerfile` builds the server with `cargo build --release -p speedyspec-server`:
+
+```bash
+docker build -t speedyspec-server .
+```
+
+`test-hooks` is a test-only feature and is never on in a release build.
