@@ -29,6 +29,12 @@ describe('the developer guides', () => {
     expect(p.text('h2')).toEqual(['Learning path', 'Topics', 'Contributing']);
   });
 
+  test('test_index_says_when_a_track_is_empty', async () => {
+    const p = await html(dist, '/guides/');
+    expect(p.count('.guide-contributing-speedyspec')).toBe(0);
+    expect(p.text('.guide-empty')).toEqual(['No guides for contributing to SpeedySpec yet.']);
+  });
+
   test('test_path_orders_by_number_then_slug', async () => {
     const first = await html(dist, '/guides/path/first/');
     expect(first.attr('.guide-next a', 'href')).toEqual(['/guides/path/second/']);

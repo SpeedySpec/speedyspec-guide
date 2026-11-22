@@ -22,9 +22,11 @@ const verdicts: [SpeedySpecVerdict, string][] = [
     <section class="home-guides">
       <h2>Guides</h2>
       <p>Start with the learning path, then read the topic guides for the parts of WordPress your plugin uses.</p>
-      <ol class="home-path">
-        {tracks.path.map((g) => <li><a href={guidePath(g)}>{g.title}</a> <span class="muted">{g.summary}</span></li>)}
-      </ol>
+      {tracks.path.length > 0 ? (
+        <ol class="home-path">
+          {tracks.path.map((g) => <li><a href={guidePath(g)}>{g.title}</a> <span class="muted">{g.summary}</span></li>)}
+        </ol>
+      ) : <p class="guide-empty">No learning path guides yet. The reference below documents every function meanwhile.</p>}
       <p><a href="/guides/">All guides</a>: the learning path, topics, and contributing to WordPress and SpeedySpec.</p>
     </section>
     <section class="home-reference">
