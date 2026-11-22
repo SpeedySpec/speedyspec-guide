@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'on the posts screen' => false,\n  'on its settings screen' => true,\n)",
+ "error": null
+}

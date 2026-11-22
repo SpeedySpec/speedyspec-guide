@@ -1,0 +1,75 @@
+---
+title: Loading scripts and styles
+summary: Enqueue your JavaScript and CSS instead of printing tags, only where they are needed, with versions, dependencies and safely passed data.
+---
+
+Most plugins ship some JavaScript or CSS: a stylesheet for their admin screen, a script for a front-end widget. Never
+print `<script>` or `<link>` tags yourself. Hand each file to WordPress instead: **register** it with a name (its
+**handle**), its address, what it depends on and its version, then **enqueue** it where it is needed. WordPress then
+prints every file once, in the right order, in the right place. Other plugins and themes can see, move or remove it,
+and caching and optimization plugins can work with it.
+
+## Only where it is needed
+
+Every file you load slows down every page it is loaded on, so load your assets only where they are used.
+
+- For the site itself, enqueue on <Sym id="action:wp_enqueue_scripts" />, and check what is being shown before
+  loading anything: a single book, a page with your shortcode.
+- For the admin, enqueue on <Sym id="action:admin_enqueue_scripts" />. Its argument, the **hook suffix**, names the
+  screen being shown, so your plugin can load its files only on its own screen.
+
+<Example id="guides/loading-scripts-and-styles/enqueue-on-your-page-only" />
+
+The settings page from [Adding a settings page](/guides/path/adding-a-settings-page/) has the hook suffix
+`settings_page_my-plugin`, and `add_options_page()` also returns it. So the plugin's files are loaded on its screen
+and nowhere else. <Sym id="function:plugins_url" /> builds the files' addresses from the plugin's main file, so they
+are right wherever the site keeps its plugins.
+
+## Register once, enqueue where needed
+
+When a file is used in several places, register it once, on `init`, with <Sym id="function:wp_register_script" /> or
+<Sym id="function:wp_register_style" />. Then enqueue it by handle with <Sym id="function:wp_enqueue_script" /> or
+<Sym id="function:wp_enqueue_style" /> wherever it's used. Handles share one list with every plugin and theme, so
+prefix them.
+
+<Example id="guides/loading-scripts-and-styles/version-in-url" />
+
+The **version** becomes `?ver=1.2.0` on the file's address. Browsers keep files for a long time, so when you release
+a new version of the file, a new version number makes every browser fetch it. Keep the version in one constant and
+change it with each release. The last argument of `wp_register_script()` takes `in_footer`, which prints the tag at
+the end of the page so it doesn't hold up the content, and `strategy`, here `defer`, which lets the browser run the
+script once the page is parsed. <OnSpeedySpecNote id="function:wp_enqueue_script" />
+
+## Dependencies
+
+List the handles a file needs, and WordPress prints them first. Each is printed once, however many of your files need
+it, and WordPress includes the dependencies of those dependencies too:
+
+<Example id="guides/loading-scripts-and-styles/dependency-order" />
+
+Only the chart and the table were enqueued. WordPress added `my-plugin-books`, which both need, and `wp-i18n` with
+`wp-hooks`, which `wp-i18n` itself depends on. Depend on the handles WordPress registers (`wp-i18n`, `wp-api-fetch`,
+`jquery`) rather than bundling your own copies. Then a site loads one copy, shared by every plugin.
+
+## Passing data from PHP to your script
+
+Your script often needs values only PHP knows: a setting, an address, a translated string. Attach them to the script
+with <Sym id="function:wp_add_inline_script" />, which prints a small piece of code before (or after) the file.
+Build that code with <Sym id="function:wp_json_encode" />, never by gluing strings together, because a value can hold
+quotes, line breaks or a closing tag:
+
+<Example id="guides/loading-scripts-and-styles/inline-data-encoded" />
+
+The greeting tried to close the script tag and open another, but `wp_json_encode()` escaped the `</script>`, so it
+stays a string. WordPress also escaped the `<script` inside, as it does for every inline script it prints. For
+translated strings in JavaScript, register the script's translations with <Sym id="function:wp_set_script_translations" />
+and use `wp-i18n` in the script, instead of passing translations as data.
+
+## Script modules
+
+WordPress also supports JavaScript modules, loaded with `import` rather than as plain scripts.
+<Sym id="function:wp_enqueue_script_module" /> works like `wp_enqueue_script()` for them, with the same habits:
+prefixed IDs, versions and loading only where needed.
+
+The Resources seam, which loads scripts and styles, isn't ported to SpeedySpec yet, so this guide makes no promise
+about how they behave there.

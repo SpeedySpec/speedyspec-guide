@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "<link rel='stylesheet' id='my-plugin-books-css' href='http://example.org/wp-content/plugins/my-plugin/css/books.css?ver=1.2.0' media='all' />\n<script data-wp-strategy=\"defer\" defer id=\"my-plugin-books-js\" src=\"http://example.org/wp-content/plugins/my-plugin/js/books.js?ver=1.2.0\"></script>\n",
+ "return": "NULL",
+ "error": null
+}
