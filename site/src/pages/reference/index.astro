@@ -1,0 +1,11 @@
+---
+import Page from '../../layouts/Page.astro';
+import { REFERENCE_SIDEBAR } from '../../model/starlight.ts';
+---
+<Page title="Reference" description="Every WordPress and SpeedySpec function, class and hook, and how far the guide covers them." sidebar={REFERENCE_SIDEBAR}>
+  <ul class="reference-list">
+    <li><a href="/wordpress/">WordPress API</a>: WordPress as it is, by seam, readable on its own.</li>
+    <li><a href="/speedyspec/">SpeedySpec API</a>: verdicts, differences, porting guides, architecture and the new API.</li>
+    <li><a href="/coverage/">Coverage</a>: how many of each seam's symbols the guide documents, and the symbols in no seam yet.</li>
+  </ul>
+</Page>

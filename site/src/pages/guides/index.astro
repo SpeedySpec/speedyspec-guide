@@ -26,7 +26,7 @@ const contributing = [
         {t.topics.map((g) => <li><a href={guidePath(g)}>{g.title}</a> <span class="muted">{g.summary}</span></li>)}
       </ul>
     ) : <p class="guide-empty">No topic guides yet. Each seam's reference explains its functions meanwhile.</p>}
-    <h2>Contributing</h2>
+    <h2 id="contributing">Contributing</h2>
     {contributing.map((c) => (
       <section>
         <h3>{c.name}</h3>

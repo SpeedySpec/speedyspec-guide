@@ -1,11 +1,13 @@
+/* The site's colours follow Starlight's theme (light, dark or auto, from its theme selector). The fallbacks are for
+ * pages still outside Starlight. */
 :root {
-  --text: #1d1f23;
-  --muted: #6b7280;
-  --line: #e3e5e8;
-  --surface: #ffffff;
-  --surface-2: #f6f7f9;
-  --accent: #1f45b5;
-  --accent-soft: #eef2ff;
+  --text: var(--sl-color-white, #1d1f23);
+  --muted: var(--sl-color-gray-3, #6b7280);
+  --line: var(--sl-color-hairline, #e3e5e8);
+  --surface: var(--sl-color-black, #ffffff);
+  --surface-2: var(--sl-color-gray-6, #f6f7f9);
+  --accent: var(--sl-color-text-accent, #1f45b5);
+  --accent-soft: var(--sl-color-accent-low, #eef2ff);
   --ok: #17673a;
   --ok-soft: #e7f6ec;
   --warn: #8a5a00;
@@ -20,35 +22,26 @@
   --mono: ui-monospace, 'SF Mono', Menlo, monospace;
   --column: 46rem;
   --rail: 13rem;
-  color-scheme: light dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #e6e7ea;
-    --muted: #9aa0ab;
-    --line: #2a2e35;
-    --surface: #121418;
-    --surface-2: #1a1d22;
-    --accent: #8ea8ff;
-    --accent-soft: #1c2440;
-    --ok: #6fd39a;
-    --ok-soft: #12291c;
-    --warn: #f0c060;
-    --warn-soft: #2d2410;
-    --bad: #ff8f8f;
-    --bad-soft: #3a1414;
-    --new: #8ea8ff;
-    --new-soft: #1c2440;
-    --code-bg: #0b0d10;
-  }
+:root[data-theme='dark'] {
+  --ok: #6fd39a;
+  --ok-soft: #12291c;
+  --warn: #f0c060;
+  --warn-soft: #2d2410;
+  --bad: #ff8f8f;
+  --bad-soft: #3a1414;
+  --new: #8ea8ff;
+  --new-soft: #1c2440;
+  --code-bg: #0b0d10;
 }
 
 * { box-sizing: border-box; }
-html { background: var(--surface); color: var(--text); font: 16px/1.6 var(--font); }
-body { margin: 0; }
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
+/* Pages still outside Starlight (no data-theme on <html>) style the basics themselves. */
+html:not([data-theme]) { background: var(--surface); color: var(--text); font: 16px/1.6 var(--font); }
+html:not([data-theme]) body { margin: 0; }
+html:not([data-theme]) a { color: var(--accent); text-decoration: none; }
+html:not([data-theme]) a:hover { text-decoration: underline; }
 code, pre, .mono { font-family: var(--mono); font-size: 0.875em; }
 pre { background: var(--code-bg); color: var(--code-text); border-radius: 6px; padding: 0.75rem 1rem; overflow: auto; line-height: 1.5; tab-size: 4; }
 h1, h2, h3 { line-height: 1.25; }
@@ -153,3 +146,25 @@ table.conversion td + td { text-align: right; }
 .install-contents ol { padding-left: 1.25rem; }
 .install-contents li { margin: 0.25rem 0; }
 .install-pager { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.875rem; }
+
+/* The header's section links; below Starlight's 50rem breakpoint they live in the mobile menu instead. */
+.site-links { display: none; gap: 1.25rem; margin-inline-start: 1.5rem; align-items: center; font-size: var(--sl-text-sm, 0.875rem); }
+.site-links a { color: var(--sl-color-gray-2, var(--muted)); text-decoration: none; }
+.site-links a:hover, .site-links a[aria-current='page'] { color: var(--sl-color-white, var(--text)); }
+@media (min-width: 50rem) { .site-links { display: flex; } }
+.site-links.always { display: flex; }
+@media (max-width: 50rem) { .site-links.always { gap: 0.75rem; margin-inline-start: 0.75rem; font-size: var(--sl-text-xs, 0.8125rem); } }
+.mobile-site-links { display: flex; flex-direction: column; gap: 0.5rem; padding-block: 1rem; border-top: 1px solid var(--sl-color-gray-6, var(--line)); }
+.mobile-site-links a { color: var(--sl-color-white, var(--text)); text-decoration: none; font-weight: 600; }
+
+/* Home: the tagline, a search button, four goal cards and the popular guides. */
+.home { max-width: 60rem; margin: 0 auto; text-align: center; }
+.home-tagline { font-size: var(--sl-text-lg, 1.125rem); color: var(--muted); max-width: 42rem; margin: 0 auto 1.25rem; }
+.home-search { font: inherit; color: var(--muted); background: var(--surface-2); border: 1px solid var(--line); border-radius: 0.5rem; padding: 0.6rem 1rem; width: min(100%, 28rem); text-align: start; cursor: pointer; }
+.home-cards { list-style: none; padding: 0; margin: 2rem 0 1rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; text-align: start; }
+.home-cards li { margin: 0; }
+.home-cards a { display: block; height: 100%; border: 1px solid var(--line); border-radius: 0.75rem; padding: 1rem 1.1rem; color: var(--text); text-decoration: none; background: var(--surface); }
+.home-cards a:hover { border-color: var(--accent); }
+.home-cards h2 { font-size: var(--sl-text-h5, 1.125rem); margin: 0 0 0.35rem; color: var(--accent); }
+.home-cards p { margin: 0; color: var(--muted); font-size: var(--sl-text-sm, 0.9375rem); }
+.home-popular { color: var(--muted); font-size: var(--sl-text-sm, 0.875rem); }

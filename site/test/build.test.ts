@@ -18,6 +18,6 @@ describe('the site', () => {
     expect(build.exitCode, build.output).toBe(0);
     const home = await html(build.dist, '/');
     expect(home.text('h1')).toEqual(['SpeedySpec Guide']);
-    expect(home.attr('a', 'href')).toEqual(expect.arrayContaining(['/wordpress/', '/speedyspec/']));
+    expect(home.attr('.home-cards a', 'href')).toEqual(['/guides/', '/install/', '/wordpress/', '/guides/#contributing']);
   });
 });

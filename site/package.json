@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "bunx --bun astro dev",
-    "build": "bunx --bun astro build && bunx --bun pagefind --site dist",
+    "build": "bunx --bun astro build",
     "check": "bunx --bun astro check"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.6",
+    "@astrojs/starlight": "^0.43.1",
     "@speedyspec-guide/adapter-content-files": "workspace:*",
     "@speedyspec-guide/adapter-example-files": "workspace:*",
     "@speedyspec-guide/adapter-seam-files": "workspace:*",

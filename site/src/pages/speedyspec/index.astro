@@ -1,9 +1,19 @@
 ---
+import VerdictPill from '../../components/VerdictPill.astro';
 import Base from '../../layouts/Base.astro';
 import { loadGuideData } from '../../model/data.ts';
+import type { SpeedySpecVerdict } from '../../model/verdict.ts';
 
 const d = await loadGuideData();
 const deps = (id: string) => d.graph.crossSeam.filter((e) => e.fromSeam === id).length;
+const verdicts: [SpeedySpecVerdict, string][] = [
+  ['works-as-wordpress', 'Your code behaves the same; every claim is backed by a recorded scenario or test.'],
+  ['works-with-differences', 'It works, but something differs; the page says what and what to do instead.'],
+  ['breaks', 'Code relying on this needs changing before it runs on SpeedySpec.'],
+  ['new-in-speedyspec', 'Only SpeedySpec has it.'],
+  ['not-in-speedyspec', 'Its seam is not ported yet, so SpeedySpec does not provide it.'],
+  ['unknown', 'Not compared yet.'],
+];
 ---
 <Base title="SpeedySpec API" section="speedyspec">
   <main class="page">
@@ -22,5 +32,13 @@ const deps = (id: string) => d.graph.crossSeam.filter((e) => e.fromSeam === id).
     </ul>
     <p><a href="/speedyspec/conversion/">Rust or PHP: which WordPress symbols SpeedySpec has converted</a></p>
     <p><a href="/speedyspec/runtime/">The runtime's PHP API not yet in a seam</a></p>
+    <h2>Reading a verdict</h2>
+    <dl class="legend">
+      {verdicts.map(([v, text]) => (<><dt><VerdictPill verdict={v} /></dt><dd>{text}</dd></>))}
+    </dl>
+    <h2>Start porting</h2>
+    <ul class="porting-links">
+      {d.seams.map((s) => <li><a href={`/speedyspec/porting/${s.id}/`}>{s.name}</a></li>)}
+    </ul>
   </main>
 </Base>

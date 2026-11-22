@@ -1,0 +1,9 @@
+---
+// The site's sections at the foot of the mobile menu, above Starlight's theme selector (Decorator).
+import Default from '@astrojs/starlight/components/MobileMenuFooter.astro';
+import { HEADER_LINKS } from '../../model/starlight.ts';
+---
+<nav class="mobile-site-links" aria-label="Sections">
+  {HEADER_LINKS.map(([label, href]) => <a href={href}>{label}</a>)}
+</nav>
+<Default><slot /></Default>

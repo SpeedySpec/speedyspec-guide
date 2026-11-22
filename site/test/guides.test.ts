@@ -8,17 +8,42 @@ beforeAll(() => {
 }, 240_000);
 
 describe('the developer guides', () => {
-  test('test_home_leads_with_guides', async () => {
+  test('test_home_shows_four_goal_cards', async () => {
     const home = await html(dist, '/');
-    const h2 = home.text('h2');
-    expect(h2[0]).toBe('Guides');
-    expect(h2).toContain('Reference');
-    expect(h2.indexOf('Reference')).toBeGreaterThan(0);
-    expect(home.text('.home-path a')).toEqual(['First', 'Second']);
-    expect(home.attr('.home-guides a', 'href')).toContain('/guides/');
-    expect(home.attr('.home-reference a', 'href')).toEqual(expect.arrayContaining(['/wordpress/', '/speedyspec/']));
-    expect(home.count('dl.legend')).toBe(1);
-    expect(home.attr('.porting-links a', 'href')).toContain('/speedyspec/porting/hooks/');
+    expect(home.attr('.home-cards a', 'href')).toEqual(['/guides/path/first/', '/install/', '/wordpress/', '/guides/#contributing']);
+    expect(home.text('.home-cards h2')).toEqual(['Write my first plugin', 'Run SpeedySpec', 'Look up a function', 'Port or contribute']);
+  });
+
+  test('test_home_has_no_sidebar_and_is_not_indexed', async () => {
+    const home = await html(dist, '/');
+    expect(home.count('#starlight__sidebar')).toBe(0);
+    expect(home.count('[data-pagefind-body]')).toBe(0);
+    expect(home.text('h1')).toEqual(['SpeedySpec Guide']);
+  });
+
+  test('test_home_links_popular_guides', async () => {
+    const home = await html(dist, '/');
+    expect(home.attr('.home-popular a', 'href')).toEqual(['/guides/topics/hooks/', '/guides/topics/options/']);
+  });
+
+  test('test_header_links_stay_visible_without_a_sidebar', async () => {
+    // A page without a sidebar has no mobile menu, so its header keeps the section links on narrow screens too.
+    const home = await html(dist, '/');
+    expect(home.attr('.site-links a', 'href')).toEqual(['/guides/', '/reference/', '/install/']);
+    expect(home.count('.site-links.always')).toBe(1);
+    expect(home.count('.mobile-site-links')).toBe(0);
+  });
+
+  test('test_reference_landing_links_the_references', async () => {
+    const p = await html(dist, '/reference/');
+    expect(p.attr('.reference-list a', 'href')).toEqual(['/wordpress/', '/speedyspec/', '/coverage/']);
+    expect(p.attr('#starlight__sidebar a', 'href')).toEqual(expect.arrayContaining(['/reference/', '/wordpress/', '/coverage/']));
+  });
+
+  test('test_speedyspec_index_has_verdict_legend_and_porting_links', async () => {
+    const p = await html(dist, '/speedyspec/');
+    expect(p.count('dl.legend dt')).toBe(6);
+    expect(p.attr('.porting-links a', 'href')).toContain('/speedyspec/porting/hooks/');
   });
 
   test('test_index_lists_tracks', async () => {

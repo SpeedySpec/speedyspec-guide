@@ -71,10 +71,10 @@ describe('installation guide pages', () => {
     dist = fixtureSite();
   }, 240_000);
 
-  test('the home page and the top bar link to the guide', async () => {
+  test('the home page and the header link to the guide', async () => {
     const home = await html(dist, '/');
     expect(home.attr('main a', 'href')).toContain('/install/');
-    expect(home.attr('.topbar a', 'href')).toContain('/install/');
+    expect(home.attr('.site-links a', 'href')).toContain('/install/');
   });
 
   test('the first page lists every page in order', async () => {

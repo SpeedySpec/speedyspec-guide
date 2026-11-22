@@ -1,3 +1,5 @@
+import { docsLoader, i18nLoader } from '@astrojs/starlight/loaders';
+import { docsSchema, i18nSchema } from '@astrojs/starlight/schema';
 import { glob } from 'astro/loaders';
 import { defineCollection, z } from 'astro:content';
 import { guideDirs } from './model/data.ts';
@@ -26,4 +28,9 @@ const install = defineCollection({
   schema: z.object({ title: z.string(), summary: z.string().optional(), order: z.number() }),
 });
 
-export const collections = { pages, guides, install };
+/** Starlight's own collections. docs stays empty (pages render through layouts/Page.astro) but its schema adds the
+ * learning-path chapter number the guide pages pass; i18n overrides Starlight's interface wording. */
+const docs = defineCollection({ loader: docsLoader(), schema: docsSchema({ extend: z.object({ chapter: z.number().optional() }) }) });
+const i18n = defineCollection({ loader: i18nLoader(), schema: i18nSchema() });
+
+export const collections = { pages, guides, install, docs, i18n };
