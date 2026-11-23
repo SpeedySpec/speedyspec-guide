@@ -13,6 +13,12 @@ beforeAll(() => {
 const page = (name: string) => html(dist, `/component-tests/${name}/`);
 
 describe('components', () => {
+  test('the static hosting fallback provides a useful not-found page', async () => {
+    const raw = await Bun.file(join(dist, '404.html')).text();
+    expect(raw).toMatch(/<h1[^>]*>Page not found<\/h1>/);
+    expect(raw).toContain('href="/guides/"');
+  });
+
   test('the head has the pill and the provenance line (the page title is the name)', async () => {
     const p = await page('head');
     expect(p.text('.head .pill')).toEqual(['Works with differences']);

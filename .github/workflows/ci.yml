@@ -160,3 +160,10 @@ jobs:
         run: |
           bun run site:test
           bun run site:build
+
+      - name: Keep the static site for Amplify deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: developer-site
+          path: site/dist/
+          if-no-files-found: error
