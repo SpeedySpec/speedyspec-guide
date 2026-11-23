@@ -1,5 +1,5 @@
 import type { ExampleProblem, ExampleRunner, ExampleSource } from '@speedyspec-guide/contracts';
-import { compareExample, type ExampleOutcome, type ExampleResult, type GuideSymbol, SIDES, type Seam, type Side } from '@speedyspec-guide/domain';
+import { compareExample, type Example, type ExampleOutcome, type ExampleResult, type GuideSymbol, SIDES, type Seam, type Side } from '@speedyspec-guide/domain';
 
 export interface ExamplesFile {
   results: ExampleResult[];
@@ -9,7 +9,8 @@ export interface ExamplesFile {
 }
 
 /**
- * Runs every example on each side it declares (one runner call per side) and compares it with what it expects. A
+ * Runs every example on each side it declares and compares it with what it expects. Each seam's examples on a side
+ * run in a runner call of their own, so the runner's time limit guards one seam, not the whole guide. A
  * seam marked `mysql` needs a MySQL database (`mysqlUrl`, which the runner reads from its environment as
  * `GUIDE_MYSQL_URL`): without one this throws before running anything.
  */
@@ -22,20 +23,31 @@ export async function runExamples(source: ExampleSource, runner: ExampleRunner, 
   }
   const results: ExampleResult[] = [];
   for (const side of SIDES) {
-    const here = examples.filter((e) => e.sides.includes(side));
-    if (here.length === 0) continue;
     const wp = side === 'wordpress';
-    const runs = await runner.run(
-      side,
-      here.map((e) => ({ id: e.id, file: e.file, load: wp ? (seamOf(e.seam)?.wordpress ?? []) : [], setup: wp ? (seamOf(e.seam)?.setup ?? null) : null, multisite: wp && e.multisite })),
-      wordpressDir,
-    );
-    for (const run of runs) {
-      const example = here.find((e) => e.id === run.id);
-      if (example) results.push(compareExample(example.expect, run));
+    for (const here of bySeam(examples.filter((e) => e.sides.includes(side)))) {
+      const runs = await runner.run(
+        side,
+        here.map((e) => ({ id: e.id, file: e.file, load: wp ? (seamOf(e.seam)?.wordpress ?? []) : [], setup: wp ? (seamOf(e.seam)?.setup ?? null) : null, multisite: wp && e.multisite })),
+        wordpressDir,
+      );
+      for (const run of runs) {
+        const example = here.find((e) => e.id === run.id);
+        if (example) results.push(compareExample(example.expect, run));
+      }
     }
   }
   return { results, problems, declared: examples.map((e) => ({ id: e.id, sides: e.sides })) };
+}
+
+/** The examples grouped by seam, in the order each seam first appears. */
+function bySeam(examples: Example[]): Example[][] {
+  const groups = new Map<string, Example[]>();
+  for (const e of examples) {
+    const group = groups.get(e.seam);
+    if (group) group.push(e);
+    else groups.set(e.seam, [e]);
+  }
+  return [...groups.values()];
 }
 
 /**

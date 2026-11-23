@@ -45,6 +45,22 @@ describe('runExamples', () => {
     expect((await runExamples(source, runner, [seam], '/wp', null)).problems).toEqual([{ where: '/x/b.php', message: 'has no b.expect.json' }]);
   });
 
+  test("each seam's examples run in a runner call of their own, so the runner's time limit applies per seam", async () => {
+    const { runner, calls } = fakeRunner({ wordpress: '20', runtime: '20' });
+    const other: Seam = { ...seam, id: 'text' };
+    const b: Example = { ...example, id: 'text/esc_html/b', seam: 'text', file: '/x/b.php' };
+    const c: Example = { ...example, id: 'hooks/add_action/c', file: '/x/c.php' };
+    const mixed: ExampleSource = { all: async () => ({ examples: [example, b, c], problems: [] }) };
+    const r = await runExamples(mixed, runner, [seam, other], '/wp', null);
+    expect(calls.map((x) => [x.side, x.examples.map((e) => e.id)])).toEqual([
+      ['wordpress', [example.id, c.id]],
+      ['wordpress', [b.id]],
+      ['runtime', [example.id, c.id]],
+      ['runtime', [b.id]],
+    ]);
+    expect(r.results).toHaveLength(6);
+  });
+
   test('a side no example declares is not run', async () => {
     const { runner, calls } = fakeRunner({});
     const wpOnly: ExampleSource = { all: async () => ({ examples: [{ ...example, sides: ['wordpress'] }], problems: [] }) };
