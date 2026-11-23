@@ -1,0 +1,134 @@
+---
+title: Plugins
+summary: How a plugin finds its own files and URLs, how activation, deactivation and uninstall callbacks are stored and fired, and how plugin dependencies and paused plugins work.
+---
+
+The Plugins seam holds the small functions a plugin calls about itself: where its files are, what its URL is, and
+what should happen when it is activated, deactivated or deleted. It also holds two newer pieces: plugin
+dependencies, read from the `Requires Plugins` header, and the storage of plugins paused by recovery mode. What trips
+people up is that most of these work through a plugin's **basename**, and that the uninstall callback is stored in
+the database rather than hooked. For a first plugin built step by step, read
+[Your first plugin](/guides/path/your-first-plugin/) first.
+
+## A plugin's basename
+
+WordPress names a plugin by the path of its main file relative to the plugins folder, such as `shop/shop.php`.
+<Sym id="function:plugin_basename" /> turns a full path into that name. It normalizes slashes to forward slashes,
+strips the plugins folder or the must-use plugins folder, and trims the slashes left at either end. A path outside
+both folders comes back with only its leading slash removed:
+
+<Example id="plugins/plugin_basename/basename" />
+
+The basename is the plugin's identity. It is what the `active_plugins` option lists, and it is part of the name of
+the activation and deactivation actions. So always pass `__FILE__` from the plugin's main file, not from a file in a
+subfolder: a file in `shop/inc/` has a different basename from the plugin itself.
+
+### Symlinked plugins
+
+A plugin folder can be a symlink to code kept elsewhere. Then `__FILE__` holds the real path, which is outside the
+plugins folder. Before WordPress loads each active plugin, it calls <Sym id="function:wp_register_plugin_realpath" />,
+which records the link and its target in the <Sym id="global:wp_plugin_paths" /> global. `plugin_basename()` checks
+that map first, so it can turn the real path back into the linked name. A file sitting directly in the plugins
+folder is refused, since it has no folder of its own to map:
+
+<Example id="plugins/wp_register_plugin_realpath/symlink" />
+
+## Paths and URLs
+
+<Sym id="function:plugin_dir_path" /> is only `dirname()` with a trailing slash. It doesn't check that the file is a
+plugin at all:
+
+<Example id="plugins/plugin_dir_path/path" />
+
+<Sym id="function:plugin_dir_url" /> goes through <Sym id="function:plugins_url" />, so it knows the difference
+between the plugins folder and the must-use plugins folder, and its result passes through the `plugins_url` filter.
+Use it, not a URL built by hand, so a site that moves its content folder or serves it from elsewhere still works:
+
+<Example id="plugins/plugin_dir_url/url" />
+
+## Activation and deactivation
+
+<Sym id="function:register_activation_hook" /> and <Sym id="function:register_deactivation_hook" /> are thin: each
+turns the file into its basename and adds your callback to an action named after it, `activate_shop/shop.php` or
+`deactivate_shop/shop.php`. The admin's `activate_plugin()` and `deactivate_plugins()` fire those actions, passing a
+flag that says whether the change is network-wide:
+
+<Example id="plugins/register_activation_hook/activate" />
+
+<Example id="plugins/register_deactivation_hook/deactivate" />
+
+Two things follow. The call must run when the plugin's main file loads, not inside a later hook such as `init`,
+because activation happens in a request that loads the plugin and then fires the action straight away. And the
+activation callback runs once, when someone clicks Activate. It doesn't run when a plugin is updated, so a plugin
+that needs to change its data between versions should compare a stored version number on a normal request.
+
+## Uninstall
+
+Deleting a plugin runs its clean-up in one of two ways. If the plugin's folder holds an `uninstall.php`, WordPress
+defines `WP_UNINSTALL_PLUGIN` and includes that file. Otherwise it looks for a callback stored by
+<Sym id="function:register_uninstall_hook" />.
+
+That callback is saved in the `uninstall_plugins` option, by basename, because the plugin isn't loaded when it is
+deleted. The option is written only when the callback changed. A callback holding an object can't be stored, so it
+is refused with a doing-it-wrong notice; use a function name or a static method. Note the `false` at index 0 in the
+result: it comes from casting a missing option to an array, and it is harmless:
+
+<Example id="plugins/register_uninstall_hook/uninstall" />
+
+Prefer `uninstall.php`. Calling `register_uninstall_hook()` on every request writes to the database whenever the
+callback changes, and the file needs no stored state. Start the file by checking that `WP_UNINSTALL_PLUGIN` is
+defined, and stop if it isn't, so the file can't be run by visiting its URL.
+
+## Plugin dependencies
+
+Since WordPress 6.5, a plugin can name the plugins it needs in its header, as `Requires Plugins: payments`, a list
+of WordPress.org slugs separated by commas. <Sym id="class:WP_Plugin_Dependencies" /> reads that header from every
+installed plugin. Its methods are static, and <Sym id="method:WP_Plugin_Dependencies::initialize" /> must run before
+any of them. A plugin's own slug is its folder name, or its file name without `.php` for a single-file plugin:
+
+<Example id="plugins/class--WP_Plugin_Dependencies--initialize/headers" />
+
+Each slug is trimmed and checked against the WordPress.org slug format, and anything else is dropped. The
+<Sym id="filter:wp_plugin_dependencies_slug" /> filter runs on each one first, so a premium plugin can stand in for
+the free one it replaces:
+
+<Example id="plugins/class--WP_Plugin_Dependencies--sanitize_dependency_slugs/slugs" />
+
+<Sym id="method:WP_Plugin_Dependencies::has_unmet_dependencies" /> is true when a required plugin is missing or
+inactive. Activation checks it, and refuses to activate a plugin whose dependencies are unmet. The other way round,
+`has_active_dependents()` says whether an active plugin needs this one, and the Plugins screen then offers no
+Deactivate link:
+
+<Example id="plugins/class--WP_Plugin_Dependencies--has_unmet_dependencies/unmet" />
+
+Plugins that require each other, directly or through others, can never be activated in order.
+<Sym id="method:WP_Plugin_Dependencies::has_circular_dependency" /> finds them, and the Plugins screen shows a notice:
+
+<Example id="plugins/class--WP_Plugin_Dependencies--has_circular_dependency/circular" />
+
+For messages, `get_dependency_names()` prefers the name from the WordPress.org plugin directory. It only fetches
+that data on the plugins screens, and falls back to the installed plugin's name, then to the slug:
+
+<Example id="plugins/class--WP_Plugin_Dependencies--get_dependency_names/names" />
+
+The header only tells WordPress what is needed. It doesn't load the other plugin first, so code that uses another
+plugin's functions should still wait for `plugins_loaded` and check that they exist.
+
+## Paused plugins
+
+When recovery mode is active, a plugin that caused a fatal error is **paused**: it isn't loaded for the person in
+the recovery session, while everyone else's requests carry on as before.
+<Sym id="class:WP_Paused_Extensions_Storage" /> keeps the list, with the error, in one option per session named
+`{session}_paused_extensions`, holding plugins and themes side by side. Without an active session it stores nothing:
+
+<Example id="plugins/class--WP_Paused_Extensions_Storage--set/paused" />
+
+Removing the last entry of every type deletes the option, so nothing is left behind once the problem is fixed:
+
+<Example id="plugins/class--WP_Paused_Extensions_Storage--delete_all/clear" />
+
+WordPress reaches the two stores through `wp_paused_plugins()` and `wp_paused_themes()`, and plugin code rarely needs
+them. The [Recovery mode](/guides/topics/recovery/) guide explains how a session begins.
+
+The Plugins seam isn't ported to SpeedySpec yet, so this guide makes no promise about how plugin activation,
+dependencies or paths behave there.

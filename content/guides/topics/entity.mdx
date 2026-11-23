@@ -1,0 +1,144 @@
+---
+title: Entity fields and actions
+summary: How plugins declare editor fields and actions for an entity, when registration runs, and how the editor loads their script modules.
+---
+
+The editor's lists and panels, such as the pages list in the site editor or the post summary in the post editor, are
+built from **fields** (the columns and inputs) and **actions** (the things you can do to an item). This seam, new in
+WordPress 7.2, lets PHP declare them for an **entity**, named by a kind and a name such as `postType` and `book`. Two
+things trip people up. Registration runs only inside one action, which fires late and lazily. And PHP holds only the
+part of a field or action that is plain data: anything that is a function or a component lives in a script module in
+the browser. For script modules themselves, see
+[Loading scripts and styles](/guides/path/loading-scripts-and-styles/).
+
+## Registering fields
+
+<Sym id="function:wp_register_entity_fields" /> takes who is registering (`core`, or your plugin's slug), the entity's
+kind and name, a list of field definitions each with an `id`, and optionally the id of a script module. Call it from a
+callback on <Sym id="action:wp_entity_fields_api_init" />, and nowhere else:
+
+<Example id="entity/wp_register_entity_fields/registers" />
+
+The origin is stored on each field, under `origin`, as `registeredBy`. Any `origin` your definition sets is replaced.
+
+The action doesn't fire on `init`. It fires the first time anything reads the fields after `init` has finished, such
+as a REST request for them or an editor page being printed. That is on purpose: a post type's default fields come from
+its supports, and those are only final once every plugin's `init` callbacks have run. So a call anywhere else is
+reported through `_doing_it_wrong()` and registers nothing:
+
+<Example id="entity/wp_register_entity_fields/outside-the-action" />
+
+Reading too early is refused the same way. Before `init` has completed, and while it runs, the fields read as empty:
+
+<Example id="entity/wp_get_registered_entity_fields/before-init" />
+
+Once the action has fired, the list is fixed for the rest of the request, so every reader sees the same fields.
+
+### Several plugins, one entity
+
+A field id belongs to whoever registers it first. Registering an id that is taken is reported and skipped, but the
+rest of the call still goes through, so one clash doesn't cost a plugin its other fields. The function returns the ids
+it did register:
+
+<Example id="entity/wp_register_entity_fields/returns-ids" />
+
+To change another plugin's field, use <Sym id="function:wp_update_entity_fields" />. It merges your settings into the
+registered definition and adds your origin to `updatedBy`, so the field's history stays visible:
+
+<Example id="entity/wp_update_entity_fields/merges" />
+
+<Sym id="function:wp_unregister_entity_fields" /> removes the fields you name, or every field of the entity when you
+name none, and returns the definitions it removed. To replace a field entirely, unregister it and register yours:
+
+<Example id="entity/wp_unregister_entity_fields/some-or-all" />
+
+A field whose `type` isn't one the data views provide a control for is reported, but registered anyway. It shows up
+without an input, which is easy to miss.
+
+## Fields as files
+
+A **field collection** is a folder: its `index.php` returns the origin, kind and name the fields belong to (and
+optionally a script module), and each subfolder holds a `field.php` returning one field. A field's id defaults to its
+folder's name. <Sym id="function:wp_register_entity_field_collection" /> registers the whole folder, again only on
+`wp_entity_fields_api_init`, and returns whether every field was registered:
+
+<Example id="entity/wp_register_entity_field_collection/from-folders" />
+
+<Sym id="function:wp_get_entity_field_collection_fields" /> reads the definitions without registering them. That helps
+when the same fields apply to several entities: read them once, then register them on each one.
+
+<Example id="entity/wp_get_entity_field_collection_fields/reads" />
+
+## Actions
+
+Actions work like fields, through <Sym id="function:wp_register_entity_actions" /> on
+<Sym id="action:wp_entity_actions_api_init" />, which also fires on the first read after `init`:
+
+<Example id="entity/wp_register_entity_actions/registers" />
+
+There is no update function for actions. To change one, unregister it with
+<Sym id="function:wp_unregister_entity_actions" /> and register it again:
+
+<Example id="entity/wp_unregister_entity_actions/one" />
+
+<Sym id="function:wp_get_registered_entity_actions" /> reads an entity's actions. An entity nobody registered actions
+for has an empty list:
+
+<Example id="entity/wp_get_registered_entity_actions/none" />
+
+## The script module half
+
+Some properties can't be sent as data: what an action does when clicked, the modal it opens, whether it applies to an
+item, how a field renders. Those come from a script module whose default export maps ids to the missing properties.
+Passing them from PHP doesn't work. For actions, `callback`, `RenderModal` and `isEligible` are removed and reported,
+because the browser would try to call them and fail:
+
+<Example id="entity/wp_register_entity_actions/script-only-properties" />
+
+The module named in a registration applies to the fields or actions of that call. The registry keeps the pairing,
+which <Sym id="function:wp_get_registered_entity_field_modules" /> and
+<Sym id="function:wp_get_registered_entity_action_modules" /> return for one entity:
+
+<Example id="entity/wp_get_registered_entity_field_modules/modules" />
+
+<Example id="entity/wp_get_registered_entity_action_modules/modules" />
+
+<Sym id="function:wp_get_all_registered_entity_field_modules" /> and
+<Sym id="function:wp_get_all_registered_entity_action_modules" /> list every module, by kind and then name:
+
+<Example id="entity/wp_get_all_registered_entity_field_modules/by-entity" />
+
+Register the script module itself on `init`, as any other. The `*_api_init` callbacks should register fields and
+actions and nothing else.
+
+## How the editor loads them
+
+On `admin_footer`, WordPress runs private functions,
+<Sym id="function:_wp_add_entity_field_modules_to_editor_script" /> and its actions twin, that add each module to the
+`wp-editor` script as a **dynamic** module dependency. That puts the module in the page's import map without loading
+it, and the editor imports it when it needs it:
+
+<Example id="entity/_wp_add_entity_field_modules_to_editor_script/dynamic-imports" />
+
+Only pages that enqueue `wp-editor` get this, so other admin screens never fire the registration actions:
+
+<Example id="entity/_wp_add_entity_action_modules_to_editor_script/not-enqueued" />
+
+A module `wp-editor` already lists is not added twice:
+
+<Example id="entity/_wp_add_entity_modules_to_editor_script/keeps-declared" />
+
+The editors read fields and actions from the `/wp/v2/entity-fields` and `/wp/v2/entity-actions` REST routes. To save a
+round trip, WordPress adds those requests to the editor's preloaded paths through the
+`block_editor_rest_api_preload_paths` filter: in the post editor for the edited post's type, and in the site editor
+also for the post types of the screen it opens on:
+
+<Example id="entity/_wp_preload_entity_fields/post-editor" />
+
+<Example id="entity/_wp_preload_entity_actions/site-editor" />
+
+These underscore functions, and the two registry classes, <Sym id="class:WP_Entity_Fields_Registry" /> and
+<Sym id="class:WP_Entity_Actions_Registry" />, are marked private. Use the public `wp_*` functions instead.
+
+The Entity fields and actions seam isn't ported to SpeedySpec yet, so this guide makes no promise about how entity
+fields and actions behave there.

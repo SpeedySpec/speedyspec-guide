@@ -1,0 +1,136 @@
+---
+title: Deprecated
+summary: How WordPress marks functions, arguments, hooks and files as deprecated, how to see the notices, and how to find what replaces a deprecated function.
+---
+
+The Deprecated seam holds the functions WordPress no longer wants anyone to call but keeps so old code doesn't
+break: most of `deprecated.php`, the deprecated pluggable functions, and the old `Services_JSON` library. Nothing in it
+is meant for new code. This guide explains how a deprecation is reported, how to see the reports while you work,
+and how to find the replacement for a function. The same tools serve plugins that retire parts of their own API; see
+[Letting others extend your plugin](/guides/path/letting-others-extend-your-plugin/).
+
+## Why deprecated code stays
+
+WordPress rarely removes a function. Sites run plugins and themes written years ago, and a removed function is a
+fatal error on every page that calls it. So a deprecated function keeps working, usually by calling its replacement,
+and reports the call. The function's docblock names the version it was deprecated in and what to use instead, and
+the report carries the same two facts.
+
+## Reporting a deprecated function
+
+The first line of a deprecated function is a call to <Sym id="function:_deprecated_function" />, with the function's
+name, the version and the replacement. It fires the <Sym id="action:deprecated_function_run" /> action with those
+three values. Then, if `WP_DEBUG` is on and the `deprecated_function_trigger_error` filter allows it, it raises an
+`E_USER_DEPRECATED` notice through `wp_trigger_error()`:
+
+<Example id="support/_deprecated_function/function" />
+
+The action always fires, whether debugging is on or not. That is what tools that list deprecated calls hook into,
+and what the examples in this seam use to show each report. The notice, on the other hand, only appears with
+<Sym id="constant:WP_DEBUG" /> on, so a production site doesn't fill its logs with them.
+
+## The other kinds
+
+The same pattern covers every part of an API that can be retired. Each fires its own action, then raises a notice
+when debugging allows it:
+
+- <Sym id="function:_deprecated_argument" /> reports an argument that no longer does anything, with a message that
+  says what to do instead. It fires `deprecated_argument_run`.
+- <Sym id="function:_deprecated_hook" /> reports a retired hook. It fires `deprecated_hook_run`.
+- <Sym id="function:_deprecated_file" /> reports a retired file as it is included, firing `deprecated_file_included`.
+- <Sym id="function:_deprecated_class" /> and <Sym id="function:_deprecated_constructor" /> report a class, and an
+  old PHP 4 style constructor named after its class.
+
+<Example id="support/_deprecated_argument/argument" />
+
+<Example id="support/_deprecated_file/file" />
+
+All of these are private, as their leading underscore says. WordPress calls them on its own code, and plugins call
+them to deprecate their own functions. Don't hook a callback that changes behavior onto the actions they fire: use
+them to log or count calls.
+
+## Deprecated hooks
+
+A hook can't report itself, because the code that fires it is WordPress's, not the plugin's. So WordPress fires a
+retired hook through <Sym id="function:apply_filters_deprecated" /> or <Sym id="function:do_action_deprecated" />
+instead of the usual functions. They report the hook only when something is hooked to it, and then run it as
+usual:
+
+<Example id="hooks/apply_filters_deprecated/with-a-callback" />
+
+With nothing hooked, nothing is reported, and the filter hands back its first argument:
+
+<Example id="hooks/do_action_deprecated/no-callbacks" />
+
+That is why a deprecated hook is cheap to keep. A plugin that retires one of its own hooks should fire it the same
+way, next to the new hook, for a few releases.
+
+## Seeing the notices
+
+Turn on `WP_DEBUG` in `wp-config.php` while you develop. With `WP_DEBUG_LOG` on as well, the notices go to
+`wp-content/debug.log`, and with `WP_DEBUG_DISPLAY` off, they stay off the page. Each notice names the function, the
+version and, when there is one, the replacement.
+
+To silence one kind of notice, return `false` from its trigger filter, such as `deprecated_function_trigger_error`.
+That hides the notice but not the call, so use it while you fix code, not instead of fixing it.
+
+## Finding the replacement
+
+Every deprecated function names its replacement in its `_deprecated_function()` call, so the notice tells you. The
+reference page for each function in this seam names it too. Most replacements are one of a few kinds.
+
+**Renamed functions.** The old name calls the new one, so switching changes nothing but the name. Old user meta
+functions became `get_user_meta()` and its siblings, `get_settings()` became `get_option()`, and many template tags
+gained a `wp_` prefix:
+
+<Example id="deprecated/get_settings/deprecated" />
+
+**Escaping functions.** <Sym id="function:attribute_escape" /> and <Sym id="function:wp_specialchars" /> became
+`esc_attr()` and `esc_html()`. Use the `esc_` functions for the context you print into:
+
+<Example id="deprecated/attribute_escape/deprecated" />
+
+<Sym id="function:like_escape" /> is a warning case. It only escapes `%` and `_`, and never made a value safe for
+SQL. Its replacement is `$wpdb->esc_like()`, followed by `$wpdb->prepare()` for the query itself:
+
+<Example id="deprecated/like_escape/deprecated" />
+
+**Many functions folded into one.** A dozen `get_the_author_*()` functions became `get_the_author_meta()` with a
+field name, and the `user_can_*()` checks became `current_user_can()` with a capability:
+
+<Example id="deprecated/get_the_author_email/deprecated" />
+
+<Example id="deprecated/user_can_edit_post/deprecated" />
+
+**Theme functions replaced by theme support.** `add_custom_background()` and `add_custom_image_header()` became
+`add_theme_support()` with `custom-background` and `custom-header`:
+
+<Example id="deprecated/add_custom_background/deprecated" />
+
+**Functions replaced by a more general API.** <Sym id="function:get_page_by_title" /> became a `WP_Query` with the
+`title` argument. `wp_get_http()` became the HTTP API, and `get_currentuserinfo()` became
+`wp_get_current_user()`, which returns the user instead of filling globals:
+
+<Example id="deprecated/get_page_by_title/deprecated" />
+
+<Example id="deprecated/get_currentuserinfo/deprecated" />
+
+## Deprecated pluggable functions
+
+`pluggable-deprecated.php` holds old pluggable functions, such as `set_current_user()` and `wp_login()`. Each is
+wrapped in a `function_exists()` check, like the pluggable functions it sits beside, so a plugin could once define
+its own. Don't: a plugin that defines one is still relying on a retired name. Call the replacement, such as
+`wp_set_current_user()` or `wp_signon()`, instead:
+
+<Example id="deprecated/wp_login/deprecated" />
+
+## Services_JSON
+
+`class-json.php` holds `Services_JSON`, a pure-PHP JSON library from before PHP had JSON built in. Including the
+file reports it as deprecated since 5.3.0, and the class still works for code that loads it. Use PHP's own
+`json_encode()` and `json_decode()`, or `wp_json_encode()`:
+
+<Example id="deprecated/class--Services_JSON--encode/json" />
+
+The Deprecated seam isn't ported to SpeedySpec yet, so this guide makes no promise about how deprecated functions
+behave there.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'first' => \n  array (\n    'stats' => \n    array (\n      'books' => 2,\n    ),\n    'from the cache' => false,\n  ),\n  'second' => \n  array (\n    'stats' => \n    array (\n      'books' => 2,\n    ),\n    'from the cache' => true,\n  ),\n  'after delete' => false,\n  'persistent here' => false,\n)",
+ "error": null
+}

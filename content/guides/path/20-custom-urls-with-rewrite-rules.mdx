@@ -1,0 +1,71 @@
+---
+title: Custom URLs with rewrite rules
+summary: Give your plugin URLs of its own with rewrite rules and query variables, add endpoints to existing URLs, and flush rules only when the plugin is switched on or off.
+---
+
+With pretty permalinks, a URL such as `/hello-world/` doesn't name a file. WordPress matches it against a list of
+**rewrite rules**, regular expressions that each turn a URL into **query variables**, and the query variables decide
+what the page shows. A plugin can add rules of its own, so `/books/dune/` shows a book from the plugin's data. This
+guide adds a rule, registers its variable, adds an endpoint, and keeps the stored rules up to date.
+
+The examples turn on pretty permalinks with `/%postname%/`, then do what WordPress does with each request: match its
+URL against the rules and collect the query variables.
+
+## Adding a rule
+
+<Sym id="function:add_rewrite_rule" /> takes a regular expression for the URL, the query it maps to, and where to put
+the rule: `top`, before WordPress's own rules, or `bottom`. Parts of the URL captured in brackets are written
+`$matches[1]`, `$matches[2]` and so on. Add rules on `init`, and register each new variable on the
+<Sym id="filter:query_vars" /> filter:
+
+<Example id="guides/custom-urls-with-rewrite-rules/add-a-rule" />
+
+`/books/dune/` set `my_plugin_book` to `dune`, while an ordinary post's URL still found the post. Put your rule at
+the `top` when its pattern could also match one of WordPress's rules, and make the pattern specific, starting with a
+fixed word such as `books/`, so it can't take over other URLs.
+
+Read the variable with <Sym id="function:get_query_var" />, and act on it on the `template_redirect` action or the
+`template_include` filter, as [The template hierarchy](/guides/themes/the-template-hierarchy/) shows. Treat it as
+input from a stranger: it came from the URL, so sanitize it before use.
+
+## Unregistered variables are dropped
+
+WordPress keeps only the query variables it knows. A rule that sets an unregistered one still matches, but the
+variable is thrown away:
+
+<Example id="guides/custom-urls-with-rewrite-rules/unregistered-variables-are-dropped" />
+
+That is a safety feature. It means a URL can't set any query variable it likes. If your rule seems to match but
+nothing happens, check that its variable is registered. Give the variable a prefixed name, because a plain one such
+as `book` might be used by another plugin.
+
+## Flushing rules
+
+Rewrite rules are expensive to build, so WordPress builds them once and stores them in the `rewrite_rules` option.
+Adding a rule in code changes nothing until the stored rules are rebuilt, which is called **flushing**.
+<Sym id="function:flush_rewrite_rules" /> does it. Call it when your plugin is activated, after adding your rules,
+and when it is deactivated, after removing them:
+
+<Example id="guides/custom-urls-with-rewrite-rules/flush-on-activation" />
+
+The rule was stored once the plugin was activated, and gone once it was deactivated. Never flush on every request,
+or on `init`: it rebuilds every rule and writes the option each time, which slows every page. The activation hook
+runs after `init` has fired, so the activation function adds the rules itself before it flushes.
+
+Saving the Permalinks settings screen also flushes the rules. That is the fix to suggest when someone's custom URLs
+stop working after a migration.
+
+## Endpoints
+
+An **endpoint** adds a word to the end of existing URLs, such as `/dune/reviews/` for a post's reviews.
+<Sym id="function:add_rewrite_endpoint" /> adds one to the kinds of URL you choose, such as `EP_PERMALINK` for
+posts, and registers its query variable for you:
+
+<Example id="guides/custom-urls-with-rewrite-rules/an-endpoint" />
+
+All three URLs found the post. On `/dune/reviews/`, the variable `reviews` was set but empty, so check for it with
+`isset()` on the query variables rather than by reading its value. Anything after the endpoint becomes its value, as
+`2` did. Endpoints need flushing just like rules.
+
+The Rewrite and canonical URLs seam isn't ported to SpeedySpec yet, so this guide makes no promise about how URLs are
+matched there.

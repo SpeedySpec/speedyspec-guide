@@ -1,0 +1,163 @@
+---
+title: Support
+summary: How WordPress's shared helpers report errors, end requests, check nonces and redirects, and which of them a plugin can replace.
+---
+
+The Support seam is the toolbox every other seam reaches into: `functions.php`, `load.php`, `pluggable.php`, the
+constants WordPress defines while it boots, and small classes such as <Sym id="class:WP_Error" />. It has hundreds of
+functions, so this guide doesn't list them. It covers the families a plugin meets every day: errors, ending a
+request, nonces, redirects, JSON responses, list helpers, and the pluggable functions. What trips people up is that
+several of these end the request and several don't, and that some functions can be replaced by any plugin. For the
+security side in practice, read [Keeping your plugin safe](/guides/path/keeping-your-plugin-safe/).
+
+## Errors as values
+
+WordPress functions that can fail usually return a `WP_Error` instead of throwing. A `WP_Error` holds one or more
+codes, each with messages and optional data. <Sym id="function:is_wp_error" /> tells you whether you got one, and
+fires the `is_wp_error_instance` action when you did, which is handy for logging:
+
+<Example id="support/is_wp_error/error" />
+
+Check the result of any function documented as returning `WP_Error` before you use it. A `WP_Error` used as a post or
+a string fails later, far from the cause. Return your own `WP_Error` from your plugin's functions in the same way, so
+callers can handle failures with the same habit.
+
+## Ending a request
+
+<Sym id="function:wp_die" /> stops the request and shows a message, a title and a status code, 500 by default. Given a
+`WP_Error`, it shows the error's messages:
+
+<Example id="support/wp_die/die" />
+
+It doesn't print anything itself. It picks a **handler** by the kind of request: AJAX, JSON, JSONP for the REST API,
+XML-RPC, XML, or the HTML error page. Each choice passes through its own filter, such as `wp_die_ajax_handler` or
+`wp_die_handler`, so tests and other runtimes can catch it. A JSON request gets the error as JSON:
+
+<Example id="support/_json_wp_die_handler/json" />
+
+Use `wp_die()` rather than `exit` or `die` when you stop because something went wrong: the person gets a proper page
+and status, and code that filters the handler still runs.
+
+## Telling developers about mistakes
+
+<Sym id="function:_doing_it_wrong" /> reports that a function was called the wrong way, such as too early. It always
+fires `doing_it_wrong_run`, and raises a PHP notice only when `WP_DEBUG` is on and the `doing_it_wrong_trigger_error`
+filter allows it. Live sites stay quiet, and developers see it:
+
+<Example id="support/_doing_it_wrong/wrong" />
+
+Despite the leading underscore, it hasn't been marked private since 5.4.0. Call it from your own functions when a
+caller breaks a rule. The `_deprecated_*` functions in the same file work the same way for code that is going away.
+
+## Nonces
+
+A nonce proves a request came from a page your site made for the current user, which stops cross-site request
+forgery. <Sym id="function:wp_create_nonce" /> makes one for an action. It depends on the action, the user, their
+session and the time, so the same action gives the same nonce within one period, and another action gives another:
+
+<Example id="support/wp_create_nonce/create" />
+
+<Sym id="function:wp_verify_nonce" /> checks it. It returns 1 for a nonce from the current half of its life, 2 for one
+from the half before, and `false` otherwise. The life is a day by default, set by the `nonce_life` filter. Despite the
+name, a nonce can be used more than once within that time:
+
+<Example id="support/wp_verify_nonce/verify" />
+
+For forms and AJAX, use the wrappers. <Sym id="function:check_admin_referer" /> reads `_wpnonce` from the request and
+ends the request with an "are you sure" page when it is wrong. <Sym id="function:check_ajax_referer" /> does the same
+for AJAX, and can return `false` instead of stopping:
+
+<Example id="support/check_admin_referer/admin" />
+
+<Example id="support/check_ajax_referer/ajax" />
+
+A nonce says nothing about permission. Always check a capability with `current_user_can()` as well.
+
+## Redirects
+
+<Sym id="function:wp_redirect" /> sends a redirect to any location. <Sym id="function:wp_safe_redirect" /> only
+allows the site's own host and the hosts added through the `allowed_redirect_hosts` filter. Anything else goes to
+the admin instead:
+
+<Example id="support/wp_safe_redirect/safe" />
+
+<Sym id="function:wp_validate_redirect" /> applies the same rule without redirecting, and gives a fallback for a
+location it refuses. Note that `//evil.example`, a URL with no scheme, is caught too:
+
+<Example id="support/wp_validate_redirect/validate" />
+
+Use `wp_safe_redirect()` whenever any part of the location comes from the request, such as a `redirect_to`
+parameter. And call `exit` right after it: neither redirect function stops the request, so code after it keeps
+running.
+
+## JSON responses
+
+<Sym id="function:wp_json_encode" /> is `json_encode()` with a second chance: when encoding fails, it fixes invalid
+UTF-8 in the value and tries again, so a stray byte doesn't make the whole result `false`:
+
+<Example id="support/wp_json_encode/encode" />
+
+For an admin-ajax handler, <Sym id="function:wp_send_json_success" /> and <Sym id="function:wp_send_json_error" />
+print a JSON body with a `success` flag and end the request. A `WP_Error` given to the error version becomes a list of
+its codes and messages:
+
+<Example id="support/wp_send_json_success/success" />
+
+<Example id="support/wp_send_json_error/error" />
+
+Don't use them in a REST API callback. There, return a `WP_REST_Response` or a `WP_Error`, and WordPress reports a
+`_doing_it_wrong()` notice if you send JSON yourself.
+
+## Arguments and lists
+
+<Sym id="function:wp_parse_args" /> merges arguments over defaults. It accepts an array, an object or a query string,
+which is why so many WordPress functions take any of the three:
+
+<Example id="support/wp_parse_args/args" />
+
+The list helpers work on arrays of arrays or objects, such as a list of posts. <Sym id="function:wp_list_pluck" />
+takes one field from each item, optionally keyed by another. <Sym id="function:wp_filter_object_list" /> keeps the
+items whose fields match all, any or none of the arguments:
+
+<Example id="support/wp_list_pluck/pluck" />
+
+<Example id="support/wp_filter_object_list/filter" />
+
+<Sym id="function:maybe_serialize" /> serializes arrays and objects for storage, and serializes an already serialized
+string again so it reads back exactly as given. The option and meta functions call it for you:
+
+<Example id="support/maybe_serialize/serialize" />
+
+Never call `unserialize()` or `maybe_unserialize()` on data from a request. Unserializing can create objects, which is
+a known path to code execution.
+
+## Small callbacks
+
+The `__return_*` functions return one fixed value. They exist to answer a filter without writing a function, and,
+because they are named, they can be removed again with `remove_filter()`:
+
+<Example id="support/__return_true/callback" />
+
+## Pluggable functions
+
+`pluggable.php` is loaded after plugins, and every function in it is wrapped in a `function_exists()` check. A plugin
+that defines one of them first, such as <Sym id="function:wp_mail" /> or `wp_hash_password()`, replaces WordPress's
+version for the whole site. Only one plugin can win, and the replacement must keep the original's arguments and
+return values, or other code breaks. Prefer the filters and actions those functions offer: they let several plugins
+take part.
+
+## The environment
+
+<Sym id="function:wp_get_environment_type" /> reads `WP_ENVIRONMENT_TYPE` and gives `local`, `development`,
+`staging` or `production`. Anything unset or unknown counts as `production`, so the safe behavior is the default:
+
+<Example id="support/wp_get_environment_type/environment" />
+
+Use it to turn on debugging aids, never to turn off security checks. Early in loading, WordPress also registers
+<Sym id="class:WP_Fatal_Error_Handler" /> through <Sym id="function:wp_register_fatal_error_handler" />, unless
+`WP_DISABLE_FATAL_ERROR_HANDLER` is set. It catches a fatal error at shutdown, so a broken plugin can be paused for
+the administrator instead of taking down the site:
+
+<Example id="support/wp_register_fatal_error_handler/register" />
+
+The Support seam isn't ported to SpeedySpec yet, so this guide makes no promise about how these helpers behave there.

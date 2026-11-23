@@ -1,0 +1,60 @@
+---
+title: Admin notices and Ajax
+summary: Show admin notices only to the people and on the screens they concern, and answer Ajax requests from the admin with a nonce check, a capability check and a JSON reply.
+---
+
+Two small things most plugins need in the admin: a **notice**, the coloured box under a screen's title that says
+something is wrong or done, and an **Ajax request**, a call from the page's JavaScript that does something without
+reloading the page, such as dismissing that notice for good. This guide builds both, safely.
+
+## Showing a notice
+
+Print notices on the <Sym id="action:admin_notices" /> action, which every admin screen fires below its title.
+<Sym id="function:wp_admin_notice" /> prints one with WordPress's markup. It takes the message and a type
+(`success`, `info`, `warning` or `error`), and whether it can be dismissed:
+
+<Example id="guides/admin-notices-and-ajax/show-a-notice" />
+
+The notice appeared while the API key was missing, and disappeared once it was set. Its callback checked the
+capability first, so only people who can add the key are told about it. The message is HTML. `wp_admin_notice()`
+passes the notice through `wp_kses_post()`, which keeps links and formatting and removes scripts, but that is a net,
+not escaping. The example escaped the translated text and the link's address itself. `wp_get_admin_notice()` gives
+the HTML without that filtering and without printing it, so escape everything in it before you print it.
+
+`dismissible` adds a close button, but closing hides the notice only until the next page load. For a notice
+people should be able to dismiss for good, remember the choice, as the Ajax section below does.
+
+## Only where it belongs
+
+A notice on every admin screen is noise. Show a notice about your settings on your settings screen, and check which
+screen this is with <Sym id="function:get_current_screen" />:
+
+<Example id="guides/admin-notices-and-ajax/only-on-your-screen" />
+
+The dashboard showed nothing, and the plugin's screen showed its notice. A screen's id is known once the screen is
+set up, so check it inside your `admin_notices` callback, not when your plugin loads.
+
+For a message after saving a form, the Settings API's `add_settings_error()` adds a notice that the settings screen
+shows for you, as [Adding a settings page](/guides/path/adding-a-settings-page/) explains.
+
+## Answering Ajax requests
+
+The admin's JavaScript sends Ajax requests to `admin-ajax.php`, with an `action` field. WordPress fires
+`wp_ajax_{action}` for a logged-in person, and `wp_ajax_nopriv_{action}` for a visitor who isn't. Hook only the
+first unless visitors really need it. A handler checks the nonce with <Sym id="function:check_ajax_referer" />,
+checks the capability, does the one thing asked, and answers with <Sym id="function:wp_send_json_success" /> or
+<Sym id="function:wp_send_json_error" />:
+
+<Example id="guides/admin-notices-and-ajax/dismiss-with-ajax" />
+
+A forged nonce stopped the request before the handler did anything. An editor had a real nonce, but not the
+capability, and got an error. Only the administrator's request dismissed the notice. Both JSON functions end the
+request, so nothing after them runs. The example catches that end instead, to show each answer.
+
+Make the nonce with `wp_create_nonce()` for the same action name, and hand it to your script with
+`wp_localize_script()` or `wp_add_inline_script()`, as
+[Loading scripts and styles](/guides/path/loading-scripts-and-styles/) shows. For new code, consider a REST endpoint
+instead, as in [Adding a REST endpoint](/guides/path/adding-a-rest-endpoint/): it has the same checks built in, and
+other clients can use it too.
+
+The Admin seam isn't ported to SpeedySpec yet, so this guide makes no promise about how notices and Ajax behave there.

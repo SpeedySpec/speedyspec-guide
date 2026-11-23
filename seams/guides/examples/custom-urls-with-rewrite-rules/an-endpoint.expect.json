@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'the post' => \n  array (\n    'page' => '',\n    'name' => 'dune',\n  ),\n  'its reviews' => \n  array (\n    'name' => 'dune',\n    'reviews' => '',\n  ),\n  'with a value' => \n  array (\n    'name' => 'dune',\n    'reviews' => '2',\n  ),\n  'isset, empty' => true,\n)",
+ "error": null
+}

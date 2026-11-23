@@ -1,0 +1,138 @@
+---
+title: Feeds
+summary: How WordPress reads other sites' feeds through SimplePie, writes its own feeds, and what replaces MagpieRSS.
+---
+
+The Feeds seam works in two directions. It **reads** feeds from other sites, through the SimplePie library that
+WordPress bundles, and it **writes** the site's own RSS 2.0, Atom and RDF feeds from a set of templates and template
+tags. It also holds WordPress's oEmbed client. What trips people up is that the two directions share a name and
+nothing else, that a fetched feed is cached for hours, and that an older feed reader, MagpieRSS, is still in the
+files long after it was deprecated. For calling other sites in general, read
+[Talking to other sites](/guides/path/talking-to-other-sites/).
+
+## Reading a feed
+
+<Sym id="function:fetch_feed" /> is the one function to call. Give it a feed URL and it returns a SimplePie object,
+or a `WP_Error` when the feed can't be fetched or parsed. Always check for the error before you use the result:
+
+<Example id="feed/fetch_feed/example" />
+
+`fetch_feed()` doesn't let SimplePie work alone. It swaps in three WordPress classes before it runs:
+
+- <Sym id="class:WP_SimplePie_File" /> fetches the URL with `wp_safe_remote_request()`, so the request goes through
+  the HTTP API, its filters and its checks against requests to local addresses.
+- <Sym id="class:WP_SimplePie_Sanitize_KSES" /> cleans any HTML in the feed with `wp_kses_post()`, the same rules
+  as post content.
+- <Sym id="class:WP_Feed_Cache_Transient" /> stores the parsed feed in site transients.
+
+The cache lasts 12 hours. The <Sym id="filter:wp_feed_cache_transient_lifetime" /> filter changes that, per URL.
+Shorten it only for feeds that really change often: every expired cache is a remote request made during a visitor's
+page load. The <Sym id="action:wp_feed_options" /> action runs just before the fetch and receives the SimplePie
+object by reference, for any other setting.
+
+Passing an array of URLs fetches each one and merges their items into one feed. If any of them fails, the whole call
+returns a `WP_Error` listing the failures.
+
+Feed content is still someone else's content. The KSES pass removes scripts from HTML fields, but escape titles and
+links when you print them, with `esc_html()` and `esc_url()`, as you would any outside data.
+
+## Serving the site's feeds
+
+WordPress answers `/feed/`, `/feed/atom/`, `/comments/feed/` and the like by running a template: `feed-rss2.php`,
+`feed-atom.php`, `feed-rdf.php` and their comment versions. Which one runs when no type is named is decided by
+<Sym id="function:get_default_feed" />, `rss2` unless the <Sym id="filter:default_feed" /> filter says otherwise:
+
+<Example id="feed/get_default_feed/example" />
+
+Each template sends a content type from <Sym id="function:feed_content_type" />:
+
+<Example id="feed/feed_content_type/example" />
+
+To add a feed type of your own, register it with `add_feed()` from the rewrite API and give it a named callback that
+prints the feed.
+
+## Template tags for feeds
+
+Inside a feed template, the usual template tags have feed versions. They exist because a feed is XML, not HTML: a
+title or description has to be escaped differently, and some markup must not appear at all.
+
+<Sym id="function:get_bloginfo_rss" /> and <Sym id="function:bloginfo_rss" /> read site details, strip any tags and
+convert characters for XML. The site's name is already escaped when it is saved, so here its markup shows as
+entities:
+
+<Example id="feed/get_bloginfo_rss/example" />
+
+<Sym id="function:get_the_title_rss" /> passes a post's title through the <Sym id="filter:the_title_rss" /> filter,
+which strips its tags and escapes it by default:
+
+<Example id="feed/get_the_title_rss/example" />
+
+<Sym id="function:get_the_content_feed" /> runs the content through `the_content`, then makes any `]]>` safe so it
+can't close the template's CDATA section early, then applies <Sym id="filter:the_content_feed" />:
+
+<Example id="feed/get_the_content_feed/example" />
+
+<Sym id="function:get_the_category_rss" /> writes the post's categories and tags in the form the feed type needs:
+
+<Example id="feed/get_the_category_rss/example" />
+
+<Sym id="function:rss_enclosure" /> and <Sym id="function:atom_enclosure" /> turn the enclosure meta of a post into
+media entries, which is how podcasts reach their listeners:
+
+<Example id="feed/rss_enclosure/example" />
+
+Comments have their own tags, such as <Sym id="function:comment_text_rss" />, which escapes the comment's text:
+
+<Example id="feed/comment_text_rss/example" />
+
+The feed's title comes from <Sym id="function:get_wp_title_rss" />, which uses the page's document title from
+`wp_get_document_title()`: the site's name alone on the main feed, with the archive's title before it on an archive
+feed:
+
+<Example id="feed/get_wp_title_rss/example" />
+
+## Changing a feed from a plugin
+
+Leave the templates alone and use their hooks. Each template fires actions at fixed points: `rss2_head` in the
+channel, `rss2_item` inside each item, `atom_head` and `atom_entry` for Atom. A callback on `rss2_item` that echoes
+an extra element is the standard way to add a field. Escape what you print with `esc_xml()` or `esc_url()`.
+
+A new element needs its XML namespace declared on the root element. Use the <Sym id="filter:wp_feed_namespaces" />
+filter, which <Sym id="function:wp_get_feed_namespaces" /> applies for each feed type. It drops any prefix that isn't
+a valid XML name, and it can't remove the namespaces the bundled templates rely on:
+
+<Example id="feed/wp_get_feed_namespaces/example" />
+
+<Example id="feed/wp_feed_namespaces/example" />
+
+The older `rss2_ns` and `atom_ns` actions still fire, but printing attributes from them by hand is easy to get
+wrong. Prefer the filter.
+
+<Sym id="function:get_feed_build_date" /> gives the date of the latest change among the feed's posts and comments,
+which the templates use for `lastBuildDate`:
+
+<Example id="feed/get_feed_build_date/example" />
+
+## oEmbed
+
+The seam also holds <Sym id="class:WP_oEmbed" />, which turns a URL from a site such as a video host into embed HTML
+by asking that site's oEmbed endpoint. Its list of trusted providers passes through the
+<Sym id="filter:oembed_providers" /> filter, and its result through <Sym id="filter:oembed_result" />. Plugins
+normally reach it through `wp_oembed_get()` and `wp_oembed_add_provider()` from the embed API rather than creating
+the class themselves. <Sym id="class:WP_oEmbed_Controller" /> is the other side: the REST endpoint that lets other
+sites embed this one.
+
+## MagpieRSS: deprecated
+
+`wp-includes/rss.php` holds MagpieRSS, the feed reader WordPress used before SimplePie. The whole file has been
+deprecated since WordPress 3.0, and including it raises a deprecation notice. <Sym id="function:fetch_rss" />,
+<Sym id="function:wp_rss" /> and <Sym id="function:get_rss" /> still work, along with helpers such as `is_success()`
+and `parse_w3cdtf()`:
+
+<Example id="feed/fetch_rss/example" />
+
+Use `fetch_feed()` instead in all new code. It handles Atom as well as RSS, sanitizes HTML, and goes through the HTTP
+API. <Sym id="function:wp_simplepie_autoload" /> is deprecated too, since 6.7.0: SimplePie now loads its own classes,
+and the function does nothing.
+
+The Feeds seam isn't ported to SpeedySpec yet, so this guide makes no promise about how feeds behave there.

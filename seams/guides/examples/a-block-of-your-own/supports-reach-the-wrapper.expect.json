@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div style=\"color:#222222\" class=\"my-plugin-book-card wp-block-my-plugin-book-card has-text-color has-background has-accent-background-color has-large-font-size\"><p>Dune</p></div>'",
+ "error": null
+}

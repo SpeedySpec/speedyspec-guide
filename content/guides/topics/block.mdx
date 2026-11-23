@@ -1,0 +1,167 @@
+---
+title: Blocks
+summary: How block types are registered and rendered on the server, and how plugins reach into blocks through supports, bindings, hooks and filters.
+---
+
+The Blocks seam is the server side of the block editor. It registers block types, reads block markup into arrays,
+renders those arrays to HTML, and holds the systems that let plugins and themes reach into blocks: supports, bindings,
+block hooks, patterns, styles and templates. This guide keeps to what a plugin author meets. What trips people up is
+that blocks live in two places: the editor builds and saves them in JavaScript, and the server reads that saved markup
+and, for dynamic blocks, renders it again on every request. To build a block step by step, read
+[A block of your own](/guides/path/a-block-of-your-own/). For how themes use blocks, read
+[Blocks in themes](/guides/themes/blocks-in-themes/), which covers templates, patterns and block styles in more depth.
+
+## Block markup
+
+A post's blocks are stored in its content as HTML with comments around each block, holding the block's name and its
+attributes as JSON. <Sym id="function:parse_blocks" /> reads that markup into arrays, and
+<Sym id="function:serialize_block" /> writes one back, inner blocks included:
+
+<Example id="block/serialize_block/example" />
+
+To ask what content holds without walking the arrays yourself, <Sym id="function:has_blocks" /> says whether there is
+any block markup at all, and <Sym id="function:has_block" /> whether a block type appears. A name without a namespace
+means `core/`, and inner blocks count:
+
+<Example id="block/has_block/example" />
+
+To change markup on its way through, <Sym id="function:traverse_and_serialize_blocks" /> serializes blocks and calls
+your functions before and after each one. That is safer than editing the comments with string functions:
+
+<Example id="block/traverse_and_serialize_blocks/example" />
+
+## Registering block types
+
+<Sym id="function:register_block_type" /> registers a block type, on `init`. Given a name and arguments, it builds a
+<Sym id="class:WP_Block_Type" /> and returns it, or `false` with a notice for a name that isn't `namespace/name` in
+lower case. A `render_callback` makes the block **dynamic**:
+
+<Example id="block/register_block_type/example" />
+
+Most blocks are registered from a folder holding a `block.json`. Given a path, `register_block_type()` hands it to
+<Sym id="function:register_block_type_from_metadata" />, which reads and translates the metadata, and registers the
+scripts and styles that `file:` paths name, with handles made from the block's name:
+
+<Example id="block/register_block_type_from_metadata/example" />
+
+Each script's dependencies come from the `.asset.php` file the build writes beside it, as
+<Sym id="function:register_block_script_handle" /> shows. The `block_type_metadata` and `block_type_metadata_settings`
+filters let other code change a block type as it is registered.
+
+A plugin with many blocks can register a PHP manifest of all their metadata with
+<Sym id="function:wp_register_block_metadata_collection" />, so registering each block reads no JSON file. In
+WordPress 6.8 and later, `wp_register_block_types_from_metadata_collection()` registers the manifest and every block
+in it in one call.
+
+<Sym id="function:unregister_block_type" /> removes a block type, and returns `false` with a notice when there is
+none. All registered types live in <Sym id="class:WP_Block_Type_Registry" />:
+
+<Example id="block/unregister_block_type/example" />
+
+<OnSpeedySpecNote id="function:register_block_type" />
+
+## Rendering
+
+<Sym id="function:do_blocks" /> renders blocks on `the_content`, at priority 9. When the content has blocks, it also
+keeps `wpautop()` from running on it afterwards, since block markup already has its paragraphs:
+
+<Example id="block/do_blocks/example" />
+
+Each block goes through <Sym id="function:render_block" />, which builds a <Sym id="class:WP_Block" /> and renders it.
+A static block prints the HTML that was saved. A dynamic one calls its render callback, with the block's attributes,
+its rendered inner content and the block object. Whatever it prints comes from attributes people typed, so it must
+escape them. <Sym id="function:get_dynamic_block_names" /> lists the dynamic ones:
+
+<Example id="block/get_dynamic_block_names/example" />
+
+A render callback builds its outer element with <Sym id="function:get_block_wrapper_attributes" />. It returns the
+attributes the block's supports add, such as color classes, merged with any you pass:
+
+<Example id="block/get_block_wrapper_attributes/example" />
+
+Several filters run around each block. `pre_render_block` can replace a block's output before it renders,
+`render_block_data` changes its parsed array, `render_block_context` changes the context it receives from its parents,
+and <Sym id="filter:render_block" /> and `render_block_{$name}` change its HTML afterwards. Prefer the narrowest one:
+`render_block_core/image` runs only for images, `render_block` for every block on the page.
+
+## Supports
+
+A block type's `supports` say which design tools it has: color, spacing, typography, borders and more. The editor
+offers those controls, and on the server WordPress turns the saved choices into classes and styles when the block
+renders. <Sym id="function:block_has_support" /> reads a block type's supports by a path into them:
+
+<Example id="block/block_has_support/example" />
+
+## Bindings
+
+A **binding** connects a block attribute to a value from somewhere else, such as a post's meta, so the block shows
+current data instead of what was saved. A **source** provides the value.
+<Sym id="function:register_block_bindings_source" /> registers one by a namespaced name, with a label and a named
+callback that returns the value:
+
+<Example id="block/register_block_bindings_source/example" />
+
+<Sym id="function:get_block_bindings_source" /> returns a registered source, such as the built-in `core/post-meta`, or
+`null`. Only some attributes of some blocks can be bound, which
+<Sym id="function:get_block_bindings_supported_attributes" /> lists: for a paragraph only its `content`, for an image
+its `id`, `url`, `title`, `alt` and `caption`.
+
+A source must decide what may be shown. `core/post-meta` shows only meta registered with `show_in_rest`, never a
+protected key (one starting with `_`), and only for a post the visitor may read. Your own source's callback needs the
+same care, because bound values are printed on public pages:
+
+<Example id="block/_block_bindings_post_meta_get_value/example" />
+
+## Block hooks
+
+A **block hook** inserts a plugin's block next to another block automatically, without anyone placing it. A block type
+names its anchors in `block_hooks` (`blockHooks` in `block.json`), each with a position: `before`, `after`,
+`firstChild` or `lastChild`. <Sym id="function:get_hooked_blocks" /> collects them:
+
+<Example id="block/get_hooked_blocks/example" />
+
+<Sym id="function:apply_block_hooks_to_content" /> inserts the hooked blocks into markup. WordPress applies it to
+templates, template parts and patterns, and on `the_content` before `do_blocks()` for post content. The
+`hooked_block_types` filter adds or removes hooked blocks per anchor and context:
+
+<Example id="block/apply_block_hooks_to_content/example" />
+
+When someone moves or removes a hooked block in the editor, WordPress records that in the anchor's metadata and
+doesn't insert it there again. So a hooked block is a default, not a guarantee.
+
+## Patterns, styles and templates
+
+A plugin can add **patterns** with `register_block_pattern()`, **block styles** with `register_block_style()`, and,
+since WordPress 6.7, **templates** with <Sym id="function:register_block_template" />, named `plugin//slug`. A
+template the site's owner saved, or a theme file with the same slug, still wins over the plugin's:
+
+<Example id="block/register_block_template/example" />
+
+[Blocks in themes](/guides/themes/blocks-in-themes/) explains patterns and styles, and
+[The template hierarchy](/guides/themes/the-template-hierarchy/) how a template is chosen.
+
+## Limiting and cleaning blocks
+
+The `allowed_block_types_all` filter limits which blocks the editor offers, per editor context. Return `true` for all,
+or a list of names. <Sym id="function:get_allowed_block_types" /> applies it:
+
+<Example id="block/get_allowed_block_types/example" />
+
+This only limits the inserter. It doesn't remove blocks already in content, and it doesn't stop someone saving markup
+by other means, so don't treat it as a security boundary.
+
+Block attributes are user input too. Whenever kses filters content, as it does on save for people without
+`unfiltered_html`, WordPress also runs each block's attributes through kses, on the `pre_kses` filter, with
+<Sym id="function:filter_block_kses" />:
+
+<Example id="block/filter_block_kses/example" />
+
+For automatic excerpts, <Sym id="function:excerpt_remove_blocks" /> keeps only text blocks such as paragraphs and
+headings. The `excerpt_allowed_blocks` filter changes the list:
+
+<Example id="block/excerpt_remove_blocks/example" />
+
+Most functions in this seam whose names start with `_`, and the `block_core_*` and `render_block_core_*` functions
+that serve the core blocks, are internal. Call the public functions above instead.
+
+The Blocks seam isn't ported to SpeedySpec yet, so this guide makes no promise about how blocks behave there.

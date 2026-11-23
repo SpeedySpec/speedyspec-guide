@@ -1,0 +1,152 @@
+---
+title: Rewrite and canonical URLs
+summary: How rewrite rules are built, stored and matched, how canonical redirects pick one URL per page, and how speculation rules are printed.
+---
+
+The Rewrite and canonical URLs seam turns a pretty address like `/2026/11/hello/` into the query variables WordPress
+runs its query with, and sends visitors who arrive on another form of an address to the one WordPress considers
+right. It also prints the speculation rules that let browsers load the next page early. What trips people up is that
+rewrite rules are built once and stored: a rule a plugin adds does nothing until the stored rules are rebuilt. For
+the plugin side of that, read [Storing your own content](/guides/path/storing-your-own-content/), and for what
+happens to the query variables afterwards, the [Query](/guides/topics/query/) guide.
+
+## Rules, tags and structures
+
+A rewrite rule is a regular expression paired with a query string. The rules live on one object, the
+<Sym id="global:wp_rewrite" /> global, an instance of <Sym id="class:WP_Rewrite" />. The functions plugins call are
+thin wrappers around its methods.
+
+<Sym id="function:add_rewrite_rule" /> adds one rule. It goes below WordPress's own rules unless you pass `'top'`.
+A query that doesn't start with `index.php` isn't a WordPress rule at all: it becomes an external rule, which only
+the server's own configuration can serve.
+
+<Example id="route/add_rewrite_rule/rule" />
+
+<Sym id="function:add_rewrite_tag" /> names a placeholder, such as `%guide%`, with the regex it matches and the query
+variable it fills. Without a query, the variable takes the tag's name and is made public, so `WP` will keep it. A
+name that isn't wrapped in `%` signs is silently ignored:
+
+<Example id="route/add_rewrite_tag/tag" />
+
+<Sym id="function:add_permastruct" /> adds a whole named structure, such as `/guides/%guide%`, that is expanded into
+rules for the item, its pages, feeds and endpoints. Post types and taxonomies register theirs this way. The old
+fourth argument is still read as the endpoint mask:
+
+<Example id="route/add_permastruct/struct" />
+
+When a structure is expanded, each tag becomes its regex and its query variable. A tag nobody registered is left in
+the rule as it is, which is a sign that `add_rewrite_tag()` was never called:
+
+<Example id="route/class--WP_Rewrite--generate_rewrite_rule/rule" />
+
+## Endpoints and feeds
+
+<Sym id="function:add_rewrite_endpoint" /> adds a suffix, such as `/print/`, to every structure named in a mask of
+`EP_*` constants. <Sym id="constant:EP_PERMALINK" />, <Sym id="constant:EP_PAGES" /> and
+<Sym id="constant:EP_ROOT" /> are the ones you use most. The endpoint's query variable is public, takes the
+endpoint's name by default, and can be renamed:
+
+<Example id="route/add_rewrite_endpoint/endpoint" />
+
+<Sym id="function:add_feed" /> adds a feed name and hooks your callback to `do_feed_{name}`. If WordPress already has
+a feed of that name, its own callback is removed first, so your callback replaces it:
+
+<Example id="route/add_feed/feed" />
+
+## Stored rules and flushing
+
+Building the full set of rules walks every structure, tag and endpoint, so WordPress does it rarely. It stores the
+result in the `rewrite_rules` option, and <Sym id="method:WP_Rewrite::wp_rewrite_rules" /> reads that option on each
+request. Only when the option is empty does it rebuild:
+
+<Example id="route/class--WP_Rewrite--wp_rewrite_rules/stored" />
+
+<Sym id="method:WP_Rewrite::rewrite_rules" /> builds the list in a fixed order: rules added with `'top'`, then
+WordPress's own rules (robots, favicon, sitemaps, dates, posts, pages), then the extra structures. With plain
+permalinks there are none at all, and each request is read from its query string alone:
+
+<Example id="route/class--WP_Rewrite--rewrite_rules/rules" />
+
+<Sym id="function:flush_rewrite_rules" /> rebuilds and saves the rules. If `wp_loaded` hasn't fired yet, it waits for
+it, so rules registered later in the request aren't lost. A hard flush (the default) also rewrites `.htaccess` or
+`web.config`, when the admin functions that write them are loaded; pass `false` for a soft flush:
+
+<Example id="route/flush_rewrite_rules/soft" />
+
+<Example id="route/class--WP_Rewrite--flush_rules/hard" />
+
+Flushing is slow and writes to the database, so call it on activation and deactivation, after your rules are
+registered, and never on every request. WordPress empties the stored rules itself when the site language changes,
+because translated bases change the rules:
+
+<Example id="route/wp_flush_rewrite_rules_on_site_language_change/empty" />
+
+## Matching a request
+
+Matching is done by <Sym id="method:WP::parse_request" />, in the Query seam. It tries each stored rule against the
+requested path, in order, and stops at the first match. <Sym id="class:WP_MatchesMapRegex" /> then fills the
+`$matches[N]` references in the rule's query with the captured groups:
+
+<Example id="route/class--WP_MatchesMapRegex--apply/apply" />
+
+Only public query variables survive. That is why `add_rewrite_tag()` and `add_rewrite_endpoint()` register theirs,
+and why a rule whose query uses a variable you never registered seems to match but does nothing. Add such a variable
+with the `query_vars` filter.
+
+Going the other way, <Sym id="function:url_to_postid" /> finds the post a URL points to, or `0`. It reads `?p=`,
+`?page_id=` and `?attachment_id=` directly, refuses other hosts, and otherwise runs the URL through the rules:
+
+<Example id="route/url_to_postid/ids" />
+
+## Filters on the rules
+
+Each group of rules passes through its own filter as it is built: `post_rewrite_rules`, `page_rewrite_rules`,
+<Sym id="filter:{$permastructname}_rewrite_rules" /> for each extra structure, and others. The whole list then goes
+through <Sym id="filter:rewrite_rules_array" />, and the <Sym id="action:generate_rewrite_rules" /> action receives
+the `WP_Rewrite` object before that. These run only when the rules are rebuilt, not on every request, so a change you
+make in them also needs a flush. For the server files, <Sym id="filter:mod_rewrite_rules" /> filters the `.htaccess`
+block:
+
+<Example id="route/class--WP_Rewrite--mod_rewrite_rules/htaccess" />
+
+## Canonical redirects
+
+On `template_redirect`, <Sym id="function:redirect_canonical" /> works out the one URL a page should have: the
+right host, the trailing slash the permalink structure asks for, the pretty form of a `?p=` link. If the request
+differs, it sends a 301 to that URL. It leaves alone anything but GET and HEAD requests, the admin, searches,
+previews and trackbacks. Called with `false` as its second argument, it returns the URL instead of redirecting:
+
+<Example id="route/redirect_canonical/slash" />
+
+The <Sym id="filter:redirect_canonical" /> filter receives the chosen URL and the requested one. Return `false` from
+it to cancel the redirect for requests your plugin serves itself, rather than removing the whole action.
+
+On a 404, <Sym id="function:redirect_guess_404_permalink" /> tries to find a post whose name looks like the request.
+`do_redirect_guess_404_permalink` turns the guessing off, and `pre_redirect_guess_404_permalink` lets you answer
+instead:
+
+<Example id="route/redirect_guess_404_permalink/filters" />
+
+## Speculation rules
+
+For visitors who aren't logged in, on a site with pretty permalinks, WordPress prints speculation rules in the footer
+that ask the browser to prefetch a link as soon as the visitor starts to click it.
+<Sym id="function:wp_get_speculation_rules_configuration" /> decides the mode and eagerness. The
+<Sym id="filter:wp_speculation_rules_configuration" /> filter can change them, and returning `null` turns the feature
+off:
+
+<Example id="route/wp_get_speculation_rules_configuration/config" />
+
+<Sym id="function:wp_get_speculation_rules" /> builds the main rule. It never speculates on WordPress's own paths,
+such as `wp-admin` and the content folders, on links with a query string, on `rel="nofollow"` links, or on links
+inside an element with the `no-prefetch` class. Plugins add paths to skip with
+<Sym id="filter:wp_speculation_rules_href_exclude_paths" />, which suits links that change something when visited:
+
+<Example id="route/wp_get_speculation_rules/rules" />
+
+`WP_Speculation_Rules` checks every rule it is given and refuses bad modes, IDs and duplicates with a notice:
+
+<Example id="route/class--WP_Speculation_Rules--add_rule/rules" />
+
+The Rewrite and canonical URLs seam isn't ported to SpeedySpec yet, so this guide makes no promise about how rewrite
+rules and redirects behave there.

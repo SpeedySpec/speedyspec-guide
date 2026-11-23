@@ -1,0 +1,157 @@
+---
+title: Multisite
+summary: How a network finds the site a request is for, how sites are read, switched, created and removed, and what a plugin must do differently on a network.
+---
+
+Multisite lets one WordPress install run a **network** of sites. They share the code, the plugins and themes, and the
+users table, but each site has its own posts, options and other tables, named with its own prefix, such as
+`wp_2_posts`. The Multisite seam holds the code that finds the site a request is for, the `WP_Site` and `WP_Network`
+objects, switching between sites, and the life of a site from sign-up to deletion. What trips people up is that a
+plugin written for one site often assumes there is only one: one options table, one set of users with roles, one
+activation. [Storing data in your own tables](/guides/path/storing-data-in-your-own-tables/) shows the table side of
+that.
+
+## How a request finds its site
+
+When `wp-config.php` sets `MULTISITE`, `wp-settings.php` includes `ms-settings.php` early, before any plugin loads.
+It includes `wp-content/sunrise.php` first when `SUNRISE` is defined, which is how domain-mapping plugins step in.
+Then it takes the request's host and path and hands them to <Sym id="function:ms_load_current_site_and_network" />,
+which fills the `$current_site` (the network) and `$current_blog` (the site) globals:
+
+<Example id="multisite/ms_load_current_site_and_network/load" />
+
+On a subdirectory network, the site is the one whose path is the longest match for the request's path.
+<Sym id="function:get_site_by_path" /> does that search; a path that matches no site falls back to the main site at
+`/`, and an unknown domain finds nothing. The `pre_get_site_by_path` filter can answer first:
+
+<Example id="multisite/get_site_by_path/site" />
+
+<Sym id="function:is_subdomain_install" /> says which kind of network it is, from the `SUBDOMAIN_INSTALL` constant:
+
+<Example id="multisite/is_subdomain_install/subdomain" />
+
+## Sites and networks as objects
+
+A site is a <Sym id="class:WP_Site" />, read with <Sym id="function:get_site" />. With no argument it gives the
+current site; an unknown ID gives `null`. Its fields come from the `blogs` table, so they are strings, `blog_id`
+included:
+
+<Example id="multisite/get_site/get" />
+
+<Sym id="function:get_sites" /> runs a <Sym id="class:WP_Site_Query" /> and returns site objects, IDs or a count. It
+returns 100 sites unless you set `number`, so ask for what you need rather than looping over every site:
+
+<Example id="multisite/get_sites/query" />
+
+Networks work the same way, through <Sym id="class:WP_Network" />, <Sym id="function:get_network" /> and
+`get_networks()`. Most installs have one network:
+
+<Example id="multisite/get_network/network" />
+
+<Sym id="function:get_blog_details" /> is the older way to read a site, and still works, but `get_site()` is the one
+to use in new code.
+
+## Switching to another site
+
+<Sym id="function:switch_to_blog" /> makes another site current for the database and the object cache: `$wpdb`
+uses its table prefix, and options, posts and users' roles come from that site. It pushes the previous site onto a
+stack, and fires `switch_blog`, which is how WordPress reloads the roles:
+
+<Example id="multisite/switch_to_blog/switch" />
+
+<Sym id="function:restore_current_blog" /> pops the stack and goes back. Call it once for every switch, even when the
+switch was to the site you were already on, or the stack is left wrong for the rest of the request:
+
+<Example id="multisite/restore_current_blog/restore" />
+
+<Sym id="function:ms_is_switched" /> says whether a switch is in effect:
+
+<Example id="multisite/ms_is_switched/switched" />
+
+A switch changes data, not code. The plugins and theme loaded for the request stay loaded, so the other site's own
+plugins don't run, and its post types, taxonomies and shortcodes aren't registered unless the current site has them
+too. Switching also costs time, so avoid it inside a loop over many sites.
+
+For a single value, the `*_blog_option()` functions switch for you, and read the current site's option directly
+without switching:
+
+<Example id="multisite/get_blog_option/get" />
+
+## Options: per site and per network
+
+`get_option()` reads the current site's options table. Settings that belong to the whole network live in the
+network's `sitemeta` table instead, through <Sym id="function:get_network_option" />, or
+<Sym id="function:get_site_option" /> for the current network. The names are old and confusing: "site option" means
+**network** option. Decide which kind each of a plugin's settings is. On a single site, the network functions fall
+back to ordinary options, so the same code works on both.
+
+The network can also keep data about each site, outside that site's own tables, as site meta in the `blogmeta`
+table. <Sym id="function:add_site_meta" /> and <Sym id="function:get_site_meta" /> work like post meta, keyed by
+site ID:
+
+<Example id="multisite/get_site_meta/get" />
+
+## Creating, changing and deleting sites
+
+<Sym id="function:wp_insert_site" /> adds a site. It normalizes the data (a path gets its slashes), validates it, and
+refuses an address that is taken. Then it fires `wp_insert_site` and `wp_initialize_site`:
+
+<Example id="multisite/wp_insert_site/insert" />
+
+WordPress itself hooks <Sym id="function:wp_initialize_site" /> to `wp_initialize_site` at priority 10, to make the
+new site's tables and default options. A plugin that needs to set up each new site, such as creating its tables,
+should hook the same action at a later priority, and switch to the new site inside its callback. The older
+`wpmu_new_blog` action is deprecated since 5.1.0 in favour of it:
+
+<Example id="multisite/wp_initialize_site/init" />
+
+<Sym id="function:wpmu_create_blog" /> wraps `wp_insert_site()` for the common case: a domain, a path, a title and
+an admin user, with options for the new site:
+
+<Example id="multisite/wpmu_create_blog/create" />
+
+<Sym id="function:wp_update_site" /> changes a site's fields, such as archiving it, and fires `wp_update_site` with
+the new and old site. <Sym id="function:wp_delete_site" /> removes a site: it drops its tables and uploads through
+`wp_uninitialize_site`, then deletes its row and meta. Both give an error for an unknown site:
+
+<Example id="multisite/wp_update_site/update" />
+
+<Example id="multisite/wp_delete_site/delete" />
+
+## Users on a network
+
+Users belong to the network, and get a role on each site they join. <Sym id="function:add_user_to_blog" /> gives a
+user a role on a site, and makes it their primary site if they had none. `remove_user_from_blog()` takes it away
+again. A user with no role on a site has no capabilities there, even when logged in:
+
+<Example id="multisite/add_user_to_blog/add" />
+
+Super admins manage the whole network. Check what they may do with `current_user_can()` and a capability such as
+`manage_network_options`, not by testing `is_super_admin()`, so the check keeps working if capabilities are mapped
+differently.
+
+## Plugins on a network
+
+A plugin can be activated on one site, or network-activated for every site, which lists it in the network's
+`active_sitewide_plugins` option. <Sym id="function:wp_get_active_network_plugins" /> gives the files, leaving out
+any that are missing:
+
+<Example id="multisite/wp_get_active_network_plugins/plugins" />
+
+When a plugin is network-activated, its activation callback runs once, on the site where the button was pressed,
+with its argument set to `true`. It doesn't run on each site. A plugin that needs per-site setup should do it on
+`wp_initialize_site` for new sites, and lazily, on a normal request, for sites that already exist. On a big network
+even counting is costly: <Sym id="function:wp_is_large_network" /> says when a network has more than 10,000 sites or
+users, so that screens can skip work:
+
+<Example id="multisite/wp_is_large_network/large" />
+
+## Functions to avoid
+
+The seam keeps many functions from the days of WordPress MU, deprecated and kept only for old code. `get_blog_list()`
+and `wp_get_sites()` are replaced by `get_sites()`, `wp_get_network()` by `get_network()`, `insert_blog()` and
+`install_blog()` by `wp_insert_site()`, `is_site_admin()` by `is_super_admin()`, and `get_user_id_from_string()` by
+`get_user_by()`. The functions that WordPress hooks for itself, such as `_update_posts_count_on_delete()`, are
+private: leave them to their hooks.
+
+The Multisite seam isn't ported to SpeedySpec yet, so this guide makes no promise about how a network behaves there.

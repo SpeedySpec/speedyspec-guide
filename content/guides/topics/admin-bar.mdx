@@ -1,0 +1,136 @@
+---
+title: Admin bar
+summary: How WordPress decides whether to show the toolbar, how it is built from nodes and groups, and how plugins add to it.
+---
+
+The Admin bar seam is the toolbar across the top of the page for a logged-in user, on the front end and in the admin.
+It is a tree of **nodes** held by one object, filled on every page load by functions hooked to an action, and then
+printed. Two things trip plugins up: deciding whether the bar shows at all happens in more than one place, and
+changes to the bar only work at the right moment, before it is printed. This guide explains both.
+
+## Whether the bar shows
+
+<Sym id="function:is_admin_bar_showing" /> answers the question. It never shows the bar for XML-RPC, Ajax, iframe or
+JSON requests, nor for embeds. In the admin it always says yes. On the front end it shows the bar only to a logged-in
+user, and not on `wp-login.php`:
+
+<Example id="admin-bar/is_admin_bar_showing/who" />
+
+For a logged-in user on the front end, the answer comes from their profile setting, the user option
+`show_admin_bar_front`. <Sym id="function:_get_admin_bar_pref" /> reads it, and is private. A user who never saved the
+setting gets the bar; only the string `'false'` turns it off:
+
+<Example id="admin-bar/_get_admin_bar_pref/pref" />
+
+A theme or plugin can override that preference. <Sym id="function:show_admin_bar" /> sets the answer for the rest of
+the request, and the <Sym id="filter:show_admin_bar" /> filter has the last word on the front end:
+
+<Example id="admin-bar/show_admin_bar/toggle" />
+
+Use the filter (or `show_admin_bar( false )`) to hide the bar. Unhooking the functions that build it does not remove
+it cleanly. Neither of them changes the admin, because `is_admin_bar_showing()` returns `true` there before it reaches
+the filter.
+
+## Creating the bar
+
+The bar object is made on `template_redirect` on the front end and on `admin_init` in the admin, by
+<Sym id="function:_wp_admin_bar_init" />, a private function. It asks `is_admin_bar_showing()` first, and does nothing
+when the answer is no:
+
+<Example id="admin-bar/_wp_admin_bar_init/hidden" />
+
+When the bar shows, the <Sym id="filter:wp_admin_bar_class" /> filter names the class to create, `WP_Admin_Bar` by
+default. The object goes in the global <Sym id="global:wp_admin_bar" />. Then
+<Sym id="method:WP_Admin_Bar::initialize" /> enqueues the bar's script and style and fires
+<Sym id="action:admin_bar_init" />, and <Sym id="method:WP_Admin_Bar::add_menus" /> hooks WordPress's own menus and
+fires <Sym id="action:add_admin_bar_menus" />:
+
+<Example id="admin-bar/_wp_admin_bar_init/init" />
+
+WordPress's menus are plain functions hooked to <Sym id="action:admin_bar_menu" />. Their priorities decide their
+order in the bar, from the account menu at 0 to the search form at 9999:
+
+<Example id="admin-bar/class--WP_Admin_Bar--add_menus/menus" />
+
+## Nodes and groups
+
+Everything in the bar is a node, stored by its id. <Sym id="method:WP_Admin_Bar::add_node" /> (and `add_menu()`,
+another name for it) takes an id, a title, a parent, a link and some `meta` such as a CSS class. Adding a node whose id
+already exists updates it: the new arguments, and the new `meta`, merge into the old ones. A node without an id is a
+mistake: WordPress makes one from the title with a notice, and ignores a node that has neither:
+
+<Example id="admin-bar/class--WP_Admin_Bar--add_node/nodes" />
+
+<Sym id="method:WP_Admin_Bar::add_group" /> adds a node marked as a group, which collects items into a section of a
+menu. <Sym id="method:WP_Admin_Bar::remove_node" /> (or `remove_menu()`) takes one out. Two old parent ids still work,
+`my-blogs` and `my-account-with-avatar`, with a deprecation notice; use `my-sites` and `my-account`:
+
+<Example id="admin-bar/class--WP_Admin_Bar--add_group/groups" />
+
+<Sym id="method:WP_Admin_Bar::get_node" /> and `get_nodes()` give you copies. Changing a copy changes nothing, so to
+change a node, read it, then call `add_node()` again with the same id:
+
+<Example id="admin-bar/class--WP_Admin_Bar--get_node/copies" />
+
+The same example shows the other half: after the bar is rendered, both return `null`. The tree is fixed then.
+
+## Rendering
+
+<Sym id="function:wp_admin_bar_render" /> runs on `wp_body_open` on the front end, with `wp_footer` as a fallback for
+themes that don't fire `wp_body_open`, and on `in_admin_header` in the admin. It fires `admin_bar_menu` with the bar,
+then <Sym id="action:wp_before_admin_bar_render" />, renders, and fires <Sym id="action:wp_after_admin_bar_render" />.
+It runs only once per request, however many times it is called:
+
+<Example id="admin-bar/wp_admin_bar_render/render" />
+
+<Sym id="method:WP_Admin_Bar::render" /> turns the flat list of nodes into the tree. Top-level items go in
+`root-default`; children of an item go in that item's `-default` group; groups under a group share a container. Then it
+prints the HTML:
+
+<Example id="admin-bar/class--WP_Admin_Bar--render/tree" />
+
+The old `recursive_render()` method is deprecated since 3.3.0; `render()` replaces it:
+
+<Example id="admin-bar/class--WP_Admin_Bar--recursive_render/deprecated" />
+
+## WordPress's own menus
+
+Each built-in menu checks the user's capabilities before adding anything, so the bar differs from user to user. The
+site menu links to the dashboard, with Appearance and Plugins only for those allowed:
+
+<Example id="admin-bar/wp_admin_bar_site_menu/front" />
+
+<Example id="admin-bar/wp_admin_bar_site_menu/reader" />
+
+The New menu lists each post type registered with `show_in_admin_bar` that the user may create, and a New User link
+for those with `create_users`:
+
+<Example id="admin-bar/wp_admin_bar_new_content_menu/posts" />
+
+Items on the right of the bar, such as the account menu and search, sit in the `top-secondary` group:
+
+<Example id="admin-bar/wp_admin_bar_add_secondary_groups/groups" />
+
+## Adding your own items
+
+Hook a named, prefixed function to `admin_bar_menu`. It receives the bar; check a capability, then call `add_node()`.
+Pick a priority to place the item: after 70 puts it after the New menu, for instance. To remove or change a node that
+WordPress or another plugin added, hook `wp_before_admin_bar_render` and use the global `$wp_admin_bar`, since every
+`admin_bar_menu` callback has run by then.
+
+Escape what you add. The bar prints a node's `title` and its `meta['html']` as they are, so pass titles through
+`esc_html()` unless they are markup you built. Links go through `esc_url()` and the `meta` attributes are escaped for
+you.
+
+## Making room on the page
+
+On the front end the bar sits over the top of the page, so WordPress adds inline CSS that moves the page down by the
+bar's height. <Sym id="function:wp_enqueue_admin_bar_bump_styles" /> replaces the old `_admin_bar_bump_cb` callback on
+`wp_head` with that style:
+
+<Example id="admin-bar/wp_enqueue_admin_bar_bump_styles/bump" />
+
+A theme that handles the spacing itself declares `add_theme_support( 'admin-bar', ... )` with its own `callback`.
+WordPress then hooks that callback to `wp_head` instead of adding its own style.
+
+The Admin bar seam isn't ported to SpeedySpec yet, so this guide makes no promise about how the toolbar behaves there.

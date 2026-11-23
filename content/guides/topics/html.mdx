@@ -1,0 +1,146 @@
+---
+title: HTML API
+summary: How the tag processor and the HTML processor read and change HTML safely, what each one knows, and where they stop.
+---
+
+The HTML API reads and changes HTML the way a browser reads it, instead of with regular expressions. It has two
+processors. The **tag processor** walks the tokens of a string and changes attributes and text, quickly and without
+building a tree. The **HTML processor** builds on it and follows the HTML standard's parsing rules, so it knows which
+element contains which. What trips people up is picking the wrong one, and forgetting that both work like a cursor:
+you move to a token, then ask about it or change it, and the changes only appear when you ask for the updated HTML.
+
+## The tag processor
+
+<Sym id="class:WP_HTML_Tag_Processor" /> takes a string of HTML. <Sym id="method:WP_HTML_Tag_Processor::next_tag" />
+moves to the next tag, and methods like `add_class()` change it.
+<Sym id="method:WP_HTML_Tag_Processor::get_updated_html" /> returns the HTML with every change applied:
+
+<Example id="html/class--WP_HTML_Tag_Processor/add-a-class" />
+
+Everything else in the string stays byte for byte as it was. Only the attributes you touched are rewritten.
+
+`next_tag()` takes a query. A string is a tag name, and an array can also name a class. Closing tags are skipped
+unless you ask for them with `tag_closers`:
+
+<Example id="html/class--WP_HTML_Tag_Processor--next_tag/query" />
+
+Tag names always come back in upper case, whatever the source used, so compare against `'DIV'`, not `'div'`.
+
+## Reading attributes
+
+<Sym id="method:WP_HTML_Tag_Processor::get_attribute" /> returns an attribute's value with character references
+decoded, `true` for an attribute written without a value, and `null` when it isn't there. Test with `null ===`, since
+an empty value is a real value:
+
+<Example id="html/class--WP_HTML_Tag_Processor--get_attribute/values" />
+
+`get_attribute_names_with_prefix()` finds attributes by the start of their name, in lower case. It is how the
+Interactivity API finds `data-wp-` directives:
+
+<Example id="html/class--WP_HTML_Tag_Processor--get_attribute_names_with_prefix/prefix" />
+
+For classes, `has_class()` and `class_list()` read the `class` attribute as a set. Each class appears once, and on
+anything that isn't a tag, `has_class()` returns `null`:
+
+<Example id="html/class--WP_HTML_Tag_Processor--has_class/has" />
+
+## Changing attributes and text
+
+<Sym id="method:WP_HTML_Tag_Processor::set_attribute" /> escapes the value for you. Attributes that hold URLs, such as
+`href` and `src`, go through `esc_url()`. Others have their special characters encoded. Pass `true` for an attribute
+without a value, and `false` to remove it:
+
+<Example id="html/class--WP_HTML_Tag_Processor--set_attribute/escaped" />
+
+Don't escape the value yourself first. It would be escaped twice.
+
+`remove_attribute()` removes every copy of an attribute, and `remove_class()` removes the whole `class` attribute once
+its last class is gone:
+
+<Example id="html/class--WP_HTML_Tag_Processor--remove_class/removes" />
+
+`next_tag()` only stops on tags. `next_token()` stops on everything: text, comments and closers too. On a text node,
+`get_modifiable_text()` returns its decoded text, and `set_modifiable_text()` replaces it, escaped:
+
+<Example id="html/class--WP_HTML_Tag_Processor--set_modifiable_text/text" />
+
+## Going back
+
+The processor only moves forward. To return to a tag, set a bookmark on it and `seek()` back later:
+
+<Example id="html/class--WP_HTML_Tag_Processor--set_bookmark/seek" />
+
+Bookmarks are limited, ten by default, and so is the number of seeks in one processor, so release a bookmark with
+`release_bookmark()` when you are done with it.
+
+## Incomplete HTML
+
+HTML that ends in the middle of a tag stops the processor there. `next_tag()` returns `false`, and
+`paused_at_incomplete_token()` says why. Check it when the HTML might be cut off, for example when it was truncated:
+
+<Example id="html/class--WP_HTML_Tag_Processor--paused_at_incomplete_token/incomplete" />
+
+## The HTML processor
+
+The tag processor sees tokens, not structure. It can't tell you that a `<p>` closes the paragraph before it, or which
+`<img>` sits inside a `<figure>`. <Sym id="class:WP_HTML_Processor" /> can, because it parses as a browser does. Its
+constructor is not for you, and calling it is reported: <Sym id="method:WP_HTML_Processor::create_fragment" /> parses
+a piece of HTML that goes inside a `<body>`, and <Sym id="method:WP_HTML_Processor::create_full_parser" /> parses a
+whole document:
+
+<Example id="html/class--WP_HTML_Processor--create_fragment/only-body" />
+
+<Example id="html/class--WP_HTML_Processor--create_full_parser/document" />
+
+Only a `<body>` context and UTF-8 are supported for now. Anything else gives `null`, so check the result.
+
+Because it builds the tree, it knows each element's **breadcrumbs**, the path of elements from the root down to it:
+
+<Example id="html/class--WP_HTML_Processor/breadcrumbs" />
+
+A query can match by breadcrumbs, with `*` for any one element, which finds tags by where they are:
+
+<Example id="html/class--WP_HTML_Processor--next_tag/breadcrumb-query" />
+
+It also visits the closers that HTML leaves out, where a browser would put them:
+
+<Example id="html/class--WP_HTML_Processor--next_token/implied-closers" />
+
+<Sym id="method:WP_HTML_Processor::normalize" /> rewrites HTML as a browser would read it, with quoted attributes,
+lower-case tags and every element closed:
+
+<Example id="html/class--WP_HTML_Processor--normalize/normalize" />
+
+### When it gives up
+
+The HTML processor doesn't support every part of the standard yet. When it meets markup it can't handle correctly, it
+stops rather than guess: `next_tag()` and `next_token()` return `false`, and
+<Sym id="method:WP_HTML_Processor::get_last_error" /> says why. While all is well it returns `null`:
+
+<Example id="html/class--WP_HTML_Processor--get_last_error/none" />
+
+So a `false` from the processor doesn't always mean the end of the document. If `get_last_error()` isn't `null`, leave
+the HTML as it was rather than use a half-processed result.
+
+## Decoding text
+
+<Sym id="class:WP_HTML_Decoder" /> decodes character references the way HTML does, which differs between text and
+attribute values: in an attribute, a named reference that runs straight into more letters, like `&notit;`, is left
+alone:
+
+<Example id="html/class--WP_HTML_Decoder/decode" />
+
+`attribute_starts_with()` checks how a value starts without decoding all of it. It sees through encoded characters,
+which is what you want when refusing `javascript:` links:
+
+<Example id="html/class--WP_HTML_Decoder--attribute_starts_with/prefix" />
+
+## Private pieces
+
+The HTML processor's helper classes, such as `WP_HTML_Span`, `WP_HTML_Text_Replacement`, `WP_HTML_Token`, the open
+elements stack and `WP_HTML_Doctype_Info`, are marked private. They are how the processors keep track of their work,
+and they may change. Use the two processors' methods instead. A processor also can't be serialized and restored:
+
+<Example id="html/class--WP_HTML_Tag_Processor--__wakeup/no-unserialize" />
+
+The HTML API seam isn't ported to SpeedySpec yet, so this guide makes no promise about how HTML is processed there.

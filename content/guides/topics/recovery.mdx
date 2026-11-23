@@ -1,0 +1,117 @@
+---
+title: Recovery mode
+summary: How WordPress traces a fatal error to a plugin or theme, emails a one-time recovery link, and pauses the broken extension for the person in the recovery session.
+---
+
+Recovery mode is WordPress's answer to a plugin or theme that breaks the admin with a fatal error. Instead of a
+blank page and a site nobody can log in to, WordPress emails the site's administrator a link. Following it starts a
+**recovery session**: for that person only, the extension that failed is paused, so they can reach the dashboard and
+deactivate or fix it. Everyone else's requests are left alone. The Recovery mode seam holds the five classes behind
+this. What trips people up is when it applies: only on single sites, only for errors in a plugin or theme, and only
+on the pages WordPress protects.
+
+## Where it starts
+
+Early in every request, WordPress registers a shutdown function, the fatal error handler, unless
+`WP_DISABLE_FATAL_ERROR_HANDLER` is true or the `wp_fatal_error_handler_enabled` filter says no. On a single site it
+then calls `initialize()` on the shared object that <Sym id="function:wp_recovery_mode" /> returns, before active
+plugins load. Multisite never initializes it, so there is no recovery mode on a network.
+
+<Sym id="method:WP_Recovery_Mode::initialize" /> hooks logging out and the exit link, and schedules a daily event,
+`recovery_mode_clean_expired_keys`, that removes old keys. Then it decides whether a session is active: when
+`WP_RECOVERY_MODE_SESSION_ID` is defined, or when a valid recovery cookie is set. Otherwise it checks whether this
+request is someone following a recovery link:
+
+<Example id="recovery/class--WP_Recovery_Mode--initialize/session" />
+
+## When a fatal error happens
+
+At shutdown, the fatal error handler looks at the last PHP error. If it is a fatal kind, it passes it to
+<Sym id="method:WP_Recovery_Mode::handle_error" />. The first question is where the error came from. The protected
+method `get_extension_for_error()` compares the file with `WP_PLUGIN_DIR` and the theme folders, and names the
+plugin or theme by its folder, or by its file name for a single-file plugin:
+
+<Example id="recovery/class--WP_Recovery_Mode--get_extension_for_error/extension" />
+
+An error in WordPress itself, or in a network-activated plugin, is refused. So is one that happens on a page that
+isn't protected. <Sym id="function:is_protected_endpoint" /> counts the login page, the admin (outside Ajax) and a
+few Ajax actions; the front end isn't one of them, so a fatal error there sends no email:
+
+<Example id="recovery/class--WP_Recovery_Mode--handle_error/sources" />
+
+The `is_protected_endpoint` filter can add more pages. Whatever `handle_error()` decides, the handler then shows the
+error page if it still can.
+
+## The email and its link
+
+With no session active, `handle_error()` asks the email service to send the link. There is one email per rate limit,
+a day by default, recorded in the `recovery_mode_email_last_sent` option. A second fatal error within that time sends
+nothing:
+
+<Example id="recovery/class--WP_Recovery_Mode_Email_Service--maybe_send_recovery_mode_email/limited" />
+
+The email goes to the `RECOVERY_MODE_EMAIL` constant when it holds a valid address, and to the `admin_email` option
+otherwise. On a site where the administrator's inbox isn't watched, set the constant:
+
+<Example id="recovery/class--WP_Recovery_Mode_Email_Service--get_recovery_mode_email_address/address" />
+
+The link is the login URL with `action=enter_recovery_mode`, a token and a fresh key, and the
+<Sym id="filter:recovery_mode_begin_url" /> filter can change it:
+
+<Example id="recovery/class--WP_Recovery_Mode_Link_Service--generate_url/url" />
+
+The key is a random 22-character password. Only its hash is stored, in the `recovery_keys` option under the token,
+with the time it was made. Validating it removes the record whether or not it matches, so each link works once:
+
+<Example id="recovery/class--WP_Recovery_Mode_Key_Service--validate_recovery_mode_key/keys" />
+
+A link lives as long as the rate limit. <Sym id="filter:recovery_mode_email_link_ttl" /> can lengthen it, but never
+make it shorter than <Sym id="filter:recovery_mode_email_rate_limit" />, so there is always a working link until a
+new email can be sent:
+
+<Example id="recovery/class--WP_Recovery_Mode--get_link_ttl/ttl" />
+
+The daily event removes keys older than that time, and any record without a creation time:
+
+<Example id="recovery/class--WP_Recovery_Mode--clean_expired_keys/clean" />
+
+The `recovery_mode_email` filter receives the whole message before `wp_mail()` sends it, and the
+`recovery_email_support_info` and `recovery_email_debug_info` filters change two of its parts. A host can use them
+to point people to its own support.
+
+## Entering the session
+
+<Sym id="method:WP_Recovery_Mode_Link_Service::handle_begin_link" /> acts only on `wp-login.php` with the
+`enter_recovery_mode` action, a token and a key. Anything else passes through untouched. A valid link sets the
+recovery cookie and redirects to the login page; an invalid one stops with an error:
+
+<Example id="recovery/class--WP_Recovery_Mode_Link_Service--handle_begin_link/ignored" />
+
+The cookie holds its creation time, a random part and an HMAC signature keyed with `AUTH_KEY` and `AUTH_SALT`.
+<Sym id="method:WP_Recovery_Mode_Cookie_Service::validate_cookie" /> checks its format, its age (a week, through
+`recovery_mode_cookie_length`) and its signature. The session ID is a hash of the random part:
+
+<Example id="recovery/class--WP_Recovery_Mode_Cookie_Service--validate_cookie/cookie" />
+
+<Example id="recovery/class--WP_Recovery_Mode_Cookie_Service--validate_cookie/missing" />
+
+When `AUTH_KEY` or `AUTH_SALT` is missing or still the sample phrase from `wp-config-sample.php`, the signature uses a
+random value kept in a site option instead, so the cookie can't be forged from a known phrase:
+
+<Example id="recovery/class--WP_Recovery_Mode_Cookie_Service--recovery_mode_hash/keys" />
+
+## Inside the session
+
+Once a session is active, a fatal error from an extension is stored instead of emailed: the plugin or theme is
+added to that session's paused list, and the same page is loaded again. On that next load, and every load in the
+session, WordPress skips paused plugins and themes. The [Plugins](/guides/topics/plugins/) guide shows where the
+list is kept. Logging out, or following the exit link (which checks a nonce), ends the session: it clears the rate
+limit, removes the cookie and empties the paused lists.
+
+Plugin code rarely needs any of this. <Sym id="function:wp_is_recovery_mode" /> says whether the current request is
+in a session, which can be worth checking before work that would be risky while things are broken. The service
+classes' helpers, such as `get_extension_for_error()` and `get_link_ttl()`, are protected or private: they are not an
+API to call.
+
+The Recovery mode seam isn't ported to SpeedySpec yet, so this guide makes no promise about how recovery mode behaves
+there.

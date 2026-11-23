@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'registered' => 'my-plugin/book-card',\n  'title' => 'Book card',\n  'dynamic' => true,\n  'rendered' => '<div class=\"wp-block-my-plugin-book-card\"><h3>Dune</h3><p>★★★★★</p></div>',\n)",
+ "error": null
+}

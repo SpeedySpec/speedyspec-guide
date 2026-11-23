@@ -1,0 +1,128 @@
+---
+title: AI client
+summary: How WordPress wraps the PHP AI Client in prompt and embedding builders, how connectors hold provider credentials, and how a site or plugin turns AI off.
+---
+
+The AI client seam lets a plugin ask an AI model for text, images, speech or embeddings without knowing which
+provider the site uses. WordPress bundles the PHP AI Client library, wraps it in builders with WordPress names and
+error handling, and keeps a registry of **connectors**: the outside services a site has credentials for. WordPress
+ships no provider itself. A provider plugin, such as one for Anthropic, Google or OpenAI, registers with the AI client,
+and the site's owner enters its key. What trips people up is that a builder never throws: everything that can go
+wrong comes back as a `WP_Error` from the call that generates.
+
+## Is AI available?
+
+<Sym id="function:wp_supports_ai" /> answers whether the site uses WordPress's AI features at all. It is `true` by
+default. Defining the `WP_AI_SUPPORT` constant as `false` turns AI off for the whole environment, and the
+<Sym id="filter:wp_supports_ai" /> filter can turn it off in code:
+
+<Example id="ai-client/wp_supports_ai/example" />
+
+When it is `false`, no builder reaches a provider, and WordPress doesn't register the connectors for AI providers.
+Check it before showing an AI feature in your plugin's screens, so a site that turned AI off never sees it.
+
+## Building a prompt
+
+<Sym id="function:wp_ai_client_prompt" /> starts a prompt and returns a <Sym id="class:WP_AI_Client_Prompt_Builder" />.
+Its starting content can be plain text, or messages and parts for a longer conversation:
+
+<Example id="ai-client/wp_ai_client_prompt/example" />
+
+The builder is fluent. Methods that start with `with_` add content (`with_text()`, `with_file()`,
+`with_history()`), methods that start with `using_` set how the model works (`using_system_instruction()`,
+`using_temperature()`, `using_max_tokens()`, `using_provider()`), and methods that start with `as_` shape the output,
+such as `as_output_schema()` for a JSON answer. Each returns the builder, so calls chain. A method that starts with
+`generate_`, such as `generate_text()` or `generate_image()`, sends the request and ends the chain. The
+`is_supported_for_*` methods ask whether any available model can do the task, without sending anything.
+
+The names are WordPress-style versions of the library's own camelCase methods. The builder passes each call through
+to the library's builder, which picks a model from the providers that are registered and can do what the prompt
+asks.
+
+<Sym id="function:wp_ai_client_embedding" /> works the same way for embeddings, the number vectors used for search
+and similarity. It takes one or more inputs and returns a <Sym id="class:WP_AI_Client_Embedding_Builder" />:
+
+<Example id="ai-client/wp_ai_client_embedding/example" />
+
+## Errors without exceptions
+
+The library throws exceptions. The WordPress builders catch them. Once a call fails, the builder remembers the
+error, every later `with_`, `using_` or `as_` call does nothing, and the `generate_` call returns a `WP_Error`. A
+support check returns `false` instead. So a whole chain needs one check, at the end, with `is_wp_error()`.
+
+The error's code says what happened: a network failure, a client error from the provider (with the provider's HTTP
+status), a server error upstream, a token limit, or a bad argument. Each carries an HTTP status in its data, so a
+REST endpoint can return the error as it is. Don't show a provider's raw message to visitors; log it, and show your
+own.
+
+## Turning AI off for some requests
+
+Two filters can stop a request before it is sent: `wp_ai_client_prevent_prompt` for prompts and
+`wp_ai_client_prevent_embedding` for embeddings. Each receives a copy of the builder, so the callback can look at the
+request but not change it. Returning `true` makes the `generate_` call return a `prompt_prevented` or
+`embedding_prevented` error with status 503. That is how a site limits AI use by user, by plugin or by time, without
+each plugin building its own switch.
+
+Other filters tune how requests go out. <Sym id="filter:wp_ai_client_default_request_timeout" /> sets the timeout,
+30 seconds by default. The library's HTTP requests go through `wp_safe_remote_request()`, so the HTTP API's filters
+and safety checks apply, and its cache through the object cache, in a group the `wp_ai_client_cache_group` filter
+names. The library's events are fired as WordPress actions named <Sym id="action:wp_ai_client_{$event_name}" />.
+
+## Abilities as tools
+
+`using_abilities()` on the prompt builder offers registered abilities to the model as functions it may call. Each
+ability's name becomes a function name with a `wpab__` prefix, its description tells the model what it does, and its
+input schema says what to pass. When the model asks to call one,
+<Sym id="class:WP_AI_Client_Ability_Function_Resolver" /> runs it through the ability's own `execute()`, so the
+ability's permission check and schemas still apply. See the [Abilities](/guides/topics/ability/) guide.
+
+## Connectors
+
+A connector describes an outside service and how the site authenticates with it: a name, a type (such as
+`ai_provider` or `spam_filtering`), the plugin that provides it, and an authentication method of `api_key`,
+`application_password` or `none`. <Sym id="function:wp_get_connectors" /> lists them all:
+
+<Example id="ai-client/wp_get_connectors/example" />
+
+<Sym id="function:wp_get_connector" /> returns one by ID, or `null`, and
+<Sym id="function:wp_is_connector_registered" /> asks whether one exists:
+
+<Example id="ai-client/wp_get_connector/example" />
+
+<Example id="ai-client/wp_is_connector_registered/example" />
+
+On `init`, WordPress creates the <Sym id="class:WP_Connector_Registry" />, registers connectors for the AI providers
+it knows, and for Akismet, then fires <Sym id="action:wp_connectors_init" /> with the registry. A provider plugin that
+registers with the AI client gets a connector automatically. Use the action to add a connector for another kind of
+service, with a named callback:
+
+<Example id="ai-client/_wp_connectors_init/example" />
+
+<Example id="ai-client/_wp_connectors_register_default_ai_providers/example" />
+
+## Where keys come from
+
+A connector's API key can come from three places, checked in this order: an environment variable, a PHP constant,
+and the connector's option in the database. For the AI providers, the variable and the constant share one name,
+such as `ANTHROPIC_API_KEY`. A key set in the environment or a constant never needs to be saved in the database,
+which keeps it out of backups and database dumps:
+
+<Example id="ai-client/_wp_connectors_get_api_key_source/example" />
+
+On `init`, WordPress registers a setting for each connector whose plugin is active, and passes keys from the
+database to the AI client. Keys are never shown in full: the settings responses of the REST API mask all but the
+last four characters, and a new AI provider key is checked with the provider and cleared if it is refused.
+
+<Example id="ai-client/_wp_connectors_mask_api_key/example" />
+
+For a connector that uses application passwords,
+<Sym id="function:wp_connectors_get_application_password_credentials" /> reads the username and password from the
+same three places, and says which one it used:
+
+<Example id="ai-client/wp_connectors_get_application_password_credentials/example" />
+
+The functions that start with `_wp_connectors_` are private. Use the public functions above, and the
+`wp_connectors_init` action, instead.
+
+The AI client seam isn't ported to SpeedySpec yet, so this guide makes no promise about how AI requests and
+connectors behave there.

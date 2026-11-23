@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'asked for 9: saved, capped at 5' => '5',\n  'a forged form asking for 1' => '5',\n  'a subscriber asking for 2' => '5',\n)",
+ "error": null
+}

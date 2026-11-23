@@ -1,0 +1,144 @@
+---
+title: Mail
+summary: How wp_mail() hands a message to the bundled PHPMailer, which filters and actions shape it, and what PHPMailer checks before it sends.
+---
+
+The Mail seam is the library WordPress sends email with: PHPMailer, bundled in `wp-includes/PHPMailer/`, along with
+its SMTP and POP3 clients, and WordPress's older POP3 client for posting by email. Plugins rarely touch PHPMailer
+directly. They call <Sym id="function:wp_mail" />, which fills in one PHPMailer object and sends it. What trips people
+up is that `wp_mail()` resets that object on every call, and that a `true` result only means the message left
+WordPress, not that anyone received it. This guide follows a message from `wp_mail()` to PHPMailer. The examples
+build messages without sending them, and connect to no server.
+
+## From wp_mail() to PHPMailer
+
+`wp_mail()` keeps one mailer in the global `$phpmailer`. The first time it runs, it creates a
+<Sym id="class:WP_PHPMailer" />, WordPress's subclass of <Sym id="class:PHPMailer\PHPMailer\PHPMailer" />, with
+exceptions turned on. It also swaps PHPMailer's address check for WordPress's `is_email()`.
+
+<Example id="mailer/class--WP_PHPMailer/translated" />
+
+The subclass changes one thing: PHPMailer's error messages come from WordPress's translations instead of PHPMailer's
+own language files. Whatever language code is passed in is ignored:
+
+<Example id="mailer/class--WP_PHPMailer--setLanguage/messages" />
+
+On every call, `wp_mail()` then clears the previous message's recipients, attachments, custom headers and reply-to
+addresses, and calls `isMail()`, so the transport is PHP's `mail()` again. That is why changing `$phpmailer` once,
+early in the request, doesn't stick. Make changes in the `phpmailer_init` action, described below.
+
+## Building a message
+
+Underneath, a message is a PHPMailer object with a sender, recipients, a subject and a body. `preSend()` assembles
+the headers and body that `send()` would hand to the transport, so you can inspect a message without sending it:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer/build-a-message" />
+
+`setFrom()` sets the From address and name. With its third argument left at `true`, it also sets the envelope sender.
+`wp_mail()` passes `false`, so the envelope sender stays as the server decides:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--setFrom/sender" />
+
+Recipients are checked as they are added. An invalid address is refused and the reason is left in `ErrorInfo`. An
+address already in To, Cc or Bcc, compared without regard to case, isn't added twice:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--addAddress/invalid" />
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--addAddress/no-duplicates" />
+
+`validateAddress()` uses PHP's `filter_var()` check by default. Inside `wp_mail()` the check is `is_email()`
+instead, so results can differ from a bare PHPMailer:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--validateAddress/patterns" />
+
+## Plain text and HTML
+
+A message is plain text unless you say otherwise. `isHTML()` switches the content type:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--isHTML/content-type" />
+
+`msgHTML()` sets an HTML body and builds a plain text alternative from it, for mail clients that don't show HTML:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--msgHTML/alt-body" />
+
+`wp_mail()` does neither for you. It sends `text/plain` unless a `Content-Type` header or the
+<Sym id="filter:wp_mail_content_type" /> filter says `text/html`. Pass the header for one message rather than adding
+the filter for all of them: a filter left in place turns every other plugin's plain text mail into HTML.
+
+## Headers are protected
+
+Header injection is the classic mail attack: a line break in a subject or name smuggles in a `Bcc:` line. PHPMailer
+refuses a custom header whose value holds a line break:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--addCustomHeader/headers" />
+
+`secureHeader()` strips line breaks from the values PHPMailer writes itself:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--secureHeader/strips" />
+
+Non-ASCII text in a header is encoded so it survives the trip. Names with special characters are quoted:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--encodeHeader/utf8" />
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--quotedString/quotes" />
+
+Still validate what users type before you put it in a message. These checks stop injection, not bad data.
+
+## Choosing a transport
+
+PHPMailer can hand a message to PHP's `mail()`, sendmail, qmail or an SMTP server. Each `is*` method picks one:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--isSMTP/transports" />
+
+To send through SMTP from WordPress, hook <Sym id="action:phpmailer_init" />. It fires just before `send()`, after
+`wp_mail()` has set everything else, and passes the mailer by reference. Call `isSMTP()` there and set the host,
+port and credentials. Read the credentials from constants in `wp-config.php` or the environment, never from code you
+ship, and use a named, prefixed callback so other code can remove it.
+
+<Sym id="class:PHPMailer\PHPMailer\DSNConfigurator" /> builds a configured mailer from a single connection string. It
+accepts only the five transports PHPMailer knows:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--DSNConfigurator/smtps" />
+
+<Example id="mailer/class--PHPMailer--PHPMailer--DSNConfigurator/invalid-scheme" />
+
+## Hooks around wp_mail()
+
+In the order they run:
+
+- <Sym id="filter:wp_mail" /> receives the recipients, subject, message, headers, attachments and embeds, and can
+  change any of them.
+- <Sym id="filter:pre_wp_mail" /> can stop the send. Return anything but `null` and `wp_mail()` returns it at once.
+  Logging and queueing plugins use it.
+- <Sym id="filter:wp_mail_from" /> and <Sym id="filter:wp_mail_from_name" /> set the sender. With no From header the
+  address is `wordpress@` and the site's domain. Some hosts refuse mail from an address that doesn't exist, so many
+  sites set a real one here.
+- `wp_mail_content_type` and <Sym id="filter:wp_mail_charset" /> set the body's type and character set.
+- `phpmailer_init` gets the finished mailer.
+- <Sym id="action:wp_mail_succeeded" /> or <Sym id="action:wp_mail_failed" /> fires after `send()`. The second
+  receives a `WP_Error` with PHPMailer's message.
+
+## When sending fails
+
+`wp_mail()` catches PHPMailer's exceptions and returns `false`, so hook `wp_mail_failed` to learn why. PHPMailer itself
+checks the message before it sends. With exceptions on, a message with no recipient throws:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--send/no-recipient" />
+
+`errorMessage()` gives an exception's message as escaped HTML, ready to show:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--Exception--errorMessage/html" />
+
+## The POP3 clients
+
+The seam holds two POP3 clients. PHPMailer's <Sym id="class:PHPMailer\PHPMailer\POP3" /> exists for servers that
+want POP-before-SMTP, and reports errors when it isn't connected:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--POP3/not-connected" />
+
+<Sym id="class:POP3" /> is WordPress's older client, which `wp-mail.php` uses to fetch posts sent by email. It is old
+code with rough edges: calling a command before `connect()` ends in a `TypeError`, as this example shows on purpose:
+
+<Example id="mailer/class--POP3--login/not-connected" />
+
+The Mail seam isn't ported to SpeedySpec yet, so this guide makes no promise about how sending email behaves there.

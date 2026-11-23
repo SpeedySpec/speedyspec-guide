@@ -1,0 +1,122 @@
+---
+title: Bundled plugins and themes
+summary: What WordPress bundles that plugins meet, from SimplePie, PHPMailer, Requests and the PHP AI Client to Hello Dolly, and where to read about the rest.
+---
+
+WordPress ships code it didn't write. Some of it sits in `wp-content`: the Hello Dolly plugin and the default themes.
+More of it sits in `wp-includes`: libraries for feeds, mail, HTTP and AI that WordPress wraps in its own functions.
+Plugins meet those libraries all the time, usually without knowing, through `fetch_feed()`, `wp_mail()`,
+`wp_remote_get()` and `wp_ai_client_prompt()`. What trips people up is reaching past the wrapper to the library, and
+losing what the wrapper adds: caching, sanitizing, safety checks on URLs, and the hooks other plugins rely on. This
+guide covers the four libraries plugins meet most, and points to the rest. It doesn't cover the default themes; the
+[themes guides](/guides/themes/how-wordpress-finds-theme-files/) explain how themes work.
+
+## The rule for every bundled library
+
+Call the WordPress function, not the library. The function is the stable part: WordPress updates a bundled library
+when its authors release a new version, and a new major version can rename classes, as Requests did. Never load your
+own copy of a library WordPress bundles either. Two copies of one class can't both be loaded, so whichever loads
+first wins, for every plugin on the site.
+
+## SimplePie, for reading feeds
+
+SimplePie parses RSS and Atom feeds. <Sym id="function:fetch_feed" /> sets it up the WordPress way: the feed is
+fetched with `wp_safe_remote_request()`, its HTML is cleaned with WordPress's KSES rules instead of SimplePie's own,
+and the parsed feed is cached in a transient for 12 hours. It returns the `SimplePie` object, or a `WP_Error`:
+
+<Example id="feed/fetch_feed/example" />
+
+The `wp_feed_cache_transient_lifetime` filter changes the cache time, and the `wp_feed_options` action receives the
+`SimplePie` object before it fetches, for any other setting. Treat what a feed returns as untrusted even after KSES:
+escape titles and links when you print them. SimplePie now loads its classes with its own autoloader, so the old
+loader WordPress kept is deprecated and does nothing:
+
+<Example id="feed/wp_simplepie_autoload/example" />
+
+The [Feeds](/guides/topics/feed/) guide covers the rest of the seam.
+
+## PHPMailer, for sending mail
+
+PHPMailer builds and sends email. <Sym id="function:wp_mail" /> uses <Sym id="class:WP_PHPMailer" />, WordPress's
+subclass, whose error messages go through WordPress's translations:
+
+<Example id="mailer/class--WP_PHPMailer/translated" />
+
+PHPMailer checks what goes into a message. It refuses invalid addresses and a header value with a line break in it,
+which is how header injection is stopped:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer--addCustomHeader/headers" />
+
+A plugin that wants to change how mail is sent, such as sending through SMTP, should hook the `phpmailer_init`
+action, which receives the mailer just before `wp_mail()` sends. Keep the SMTP password in a constant or the
+environment, not in code that ships. The `wp_mail_failed` action reports a failure as a `WP_Error`, which is the
+place to log it. Building a message without sending it shows what PHPMailer assembles:
+
+<Example id="mailer/class--PHPMailer--PHPMailer--PHPMailer/build-a-message" />
+
+The [Mail](/guides/topics/mailer/) guide covers PHPMailer's transports and WordPress's older POP3 client.
+
+## Requests, for HTTP
+
+Requests is the HTTP client underneath WordPress's HTTP API. `wp_remote_get()` and its siblings build their options,
+run their filters, and hand the request to `WpOrg\Requests\Requests::request()`:
+
+<Example id="requests/class--WpOrg--Requests--Requests--request/get" />
+
+Requests 2 lives in the `WpOrg\Requests` namespace. The old `Requests` class and the `Requests_` names of version 1
+still load, for old code, and report that they are deprecated:
+
+<Example id="requests/class--Requests--autoloader/deprecated" />
+
+Use the HTTP API, not Requests directly. The HTTP API adds the `http_request_args` and `pre_http_request` filters,
+the proxy settings, the `wp_safe_remote_*()` checks that keep a request off internal addresses, and errors as
+`WP_Error` instead of exceptions. The [Requests](/guides/topics/requests/) guide and
+[Talking to other sites](/guides/path/talking-to-other-sites/) explain them.
+
+## The PHP AI Client, for AI models
+
+The PHP AI Client is a provider-neutral library for prompting AI models. Its `AiClient` class keeps a registry of
+providers, and builders for prompts and embeddings that choose a model the registered providers offer. It reaches
+the network through PSR interfaces, and WordPress plugs in its own adapters: HTTP through the HTTP API, caching
+through the object cache, and the library's events as WordPress actions.
+
+Plugins use it through <Sym id="function:wp_ai_client_prompt" /> and `wp_ai_client_embedding()`, which wrap its
+builders with WordPress names and return a `WP_Error` instead of throwing:
+
+<Example id="ai-client/wp_ai_client_prompt/example" />
+
+A site can turn AI off as a whole with `WP_AI_SUPPORT` or the `wp_supports_ai` filter, which is one more reason not
+to call the library directly: the library knows nothing of that switch.
+
+<Example id="ai-client/wp_supports_ai/example" />
+
+The [AI client](/guides/topics/ai-client/) guide covers the builders, the connectors that hold provider keys, and
+abilities as tools.
+
+## Hello Dolly
+
+Hello Dolly is the small plugin WordPress has shipped from the start, and still a fair model of a first plugin: one
+file, a header, and a few named functions hooked to admin actions. It prints a line on every admin screen through
+`admin_notices`, with a style it adds on `admin_head`:
+
+<Example id="bundled/dolly_css/css" />
+
+## Libraries documented elsewhere
+
+WordPress bundles more libraries that plugins rarely call directly. This guide doesn't document them; their own
+documentation does:
+
+- [sodium_compat](https://github.com/paragonie/sodium_compat), a pure-PHP fallback for
+  [PHP's Sodium extension](https://www.php.net/manual/en/book.sodium.php), used for signatures and encryption.
+- [getID3](https://www.getid3.org/), which reads audio and video metadata on upload.
+- [libavifinfo](https://aomedia.googlesource.com/libavifinfo/), whose PHP port reads the size of AVIF images.
+- [PclZip](https://www.phpconcept.net/pclzip/), the fallback for unpacking ZIP files without the zip extension.
+- [PemFTP](https://www.phpclasses.org/package/1743-PHP-FTP-client-in-pure-PHP.html), the FTP client the file system
+  API falls back to.
+- The PHP-FIG interfaces the AI client uses: [PSR-7](https://www.php-fig.org/psr/psr-7/) messages,
+  [PSR-14](https://www.php-fig.org/psr/psr-14/) events and [PSR-16](https://www.php-fig.org/psr/psr-16/) caches,
+  with [Nyholm PSR-7](https://github.com/Nyholm/psr7) and
+  [php-http Discovery](https://docs.php-http.org/en/latest/discovery.html).
+
+The Bundled plugins and themes seam isn't ported to SpeedySpec yet, so this guide makes no promise about how the
+bundled plugins and libraries behave there.

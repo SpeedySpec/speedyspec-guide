@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'without a key' => '<div class=\"notice notice-warning is-dismissible\" id=\"my-plugin-missing-key\"><p>My Plugin needs an API key. <a href=\"http://example.org/wp-admin/options-general.php?page=my-plugin\">Add one</a></p></div>',\n  'with a key' => '',\n)",
+ "error": null
+}

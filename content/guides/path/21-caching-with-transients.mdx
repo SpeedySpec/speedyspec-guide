@@ -1,0 +1,69 @@
+---
+title: Caching with transients and the object cache
+summary: Keep slow results in a transient with an expiry, clear it when its data changes, use the object cache with groups, and retire many cached values at once with last-changed keys.
+---
+
+Some work is too slow to repeat on every page: a count over many posts, a request to another site, a report. A
+**cache** keeps the result and hands it back until it is out of date. WordPress has two. **Transients** keep a value
+for a time you choose, and survive between requests. The **object cache** keeps values by key and group, and is as
+fast as the cache the site has. This guide uses both, and shows how to keep cached values correct.
+
+## Transients
+
+<Sym id="function:set_transient" /> stores a value under a name for a number of seconds.
+<Sym id="function:get_transient" /> gives it back, or `false` once it has expired or was never set:
+
+<Example id="guides/caching-with-transients/a-transient" />
+
+The slow count ran once. The second call came from the transient, which expires in 12 hours. Compare the result with
+`false` using `===`, as the example does, because a cached value can be `0` or an empty string, and those are values
+to keep.
+
+An expiry is a limit, not a promise. A transient can disappear sooner: when the cache is cleared, or when a site's
+object cache drops old values to make room. Always be ready to work the value out again. Name transients with your
+plugin's prefix. Without a persistent object cache, they are stored in the options table, and a name longer than 172
+characters doesn't fit there.
+
+## Clearing it when the data changes
+
+A count cached for 12 hours is wrong for up to 12 hours after a new post. Delete the transient with
+<Sym id="function:delete_transient" /> when the data it was worked out from changes, on the hooks that report those
+changes:
+
+<Example id="guides/caching-with-transients/clear-it-when-the-data-changes" />
+
+The new post cleared the transient, and the next call counted again and found 2. Then the expiry only matters for
+changes you have no hook for, such as data on another site.
+
+## The object cache
+
+<Sym id="function:wp_cache_set" /> and <Sym id="function:wp_cache_get" /> keep values by a key and a **group**, your
+plugin's name, so keys never clash with another plugin's. Pass `$found` to `wp_cache_get()` to tell a cached `false`
+from a value that isn't there:
+
+<Example id="guides/caching-with-transients/the-object-cache" />
+
+Without a persistent cache, the object cache lasts only for the current request, as here. That still helps when the
+same value is needed several times on one page. When a site's owner installs a persistent object cache, such as
+Redis or Memcached, the same calls keep values between requests, with no change to your code.
+<Sym id="function:wp_using_ext_object_cache" /> says which kind the site has. WordPress's own functions, such as
+`get_option()` and `get_post()`, cache through it too.
+
+Use a transient for a value that must last between requests on every site. Use the object cache for values that are
+cheap to lose, and that you want as fast as the site can give them.
+
+## Retiring many values at once
+
+A plugin that caches many queries, one per person or per page of results, can't delete every key when its data
+changes. It doesn't know them all. Instead, put a **last changed** value in every key.
+<Sym id="function:wp_cache_get_last_changed" /> gives the current value for a group, and
+<Sym id="function:wp_cache_set_last_changed" /> changes it:
+
+<Example id="guides/caching-with-transients/last-changed-keys" />
+
+Logging a read changed the group's last-changed value, so the next lookup used a new key and read the list afresh.
+The old keys are never read again, and the cache drops them in time. WordPress caches its own post and term queries
+this way.
+
+The Options seam, where transients live, and the Object Cache seam aren't ported to SpeedySpec yet, so this guide
+makes no promise about how caching behaves there.

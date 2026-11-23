@@ -1,0 +1,155 @@
+---
+title: Widgets
+summary: How widget classes, their saved instances and sidebars fit together, and how a sidebar is stored and printed.
+---
+
+The Widgets seam holds classic widgets: small blocks of content a site owner places in a theme's **sidebars**
+(widget areas) under Appearance, Widgets or in the Customizer. Three things are easy to mix up. A **widget class**,
+such as `WP_Widget_Search`, is registered once. A **widget instance** is one placed copy with its own settings, named
+by the class's ID base and a number, such as `search-2`. A **sidebar** is a slot the theme registers, holding a list of
+instance IDs. This guide explains how each is registered, stored and printed, and where plugins step in.
+
+## When widgets load
+
+On `init` at priority 1, <Sym id="function:wp_widgets_init" /> registers WordPress's own widgets and then fires
+<Sym id="action:widgets_init" />. That action is where plugins register widget classes and themes register
+sidebars. The Links widget is only registered when the link manager is on:
+
+<Example id="widgets/wp_widgets_init/init" />
+
+Later on `widgets_init`, at priority 100, the widget factory turns each registered class into its instances. Register
+your classes and sidebars at the default priority so they are ready in time.
+
+## Writing a widget class
+
+A widget is a subclass of <Sym id="class:WP_Widget" />. Its constructor passes an **ID base**, a name, and options such
+as a description. From the ID base WordPress derives the option the settings are stored in, `widget_{$id_base}`, and
+the CSS class of the wrapper:
+
+<Example id="widgets/class--WP_Widget--__construct/construct" />
+
+Call the parent constructor with `parent::__construct()`. The old PHP 4 style constructor, a method named `WP_Widget()`,
+is deprecated since 4.3.0.
+
+Register the class with <Sym id="function:register_widget" />, from a named function hooked to `widgets_init`. It is
+kept in the <Sym id="class:WP_Widget_Factory" /> by class name, and <Sym id="function:unregister_widget" /> removes it,
+including WordPress's own:
+
+<Example id="widgets/register_widget/register" />
+
+A subclass overrides three methods:
+
+- `widget( $args, $instance )` prints the widget. `$args` holds the sidebar's wrapper markup; `$instance` holds the
+  saved settings.
+- `form( $instance )` prints the settings fields on the Widgets screen.
+- `update( $new_instance, $old_instance )` cleans the submitted settings and returns what to save. The base class
+  returns the new values unchanged, so always override it.
+
+## Forms and saving
+
+Name form fields with `get_field_name()` and `get_field_id()`. They put the ID base and number into the name, so
+WordPress can tell which instance a field belongs to when several are on one screen:
+
+<Example id="widgets/class--WP_Widget--get_field_name/fields" />
+
+Escape each saved value as you print it in the form, with `esc_attr()` or `esc_textarea()`.
+
+When the form is submitted, `update_callback()` finds the posted fields for the instance, runs them through your
+`update()`, and saves the result beside the class's other instances. The <Sym id="filter:widget_update_callback" />
+filter sees the result, and returning `false` from it skips the save:
+
+<Example id="widgets/class--WP_Widget--update_callback/update" />
+
+WordPress's widget screens check a nonce and the `edit_theme_options` capability before they get this far, so your
+`update()` only needs to sanitize. Do it for every field. The Text widget shows the pattern: tags stripped from the
+title, and the text kept as written only for users who may post unfiltered HTML, else passed through
+`wp_kses_post()`:
+
+<Example id="widgets/class--WP_Widget_Text--update/update" />
+
+All instances of a class share one option, keyed by number, with a `_multiwidget` flag. `get_settings()` reads it, and
+converts settings saved by an older single-instance widget:
+
+<Example id="widgets/class--WP_Widget--get_settings/settings" />
+
+## Printing one instance
+
+`display_callback()` prints one saved instance through `widget()`. The <Sym id="filter:widget_display_callback" />
+filter can change the instance first, or return `false` to hide it. A number with no saved settings prints nothing:
+
+<Example id="widgets/class--WP_Widget--display_callback/display" />
+
+The wrapper markup in `$args`, such as `before_widget` and `before_title`, comes from the theme and is printed as it
+is. Everything from `$instance` is user input; escape it in `widget()`.
+
+To print a widget outside any sidebar, a theme can call <Sym id="function:the_widget" /> with a class name, an instance
+and wrapper arguments:
+
+<Example id="widgets/the_widget/direct" />
+
+## Sidebars
+
+A theme registers a sidebar with <Sym id="function:register_sidebar" />, giving it an `id`, a `name` and the markup to
+wrap each widget and title. Doing so also turns on the `widgets` theme support. Always pass an `id`: without one,
+WordPress makes up `sidebar-N`, which changes when sidebars are added, and reports it as a mistake:
+
+<Example id="widgets/register_sidebar/register" />
+
+<Sym id="function:register_sidebars" /> registers several at once, numbering the names from a `%d` pattern:
+
+<Example id="widgets/register_sidebars/many" />
+
+Which instances are in which sidebar is saved in the option `sidebars_widgets`.
+<Sym id="function:wp_get_sidebars_widgets" /> reads it, and the <Sym id="filter:sidebars_widgets" /> filter can change
+what a request sees. Instances that are not placed anywhere sit in `wp_inactive_widgets`:
+
+<Example id="widgets/wp_get_sidebars_widgets/widgets" />
+
+## Printing a sidebar
+
+In a template, ask <Sym id="function:is_active_sidebar" /> whether a sidebar has widgets, so you can leave out its
+wrapper when it is empty, then call <Sym id="function:dynamic_sidebar" />:
+
+<Example id="widgets/is_active_sidebar/active" />
+
+`dynamic_sidebar()` prints each widget wrapped in the sidebar's markup, with the instance ID and class filled into
+`before_widget`. It returns whether anything printed. The <Sym id="filter:dynamic_sidebar_params" /> filter changes
+each widget's arguments, and `dynamic_sidebar_before` and `dynamic_sidebar_after` fire around the list:
+
+<Example id="widgets/dynamic_sidebar/render" />
+
+## Switching themes
+
+Sidebars belong to a theme. After a switch, <Sym id="function:retrieve_widgets" /> sorts the stored widgets into the
+new theme's sidebars, drops instances whose class is gone, and moves placed-nowhere instances to the inactive area:
+
+<Example id="widgets/retrieve_widgets/retrieve" />
+
+The matching is done by <Sym id="function:wp_map_sidebars_widgets" />. It keeps a sidebar with the same ID, pairs a
+lone old sidebar with a lone new one, matches common names such as `sidebar` and `primary` or `footer` and `bottom`,
+and makes the rest inactive. Reusing common sidebar IDs helps your users keep their widgets:
+
+<Example id="widgets/wp_map_sidebars_widgets/map" />
+
+## Blocks as widgets
+
+Since 5.8 the Widgets screen is a block editor, and each block placed in a sidebar is saved as an instance of
+`WP_Widget_Block`, which prints the rendered block:
+
+<Example id="widgets/class--WP_Widget_Block--widget/block" />
+
+WordPress turns the block editor on for every theme through the `widgets-block-editor` theme support. A theme can
+remove that support, and a plugin can return `false` from the <Sym id="filter:use_widgets_block_editor" /> filter, to
+keep the classic screen. <Sym id="function:wp_use_widgets_block_editor" /> gives the answer:
+
+<Example id="widgets/wp_use_widgets_block_editor/filter" />
+
+## The older API
+
+Before `WP_Widget`, widgets were registered as callbacks with <Sym id="function:wp_register_sidebar_widget" /> and
+`wp_register_widget_control()`. Those functions still work, and WordPress uses them underneath, but they handle one
+instance only and leave saving to you. Write new widgets as `WP_Widget` subclasses:
+
+<Example id="widgets/wp_register_sidebar_widget/legacy" />
+
+The Widgets seam isn't ported to SpeedySpec yet, so this guide makes no promise about how widgets behave there.

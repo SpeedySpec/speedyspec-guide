@@ -1,0 +1,155 @@
+---
+title: Interactivity API
+summary: How the server reads data-wp- directives, where their state and context come from, and how that data reaches the browser.
+---
+
+The Interactivity API lets a block's markup carry behavior in `data-wp-` attributes, called **directives**. A script
+module runs them in the browser, but WordPress also runs them once on the server, so the first page a visitor sees is
+already correct and doesn't flicker when the script starts. This seam is the server half: it holds the state and
+configuration you give it, walks rendered HTML, and applies the directives it understands. What trips people up is
+that the server half is not the browser half. It runs a fixed set of directives, only on markup it is given, and only
+with data that was set before the markup was processed. Script modules themselves are covered in
+[Loading scripts and styles](/guides/path/loading-scripts-and-styles/).
+
+## One instance holds everything
+
+All of the seam's functions are thin wrappers around one object. <Sym id="function:wp_interactivity" /> creates it the
+first time it is called and keeps it in the `$wp_interactivity` global, an instance of
+<Sym id="class:WP_Interactivity_API" />:
+
+<Example id="interactivity/wp_interactivity/one-instance" />
+
+Use the functions rather than the object. They are the stable surface, and the class is `final`.
+
+## State and configuration
+
+Each plugin's data lives under a **namespace**, usually the plugin's slug.
+<Sym id="function:wp_interactivity_state" /> sets the initial state of a namespace's store. Every call merges into
+what is there, recursively, and returns the whole state, so several pieces of code can add to one store without
+overwriting each other:
+
+<Example id="interactivity/wp_interactivity_state/merges" />
+
+<Sym id="function:wp_interactivity_config" /> works the same way for configuration: values the browser can read but
+that directives don't bind to, such as a setting or a flag.
+
+<Example id="interactivity/wp_interactivity_config/merges" />
+
+Leaving out the namespace only works while directives are being processed, where WordPress knows which namespace is
+current. Called anywhere else without one, `wp_interactivity_state()` reports the mistake through `_doing_it_wrong()`
+and returns an empty array:
+
+<Example id="interactivity/wp_interactivity_state/namespace-needed" />
+
+A value in the state that is a PHP `Closure` is **derived state**. It is not stored as a value: the server calls it
+each time a directive reads it, and inside it the namespace can be left out. Keep these functions small and free of
+side effects, because they may run many times in one page:
+
+<Example id="interactivity/wp_interactivity_state/derived" />
+
+If a derived state function throws, WordPress catches the error, reports it with `_doing_it_wrong()`, and treats the
+value as empty.
+
+## Context
+
+State is shared by a whole namespace. **Context** belongs to an element and the elements inside it, and is written in
+the markup itself, in a `data-wp-context` attribute holding JSON.
+<Sym id="function:wp_interactivity_data_wp_context" /> builds that attribute for you. It encodes quotes, apostrophes,
+`&`, `<` and `>` as JSON escapes, so the value is safe inside the single quotes it is printed in:
+
+<Example id="interactivity/wp_interactivity_data_wp_context/attribute" />
+
+Print its result directly inside the tag. It returns the whole attribute, name included.
+
+While directives run, <Sym id="function:wp_interactivity_get_context" /> returns the context of the element being
+processed, and <Sym id="function:wp_interactivity_get_element" /> returns that element's attributes. Both are meant
+for derived state, which can then depend on where it is used:
+
+<Example id="interactivity/wp_interactivity_get_context/in-derived-state" />
+
+<Example id="interactivity/wp_interactivity_get_element/attributes" />
+
+Outside processing there is no element, so `wp_interactivity_get_context()` reports the mistake and returns an empty
+array:
+
+<Example id="interactivity/wp_interactivity_get_context/outside" />
+
+## Processing directives
+
+<Sym id="function:wp_interactivity_process_directives" /> takes HTML and returns it with its directives applied. HTML
+without the text `data-wp-` is returned as it is, without being parsed:
+
+<Example id="interactivity/wp_interactivity_process_directives/no-directives" />
+
+The server runs `data-wp-interactive`, `data-wp-router-region`, `data-wp-context`, `data-wp-bind`, `data-wp-class`,
+`data-wp-style`, `data-wp-text`, `data-wp-html` and `data-wp-each`, in that order on each element. Others, such as
+event handlers, are left for the browser. A reference is a path like `state.message` or `context.open`, read from the
+namespace that the nearest `data-wp-interactive` names, and a leading `!` negates it.
+
+`data-wp-text` replaces an element's content with a value from the store, always escaped. Only a string or a number is
+written; anything else empties the element:
+
+<Example id="interactivity/wp_interactivity_process_directives/text" />
+
+`data-wp-class--name` adds or removes one class, and `data-wp-bind--attribute` sets one attribute:
+
+<Example id="interactivity/wp_interactivity_process_directives/class-and-bind" />
+
+`data-wp-style--property` sets one CSS property and keeps the rest of the `style` attribute:
+
+<Example id="interactivity/wp_interactivity_process_directives/style" />
+
+`data-wp-each` repeats the content of a `<template>` for each item of a list. Each copy is marked with
+`data-wp-each-child`, so the browser knows the server already rendered it, and the template stays in place for the
+browser to use later:
+
+<Example id="interactivity/wp_interactivity_process_directives/each" />
+
+Processing needs balanced tags. If a closing tag doesn't match the element it should close, WordPress gives up and
+returns the original HTML unchanged. Directives inside `<svg>` and `<math>` are skipped, with a notice.
+
+### HTML from the store
+
+`data-wp-html` sets an element's content to HTML, so it needs more care than `data-wp-text`. It renders only a value
+made by <Sym id="function:wp_interactivity_as_dangerous_html" />, which marks a string as trusted:
+
+<Example id="interactivity/wp_interactivity_as_dangerous_html/data-wp-html" />
+
+A plain string of HTML is not rendered. The element is emptied, and the mistake is reported:
+
+<Example id="interactivity/wp_interactivity_as_dangerous_html/plain-string" />
+
+The function does not sanitize anything. Build the HTML only from markup your code wrote, or pass it through
+`wp_kses_post()` first, and never make a trusted value from context, which visitors and markup can control. The token
+is a <Sym id="class:WP_Interactivity_Dangerous_HTML" />, a class marked private. Its HTML never reaches JSON, and a
+copy restored by `unserialize()` holds none:
+
+<Example id="interactivity/class--WP_Interactivity_Dangerous_HTML/token" />
+
+## Where processing happens
+
+You rarely call `wp_interactivity_process_directives()` yourself. When a block type declares the `interactivity`
+support, `WP_Block::render()` processes the rendered HTML of the outermost such block once, after its inner blocks and
+its `render_block` filters have run. The `interactivity_process_directives` filter can turn this off. So set your
+state before your block renders, for example at the top of its `render.php`, or it won't be there when the directives
+read it.
+
+The walking is done by <Sym id="class:WP_Interactivity_API_Directives_Processor" />, a private extension of the HTML
+API's tag processor that can replace everything between a tag and its closer:
+
+<Example id="interactivity/class--WP_Interactivity_API_Directives_Processor/set-content" />
+
+## How the data reaches the browser
+
+The browser needs the same state to pick up where the server stopped. On `after_setup_theme`, WordPress adds the
+instance's hooks, and one of them filters `script_module_data_@wordpress/interactivity`. When script module data is
+printed in the footer, that filter adds every non-empty state and configuration, and the paths of derived state that
+was read:
+
+<Example id="interactivity/class--WP_Interactivity_API/script-module-data" />
+
+Because this is printed late, state set during rendering still reaches the page. It also means everything in the state
+is public: never put secrets or data the visitor may not see into it.
+
+The Interactivity API seam isn't ported to SpeedySpec yet, so this guide makes no promise about how directives are
+processed there.

@@ -1,0 +1,66 @@
+---
+title: A block of your own
+summary: Describe a block in block.json, register it from PHP, render it on the server from its attributes, and let block supports add the theme's colors and sizes to it.
+---
+
+A plugin can add blocks of its own to the editor: a book card, a reading-goal meter, a list from the plugin's data.
+Most of a block's editing interface is JavaScript, built with WordPress's `@wordpress/scripts` tools. This guide
+covers the PHP side, which every block has: describing it, registering it, and rendering it for visitors. Read
+[Blocks in themes](/guides/themes/blocks-in-themes/) first for how block markup is stored and rendered.
+
+## block.json and register_block_type()
+
+A block is described by a `block.json` file in a folder of its own: its name, title, category, attributes, the
+design tools it supports, and its scripts, styles and render template. <Sym id="function:register_block_type" /> takes
+the folder and reads the rest from the file. Call it on `init`:
+
+<Example id="guides/a-block-of-your-own/register-from-block-json" />
+
+The block's name is `my-plugin/book-card`: a namespace, your plugin's slug, then the block's own name. Its `render`
+field names a PHP template, `render.php`, so the block is **dynamic**: WordPress runs the template each time the block
+is shown, with the block's attributes in `$attributes`. The template escapes what it prints, like any output.
+
+Registering from `block.json` also registers the block's scripts and styles, and WordPress enqueues them when the
+block is used. Block themes load a block's styles only on pages that contain it. The same file is read by the editor, so the block's description lives in one place. Its `textdomain` field
+lets its title and description be translated.
+
+## Attributes and defaults
+
+**Attributes** are the block's settings, saved in its comment as JSON. Each has a type, and may have a default.
+WordPress checks the saved values against their types before rendering:
+
+<Example id="guides/a-block-of-your-own/attributes-and-defaults" />
+
+A block with no attributes got both defaults. A rating of `"five"`, a string where a number belongs, was dropped and
+replaced by the default. A title holding a script tag was printed as text, because the callback escaped it. Attributes
+come from content people wrote, so always escape them.
+
+The example registers the block with a `render_callback`, a named function, instead of a `block.json` folder. Both
+work. The folder is better for a real plugin, because the editor reads it too.
+
+## Static or dynamic
+
+A **static** block saves its finished HTML in the post, written by its JavaScript `save` function. WordPress prints
+it as it is, without running any PHP. A **dynamic** block saves only its attributes, and PHP renders it on each view.
+Choose dynamic rendering when the output depends on something that changes, such as the plugin's data or the current
+date, or when you want to change the block's HTML later without editing every post that uses it. A static block whose
+`save` output changes needs a **deprecation** in its JavaScript, so posts saved with the old HTML still open in the
+editor.
+
+## Block supports
+
+`supports` in `block.json` turns on WordPress's design tools for your block: colors, spacing, typography, borders.
+The editor shows the controls, limited to what the theme's `theme.json` allows. When the block renders,
+<Sym id="function:get_block_wrapper_attributes" /> adds the classes and styles those choices need to its outer
+element:
+
+<Example id="guides/a-block-of-your-own/supports-reach-the-wrapper" />
+
+The wrapper received the block's own class, `wp-block-my-plugin-book-card`, the plugin's extra class, classes for the
+palette color and font size, and an inline style for the custom text color. The palette classes are defined by the
+theme's stylesheet, so the block follows the theme's design, as
+[theme.json, layer by layer](/guides/themes/theme-json-layer-by-layer/) explains. Call
+`get_block_wrapper_attributes()` on the outer element of every dynamic block, so its supports work.
+
+The Blocks seam isn't ported to SpeedySpec yet, so this guide makes no promise about how blocks behave there.
+<OnSpeedySpecNote id="function:register_block_type" />

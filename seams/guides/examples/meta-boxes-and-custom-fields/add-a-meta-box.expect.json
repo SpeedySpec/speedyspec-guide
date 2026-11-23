@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'title' => 'Rating',\n  'has nonce' => true,\n  'field' => '<input type=\"number\" id=\"my-plugin-rating\" name=\"my_plugin_rating\" min=\"0\" max=\"5\" value=\"4\" />',\n)",
+ "error": null
+}

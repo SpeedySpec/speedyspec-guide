@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'before it is set' => 0,\n  'stored' => '4',\n  'in the REST API' => 4,\n  'registered' => \n  array (\n    0 => 'footnotes',\n    1 => 'my_plugin_rating',\n  ),\n)",
+ "error": null
+}
