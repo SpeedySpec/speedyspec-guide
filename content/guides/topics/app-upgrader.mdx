@@ -1,0 +1,155 @@
+---
+title: Upgrader
+summary: How WordPress checks for updates, downloads and installs packages through the upgrader classes and the Filesystem API, and the helpers plugins reuse for files, uploads and tables.
+---
+
+The Upgrader seam is everything WordPress does to change its own files: asking WordPress.org what is new, downloading
+a ZIP, checking it, unpacking it and moving it into place, for core, plugins, themes and translations. It also holds
+the install and database upgrade routines, and helpers many plugins reuse, such as the Filesystem API,
+`download_url()`, `wp_handle_upload()` and `dbDelta()`. Most of it lives in `wp-admin/includes/`, so it isn't loaded
+on the front end. What trips people up is that writing files may need FTP or SSH credentials, and that an update runs
+while the old code is still loaded. [Reading and writing files](/guides/path/reading-and-writing-files/) and
+[Storing data in your own tables](/guides/path/storing-data-in-your-own-tables/) put the helpers to work.
+
+## Checking for updates
+
+Three functions in `wp-includes/update.php` ask WordPress.org what is new: <Sym id="function:wp_version_check" /> for
+core, <Sym id="function:wp_update_plugins" /> and <Sym id="function:wp_update_themes" />. Each sends what is installed
+and stores the answer in a site transient (`update_core`, `update_plugins`, `update_themes`). Cron runs them twice a
+day, and admin screens run them too when the last check is too old:
+
+<Example id="app-upgrader/wp_schedule_update_checks/example" />
+
+<Example id="app-upgrader/wp_update_plugins/example" />
+
+The admin reads the stored answer, not WordPress.org, so a screen never waits on the network.
+<Sym id="function:get_plugin_updates" /> pairs each installed plugin with its offered update:
+
+<Example id="app-upgrader/get_plugin_updates/example" />
+
+To start again, <Sym id="function:wp_clean_update_cache" /> deletes the stored answers:
+
+<Example id="app-upgrader/wp_clean_update_cache/example" />
+
+### Updates from your own server
+
+A plugin that isn't hosted on WordPress.org can still be updated from the Plugins screen. Give it an `Update URI`
+header with your own address. When WordPress.org offers no update for it, WordPress asks the
+<Sym id="filter:update_plugins_{$hostname}" /> filter, named after that address's host. The callback returns the
+new version and the package URL, which WordPress adds to the `update_plugins` transient. Serve the package over
+HTTPS, and cache your server's answer, since the filter runs on every check.
+
+## Automatic updates
+
+Background updates run from the cron check, through <Sym id="class:WP_Automatic_Updater" />. They are off entirely
+when files can't be changed (`DISALLOW_FILE_MODS`), when `AUTOMATIC_UPDATER_DISABLED` is set or the
+`automatic_updater_disabled` filter says so, and for a folder under version control. For plugins and themes, the
+person chooses per item on the Plugins and Themes screens, when
+<Sym id="function:wp_is_auto_update_enabled_for_type" /> allows it:
+
+<Example id="app-upgrader/wp_is_auto_update_enabled_for_type/example" />
+
+A site owner's code can overrule that choice with the `auto_update_plugin` and `auto_update_theme` filters.
+<Sym id="function:wp_is_auto_update_forced_for_item" /> reports whether a filter has done so; `null` means it is
+left to the person:
+
+<Example id="app-upgrader/wp_is_auto_update_forced_for_item/example" />
+
+## The upgrader classes
+
+<Sym id="class:WP_Upgrader" /> holds the steps every update shares, and a subclass for each kind of package:
+`Core_Upgrader`, <Sym id="class:Plugin_Upgrader" />, `Theme_Upgrader` and `Language_Pack_Upgrader`. Calling, say,
+`Plugin_Upgrader::upgrade()` runs <Sym id="method:WP_Upgrader::run" />, which:
+
+1. connects the filesystem, asking for credentials if it must;
+2. downloads the package, unless the `upgrader_pre_download` filter supplies it;
+3. unpacks it into `wp-content/upgrade/`;
+4. installs it with `install_package()`, which moves the old copy aside as a temporary backup, clears the
+   destination and copies the new files in;
+5. fires <Sym id="action:upgrader_process_complete" />.
+
+Plugins step in through filters along the way: `upgrader_pre_install` can refuse an install,
+`upgrader_source_selection` can fix the folder name of an unpacked package, and `upgrader_post_install` runs after
+the files are in place. In `upgrader_process_complete`, check the `type` and `action` in its second argument. A single
+update names its item as `plugin`; a bulk update lists them in `plugins`. And remember the request still runs the old
+code: to change data for the new version, store a version number and compare it on a later request.
+
+### Skins
+
+An upgrader reports its progress through a **skin**, a <Sym id="class:WP_Upgrader_Skin" /> subclass. The admin
+screens use skins that print as they go; `WP_Ajax_Upgrader_Skin` collects errors for an Ajax reply; and
+<Sym id="class:Automatic_Upgrader_Skin" /> prints nothing and keeps the messages, which suits background work. Pass
+the skin to the upgrader's constructor. Code that installs a plugin must check the `install_plugins` capability and a
+nonce first, as WordPress's own screens do.
+
+## The Filesystem API
+
+WordPress may not be able to write its own files as the web server's user. The Filesystem API hides how it gets
+around that. <Sym id="function:get_filesystem_method" /> picks the method: `direct` when a file PHP creates is owned
+by the same user as WordPress's files, else SSH2, the FTP extension or FTP over sockets. `FS_METHOD` and the
+`filesystem_method` filter can force one:
+
+<Example id="app-upgrader/get_filesystem_method/example" />
+
+<Sym id="function:request_filesystem_credentials" /> gets what that method needs. It returns `true` for the direct
+method, the credentials when constants or the request hold them, and otherwise prints a form and returns `false`:
+
+<Example id="app-upgrader/request_filesystem_credentials/example" />
+
+<Sym id="function:WP_Filesystem" /> then sets up the <Sym id="global:wp_filesystem" /> global and connects it:
+
+<Example id="app-upgrader/WP_Filesystem/example" />
+
+From then on, `copy_dir()`, `move_dir()` and `unzip_file()` work through `$wp_filesystem`, whatever the method.
+
+## Downloading and unpacking
+
+<Sym id="function:download_url" /> saves a URL to a temporary file and returns its path, or a `WP_Error`. Delete the
+file when you are done with it:
+
+<Example id="app-upgrader/download_url/example" />
+
+<Sym id="function:unzip_file" /> unpacks an archive into a folder with `ZipArchive`, or the bundled PclZip when that
+extension is missing. It needs `WP_Filesystem()` to have run first:
+
+<Example id="app-upgrader/unzip_file/example" />
+
+WordPress.org signs its packages. <Sym id="function:verify_file_signature" /> checks a file against Ed25519
+signatures made with the keys `wp_trusted_keys()` lists, and says why when it fails:
+
+<Example id="app-upgrader/verify_file_signature/example" />
+
+## Uploads
+
+<Sym id="function:wp_handle_upload" /> moves a file a person uploaded into the uploads folder, after checking its
+type and size. It only accepts a real HTTP upload, so a file you made yourself fails its test:
+
+<Example id="app-upgrader/wp_handle_upload/example" />
+
+For a file your code downloaded or wrote, use <Sym id="function:wp_handle_sideload" />, which runs the same checks
+without that one:
+
+<Example id="app-upgrader/wp_handle_sideload/example" />
+
+## Tables
+
+<Sym id="function:dbDelta" /> compares `CREATE TABLE` statements with the database. It creates missing tables and
+adds or changes columns and indexes, but never drops one, so it is safe to run on every version change. It reads
+the statement line by line, so put each column and each key on a line of its own. Load
+`wp-admin/includes/upgrade.php` before calling it:
+
+<Example id="app-upgrader/dbDelta/example" />
+
+`maybe_create_table()` only creates a table when it is missing, and changes nothing after that.
+
+## Mistakes to avoid
+
+- Don't call the update checks yourself on every request. They make an HTTP request to WordPress.org.
+- Don't write into the plugins or themes folders with plain PHP. Use `$wp_filesystem`, or keep generated files in the
+  uploads folder.
+- Functions starting with an underscore, such as `_unzip_file_ziparchive()` and `_maybe_update_plugins()`, are
+  private. Call `unzip_file()`, and let the scheduled checks run.
+- The numbered `upgrade_*()` routines belong to WordPress's own database upgrades. Plugins need their own version
+  option and `dbDelta()`.
+
+The Upgrader seam isn't ported to SpeedySpec yet, so this guide makes no promise about how updates behave there.

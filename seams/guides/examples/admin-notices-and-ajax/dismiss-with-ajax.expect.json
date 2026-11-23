@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'forged nonce' => \n  array (\n    'body' => '',\n    'dismissed' => false,\n  ),\n  'an editor' => \n  array (\n    'body' => '{\"success\":false,\"data\":{\"message\":\"You may not do that.\"}}',\n    'dismissed' => false,\n  ),\n  'the administrator' => \n  array (\n    'body' => '{\"success\":true}',\n    'dismissed' => true,\n  ),\n)",
+ "error": null
+}

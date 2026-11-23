@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'before' => \n  array (\n    0 => 'Dune',\n  ),\n  'after logging a read' => \n  array (\n    0 => 'Dune',\n    1 => 'Emma',\n  ),\n)",
+ "error": null
+}

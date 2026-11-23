@@ -1,0 +1,162 @@
+---
+title: Media
+summary: How attachments and image sizes are described, how responsive image tags are built, and how galleries render.
+---
+
+The Media seam is the part of WordPress that knows what an uploaded file is. An upload is an **attachment**, a post
+of type `attachment`, and its file and image sizes are described in that post's metadata. This seam reads the
+metadata to build image tags, adds responsive and loading attributes to images in content, resizes images through an
+image editor, and renders the `[gallery]`, `[caption]`, `[audio]`, `[video]` and `[playlist]` shortcodes. What trips
+people up is that image sizes are made once, at upload, so a size added later doesn't exist for older images, and
+that most image markup is changed after the fact by filters on content. For files that aren't media, read
+[Reading and writing files](/guides/path/reading-and-writing-files/).
+
+## Image sizes
+
+When an image is uploaded, WordPress makes a resized copy for each registered size. The core sizes are `thumbnail`,
+`medium`, `medium_large` and `large`, read from options, plus `1536x1536` and `2048x2048` for large screens.
+<Sym id="function:add_image_size" /> registers another by name, width, height and whether to crop:
+
+<Example id="media/add_image_size/example" />
+
+<Sym id="function:get_intermediate_image_sizes" /> lists every size's name, and
+<Sym id="function:wp_get_registered_image_subsizes" /> gives each one's width, height and crop:
+
+<Example id="media/get_intermediate_image_sizes/example" />
+
+<Example id="media/wp_get_registered_image_subsizes/example" />
+
+Register sizes on `after_setup_theme` or `init`, from a named function, so they are known before any upload. A size
+registered today only applies to images uploaded from now on. Older images keep the sizes they were made with until
+their sub-sizes are regenerated, and asking for a size an image doesn't have gives you the full-size file instead.
+Each size is a file on disk for every image, so don't register sizes you won't use.
+
+How a size is cut comes from <Sym id="function:image_resize_dimensions" />. Without crop, the image is scaled to fit
+inside the box. With crop, it is scaled to fill the box and the overflow is cut off. An image already smaller than
+the size isn't enlarged at all, so that size is simply skipped:
+
+<Example id="media/image_resize_dimensions/example" />
+
+## Reading an attachment's image
+
+<Sym id="function:wp_get_attachment_image_src" /> gives the URL, width and height of an attachment's image at a size,
+and whether that is a resized copy. It gives `false` for an ID that isn't an image attachment:
+
+<Example id="media/wp_get_attachment_image_src/example" />
+
+<Sym id="function:wp_get_attachment_image_url" /> gives only the URL. Both rest on
+<Sym id="function:image_downsize" />, whose <Sym id="filter:image_downsize" /> filter lets a plugin answer instead,
+which is how image CDNs serve resized copies from their own servers.
+
+Going the other way, <Sym id="function:attachment_url_to_postid" /> finds the attachment whose file is at a URL in
+the uploads folder, or gives `0`. It runs a database query, so don't call it in a loop:
+
+<Example id="media/attachment_url_to_postid/example" />
+
+## Image tags
+
+<Sym id="function:wp_get_attachment_image" /> is the function for printing an attachment's image. It writes the whole
+tag: `width` and `height`, the alt text saved with the attachment, size classes, and the responsive and loading
+attributes described below. Every attribute value is escaped:
+
+<Example id="media/wp_get_attachment_image/example" />
+
+Its <Sym id="filter:wp_get_attachment_image_attributes" /> filter changes the attributes before the tag is written.
+Prefer this function to building an `img` tag from a URL yourself: you would lose the alt text, the sizes, and every
+optimization later WordPress versions add.
+
+## Responsive images
+
+A `srcset` lists the other files of the same image so the browser can download the smallest one that fits.
+<Sym id="function:wp_calculate_image_srcset" /> builds it from the attachment's metadata. It only includes sizes with
+the same aspect ratio as the image shown, so a cropped thumbnail never stands in for a wide photo, and it leaves out
+sizes wider than 2,048 pixels, a limit the `max_srcset_image_width` filter changes:
+
+<Example id="media/wp_calculate_image_srcset/example" />
+
+`sizes` tells the browser how wide the image will be on the page. <Sym id="function:wp_calculate_image_sizes" />
+gives a default that assumes the image is shown at its own width, up to the full viewport. A theme that knows its
+layout can do better through the `wp_calculate_image_sizes` filter:
+
+<Example id="media/wp_calculate_image_sizes/example" />
+
+## Images in content
+
+Images inserted in a post were written into its content long ago, so WordPress improves them as the content is
+displayed. <Sym id="function:wp_filter_content_tags" /> runs on `the_content`, `the_excerpt` and the widget text
+filters, after shortcodes. For each `img` with a `wp-image-ID` class it adds `width` and `height`, `srcset` and
+`sizes` from the attachment, and loading attributes. Each image then passes through the `wp_content_img_tag`
+filter:
+
+<Example id="media/wp_filter_content_tags/example" />
+
+The loading attributes come from <Sym id="function:wp_get_loading_optimization_attributes" />. Images near the top of
+the page should load at once, so WordPress skips `loading="lazy"` for the first few in the content, three by default
+through <Sym id="function:wp_omit_loading_attr_threshold" />, and lazy-loads the rest. The first large image can
+also get `fetchpriority="high"`. Elements other than `img` and `iframe` get nothing:
+
+<Example id="media/wp_get_loading_optimization_attributes/example" />
+
+<Sym id="function:wp_lazy_loading_enabled" /> decides whether lazy loading applies at all, per tag and context, and
+its `wp_lazy_loading_enabled` filter turns it off:
+
+<Example id="media/wp_lazy_loading_enabled/example" />
+
+A lazy image with a width also gets `auto` at the start of its `sizes`, so the browser picks the file from the
+rendered size. The `wp_img_tag_add_auto_sizes` filter turns that off.
+
+## Image editors
+
+To resize, crop or convert an image yourself, ask <Sym id="function:wp_get_image_editor" /> for an editor. It picks
+the first class from the <Sym id="filter:wp_image_editors" /> filter that can open the file and do what you ask,
+Imagick before GD, and loads the file. It gives a `WP_Error` when none can, so check before you use it:
+
+<Example id="media/wp_get_image_editor/example" />
+
+Work on files inside the uploads folder only, and never on a path taken from a request without checking it.
+
+## Shortcodes
+
+The seam renders five shortcodes. `[gallery]`, from <Sym id="function:gallery_shortcode" />, shows the images given
+by `ids`, or those attached to the post, as a grid of linked thumbnails:
+
+<Example id="media/gallery_shortcode/example" />
+
+<Sym id="function:get_post_gallery" /> and <Sym id="function:get_post_galleries" /> find the galleries in a post's
+content and give their HTML or their attributes and image URLs:
+
+<Example id="media/get_post_gallery/example" />
+
+`[caption]`, from <Sym id="function:img_caption_shortcode" />, wraps an image with its caption. A theme that
+declares `html5` support for captions gets a `figure` and `figcaption`; otherwise it is the older `div`:
+
+<Example id="media/img_caption_shortcode/example" />
+
+<Sym id="function:wp_audio_shortcode" />, <Sym id="function:wp_video_shortcode" /> and
+<Sym id="function:wp_playlist_shortcode" /> write HTML5 players styled by MediaElement.js. To find what a post has
+attached, use <Sym id="function:get_attached_media" />, which filters the attachments by MIME type:
+
+<Example id="media/get_attached_media/example" />
+
+## The media modal and uploads
+
+<Sym id="function:wp_enqueue_media" /> loads the media modal's scripts, styles and templates on a screen, once per
+page, so a plugin's own button can open the media library. Call it from `admin_enqueue_scripts` on your screen
+only. <Sym id="function:wp_prepare_attachment_for_js" /> shapes the data the modal shows for each attachment.
+
+<Example id="media/wp_enqueue_media/example" />
+
+<Sym id="function:wp_max_upload_size" /> gives the largest upload allowed, in bytes: the smaller of PHP's two upload
+limits, through the `upload_size_limit` filter. Show it to users instead of guessing:
+
+<Example id="media/wp_max_upload_size/example" />
+
+Saving an upload itself (moving the file, creating the attachment and generating its sizes) is done by functions
+in `wp-admin/includes`, outside this seam. Check the user's `upload_files` capability and a nonce before you accept
+one.
+
+The seam also reads metadata with two bundled libraries: [getID3](https://www.getid3.org/) for audio and video
+files, and a port of [libavifinfo](https://aomedia.googlesource.com/libavifinfo/) for AVIF images.
+
+The Media seam isn't ported to SpeedySpec yet, so this guide makes no promise about how attachments and images behave
+there.

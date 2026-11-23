@@ -1,0 +1,159 @@
+---
+title: Object Cache
+summary: How the object cache stores values by key and group, what the built-in cache keeps and forgets, and how a drop-in replaces it.
+---
+
+The Object Cache seam is WordPress's key-value cache. Core puts posts, terms, users and options in it so that the
+second time a request asks for the same row, no query runs. Plugins can use it the same way. What trips people up is
+how long a value lives: with the built-in cache, everything is gone at the end of the request. A value only survives
+between requests when a persistent cache, such as Redis or Memcached, is installed as a drop-in. Code must work either
+way. For values that must survive on every site, read the [Options](/guides/topics/options/) guide on transients.
+
+## Keys and groups
+
+Every value has a **key** and a **group**. The same key in two groups is two values, and an empty group means
+`default`. <Sym id="function:wp_cache_set" /> stores a value and <Sym id="function:wp_cache_get" /> reads it:
+
+<Example id="object-cache/wp_cache_set/groups" />
+
+Setting a key that is already cached replaces the value:
+
+<Example id="object-cache/wp_cache_set/overwrites" />
+
+Give your plugin its own group, such as `myplugin`, so your keys can't collide with core's. A key must be an integer
+or a non-empty string. Anything else is refused with a `_doing_it_wrong()` notice, and the call returns `false`.
+
+## Reading: a miss is false
+
+`wp_cache_get()` returns `false` when the key isn't cached. That is the same value you get back when `false` itself
+was stored. The fourth argument, `$found`, is passed by reference and tells the two apart:
+
+<Example id="object-cache/wp_cache_get/found" />
+
+Use `$found` whenever `false`, `0` or an empty string could be a real cached value. Otherwise you will treat a cached
+answer as a miss and run the query again on every call.
+
+The built-in cache also copies objects. An object is cloned when it is stored and again when it is read, so changing
+an object after caching it doesn't change what is in the cache:
+
+<Example id="object-cache/wp_cache_set/objects-are-copied" />
+
+A persistent cache usually serializes values, which gives the same result. Never rely on a cached object being the same
+instance you put in.
+
+## Add, replace and counters
+
+Three functions write only in one case:
+
+- <Sym id="function:wp_cache_add" /> writes only when the key is missing. It is the safe choice when two pieces of
+  code might fill the same key.
+- <Sym id="function:wp_cache_replace" /> writes only when the key is already there.
+- `wp_cache_set()` always writes.
+
+<Example id="object-cache/wp_cache_add/only-if-missing" />
+
+<Example id="object-cache/wp_cache_replace/only-if-present" />
+
+While <Sym id="function:wp_suspend_cache_addition" /> is on, `wp_cache_add()` stores nothing and returns `false`.
+Importers turn it on so that thousands of rows they will never read again don't fill memory:
+
+<Example id="object-cache/wp_cache_add/suspended" />
+
+<Sym id="function:wp_cache_incr" /> and <Sym id="function:wp_cache_decr" /> change a cached number and return the new
+value. A key that isn't cached gives `false`, a value that isn't numeric counts from 0, and the result never drops
+below 0:
+
+<Example id="object-cache/wp_cache_incr/counts" />
+
+## Several keys at once
+
+The `_multiple` functions take or return an array keyed by cache key. Each result says what happened to that key, so
+one call tells you which keys were added, found or deleted:
+
+<Example id="object-cache/wp_cache_add_multiple/several" />
+
+<Example id="object-cache/wp_cache_get_multiple/several" />
+
+With the built-in cache they only loop. With a persistent cache they can fetch many keys in one round trip, which is
+why core uses <Sym id="function:wp_cache_get_multiple" /> when it primes caches for a list of posts.
+
+## Deleting and flushing
+
+<Sym id="function:wp_cache_delete" /> removes one key and says whether there was one:
+
+<Example id="object-cache/wp_cache_delete/existing-and-missing" />
+
+<Sym id="function:wp_cache_flush" /> empties every group. On a persistent cache that can mean every site sharing the
+server, so a plugin should delete its own keys instead. <Sym id="function:wp_cache_flush_group" /> empties one group:
+
+<Example id="object-cache/wp_cache_flush_group/one-group" />
+
+Not every drop-in can flush a group. Ask <Sym id="function:wp_cache_supports" /> first. The built-in cache supports the
+`_multiple` functions, `flush_runtime` and `flush_group`, and nothing else:
+
+<Example id="object-cache/wp_cache_supports/features" />
+
+When a drop-in leaves out `wp_cache_flush_group()` or `wp_cache_flush_runtime()`, WordPress's fallbacks in
+`cache-compat.php` refuse with a `_doing_it_wrong()` notice and return `false`.
+
+## Salted values
+
+Some data is only valid until something else changes. WordPress records when a group last changed with
+<Sym id="function:wp_cache_set_last_changed" />, and <Sym id="function:wp_cache_set_salted" /> stores a value together
+with that marker, its **salt**. <Sym id="function:wp_cache_get_salted" /> returns the value only when the salt still
+matches, so bumping the marker invalidates every value stored with the old one, without deleting any key:
+
+<Example id="object-cache/wp_cache_get_salted/matching-salt" />
+
+Underneath, the value is an array holding the data and the salt. An array of salts is joined with `:`:
+
+<Example id="object-cache/wp_cache_set_salted/stored-shape" />
+
+## Multisite and global groups
+
+On multisite, every key is prefixed with the current site's ID, so each site sees its own values. Switching sites
+with <Sym id="function:wp_cache_switch_to_blog" /> changes the prefix:
+
+<Example id="object-cache/wp_cache_switch_to_blog/multisite" />
+
+**Global groups** skip the prefix and are shared by every site in the network. Core marks its network-wide groups,
+such as `users` and `site-options`, as global when the cache starts. <Sym id="function:wp_cache_add_global_groups" />
+adds more:
+
+<Example id="object-cache/wp_cache_add_global_groups/shared-across-sites" />
+
+On a single site there is no prefix, and switching changes nothing.
+
+## Drop-ins and the built-in cache
+
+The functions are thin wrappers around one object, the global <Sym id="global:wp_object_cache" />.
+<Sym id="function:wp_cache_init" /> creates it as a new, empty <Sym id="class:WP_Object_Cache" />:
+
+<Example id="object-cache/wp_cache_init/fresh-cache" />
+
+Early in loading, <Sym id="function:wp_start_object_cache" /> looks for `wp-content/object-cache.php`. If that drop-in
+defines `wp_cache_init()`, WordPress uses it instead of `cache.php`. Then `cache-compat.php` fills in any function
+the drop-in left out. The `enable_loading_object_cache_dropin` filter can stop the drop-in loading, but it runs before
+plugins load, so it is meant for code outside the normal web request.
+
+The built-in cache keeps everything in memory, so a few functions do nothing there.
+<Sym id="function:wp_cache_add_non_persistent_groups" /> exists so a persistent cache can keep some groups in memory
+only, and the built-in cache already does:
+
+<Example id="object-cache/wp_cache_add_non_persistent_groups/no-op" />
+
+The `$expire` argument is also ignored by the built-in cache. Pass it anyway: a persistent cache honors it.
+
+## Mistakes to avoid
+
+- Don't treat the cache as storage. Even a persistent cache can evict a value at any time. Always be able to rebuild
+  what you cached.
+- Don't call `wp_cache_flush()` to clear your own data. Delete your keys, flush your group if it is supported, or
+  change a salt.
+- Don't call <Sym id="function:wp_cache_reset" />. It has been deprecated since 3.5.0. Use `wp_cache_switch_to_blog()`
+  instead:
+
+<Example id="object-cache/wp_cache_reset/deprecated" />
+
+The Object Cache seam isn't ported to SpeedySpec yet, so this guide makes no promise about how cached values behave
+there.

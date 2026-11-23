@@ -1,0 +1,127 @@
+---
+title: Entry points
+summary: How the top-level PHP files load WordPress, which request each one serves, and the hooks the login, signup and cron scripts offer.
+---
+
+The Entry points seam is the set of PHP files at the top of a WordPress install: the ones a web server actually
+runs. `index.php` serves the site, `wp-login.php` the login screen, `wp-cron.php` the scheduled events, and a few
+more serve comments, trackbacks, XML-RPC and multisite signups. Each loads WordPress the same way, then does its one
+job. What trips people up is that the functions these files declare, such as `login_header()`, only exist while
+that file runs, so a plugin can't call them; it changes these pages through their hooks instead.
+
+## How a request loads WordPress
+
+Every front-end page starts in `index.php`, which defines <Sym id="constant:WP_USE_THEMES" /> as true and includes
+`wp-blog-header.php`. That file does three things in order: it includes `wp-load.php`, calls `wp()` to parse the
+request and run the main query, and includes the template loader, which picks a theme template and prints it.
+
+`wp-load.php` defines <Sym id="constant:ABSPATH" /> and looks for `wp-config.php`, first in the install's own folder,
+then one folder up, so the configuration can sit outside the web root. Without one, it sends the visitor to the setup
+screen. `wp-config.php` sets the database details and constants, then includes `wp-settings.php`, which loads the
+rest of WordPress. The order there is what every plugin relies on:
+
+1. Must-use plugins load, then `muplugins_loaded` fires.
+2. Network-activated plugins load on a multisite, then the site's active plugins, one `plugin_loaded` action each.
+3. `plugins_loaded` fires. Pluggable functions, such as `wp_mail()`, exist from here on.
+4. `setup_theme` fires, the theme's `functions.php` loads (the parent's and a child's), then `after_setup_theme`.
+5. The current user is set up and <Sym id="action:init" /> fires; then, once a multisite has checked the site is
+   usable, <Sym id="action:wp_loaded" />.
+
+So a plugin's main file runs before any theme code, and before the current user is known. Register hooks there, and
+do the work on `init` or later.
+
+## Don't add your own entry point
+
+A plugin sometimes ships a PHP file meant to be requested directly, which includes `wp-load.php` itself. Avoid this.
+The path to `wp-load.php` differs between sites, the file is reachable by anyone who guesses its URL, and it skips
+the checks WordPress's own entry points make. Handle forms through `admin-post.php`, and data requests through the
+REST API, as [Adding a REST endpoint](/guides/path/adding-a-rest-endpoint/) shows. Both load WordPress for you, and
+both leave you to check a nonce and a capability.
+
+## The login page
+
+`wp-login.php` serves logging in, logging out, lost and reset passwords, registration and a few confirmations. It
+picks an `action` from the request and runs that branch. An action it doesn't know becomes `login`, unless a plugin
+has hooked <Sym id="action:login_form_{$action}" /> for it. That is how a plugin adds its own step to the login
+page, with a named function hooked to, say, `login_form_myplugin_verify`. <Sym id="action:login_init" /> fires first,
+for every action.
+
+Each screen is wrapped by two functions the file declares. <Sym id="function:login_header" /> prints the head and
+the logo, the message and any errors, with filters for each part:
+
+<Example id="entry-points/login_header/header" />
+
+When an error's code is one of the <Sym id="filter:shake_error_codes" />, such as `incorrect_password`, the form
+shakes, through <Sym id="function:wp_shake_js" /> hooked to `login_footer`. Returning an empty list stops it:
+
+<Example id="entry-points/login_header/shake" />
+
+<Example id="entry-points/wp_shake_js/shake" />
+
+<Sym id="function:login_footer" /> closes the page: the link back to the site, the language switcher when there are
+languages to choose from, and the `login_footer` action, the usual place for a plugin's own markup:
+
+<Example id="entry-points/login_footer/footer" />
+
+<Example id="entry-points/wp_login_viewport_meta/meta" />
+
+To style the page, enqueue a stylesheet on `login_enqueue_scripts`. To change where people go after logging in,
+filter `login_redirect`, and keep the result on your own site with `wp_validate_redirect()`.
+
+## Multisite signups
+
+On a network, `wp-signup.php` lets visitors register a username, a site, or both. A single site is sent to its normal
+registration page instead. The network's `registration` setting, through the `wpmu_active_signup` filter, decides
+which forms appear. Every step posts back to the same file with a `stage` field, and each stage has a form function
+and a validating function:
+
+<Example id="entry-points/signup_user/form" />
+
+<Example id="entry-points/show_user_form/form" />
+
+`validate_user_form()` hands the posted username and email to the multisite seam's `wpmu_validate_user_signup()`,
+and returns its errors with the cleaned values. A short name with capitals and a bad address fail three ways:
+
+<Example id="entry-points/validate_user_form/validate" />
+
+<Example id="entry-points/validate_blog_form/validate" />
+
+When the user step passes, a site signup moves on to the site step; a username-only signup is stored in the signups
+table and confirmed on screen, while an activation email goes out from a multisite hook:
+
+<Example id="entry-points/validate_user_signup/user" />
+
+<Example id="entry-points/confirm_blog_signup/confirm" />
+
+A plugin adds fields with the `signup_extra_fields` and `signup_blogform` actions, checks them by filtering the
+validation results, and stores them through the `add_signup_meta` filter. `wp-activate.php` then takes the key from
+the email and creates the account or site. The `signup_get_available_languages` filter can narrow the languages a new
+site may choose, but not add ones that aren't installed:
+
+<Example id="entry-points/signup_get_available_languages/languages" />
+
+## Cron, comments and the rest
+
+`wp-cron.php` runs due scheduled events. It ends the response first where the server allows, defines
+<Sym id="constant:DOING_CRON" />, and checks the lock that `spawn_cron()` set. <Sym id="function:_get_cron_lock" />
+reads that lock past every cache, so a long run notices when another has taken over, and stops:
+
+<Example id="entry-points/_get_cron_lock/lock" />
+
+The [Cron](/guides/topics/cron/) guide covers the rest. The other entry points are short:
+
+- `wp-comments-post.php` accepts only POST, and passes the form to `wp_handle_comment_submission()`.
+- `wp-trackback.php` answers a trackback with a small XML document:
+
+<Example id="entry-points/trackback_response/ok" />
+
+- `xmlrpc.php` defines <Sym id="constant:XMLRPC_REQUEST" /> and serves the XML-RPC API. Its old logging function,
+  `logIO()`, is deprecated since 3.4.0; use `error_log()` instead:
+
+<Example id="entry-points/logIO/deprecated" />
+
+- `wp-mail.php` checks a mailbox for posts sent by email, at most once per <Sym id="constant:WP_MAIL_INTERVAL" />.
+- `wp-links-opml.php` lists the site's links as OPML.
+
+The Entry points seam isn't ported to SpeedySpec yet, so this guide makes no promise about how these requests behave
+there.

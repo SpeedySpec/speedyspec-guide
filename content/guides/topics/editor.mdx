@@ -1,0 +1,146 @@
+---
+title: Editor and embeds
+summary: How the classic editor is printed, how URLs become cached embeds, how a site offers its posts for embedding, and how images are edited.
+---
+
+This seam gathers three older parts of WordPress that share a file layout more than a purpose: the **classic editor**
+that `wp_editor()` prints, **embeds** (turning a URL into a video or a card, and letting other sites embed yours), and
+the **image editors** that resize and crop uploads with GD or Imagick. What trips people up is mostly in embeds: they
+make outside requests, their results are cached in places people don't expect, and HTML from unknown sites is cut down
+before it reaches the page. The `[embed]` shortcode follows the rules in [Shortcodes](/guides/path/shortcodes/).
+
+## The classic editor
+
+<Sym id="function:wp_editor" /> prints an editor: a text area, the Visual and Code tabs, and the settings TinyMCE and
+Quicktags need. It hands the work to <Sym id="class:_WP_Editors" />, a private, final class WordPress loads only when
+an editor is needed. Call `wp_editor()`, not the class:
+
+<Example id="editor/class--_WP_Editors--editor/textarea" />
+
+Here only the code editor shows, because there is no user who may use the visual one (`user_can_richedit()`). Note
+what that does to the content. With the visual editor on, `format_for_editor()` encodes it for the text area. With
+only the code editor, as here, it goes in as it is, so a stray `</textarea>` in it would end the text area early. Pass
+only content you trust, and give the editor an id without square brackets.
+
+The third argument holds settings, merged over defaults and passed through the `wp_editor_settings` filter. The height
+is kept between 50 and 5000 pixels:
+
+<Example id="editor/class--_WP_Editors--parse_settings/settings" />
+
+TinyMCE can't be moved in the page once it starts, so a visual editor inside a meta box that can be dragged is
+fragile. Use Quicktags only (`'tinymce' => false`) there.
+
+## From a URL to an embed
+
+<Sym id="function:wp_oembed_get" /> asks a URL's **oEmbed** provider for its embed HTML. WordPress keeps a list of
+known providers, matches the URL against it, requests the provider's endpoint with the size wanted, and returns the
+HTML or `false`:
+
+<Example id="editor/wp_oembed_get/get" />
+
+That is an outside HTTP request every time, so don't call it while rendering a page. In post content you rarely call
+it at all. The global <Sym id="class:WP_Embed" /> object, `$wp_embed`, runs on `the_content` at priority 8, before
+`wpautop()`: it handles the `[embed]` shortcode, and **auto-embeds** any URL alone on its own line. A URL inside a
+sentence is left alone:
+
+<Example id="editor/class--WP_Embed--autoembed/autoembed" />
+
+### Caching
+
+Inside a post, `WP_Embed` stores the HTML in the post's meta, under `_oembed_` and an `md5()` of the URL and its
+attributes, so the next view makes no request. A URL nothing could embed is cached too, as `{{unknown}}`, and becomes
+a plain link:
+
+<Example id="editor/class--WP_Embed--shortcode/cache" />
+
+Outside a post, as in a widget, the result is cached in a post of the hidden `oembed_cache` type instead:
+
+<Example id="editor/class--WP_Embed--shortcode/nopost" />
+
+The cache is refreshed after a day, which the `oembed_ttl` filter changes. The size asked for comes from
+<Sym id="function:wp_embed_defaults" />: the theme's `$content_width`, or 500 pixels, and 1.5 times that high, at most
+1000. The `embed_defaults` filter changes it:
+
+<Example id="editor/wp_embed_defaults/defaults" />
+
+## Handlers and providers
+
+A **handler** embeds URLs without oEmbed, by a regular expression and a callback, and is tried first.
+<Sym id="function:wp_embed_register_handler" /> adds one and <Sym id="function:wp_embed_unregister_handler" /> removes
+it. Use a named, prefixed function as the callback, and escape everything it puts into the HTML:
+
+<Example id="editor/wp_embed_register_handler/handler" />
+
+WordPress registers its own handlers on `plugins_loaded`, for YouTube embed URLs and for audio and video files, which
+become `[audio]` and `[video]` shortcodes:
+
+<Example id="editor/wp_maybe_load_embeds/load" />
+
+To embed a service that speaks oEmbed, add it as a provider with <Sym id="function:wp_oembed_add_provider" />, by a
+URL pattern with `*` wildcards or, with the third argument `true`, a regular expression.
+<Sym id="function:wp_oembed_remove_provider" /> takes a provider off the list by its pattern:
+
+<Example id="editor/wp_oembed_add_provider/add" />
+
+<Example id="editor/wp_oembed_remove_provider/remove" />
+
+### HTML from sites WordPress doesn't know
+
+For a URL that matches no provider, WordPress can **discover** one: it fetches the page and looks for oEmbed `link`
+tags. HTML from a discovered provider isn't trusted. <Sym id="function:wp_filter_oembed_result" />, on the
+`oembed_dataparse` filter, keeps only a `blockquote` and an `iframe`, sandboxes the frame and ties the two together
+with a random secret. Without a frame it gives `false`. HTML from a known provider is kept as it is:
+
+<Example id="editor/wp_filter_oembed_result/sandbox" />
+
+## Offering your posts for embedding
+
+WordPress is an oEmbed provider too. Each public post has an embed view, at <Sym id="function:get_post_embed_url" />,
+which is the permalink with `/embed/` added, or `?embed=true` with plain permalinks:
+
+<Example id="editor/get_post_embed_url/url" />
+
+Other sites ask the REST route `oembed/1.0/embed` for a post's data, which
+<Sym id="function:get_oembed_response_data" /> builds. A post that isn't public gives `false`, and the width is kept
+between 200 and 600 pixels:
+
+<Example id="editor/get_oembed_response_data/data" />
+
+The HTML in that data comes from <Sym id="function:get_post_embed_html" />: a link in a `blockquote` for sites that
+strip frames, and a sandboxed `iframe` sharing a secret with it:
+
+<Example id="editor/get_post_embed_html/html" />
+
+So that other sites can find the route, <Sym id="function:wp_oembed_add_discovery_links" /> prints the discovery links
+in the head of a single post:
+
+<Example id="editor/wp_oembed_add_discovery_links/links" />
+
+When one of your own posts is embedded on your own site, no request is made. On `pre_oembed_result`,
+<Sym id="function:wp_filter_pre_oembed_result" /> builds the HTML from the post directly, and returns `null` for other
+sites' URLs, so they go on to oEmbed:
+
+<Example id="editor/wp_filter_pre_oembed_result/local" />
+
+## Editing images
+
+<Sym id="function:wp_get_image_editor" /> is the way in. It picks the first editor class from the `wp_image_editors`
+filter that works on the server and supports the file, Imagick before GD, and loads the image, or returns a
+`WP_Error`. Both editors extend <Sym id="class:WP_Image_Editor" />, so code written against it works with either.
+
+<Example id="editor/class--WP_Image_Editor_GD--load/load" />
+
+`resize()` fits the image inside a box and keeps its proportions, or crops it to the box when the third argument is
+`true`. `save()` writes a new file next to the original, named with its size, and returns its path and details:
+
+<Example id="editor/class--WP_Image_Editor_GD--resize/resize" />
+
+`multi_resize()` makes several sizes from the same original at once. For an upload, WordPress makes each size with
+`make_subsize()` instead, and falls back to `multi_resize()` for an editor that lacks it:
+
+<Example id="editor/class--WP_Image_Editor_GD--multi_resize/sizes" />
+
+Always check each result with `is_wp_error()`. A file that is missing or isn't an image fails at loading, not later.
+
+The Editor and embeds seam isn't ported to SpeedySpec yet, so this guide makes no promise about how editors, embeds
+and image editing behave there.

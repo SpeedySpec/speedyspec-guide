@@ -1,0 +1,179 @@
+---
+title: Admin
+summary: How a plugin adds admin pages, settings forms, notices, meta boxes, list tables, screen options and form handlers.
+---
+
+The Admin seam is everything under `wp-admin/`: the screens themselves and the roughly 700 functions they load. Most of
+it serves WordPress's own screens. This guide covers the parts plugin authors use: menu pages, the Settings API,
+notices, meta boxes, list tables, screen options, and the two entry points for handling forms and Ajax. What trips
+people up is timing. These functions exist only once the admin has loaded, and each has a hook it belongs on. For a
+first settings screen, read [Adding a settings page](/guides/path/adding-a-settings-page/); for the dashboard, read
+[Adding a dashboard widget](/guides/path/adding-a-dashboard-widget/).
+
+## The order of an admin request
+
+`wp-admin/admin.php` loads WordPress and the admin's include files, then works through a fixed order. It builds the
+menu and fires <Sym id="action:admin_menu" />. Then it fires <Sym id="action:admin_init" />, works out the current
+screen and fires `current_screen`. For a plugin's page it fires `load-{$page_hook}`, then prints the header, with
+<Sym id="action:admin_enqueue_scripts" /> and <Sym id="action:admin_notices" /> on the way, and finally calls the page's
+own callback. Note that `admin_menu` comes **before** `admin_init`.
+
+## Menu pages
+
+Register pages on `admin_menu`. <Sym id="function:add_menu_page" /> adds a top-level entry. It takes the page title, the
+menu label, the capability a user needs, a slug, the function that prints the page, an icon and a position. It
+returns the page's **hook suffix**:
+
+<Example id="admin/add_menu_page/example" />
+
+<Sym id="function:add_submenu_page" /> adds a page under any top-level entry, named by its slug. It returns `false`
+when the current user lacks the capability, and WordPress then refuses the page to that user:
+
+<Example id="admin/add_submenu_page/example" />
+
+Shortcuts put a page under WordPress's own menus: <Sym id="function:add_options_page" /> under Settings,
+`add_management_page()` under Tools, `add_theme_page()` under Appearance, and so on. Most plugin settings belong under
+Settings:
+
+<Example id="admin/add_options_page/example" />
+
+The hook suffix is built from the parent and the slug, as <Sym id="function:get_plugin_page_hookname" /> shows. Use it
+to load things only on your page: `load-{$hook_suffix}` for work before output, and a check of the suffix in
+`admin_enqueue_scripts` for your scripts and styles:
+
+<Example id="admin/get_plugin_page_hookname/example" />
+
+<Sym id="function:menu_page_url" /> gives your page's address, for links and redirects:
+
+<Example id="admin/menu_page_url/example" />
+
+<Sym id="function:remove_menu_page" /> and `remove_submenu_page()` take entries out of the menu. That only hides the
+link. A user who knows the address can still open the page, so never use it in place of a capability check:
+
+<Example id="admin/remove_menu_page/example" />
+
+## The Settings API
+
+For a page that saves options, the Settings API builds the form and checks the submission. Register the option with
+<Sym id="function:register_setting" /> (from the Options seam) and a sanitize callback, then describe the form on
+`admin_init`. <Sym id="function:add_settings_section" /> adds a titled section to a page, and
+<Sym id="function:add_settings_field" /> adds a field to a section, each with a callback that prints it. On the page,
+<Sym id="function:do_settings_sections" /> prints them all:
+
+<Example id="admin/do_settings_sections/example" />
+
+The form posts to `options.php`. Inside it, <Sym id="function:settings_fields" /> prints the hidden fields that name the
+option group and carry its nonce, which `options.php` checks before it saves anything:
+
+<Example id="admin/settings_fields/example" />
+
+Only options registered to the group are saved, so a field for an unregistered option is silently ignored.
+
+## Notices
+
+To report a result on a settings page, call <Sym id="function:add_settings_error" />, usually from the sanitize
+callback. Its type is `error`, `success`, `warning` or `info`:
+
+<Example id="admin/add_settings_error/example" />
+
+<Sym id="function:settings_errors" /> prints the messages as notices. WordPress calls it for you on pages under
+Settings; a top-level settings page must call it itself:
+
+<Example id="admin/settings_errors/example" />
+
+For any other notice, hook a named function to `admin_notices` and print it with
+<Sym id="function:wp_admin_notice" />, which builds the standard markup. Show a notice only on the screens and to the
+users it concerns: check `get_current_screen()` and a capability first, and escape the message.
+
+## Screens
+
+<Sym id="function:get_current_screen" /> returns the current <Sym id="class:WP_Screen" />, with its `id`, its `base`
+and the post type or taxonomy it is for. It returns `null` until the screen is set, so call it from `current_screen` or
+later, not on `admin_init`:
+
+<Example id="admin/get_current_screen/example" />
+
+## Screen options
+
+The Screen Options tab holds per-user choices such as items per page. Add one with
+<Sym id="function:add_screen_option" />, on your page's `load-` hook:
+
+<Example id="admin/add_screen_option/example" />
+
+When a user submits the tab, `set_screen_options()` checks its nonce, saves the value as user meta and redirects back.
+WordPress saves its own options without help. For yours, it saves the value only if
+<Sym id="filter:set_screen_option_{$option}" /> returns it, so hook that filter with a function that returns the
+cleaned value. Without it, the choice is quietly dropped. `set_screen_options()` runs early, before `admin_menu`, so add
+the filter when your plugin loads, not on your page's `load-` hook.
+
+The old `screen_options()` function is deprecated since 3.3.0; the screen's `render_per_page_options()` method replaces
+it.
+
+## Meta boxes
+
+<Sym id="function:add_meta_box" /> adds a box to an edit screen. It takes an id, a title, a callback that prints the
+box, the screen (a post type, for instance), a context (`normal`, `side` or `advanced`) and a priority. Call it on
+<Sym id="action:add_meta_boxes" />:
+
+<Example id="admin/add_meta_box/example" />
+
+<Sym id="function:do_meta_boxes" /> prints a context's boxes in order, following the order the user dragged them into
+and leaving out those they hid:
+
+<Example id="admin/do_meta_boxes/example" />
+
+<Sym id="function:remove_meta_box" /> doesn't delete the entry. It sets it to `false`, so the box stays removed even if
+it is added again later:
+
+<Example id="admin/remove_meta_box/example" />
+
+A meta box only prints fields. Saving is yours: hook <Sym id="action:save_post" />, skip autosaves, verify a nonce you
+printed in the box, check `current_user_can( 'edit_post', $post_id )`, then sanitize each value before storing it.
+[Meta boxes and custom fields](/guides/path/meta-boxes-and-custom-fields/) builds one end to end.
+
+## List tables
+
+The admin's tables of posts, users and comments are subclasses of <Sym id="class:WP_List_Table" />, which the admin
+loads on every admin screen. Its docblock in this version does not mark it private, but it was written for WordPress's
+own screens, so test a subclass against each new release. A subclass must at least define `get_columns()` and
+`prepare_items()`; the base class stops with an error if either is missing. It prints a cell with `column_default()` or
+a `column_{$name}()` method, and the whole table with `display()`. Escape every cell.
+
+WordPress's own tables are made by <Sym id="function:_get_list_table" />, which is private: it only knows WordPress's
+classes. To change those tables, use their filters rather than the classes:
+
+<Example id="admin/_get_list_table/example" />
+
+Columns come from the `manage_{$screen->id}_columns` filter, which is where a plugin adds one to an existing table:
+
+<Example id="admin/get_column_headers/example" />
+
+<Sym id="function:get_hidden_columns" /> gives the columns each user hid, stored per screen as a user option.
+
+## Handling forms and Ajax
+
+A plugin's own forms post to `admin-post.php` with a field named `action`. WordPress then fires
+<Sym id="action:admin_post_{$action}" /> for logged-in users and `admin_post_nopriv_{$action}` for visitors, and answers
+400 when nothing is hooked. The handler checks a nonce and a capability, does the work, redirects with
+`wp_safe_redirect()` and exits.
+
+Ajax requests go to `admin-ajax.php` in the same way: <Sym id="action:wp_ajax_{$action}" /> for logged-in users,
+`wp_ajax_nopriv_{$action}` for visitors. A handler checks its nonce with `check_ajax_referer()` and a capability, and
+ends with `wp_send_json_success()` or `wp_send_json_error()`. WordPress's own handlers follow the same pattern, such as
+the one that remembers which boxes a user collapsed:
+
+<Example id="admin/wp_ajax_closed_postboxes/example" />
+
+Hooking `nopriv` makes the action open to anyone. Only do it for work a visitor may do, and never let it change data on
+the strength of a nonce alone. For a new API, a REST route is often the better choice.
+[Admin notices and Ajax](/guides/path/admin-notices-and-ajax/) puts a notice and an Ajax handler together.
+
+## Plugins, from the admin
+
+The admin also holds the functions about plugins. <Sym id="function:is_plugin_active" /> tells you whether a plugin is
+active, by its main file. It is loaded in the admin only; on the front end, include `wp-admin/includes/plugin.php`
+first:
+
+<Example id="admin/is_plugin_active/example" />
+
+The Admin seam isn't ported to SpeedySpec yet, so this guide makes no promise about how the admin screens behave there.

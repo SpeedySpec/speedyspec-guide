@@ -1,0 +1,69 @@
+---
+title: Meta boxes and custom fields
+summary: Register a custom field so WordPress sanitizes it, checks who may change it and shows it to the block editor, then add a meta box that saves it safely.
+---
+
+A **custom field** is a piece of data stored with a post, as post meta: a book's rating, an event's date. Plugins
+add a field to the editor so people can fill it in. This guide does that in two steps. First it registers the field,
+so WordPress knows its type and who may change it. Then it adds a **meta box**, a panel on the edit screen, and saves
+what people type into it. It builds on [Storing your own content](/guides/path/storing-your-own-content/).
+
+## Registering the field
+
+<Sym id="function:register_post_meta" /> describes a field for one post type. Do it on `init`, for every field your
+plugin stores:
+
+<Example id="guides/meta-boxes-and-custom-fields/register-the-field" />
+
+Registration pays off in four ways:
+
+- **A type and a default.** Reading a field that was never set gave the default, `0`, instead of an empty string.
+- **Sanitizing.** The `sanitize_callback` runs whenever the field is saved, by any code. The value `4 stars` was
+  stored as `4`.
+- **Permission.** The `auth_callback` decides who may change the field through the REST API and the editor. Here,
+  whoever may edit the post.
+- **The REST API.** `show_in_rest` puts the field in the post's REST response, with its type, which is how the block
+  editor reads and saves it.
+
+Post meta is stored as strings, so `get_post_meta()` returned `'4'`. The REST API used the registered type and gave
+the number `4`. A field whose key starts with an underscore is **protected**: WordPress hides it from the classic
+Custom Fields panel. <OnSpeedySpecNote id="function:register_post_meta" />
+
+## Adding a meta box
+
+The block editor can show a registered field in a panel built with JavaScript. A meta box is the PHP way, and works
+in the classic editor and as a panel below the block editor. Add one on the `add_meta_boxes` action with
+<Sym id="function:add_meta_box" />, giving an id, a title, a callback, the post type, and a context: `normal`,
+`side` or `advanced`.
+
+<Example id="guides/meta-boxes-and-custom-fields/add-a-meta-box" />
+
+The callback prints the form. It adds a nonce with <Sym id="function:wp_nonce_field" />, and escapes the saved value
+with `esc_attr()` before putting it in the field, as
+[Keeping your plugin safe](/guides/path/keeping-your-plugin-safe/) explains.
+
+## Saving the box
+
+WordPress doesn't save a meta box for you. Hook a function to `save_post_{post_type}`, which fires each time a post
+of that type is saved, and check four things before storing anything:
+
+1. The nonce is there and valid, so the form came from your meta box.
+2. This isn't an autosave, which saves only the post's content and doesn't include your field.
+3. The person may edit this post. A nonce proves where a request came from, not who may make it.
+4. The value is sanitized: here, a whole number no higher than 5.
+
+<Example id="guides/meta-boxes-and-custom-fields/save-the-box" />
+
+The rating of 9 was saved as 5. A form with a forged nonce changed nothing, and neither did a subscriber, though
+the subscriber's nonce was real. Use `save_post_{post_type}` rather than `save_post`, so your function runs only for
+your post type. The post's own data has already been saved when it fires.
+
+## The block editor
+
+In the block editor, a meta box appears in a panel below the content, and WordPress saves it with a separate request
+after the post. That works, but a field registered with `show_in_rest` can also be edited from a sidebar panel
+written in JavaScript, which saves with the post. Either way, the field's registration does the sanitizing and the
+permission check, so register every field, whichever way people edit it.
+
+The Query seam, where post meta lives, isn't ported to SpeedySpec yet, so this guide makes no promise about how custom
+fields behave there.

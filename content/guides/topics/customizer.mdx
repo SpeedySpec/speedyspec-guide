@@ -1,0 +1,131 @@
+---
+title: Customizer
+summary: How the Customizer manager, its panels, sections, settings and controls fit together, and how changes are previewed and saved.
+---
+
+The Customizer seam is the screen at `wp-admin/customize.php`: a pane of controls on the left and a live preview of the
+site on the right. It is built from four kinds of object held by one manager: **settings** (values), **controls**
+(the fields that edit them), **sections** and **panels** (the groups that hold the controls). What trips people up is
+that a setting and its control are separate objects, and that nothing is saved while someone is previewing: changes
+live in a **changeset** until they are published. This guide explains the pieces and the path a value takes from the
+pane to the database.
+
+## When the Customizer loads
+
+The manager is only loaded on requests that need it. <Sym id="function:_wp_customize_include" />, a private function
+hooked to `plugins_loaded`, creates it for the Customizer screen, its preview, and requests that name a changeset.
+On any other request it does nothing, and the global `$wp_customize` is not set:
+
+<Example id="theme/_wp_customize_include/example" />
+
+<Sym id="function:is_customize_preview" /> tells a theme whether the current page is the preview, which is the time to
+add the hints and markup that only help someone customizing:
+
+<Example id="theme/is_customize_preview/example" />
+
+<Sym id="function:wp_customize_url" /> builds the link to the screen, optionally to preview another theme:
+
+<Example id="theme/wp_customize_url/example" />
+
+## Registering settings, controls and sections
+
+Everything is registered on the <Sym id="action:customize_register" /> action, which receives the
+<Sym id="class:WP_Customize_Manager" />. Hook a named, prefixed function to it and call:
+
+- <Sym id="method:WP_Customize_Manager::add_panel" /> for a panel, an optional group of sections;
+- <Sym id="method:WP_Customize_Manager::add_section" /> for a section, in a panel or at the top level;
+- <Sym id="method:WP_Customize_Manager::add_setting" /> for a value to edit;
+- <Sym id="method:WP_Customize_Manager::add_control" /> for the field, naming its section and, by default, the setting
+  with the same id.
+
+Each is stored by id, and `get_`, `remove_` and the plural readers find them again. WordPress registers its own
+sections the same way, such as Site Identity (`title_tagline`) and Colors:
+
+<Example id="customizer/class--WP_Customize_Manager--add_setting/register" />
+
+## Settings
+
+A <Sym id="class:WP_Customize_Setting" /> says where its value lives and who may change it. Its `type` is `theme_mod`
+by default, so the value is stored with the active theme, or `option` for a site option. Its `capability` is
+`edit_theme_options` by default. Its `transport` is `refresh`, which reloads the preview on each change, or
+`postMessage`, which leaves the update to your own preview script. It also carries a `default`:
+
+<Example id="customizer/class--WP_Customize_Setting--value/setting" />
+
+The example shows the setting's `preview()` at work. While previewing, reading the option returns the posted value
+though nothing is saved; `save()` is what stores it.
+
+Values stored as theme mods are read back with <Sym id="function:get_theme_mod" />, with a default for when nothing is
+saved, and written outside the Customizer with <Sym id="function:set_theme_mod" />:
+
+<Example id="theme/get_theme_mod/example" />
+
+<Example id="theme/set_theme_mod/example" />
+
+## Sanitizing and validating
+
+Give every setting a `sanitize_callback`. Without one, a setting stores whatever the pane sends. WordPress hooks the
+callback to `customize_sanitize_{$id}`; a `validate_callback` goes on `customize_validate_{$id}` and adds errors to a
+`WP_Error` to reject a value with a message the pane shows.
+
+<Sym id="method:WP_Customize_Manager::post_value" /> reads a setting's value from the customized state, validated and
+sanitized. If the value fails, it returns the default you pass instead. `validate_setting_values()` reports each
+setting's validity, and a sanitize callback that returns `null` counts as invalid:
+
+<Example id="customizer/class--WP_Customize_Manager--post_value/values" />
+
+The capability check is the setting's own: `check_capabilities()` tests its `capability` and any theme support it
+requires before it saves anything. Choose a capability that matches what the setting changes.
+
+## Controls, sections and panels
+
+A <Sym id="class:WP_Customize_Control" /> is the field. Its `type` picks the markup: `text`, `checkbox`, `radio`,
+`select`, `textarea`, `dropdown-pages` and others. Its `choices` fill the radio buttons and select options. Subclasses
+such as `WP_Customize_Color_Control` and `WP_Customize_Image_Control` give richer fields:
+
+<Example id="customizer/class--WP_Customize_Control--render_content/control" />
+
+A <Sym id="class:WP_Customize_Section" /> groups controls under a title, with a `priority` for its place and a
+`capability`. Before the pane is drawn, the manager sorts everything and keeps only what the user may see. The pane
+then hides a section with no controls:
+
+<Example id="customizer/class--WP_Customize_Section--active/section" />
+
+## Changesets
+
+The customized state is kept in a **changeset**: a post of type `customize_changeset`, named by a UUID. While someone
+works, their values are saved to it (an auto-draft at first, then a draft), and the live site is untouched.
+<Sym id="method:WP_Customize_Manager::save_changeset_post" /> writes to it; with the status `publish` it applies each
+setting's value for real and moves the changeset to the trash:
+
+<Example id="customizer/class--WP_Customize_Manager--changeset_uuid/changeset" />
+
+A changeset can also be scheduled. Publishing happens through <Sym id="function:_wp_customize_publish_changeset" />,
+hooked to `transition_post_status`, so a scheduled changeset applies when its post is published:
+
+<Example id="theme/_wp_customize_publish_changeset/example" />
+
+The <Sym id="action:customize_save_after" /> action fires once the settings are saved.
+
+## Updating the preview without a reload
+
+With `refresh`, every change reloads the whole preview. For faster feedback, a setting can use `postMessage` with
+**selective refresh**: a partial names a CSS selector and its settings, and the preview asks the server for that part's
+new markup alone, through its `render_callback`. Register partials with
+<Sym id="method:WP_Customize_Selective_Refresh::add_partial" />, on `$wp_customize->selective_refresh`:
+
+<Example id="customizer/class--WP_Customize_Selective_Refresh--add_partial/partial" />
+
+The render callback prints into the live page, so it escapes its output like any template. Scripts for the pane go on
+<Sym id="action:customize_controls_enqueue_scripts" />; scripts for the preview go on
+<Sym id="action:customize_preview_init" />.
+
+## The Customizer and block themes
+
+Block themes edit their look in the Site Editor instead. WordPress hides the admin bar's Customize link for a block
+theme unless something hooks `customize_register`, and for users without the `customize` capability:
+
+<Example id="admin-bar/wp_admin_bar_customize_menu/no_cap" />
+
+The Customizer seam isn't ported to SpeedySpec yet, so this guide makes no promise about how the Customizer behaves
+there.

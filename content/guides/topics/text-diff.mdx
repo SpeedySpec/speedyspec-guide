@@ -1,0 +1,129 @@
+---
+title: Text diff
+summary: How Text_Diff compares two lists of lines, what its edits hold, and how the renderers turn them into the tables on the revisions screen.
+---
+
+The Text diff seam compares two texts and shows what changed. It is the PEAR Text_Diff library, bundled in
+`wp-includes/Text/`, plus two WordPress renderers. The revisions screen uses it, through
+<Sym id="function:wp_text_diff" />, to show how a post changed. What trips people up is that it compares **lists of
+lines**, not strings, and that the output of `wp_text_diff()` is HTML whose titles you must escape yourself. This
+guide follows a comparison from the lines in to the HTML out.
+
+## Comparing lines
+
+<Sym id="class:Text_Diff" /> takes an engine name and the two lists of lines. The result is a list of **edits**:
+lines copied unchanged, deleted, added or changed:
+
+<Example id="text-diff/class--Text_Diff/compare-lines" />
+
+Split a string into lines yourself before you compare it. `wp_text_diff()` does that with `explode()` on line breaks,
+after `normalize_whitespace()` has made the line endings and spacing consistent. Without that step, a text saved on
+Windows differs on every line from the same text saved elsewhere.
+
+The edits hold everything needed to rebuild both texts, so the diff can be checked and turned around.
+`getOriginal()` and `getFinal()` rebuild each side, and `reverse()` gives the diff from the final text back to the
+original:
+
+<Example id="text-diff/class--Text_Diff--getOriginal/rebuilds" />
+
+<Example id="text-diff/class--Text_Diff--reverse/swaps-sides" />
+
+A few methods summarize a diff. `isEmpty()` says whether the texts are the same, and `countAddedLines()` and
+`countDeletedLines()` count the lines on each side. A changed line counts on both:
+
+<Example id="text-diff/class--Text_Diff--isEmpty/same-lines" />
+
+<Example id="text-diff/class--Text_Diff--countAddedLines/counts" />
+
+## The edits
+
+Each edit is a <Sym id="class:Text_Diff_Op" />, with the lines of the original side in `orig` and of the final side
+in `final`. A side the edit doesn't have is `false`, and counts as 0 lines:
+
+<Example id="text-diff/class--Text_Diff_Op/line-counts" />
+
+- <Sym id="class:Text_Diff_Op_copy" /> has the same lines on both sides.
+- <Sym id="class:Text_Diff_Op_delete" /> has only an original side. Reversed, it is an addition.
+- <Sym id="class:Text_Diff_Op_add" /> has only a final side. Reversed, it is a deletion.
+- <Sym id="class:Text_Diff_Op_change" /> has both. Reversed, the sides swap.
+
+<Example id="text-diff/class--Text_Diff_Op_copy/both-sides" />
+
+<Example id="text-diff/class--Text_Diff_Op_change/reverse" />
+
+## Engines
+
+The engine does the comparing. `auto`, or calling `Text_Diff` with the two lists and no engine name, picks `xdiff`
+when that PHP extension is loaded and `native` otherwise:
+
+<Example id="text-diff/class--Text_Diff/engine-auto" />
+
+<Sym id="class:Text_Diff_Engine_native" /> is pure PHP. It finds the longest run of lines both texts share, in order,
+and reports the rest as edits:
+
+<Example id="text-diff/class--Text_Diff_Engine_native/diff" />
+
+<Sym id="class:Text_Diff_Engine_string" /> doesn't compare at all. It reads the edits out of a unified diff you already
+have:
+
+<Example id="text-diff/class--Text_Diff_Engine_string/unified" />
+
+<Sym id="class:Text_Diff_Engine_shell" /> writes both texts to temporary files and runs the system `diff` program with
+`shell_exec()`. Many hosts disable `shell_exec()`, so leave this engine alone and let `auto` choose.
+
+To compare lines by some other measure, such as ignoring case, <Sym id="class:Text_MappedDiff" /> compares mapped
+copies of the lines but reports the originals:
+
+<Example id="text-diff/class--Text_MappedDiff/mapped" />
+
+## Rendering
+
+A renderer turns the edits into text. <Sym id="class:Text_Diff_Renderer" />, the base class, prints the classic
+`diff` format:
+
+<Example id="text-diff/class--Text_Diff_Renderer/normal-diff" />
+
+Its `leading_context_lines` and `trailing_context_lines` settings keep unchanged lines around each change, so a reader
+can see where it is:
+
+<Example id="text-diff/class--Text_Diff_Renderer/context-lines" />
+
+<Sym id="class:Text_Diff_Renderer_inline" /> marks the changes inside a line with `<ins>` and `<del>`, word by word.
+WordPress's <Sym id="class:WP_Text_Diff_Renderer_inline" /> splits at every character that isn't a word character,
+so punctuation is a token of its own:
+
+<Example id="text-diff/class--Text_Diff_Renderer_inline/words" />
+
+<Example id="text-diff/class--WP_Text_Diff_Renderer_inline/punctuation" />
+
+## The revisions table
+
+<Sym id="class:WP_Text_Diff_Renderer_Table" /> is the renderer `wp_text_diff()` uses. It prints table rows, with
+removed lines on the left and added ones on the right, and screen reader text that says which is which:
+
+<Example id="text-diff/class--WP_Text_Diff_Renderer_Table/split-view" />
+
+With `show_split_view` set to `false`, each row has one cell instead:
+
+<Example id="text-diff/class--WP_Text_Diff_Renderer_Table/one-column" />
+
+For changed lines, it pairs each old line with the most similar new one and shows the word changes inside them. When
+a pair is too different, past its threshold, it shows the two lines whole instead, because word-level marks on
+unrelated lines are only noise.
+
+`wp_text_diff()` wraps those rows in a `table` with the class `diff`, and adds an optional caption and column
+headings from its `title`, `title_left` and `title_right` arguments. It returns an empty string when the texts are
+the same.
+
+## Escaping and the filter
+
+The table renderer encodes each line with `htmlspecialchars()`, then passes it through the
+<Sym id="filter:process_text_diff_html" /> filter, with the line before encoding and a context of `added`, `deleted`
+or `unchanged`. A callback that undoes the encoding to show formatting must allow only safe markup, with `wp_kses()`
+or a function like it, because the lines can hold anything a user typed.
+
+The titles are different: `wp_text_diff()` prints them as given, unescaped. Escape them with `esc_html()` before you
+pass them in.
+
+The Text diff seam isn't ported to SpeedySpec yet, so this guide makes no promise about how text comparison behaves
+there.

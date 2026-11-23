@@ -1,0 +1,153 @@
+---
+title: Walkers
+summary: How the Walker class turns a flat list of items with parents into nested output, and how core walkers use it.
+---
+
+The Walkers seam is how WordPress turns a flat list into a tree. Pages, categories, comments and menu items all come
+out of the database as a plain list, each item naming its parent. A walker sorts them into levels and calls four
+methods as it goes, and those methods write the HTML. Menus, page lists, category lists and comment threads are all
+built this way. What trips people up is the depth argument, which counts differently from what you might expect, and
+the fact that a walker's methods write into a string passed by reference rather than returning anything.
+
+## The four methods
+
+<Sym id="class:Walker" /> itself writes nothing. Its four output methods are empty, and a walker for a real job
+overrides them:
+
+- `start_lvl()` opens a level of children, such as a `<ul>`.
+- `start_el()` opens one item.
+- `end_el()` closes the item.
+- `end_lvl()` closes the level.
+
+<Example id="walker/class--Walker--start_el/base" />
+
+Each method takes `$output` by reference and appends to it. A walker also declares `$db_fields`, which names the
+item's ID field and its parent field. The page walkers use `ID` and `post_parent`, the category walkers `term_id` and
+`parent`, the comment walker `comment_ID` and `comment_parent`, and the menu walker `db_id` and `menu_item_parent`.
+That is the only thing a walker knows about the shape of its items, so the same base class works for all of them.
+
+The examples below use a small walker that writes each item's ID, a `+` when it has children, and brackets around
+each level of children.
+
+## Walking a tree
+
+<Sym id="method:Walker::walk" /> takes the items and a maximum depth, and returns the output. It doesn't care what
+order the items come in: it first splits them into top-level items (those with an empty parent) and children grouped
+by parent, then walks down from each top-level item.
+
+The depth argument is the part to learn. `0` means every level. A positive number is how many levels to show, so `1`
+is the top level only. `-1` shows every item flat, at one level, ignoring parents. Anything below `-1` is treated as
+invalid and gives an empty string:
+
+<Example id="walker/class--Walker--walk/depths" />
+
+Two edge cases come from real lists. When no item has an empty parent, such as the replies under one comment, the
+walker takes the items whose parent is not in the list as the top level:
+
+<Example id="walker/class--Walker--walk/no_root" />
+
+And with depth `0`, items whose parent is missing from the list aren't dropped. They are written after the tree, at
+the top level:
+
+<Example id="walker/class--Walker--walk/orphans" />
+
+## What happens per item
+
+`walk()` hands each item to <Sym id="method:Walker::display_element" />. It sets the walker's `has_children`
+property, calls `start_el()`, then recurses into the item's children (calling `start_lvl()` before the first and
+`end_lvl()` after the last) while the depth allows, and finally calls `end_el()`. It removes the children it has
+shown from the list, so they aren't written again as orphans.
+
+<Example id="walker/class--Walker--display_element/one" />
+
+`display_element()` is public, but it is meant to be called by `walk()`. Override it only when you need to change
+how children are visited, as the comment walker does.
+
+Any extra arguments you pass to `walk()` are passed on to all four methods. The template functions pass their parsed
+arguments this way, which is why `start_el()` in the core walkers reads options such as `item_spacing` or
+`show_count` from `$args`.
+
+## Paging
+
+<Sym id="method:Walker::paged_walk" /> walks one page of top-level items, each with all its children. It also sets
+the walker's `max_pages` property from the number of top-level items, which is how a theme knows how many pages of
+comments there are. A page number below `1` turns paging off:
+
+<Example id="walker/class--Walker--paged_walk/pages" />
+
+In its first extra argument, `reverse_top_level` and `reverse_children` reverse the order. With depth `-1`, the
+items are paged flat:
+
+<Example id="walker/class--Walker--paged_walk/reverse" />
+
+<Sym id="method:Walker::get_number_of_root_elements" /> counts the top-level items, and
+<Sym id="method:Walker::unset_children" /> removes an item's descendants from a list of children:
+
+<Example id="walker/class--Walker--get_number_of_root_elements/count" />
+
+## Pages and categories
+
+<Sym id="class:Walker_Page" /> is what <Sym id="function:wp_list_pages" /> uses. It marks the current page and its
+ancestors with classes, and adds `aria-current` to the current link:
+
+<Example id="walker/class--Walker_Page--start_el/list" />
+
+The `page_css_class` and `page_menu_link_attributes` filters change each item's classes and link attributes.
+<Sym id="class:Walker_PageDropdown" /> writes `<option>` elements instead, indented by depth, and passes each title
+through the `list_pages` filter:
+
+<Example id="walker/class--Walker_PageDropdown--start_el/options" />
+
+<Sym id="class:Walker_Category" /> and <Sym id="class:Walker_CategoryDropdown" /> do the same for terms. The
+`list_cats` filter changes each name, and `category_list_link_attributes` and `category_css_class` change the link
+and the item:
+
+<Example id="walker/class--Walker_Category--start_el/list" />
+
+## Comments
+
+<Sym id="class:Walker_Comment" /> is what <Sym id="function:wp_list_comments" /> uses, through `paged_walk()`.
+Before each comment it sets the `comment_depth` and `comment` globals, which the comment template tags read. When the
+arguments include a `callback`, that function writes each comment instead of the built-in markup. Pass a named
+function there, not a closure, so other code can tell what it is:
+
+<Example id="walker/class--Walker_Comment--start_el/callback" />
+
+The comment walker overrides `display_element()` for one reason: replies deeper than the maximum depth are shown at
+the deepest allowed level rather than left out.
+
+<Example id="walker/class--Walker_Comment--display_element/flatten" />
+
+It also strips the tags from a comment that is awaiting moderation, unless the visitor is the one who wrote it:
+
+<Example id="walker/class--Walker_Comment--filter_comment_text/pending" />
+
+## Menus
+
+<Sym id="class:Walker_Nav_Menu" /> is what <Sym id="function:wp_nav_menu" /> uses, unless its `walker` argument
+names another. Each item becomes an `<li>` with an ID and classes, and sub-menus go in `ul.sub-menu`:
+
+<Example id="walker/class--Walker_Nav_Menu--start_el/menu" />
+
+Almost every part of an item passes through a filter: `nav_menu_item_args`, `nav_menu_css_class`,
+`nav_menu_item_id`, `nav_menu_item_attributes`, `nav_menu_item_title`, `nav_menu_link_attributes` and, for the whole
+item, `walker_nav_menu_start_el`. Sub-menus have `nav_menu_submenu_css_class` and `nav_menu_submenu_attributes`:
+
+<Example id="walker/class--Walker_Nav_Menu--start_el/filters" />
+
+Attributes are escaped when they are written: `href` with `esc_url()`, the rest with `esc_attr()`. Empty and `false`
+values, and anything that isn't a scalar, are left out:
+
+<Example id="walker/class--Walker_Nav_Menu--build_atts/atts" />
+
+## Writing your own
+
+Most changes need a filter, not a walker. Adding a class, an attribute or an icon to a menu item is one filter on the
+default walker, and it keeps working with every theme. Write a walker when the structure itself has to change.
+
+When you do, extend the closest core walker rather than `Walker`, and override only the methods you need. Keep the
+method signatures exactly as the parent declares them, including `&$output`. Escape what you write: the core walkers
+do, and a custom `start_el()` that echoes a title or URL raw is a cross-site scripting hole. Pass an instance through
+the template function's `walker` argument.
+
+The Walkers seam isn't ported to SpeedySpec yet, so this guide makes no promise about how walkers behave there.

@@ -1,0 +1,127 @@
+---
+title: XML-RPC
+summary: How xmlrpc.php serves method calls through IXR and wp_xmlrpc_server, how logins and the enable switch work, and how plugins add or remove methods.
+---
+
+The XML-RPC seam is WordPress's oldest remote API. A client posts an XML `methodCall` to `xmlrpc.php`, WordPress
+runs the named method, and it answers with a `methodResponse` or a fault. It is built from two layers: IXR, a small
+general XML-RPC library, and <Sym id="class:wp_xmlrpc_server" />, which adds WordPress's own methods on top. What
+trips people up is the switch to turn it off, which doesn't turn all of it off, and the fact that every call carries
+a username and password. For new remote features, the REST API is the better choice: see
+[Adding a REST endpoint](/guides/path/adding-a-rest-endpoint/).
+
+## Values on the wire
+
+XML-RPC has a handful of types, and <Sym id="class:IXR_Value" /> maps PHP values onto them. A list numbered from 0
+becomes an `array`, any keyed array or object a `struct`, and dates and binary data need their own wrapper objects:
+
+<Example id="xmlrpc/class--IXR_Value--calculateType/types" />
+
+Strings are escaped as they are written out, and arrays and structs nest:
+
+<Example id="xmlrpc/class--IXR_Value--getXml/xml" />
+
+<Sym id="class:IXR_Date" /> holds an ISO 8601 date and <Sym id="class:IXR_Base64" /> holds binary data, such as an
+uploaded file:
+
+<Example id="xmlrpc/class--IXR_Date--parseIso/iso" />
+
+<Example id="xmlrpc/class--IXR_Base64--getXml/xml" />
+
+## Parsing a request
+
+<Sym id="class:IXR_Message" /> parses the incoming XML into a method name and parameters. It reads the message in
+chunks, whose size the `xmlrpc_chunk_parsing_size` filter sets:
+
+<Example id="xmlrpc/class--IXR_Message--parse/call" />
+
+Because the body comes from anyone on the internet, the parser is strict. It refuses a `DOCTYPE`, a root element
+other than `methodCall`, `methodResponse` or `fault`, malformed XML, and a message with more elements than
+<Sym id="filter:xmlrpc_element_limit" /> allows. Those checks protect the server from oversized and entity-laden
+payloads:
+
+<Example id="xmlrpc/class--IXR_Message--parse/refused" />
+
+## The server
+
+`xmlrpc.php` defines `XMLRPC_REQUEST`, loads WordPress, creates the server (the `wp_xmlrpc_server_class` filter can
+swap the class), and calls `serve_request()`. <Sym id="class:IXR_Server" /> then parses the request, calls the
+method and prints the response, and the request ends there:
+
+<Example id="xmlrpc/class--IXR_Server--serve/serve" />
+
+The server keeps a map of method names to callbacks. A callback is a function name, an object and method pair, or
+`this:method` for a method on the server itself. A method that takes one parameter receives it alone, not in an
+array. An unknown name, or a callback that doesn't exist, is answered with a fault:
+
+<Example id="xmlrpc/class--IXR_Server--call/calls" />
+
+A closure isn't accepted. The server checks a string callback with `function_exists()`, so a closure stops the
+request with a `TypeError`. That is one more reason to use a named, prefixed function:
+
+<Example id="xmlrpc/class--IXR_Server--call/closure" />
+
+Every server also has the `system.*` methods. `system.multicall` runs several calls in one request, and refuses to
+call itself:
+
+<Example id="xmlrpc/class--IXR_Server--multiCall/multi" />
+
+## WordPress's methods
+
+`wp_xmlrpc_server` fills the map with the `wp.*` methods, the older `blogger.*`, `metaWeblog.*` and `mt.*` APIs that
+desktop and mobile clients once used, `pingback.*`, and two `demo.*` methods. The <Sym id="filter:xmlrpc_methods" />
+filter receives the whole map, so a plugin can add a method, replace one, or remove one:
+
+<Example id="xmlrpc/class--wp_xmlrpc_server--__construct/methods" />
+
+Removing methods is the precise way to close part of the API. WordPress itself removes `pingback.ping` this way on
+sites whose environment type isn't production.
+
+The `demo.*` methods are a small model of how a method checks its arguments and answers with an error:
+
+<Example id="xmlrpc/class--wp_xmlrpc_server--sayHello/demo" />
+
+## Logging in
+
+XML-RPC has no sessions or cookies. Each method that acts for a user takes a username and password among its
+arguments and calls <Sym id="method:wp_xmlrpc_server::login" />, which checks them with `wp_authenticate()` and sets
+the current user. Because the request counts as an API request, application passwords work here as they do for the
+REST API. A failed login is a 403 fault, which <Sym id="filter:xmlrpc_login_error" /> can change. After one failure,
+every later login on the same server object fails too, which blunts attempts to guess many passwords inside one
+`system.multicall`:
+
+<Example id="xmlrpc/class--wp_xmlrpc_server--login/refused" />
+
+So without valid credentials, each method that needs a user answers 403, and those that count their arguments
+first answer 400:
+
+<Example id="xmlrpc/class--wp_xmlrpc_server--wp_getPosts/sweep" />
+
+WordPress's own methods follow the same steps, and a method you add should too: slash the arguments with
+<Sym id="method:wp_xmlrpc_server::escape" />, log in, check the user's capability for the action, and only then do
+the work. The <Sym id="action:xmlrpc_call" /> action fires after the login, with the method name.
+
+## Turning it off
+
+The <Sym id="filter:xmlrpc_enabled" /> filter is the switch most people reach for, and its name misleads. Returning
+`false` makes every login fail with a 405 fault, so it turns off the methods that need a user. It doesn't stop
+pingbacks or any other method that doesn't log in:
+
+<Example id="xmlrpc/class--wp_xmlrpc_server--set_is_enabled/disabled" />
+
+To stop pingbacks too, remove their methods with `xmlrpc_methods`. To refuse the endpoint entirely, block
+`xmlrpc.php` at the web server, which also saves loading WordPress for each request.
+
+## Calling another site
+
+<Sym id="class:IXR_Client" /> sends a call to another server over a raw socket and reports failures as faults:
+
+<Example id="xmlrpc/class--IXR_Client--query/refused" />
+
+In a plugin, prefer <Sym id="class:WP_HTTP_IXR_Client" />. It sends the same request through WordPress's HTTP API,
+with `wp_safe_remote_post()`, so proxies, timeouts and the safety checks on the target address all apply:
+
+<Example id="requests/class--WP_HTTP_IXR_Client--__construct/ixr" />
+
+The XML-RPC seam isn't ported to SpeedySpec yet, so this guide makes no promise about how XML-RPC requests behave
+there.

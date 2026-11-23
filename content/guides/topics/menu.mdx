@@ -1,0 +1,152 @@
+---
+title: Navigation menus
+summary: How menu locations, menus and menu items are registered and stored, how items are read back, and what keeps them tidy.
+---
+
+The Navigation menus seam holds the classic menus a site owner builds under Appearance, Menus. Three things are
+easy to mix up: a **location** is a slot the theme offers, such as "Primary"; a **menu** is a named list the owner
+makes; a **menu item** is one link in it. None of them has its own table. Menus are terms, items are posts, and the
+assignments of menus to locations are a theme mod. This guide explains how those pieces fit, from the functions a
+theme calls to the hooks that keep items in step with the content they point at. Printing a menu is
+<Sym id="function:wp_nav_menu" />'s job, covered by the theme seam.
+
+## Locations
+
+A theme declares its locations with <Sym id="function:register_nav_menus" />, a slug and a description each, usually on
+`after_setup_theme`. The call also turns on the `menus` theme support, which shows the Menus screen. Location slugs
+must be strings; a numeric key is reported as a mistake:
+
+<Example id="menu/register_nav_menus/register" />
+
+<Sym id="function:register_nav_menu" /> registers one location, and registering a slug again replaces its
+description. <Sym id="function:unregister_nav_menu" /> removes one, and when the last is gone it also removes the
+`menus` support:
+
+<Example id="menu/unregister_nav_menu/remove" />
+
+Locations live only in memory, in the global <Sym id="global:_wp_registered_nav_menus" />, for the current request.
+Which menu sits in which location is saved, in the theme mod `nav_menu_locations`.
+<Sym id="function:get_nav_menu_locations" /> reads it, as location slugs mapped to menu IDs:
+
+<Example id="menu/get_nav_menu_locations/locations" />
+
+Because it is a theme mod, the assignments belong to the active theme. Switching themes loses them, unless they can be
+carried over (see below).
+
+## Asking about a location
+
+Before printing a menu, a theme asks <Sym id="function:has_nav_menu" /> whether the location has one. It is `true` only
+for a registered location with a menu assigned, and the <Sym id="filter:has_nav_menu" /> filter can change the answer:
+
+<Example id="menu/has_nav_menu/assigned" />
+
+<Sym id="function:wp_get_nav_menu_name" /> gives the name of the menu at a location, or an empty string. It is useful
+as a heading or an `aria-label`; escape it when you print it:
+
+<Example id="menu/wp_get_nav_menu_name/name" />
+
+## Menus are terms
+
+A menu is a term in the `nav_menu` taxonomy. <Sym id="function:wp_create_nav_menu" /> makes one from a name and returns
+its ID. Two menus can't share a name:
+
+<Example id="menu/wp_create_nav_menu/create" />
+
+<Sym id="function:wp_update_nav_menu_object" /> renames a menu or changes its description, and creates one when given
+the ID `0`. The <Sym id="action:wp_create_nav_menu" /> and <Sym id="action:wp_update_nav_menu" /> actions fire after:
+
+<Example id="menu/wp_update_nav_menu_object/update" />
+
+To find a menu, <Sym id="function:wp_get_nav_menu_object" /> takes an ID, a slug, a name or a term, and tries them in
+that order. It returns `false` when nothing matches. <Sym id="function:wp_get_nav_menus" /> lists every menu by name,
+empty ones too:
+
+<Example id="menu/wp_get_nav_menu_object/find" />
+
+<Example id="menu/wp_get_nav_menus/list" />
+
+## Items are posts
+
+A menu item is a post of type `nav_menu_item`, joined to its menu's term. What it points at is kept in post meta:
+`_menu_item_type` (`custom`, `post_type`, `post_type_archive` or `taxonomy`), `_menu_item_object`,
+`_menu_item_object_id`, `_menu_item_url`, its parent item, its classes and its target.
+
+<Sym id="function:wp_update_nav_menu_item" /> saves one. Pass `0` as the item ID to add, or an item's ID to update. A
+new item is a draft unless you pass `'menu-item-status' => 'publish'`, and without a position it goes after the last
+item. Classes are cleaned with `sanitize_html_class()` and the URL with `sanitize_url()`:
+
+<Example id="menu/wp_update_nav_menu_item/custom" />
+
+For an item that points at a page or a term, the item stores no URL of its own. When its title matches the page's, the
+title is stored empty, so the link follows the page when it is renamed:
+
+<Example id="menu/wp_update_nav_menu_item/page" />
+
+It refuses an ID that isn't a menu item, and a menu that doesn't exist, with a `WP_Error`. A menu ID of `0` saves an
+**orphaned** item, one in no menu yet, which is what the Menus screen does while you are still arranging:
+
+<Example id="menu/wp_update_nav_menu_item/errors" />
+
+The function checks no capability. Code that saves items from a form must check `edit_theme_options` and a nonce
+first, just as WordPress's own Menus screen does.
+
+## Reading items back
+
+<Sym id="function:wp_get_nav_menu_items" /> returns a menu's published items in menu order, numbered from 1. It returns
+`false` for a menu that doesn't exist. Pass a `post_status` to include drafts:
+
+<Example id="menu/wp_get_nav_menu_items/items" />
+
+Each item has been through <Sym id="function:wp_setup_nav_menu_item" />, which adds the fields a walker needs: `db_id`,
+`object`, `type`, `type_label`, `title`, `url`, `target`, `classes` and more. For a page, the title and URL come from
+the page itself. The <Sym id="filter:wp_setup_nav_menu_item" /> filter can change the result, and
+<Sym id="filter:pre_wp_setup_nav_menu_item" /> can answer before any of it runs:
+
+<Example id="menu/wp_setup_nav_menu_item/setup" />
+
+An item whose page or term no longer exists is marked invalid. Outside the admin, `wp_get_nav_menu_items()` drops it,
+using the private <Sym id="function:_is_valid_nav_menu_item" />:
+
+<Example id="menu/_is_valid_nav_menu_item/valid" />
+
+The <Sym id="filter:wp_get_nav_menu_items" /> filter gets the final list, and is the place to add or remove items as
+the menu is read.
+
+## Keeping items in step
+
+WordPress hooks a few private functions so menus follow the content:
+
+- When a post is deleted, <Sym id="function:_wp_delete_post_menu_item" /> deletes the items that point at it.
+  `_wp_delete_tax_menu_item()` does the same for terms.
+- When a top-level page is first published, <Sym id="function:_wp_auto_add_pages_to_menu" /> adds it to each menu the
+  owner marked "Automatically add new top-level pages to this menu".
+
+<Example id="menu/_wp_delete_post_menu_item/post" />
+
+<Example id="menu/_wp_auto_add_pages_to_menu/auto" />
+
+Deleting a menu with <Sym id="function:wp_delete_nav_menu" /> deletes its items and its term, and takes it out of every
+location:
+
+<Example id="menu/wp_delete_nav_menu/delete" />
+
+## Switching themes
+
+Locations belong to a theme, so after a switch WordPress tries to carry the old assignments over.
+<Sym id="function:wp_map_nav_menu_locations" /> keeps a menu where the slug is the same, pairs a lone old location with
+a lone new one, and otherwise matches common names such as `primary`, `main` and `header`, or `secondary` and
+`footer`:
+
+<Example id="menu/wp_map_nav_menu_locations/map" />
+
+Theme authors who reuse common location slugs make that step work for their users.
+
+## Block themes
+
+Block themes use the Navigation block and its `wp_navigation` posts instead. When a site has none,
+`WP_Navigation_Fallback` builds one, first from a classic menu if there is one: the menu at the `primary` location,
+else a menu with the slug `primary`, else the newest:
+
+<Example id="menu/class--WP_Navigation_Fallback--get_fallback_classic_menu/choice" />
+
+The Navigation menus seam isn't ported to SpeedySpec yet, so this guide makes no promise about how menus behave there.

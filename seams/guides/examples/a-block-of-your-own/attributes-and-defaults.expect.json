@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'all given' => '<p class=\"wp-block-my-plugin-book-card\">Emma: 4</p>',\n  'none given' => '<p class=\"wp-block-my-plugin-book-card\">Untitled: 3</p>',\n  'wrong type' => '<p class=\"wp-block-my-plugin-book-card\">Ivanhoe: 3</p>',\n  'markup escaped' => '<p class=\"wp-block-my-plugin-book-card\">&lt;script&gt;x&lt;/script&gt;: 3</p>',\n)",
+ "error": null
+}

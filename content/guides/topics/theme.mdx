@@ -1,0 +1,159 @@
+---
+title: Themes and templates
+summary: What theme and plugin authors use most, from theme files and features to theme mods, the head and template tags.
+---
+
+The Themes and templates seam is the largest in WordPress: it loads the active theme, finds its template files,
+reads `theme.json`, and provides the hundreds of template tags themes call, from `the_title()` to `wp_nav_menu()`.
+This guide covers the parts theme and plugin authors use most. What trips people up is that the active theme can be
+two themes at once, a child and its parent, and that much of a theme's job is to call the right hooks so WordPress
+and plugins can do theirs. Four themes guides go deeper:
+[How WordPress finds a theme's files](/guides/themes/how-wordpress-finds-theme-files/),
+[The template hierarchy](/guides/themes/the-template-hierarchy/),
+[theme.json, layer by layer](/guides/themes/theme-json-layer-by-layer/) and
+[Blocks in themes](/guides/themes/blocks-in-themes/).
+
+## The active theme
+
+WordPress keeps two names for the active theme. The **stylesheet** is the theme that is switched on. The
+**template** is the theme it builds on: its parent, or itself when it has none. So
+<Sym id="function:get_stylesheet_directory" /> is the child theme's folder and
+<Sym id="function:get_template_directory" /> the parent's. Mixing them up is the most common child theme bug.
+
+To reach a theme file, use <Sym id="function:get_theme_file_uri" /> or <Sym id="function:get_theme_file_path" />.
+They look in the child theme first and fall back to the parent, so a child can replace one file without copying the
+rest:
+
+<Example id="theme/get_theme_file_uri/example" />
+
+<Sym id="function:wp_get_theme" /> gives a <Sym id="class:WP_Theme" /> object for the active theme, or one named by
+its folder. It reads the headers of the theme's `style.css`. It always returns an object, even for a theme that
+doesn't exist, so check `exists()` or `errors()` before trusting it:
+
+<Example id="theme/wp_get_theme/example" />
+
+<Sym id="function:wp_is_block_theme" /> tells you whether the active theme is a block theme, one with a
+`templates/index.html`. Block themes build their pages from block templates and `theme.json` instead of PHP
+templates, which changes which of the functions below matter:
+
+<Example id="theme/wp_is_block_theme/example" />
+
+## Finding and loading templates
+
+For a classic theme, WordPress works out which template to use from the request. It builds a list of candidate file
+names, such as `single-post.php`, `single.php` and `index.php`, and loads the first that exists. The template
+hierarchy guide explains the list, and the `template_include` filter that has the last word.
+
+Underneath, <Sym id="function:locate_template" /> looks for each name in the child theme, then the parent, then
+WordPress's own `theme-compat` folder. Inside a template, <Sym id="function:get_template_part" /> loads a reusable
+part, trying `slug-name.php` before `slug.php`, and passes it an `$args` array. It returns `false` when no file was
+found, but its action still fires first:
+
+<Example id="theme/get_template_part/example" />
+
+Pass data to a part through `$args` rather than globals. `get_header()`, `get_footer()` and `get_sidebar()` are
+the same idea for the three classic parts.
+
+## Declaring features
+
+A theme tells WordPress what it supports with <Sym id="function:add_theme_support" />, called from a named function
+on `after_setup_theme`. Features include `post-thumbnails`, `title-tag`, `custom-logo`, `html5` and
+`align-wide`. Calling it twice for a feature with a list, such as `html5`, merges the lists. `title-tag` is refused
+once `wp_loaded` has passed, which is why calling it from a template does nothing:
+
+<Example id="theme/add_theme_support/example" />
+
+Plugins ask with <Sym id="function:current_theme_supports" />, which also checks sub-features, such as one post format
+or one post type for thumbnails. Check it before adding output the theme hasn't asked for:
+
+<Example id="theme/current_theme_supports/example" />
+
+`get_theme_support()` returns a feature's arguments, and `remove_theme_support()` takes a feature away, which is how a
+child theme turns off something its parent declared.
+
+## Theme mods
+
+Theme mods are a theme's own settings, usually set in the Customizer. They are stored together in one option,
+`theme_mods_` followed by the theme's stylesheet name, so each theme keeps its own and switching back restores them.
+<Sym id="function:set_theme_mod" /> saves one:
+
+<Example id="theme/set_theme_mod/example" />
+
+<Sym id="function:get_theme_mod" /> reads one, with a default. A string default may contain `%s`, which is replaced
+with the theme's URL, a shortcut for default images:
+
+<Example id="theme/get_theme_mod/example" />
+
+A theme mod belongs to the theme. Settings that should survive a theme switch, or that a plugin owns, belong in an
+option instead. Escape a mod when you print it, as you would any saved value.
+
+## The document head and body
+
+Every classic theme must call <Sym id="function:wp_head" /> before `</head>`, <Sym id="function:wp_body_open" />
+just after `<body>`, and <Sym id="function:wp_footer" /> before `</body>`. WordPress prints the title, styles,
+scripts, feed links, the canonical link and the robots tag from callbacks on these hooks, and so do plugins. A theme
+that leaves one out breaks more than its own output.
+
+The title tag is one of those callbacks. With `title-tag` support, `_wp_render_title_tag()`, a private function,
+prints it on `wp_head`:
+
+<Example id="theme/_wp_render_title_tag/example" />
+
+The text comes from <Sym id="function:wp_get_document_title" />: the page's title and the site's name, or the name
+and tagline on the home page. Its `document_title_parts` and `document_title_separator` filters change it. The
+older `wp_title()` still works, but a theme that prints its own title that way stops plugins from changing it
+through these filters, so use `title-tag` instead.
+
+<Example id="theme/wp_get_document_title/example" />
+
+<Sym id="function:wp_robots" /> prints the robots meta tag from the directives that the <Sym id="filter:wp_robots" />
+filter gathers. A plugin adds `noindex` to a page through that filter rather than printing its own tag:
+
+<Example id="theme/wp_robots/example" />
+
+`body_class()` and `post_class()` print class attributes that describe the page and each post. Themes style from
+them, and plugins add to them through the `body_class` and `post_class` filters:
+
+<Example id="theme/get_body_class/example" />
+
+<Example id="theme/get_post_class/example" />
+
+## Template tags for posts
+
+Inside the loop, the post template tags read the current post. <Sym id="function:get_the_title" /> returns the title
+through the `the_title` filter, with "Private:" or "Protected:" added for those posts:
+
+<Example id="theme/get_the_title/example" />
+
+A title may contain markup, so where it goes matters. Print it in an element with `the_title()`, and in an attribute
+with <Sym id="function:the_title_attribute" />, which strips the tags and escapes the rest:
+
+<Example id="theme/the_title_attribute/example" />
+
+The same pattern runs through the seam: a `get_` function returns a value, and the function without it prints it.
+`the_content()`, `the_excerpt()`, `the_permalink()` and `the_date()` all work this way, and all have filters.
+
+## Menus and pagination
+
+<Sym id="function:wp_nav_menu" /> prints the menu assigned to a theme location, registered with
+`register_nav_menus()`. It walks the items with `Walker_Nav_Menu`; read [Walkers](/guides/topics/walker/) for how
+that output is built and filtered. With no menu assigned it falls back to a list of pages, unless `fallback_cb` is
+`false`:
+
+<Example id="theme/wp_nav_menu/example" />
+
+<Sym id="function:paginate_links" /> writes numbered page links, with ellipses for the pages it leaves out. It can
+return a string, a list or an array:
+
+<Example id="theme/paginate_links/example" />
+
+## theme.json
+
+Block themes, and many classic ones, describe their settings and styles in `theme.json`.
+<Sym id="class:WP_Theme_JSON_Resolver" /> reads it from each origin (WordPress's defaults, blocks, the theme and the
+user's changes) and <Sym id="class:WP_Theme_JSON" /> merges and sanitizes the result. Both are internal: themes edit
+`theme.json`, and plugins read the merged values with `wp_get_global_settings()` or change them through the
+`wp_theme_json_data_theme` and related filters. The theme.json guide explains the layers.
+
+The Themes and templates seam isn't ported to SpeedySpec yet, so this guide makes no promise about how themes and
+templates behave there.

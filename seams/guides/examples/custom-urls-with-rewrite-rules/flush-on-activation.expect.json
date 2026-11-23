@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'before activation' => false,\n  'after activation' => 'index.php?my_plugin_book=$matches[1]',\n  'after deactivation' => false,\n)",
+ "error": null
+}

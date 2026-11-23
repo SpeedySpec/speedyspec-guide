@@ -1,0 +1,147 @@
+---
+title: Sitemaps
+summary: How the built-in XML sitemaps are switched on, split into providers and pages, and changed through filters.
+---
+
+The Sitemaps seam is WordPress's built-in XML sitemap: an index at `/wp-sitemap.xml` that lists one or more sitemap
+pages for posts, terms and authors. It needs no setup, which is also what trips people up. It turns itself off on a
+site that discourages search engines, it only lists public, viewable content, and most changes to it are filters, not
+code that builds XML. This guide explains how the pieces fit, from the URLs down to the providers.
+
+## The server and when it starts
+
+On `init`, WordPress calls <Sym id="function:wp_sitemaps_get_server" />. The first call creates the one
+<Sym id="class:WP_Sitemaps" /> object, kept in the `wp_sitemaps` global, initializes it, and fires the
+<Sym id="action:wp_sitemaps_init" /> action with it. Later calls return the same object:
+
+<Example id="sitemap/wp_sitemaps_get_server/server" />
+
+Initializing adds the rewrite rules for the sitemap URLs and hooks rendering onto `template_redirect`. Only if
+sitemaps are enabled does it go on to register the three core providers and add the sitemap line to `robots.txt`:
+
+<Example id="sitemap/class--WP_Sitemaps--init/hooks" />
+
+<Sym id="method:WP_Sitemaps::sitemaps_enabled" /> reads the `blog_public` option, the "discourage search engines"
+setting, and passes it through the <Sym id="filter:wp_sitemaps_enabled" /> filter. Returning `false` there is the
+supported way to turn the built-in sitemaps off, for example when an SEO plugin writes its own:
+
+<Example id="sitemap/class--WP_Sitemaps--sitemaps_enabled/enabled" />
+
+<Example id="sitemap/wp_sitemaps_get_server/private_site" />
+
+## URLs
+
+<Sym id="function:get_sitemap_url" /> builds the URL of the index or of one page of a provider. With pretty
+permalinks the index is `/wp-sitemap.xml` and a page looks like `/wp-sitemap-posts-post-2.xml`. With plain
+permalinks they become query strings on the home URL. An unknown provider or subtype gives `false`, and a page under
+1 is treated as page 1:
+
+<Example id="sitemap/get_sitemap_url/urls" />
+
+Use this function rather than writing the path yourself, so links stay right under both permalink settings. On a
+public site, the index URL is also added to `robots.txt`, through the `robots_txt` filter:
+
+<Example id="sitemap/class--WP_Sitemaps--add_robots/robots" />
+
+## Providers
+
+A provider is one kind of content in the sitemap. Core registers three, by name: `posts`, `taxonomies` and `users`.
+<Sym id="function:wp_get_sitemap_providers" /> returns them:
+
+<Example id="sitemap/wp_get_sitemap_providers/providers" />
+
+Each provider extends <Sym id="class:WP_Sitemaps_Provider" /> and answers two questions: the URLs on a given page
+(`get_url_list()`) and how many pages there are (`get_max_num_pages()`). A provider can also have **subtypes**: the
+posts provider has one per post type, the taxonomies provider one per taxonomy. The provider turns its subtypes and
+page counts into the entries of the index:
+
+<Example id="sitemap/class--WP_Sitemaps_Provider--get_sitemap_type_data/types" />
+
+Each page holds at most 2,000 URLs. <Sym id="function:wp_sitemaps_get_max_urls" /> returns that number, and the
+<Sym id="filter:wp_sitemaps_max_urls" /> filter changes it per object type:
+
+<Example id="sitemap/wp_sitemaps_get_max_urls/max" />
+
+## What the core providers list
+
+<Sym id="class:WP_Sitemaps_Posts" /> lists the public, viewable post types, leaving out attachments. The
+<Sym id="filter:wp_sitemaps_post_types" /> filter can remove one, which is how you keep a post type out of the
+sitemap without making it private:
+
+<Example id="sitemap/class--WP_Sitemaps_Posts--get_object_subtypes/types" />
+
+Each page is a `WP_Query` for published posts of one type, ordered by ID. The
+<Sym id="filter:wp_sitemaps_posts_query_args" /> filter changes those arguments, for example to leave out posts
+with a given meta value:
+
+<Example id="sitemap/class--WP_Sitemaps_Posts--get_posts_query_args/args" />
+
+<Sym id="class:WP_Sitemaps_Taxonomies" /> does the same for public, viewable taxonomies with
+`wp_sitemaps_taxonomies` and `wp_sitemaps_taxonomies_query_args`. It skips empty terms by default:
+
+<Example id="sitemap/class--WP_Sitemaps_Taxonomies--get_taxonomies_query_args/args" />
+
+<Sym id="class:WP_Sitemaps_Users" /> lists authors who have published posts of a public post type other than pages
+and attachments. Its arguments pass through `wp_sitemaps_users_query_args`:
+
+<Example id="sitemap/class--WP_Sitemaps_Users--get_users_query_args/args" />
+
+Every entry also passes through a filter of its own (`wp_sitemaps_posts_entry`, `wp_sitemaps_taxonomies_entry`,
+`wp_sitemaps_users_entry`) where you can add a `lastmod` or change the URL.
+
+## Answering instead of querying
+
+Each provider has two "pre" filters that run before its query. If one returns anything but `null`, the provider uses
+that answer and runs no query. That is how a plugin serves a sitemap from its own cache or table:
+
+<Example id="sitemap/class--WP_Sitemaps_Posts--get_url_list/pre" />
+
+The two must agree. A request for a page beyond `get_max_num_pages()` gets a 404, so a plugin that answers the URL
+list for page 3 but leaves the page count at 2 will see its page refused.
+
+## Adding and removing providers
+
+<Sym id="function:wp_register_sitemap_provider" /> adds a provider under a new name. A name already taken is
+refused. Register yours from a named callback on `wp_sitemaps_init`, so it is added at the moment the server is
+built. That action fires even when sitemaps are off; nothing is served then, so there is no need to check first:
+
+<Example id="sitemap/wp_register_sitemap_provider/register" />
+
+Every provider, the core ones included, passes through the <Sym id="filter:wp_sitemaps_add_provider" /> filter as it
+is added. Return another provider to replace it, or `false` to leave it out. This is the clean way to drop the
+authors sitemap:
+
+<Example id="sitemap/class--WP_Sitemaps_Registry--add_provider/filter" />
+
+## Rendering
+
+On `template_redirect`, <Sym id="method:WP_Sitemaps::render_sitemaps" /> does nothing unless the request has the
+`sitemap` query var. For a sitemap request it sends a 404 when sitemaps are off, the provider is unknown, the subtype
+is invalid or the page is out of range. Otherwise <Sym id="class:WP_Sitemaps_Renderer" /> writes the XML with
+`SimpleXMLElement` and exits.
+
+<Example id="sitemap/class--WP_Sitemaps_Renderer--render_sitemap/print" />
+
+A sitemap entry may hold only `loc`, `lastmod`, `changefreq` and `priority`, and an index entry only `loc` and
+`lastmod`. Other fields are dropped with a "doing it wrong" notice. Values are escaped on the way out:
+
+<Example id="sitemap/class--WP_Sitemaps_Renderer--get_sitemap_xml/xml" />
+
+The index lists every provider's pages, up to 50,000 of them. Each index entry passes through the
+`wp_sitemaps_index_entry` filter:
+
+<Example id="sitemap/class--WP_Sitemaps_Index--get_sitemap_list/list" />
+
+## Deprecated parts
+
+Sitemaps had XSL stylesheets that made them readable in a browser. They were removed in WordPress 7.2.0. The
+stylesheet methods now return an empty string, `WP_Sitemaps_Stylesheet::render_stylesheet()` answers `410 Gone`,
+no stylesheet line is written into the XML, and the stylesheet filters
+(`wp_sitemaps_stylesheet_url`, `wp_sitemaps_stylesheet_css` and the others) still fire, but only to warn that they
+are deprecated. Remove any code that hooks them.
+
+<Example id="sitemap/class--WP_Sitemaps_Renderer--get_sitemap_stylesheet_url/deprecated" />
+
+`WP_Sitemaps::redirect_sitemapxml()`, which once redirected `/sitemap.xml`, has been deprecated since 6.7.0.
+
+The Sitemaps seam isn't ported to SpeedySpec yet, so this guide makes no promise about how sitemaps behave there.

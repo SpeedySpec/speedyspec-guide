@@ -1,0 +1,140 @@
+---
+title: Abilities
+summary: How abilities and their categories are registered and found, how an ability checks its input, permissions and output when it runs, and how plugins step in.
+---
+
+The Abilities seam is a registry of things a site can do, each described well enough for another program to call
+it: a name, a label, a description, JSON schemas for its input and output, a permission check and a callback. The
+REST API, AI agents and other tools read the registry to learn what a site offers, and run abilities through it.
+What trips people up is timing (abilities can only be registered on their own action) and the difference between
+being listed somewhere and being allowed to run. For the schemas, the
+[REST API](/guides/topics/rest-api/) guide explains the JSON Schema rules both share.
+
+## Categories come first
+
+Every ability belongs to a category, and the category must exist first.
+<Sym id="function:wp_register_ability_category" /> takes a slug and a label and description, and only works on
+the <Sym id="action:wp_abilities_api_categories_init" /> action. The
+<Sym id="filter:wp_register_ability_category_args" /> filter can change the properties on the way in:
+
+<Example id="ability/wp_register_ability_category/register" />
+
+A category registered outside the action, with a slug that isn't lowercase letters, digits and dashes, twice, or
+without a label, is refused with a notice:
+
+<Example id="ability/wp_register_ability_category/refused" />
+
+WordPress registers three of its own, `site`, `user` and `content`:
+
+<Example id="ability/wp_register_core_ability_categories/core" />
+
+## Registering an ability
+
+<Sym id="function:wp_register_ability" /> takes a namespaced name, such as `my-plugin/add-one`, and its properties,
+on the <Sym id="action:wp_abilities_api_init" /> action. Both actions fire the first time anything asks the
+registry for an ability, which is never before `init`:
+
+<Example id="ability/wp_register_ability/register" />
+
+Called anywhere else, it does nothing but raise a notice and return `null`:
+
+<Example id="ability/wp_register_ability/outside_hook" />
+
+The name must be `namespace/name` in lowercase letters, digits and dashes, the category must already be registered,
+and the label, description and `execute_callback` are required. The ability also needs a way to decide who may run
+it: a `permission_callback`, a `required_capabilities` list, or both. A registration missing any of these is refused:
+
+<Example id="ability/wp_register_ability/refused" />
+
+What is optional gets a default. The annotations (`readonly`, `destructive`, `idempotent`) start as `null`, which
+means unknown. `public` and `show_in_rest` start as `false`, and `show_in_rest` follows `public` when only `public` is
+set:
+
+<Example id="ability/class--WP_Ability--__construct/defaults" />
+
+The examples here use short arrow functions to stay compact. In a plugin, use named, prefixed functions for the
+execute and permission callbacks, so other code can find and reason about them.
+
+## Finding abilities
+
+<Sym id="function:wp_get_ability" /> returns one ability, or `null` with a notice. <Sym id="function:wp_has_ability" />
+answers without the notice, which suits code that only wants to know:
+
+<Example id="ability/wp_get_ability/get" />
+
+<Sym id="function:wp_get_abilities" /> returns every ability, or those matching a category, a namespace, meta
+values, or only those whose required capabilities the current user has:
+
+<Example id="ability/wp_get_abilities/filters" />
+
+The `wp_get_abilities_item_include` filter decides each ability and `wp_get_abilities_result` the final list, so a
+plugin can hide abilities from every consumer at once:
+
+<Example id="ability/wp_get_abilities/callbacks" />
+
+## Running an ability
+
+<Sym id="method:WP_Ability::execute" /> runs the steps in a fixed order. It fires `wp_ability_invoked`, prepares the
+input (a default from the schema, then validation and sanitizing), checks permission, fires
+`wp_before_execute_ability`, runs the callback, checks the output against the output schema, and fires
+`wp_after_execute_ability`. The first step that fails returns a `WP_Error` and nothing after it runs:
+
+<Example id="ability/class--WP_Ability--execute/run" />
+
+Input that doesn't match the input schema never reaches the callback. With no input schema, only no input is valid:
+
+<Example id="ability/class--WP_Ability--validate_input/schema" />
+
+A result that doesn't match the output schema is an error too, so a schema is a promise the callback must keep:
+
+<Example id="ability/class--WP_Ability--validate_output/output" />
+
+## Permissions
+
+<Sym id="method:WP_Ability::check_permissions" /> checks every required capability with `current_user_can()` first,
+then the permission callback. Both must pass. Anything the callback returns other than `true`, `false` or a
+`WP_Error` counts as `false`, and the <Sym id="filter:wp_ability_permission_result" /> filter has the last word:
+
+<Example id="ability/class--WP_Ability--check_permissions/checks" />
+
+When the check fails, `execute()` returns a plain `ability_invalid_permissions` error. A detailed `WP_Error` from
+your callback is reported as a developer notice, not to the caller, so a refused user learns nothing about why.
+
+`public` and `show_in_rest` don't grant anything. They decide where an ability is listed: an ability with
+`show_in_rest` can be found and run under the `wp-abilities/v1` REST routes, and still only by users who pass its
+permission check. To let anyone run an ability, say so in the permission callback with `__return_true`, and only
+for abilities that change nothing.
+
+## Changing how abilities run
+
+Plugins can step in at each stage without touching the ability itself. <Sym id="filter:wp_register_ability_args" />
+changes the properties at registration, and its `ability_class` can swap in a subclass of `WP_Ability`:
+
+<Example id="ability/class--WP_Abilities_Registry--register/args_filter" />
+
+<Sym id="filter:wp_pre_execute_ability" /> answers in place of the ability, and
+<Sym id="filter:wp_ability_execute_result" /> changes what the callback returned. An exception thrown in the callback
+is caught and turned into an error:
+
+<Example id="ability/class--WP_Ability--execute/filters" />
+
+## WordPress's own abilities
+
+WordPress registers abilities that read the site: its information, the current user, the environment, settings,
+users and content. Each has its own permission check, from a capability such as `manage_options` to simply being
+logged in:
+
+<Example id="ability/wp_register_core_abilities/core" />
+
+Two of them only exist when something is exposed to them. `core/settings-get` reads settings registered with
+`show_in_abilities`, and `core/content-query` reads post types registered with `show_in_abilities` set to `true`.
+Neither exposes anything by default:
+
+<Example id="ability/class--WP_Abilities_Settings--register/none" />
+
+Their query abilities refuse a filter they can't honour rather than drop it, so a bad request never widens into one
+that returns more than was asked for:
+
+<Example id="ability/class--WP_Abilities_Users--execute_users_query/refused" />
+
+The Abilities seam isn't ported to SpeedySpec yet, so this guide makes no promise about how abilities behave there.
