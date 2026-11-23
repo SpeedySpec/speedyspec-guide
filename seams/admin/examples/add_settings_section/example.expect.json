@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "array (\n  0 => 'tea_section',\n)",
  "error": null
 }

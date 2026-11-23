@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "array (\n  0 => '<p class=\"submit\"><input type=\"submit\" name=\"submit\" id=\"submit\" class=\"button button-primary button-large\" value=\"Save tea\"  /></p>',\n  1 => '<input type=\"submit\" name=\"remove\" id=\"remove\" class=\"button delete button-small\" value=\"Delete\"  />',\n)",
  "error": null
 }

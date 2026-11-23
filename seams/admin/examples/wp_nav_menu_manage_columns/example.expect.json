@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "array (\n  '_title' => 'Show advanced menu properties',\n  'cb' => '<input type=\"checkbox\" />',\n  'link-target' => 'Link Target',\n  'title-attribute' => 'Title Attribute',\n  'css-classes' => 'CSS Classes',\n  'xfn' => 'Link Relationship (XFN)',\n  'description' => 'Description',\n)",
  "error": null
 }

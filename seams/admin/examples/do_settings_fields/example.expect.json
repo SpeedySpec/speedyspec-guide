@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "'<tr><th scope=\"row\">Blend</th><td><input name=\"tea_blend\"></td></tr>'",
  "error": null
 }

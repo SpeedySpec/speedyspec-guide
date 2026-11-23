@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "array (\n  0 => \n  array (\n    'setting' => 'tea_blend',\n    'code' => 'too_strong',\n    'message' => 'That blend is too strong.',\n    'type' => 'error',\n  ),\n)",
  "error": null
 }
