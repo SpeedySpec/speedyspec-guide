@@ -4,6 +4,6 @@
  ],
  "multisite": true,
  "output": "",
- "return": null,
+ "return": "array (\n  0 => 'English',\n  1 => 'Portuguese',\n  2 => 'xx',\n)",
  "error": null
 }

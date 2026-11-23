@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "array (\n  'label_for' => 'tea_blend',\n)",
  "error": null
 }

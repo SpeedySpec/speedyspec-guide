@@ -4,6 +4,6 @@
  ],
  "multisite": true,
  "output": "",
- "return": null,
+ "return": "true",
  "error": null
 }

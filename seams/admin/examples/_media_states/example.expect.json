@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "'&mdash; <span class=\\'post-state\\'>Site Icon</span>'",
  "error": null
 }

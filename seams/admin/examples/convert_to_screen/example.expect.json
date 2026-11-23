@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "array (\n  0 => 'WP_Screen',\n  1 => 'edit-post',\n  2 => 'edit',\n  3 => 'post',\n)",
  "error": null
 }

@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "'<option value=\\'templates/template-cover.php\\' >Cover Template</option> <option value=\\'templates/template-full-width.php\\' >Full Width Template</option>'",
  "error": null
 }

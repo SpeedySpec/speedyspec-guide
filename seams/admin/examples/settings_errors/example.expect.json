@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "'<div class=\"notice notice-success is-dismissible settings-error\" id=\"setting-error-saved\"><p><strong>Saved.</strong></p></div>'",
  "error": null
 }

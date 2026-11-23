@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "'<h2 id=\"wp-settings-section-tea_section-1\">Tea</h2> <p>Choose your tea.</p><table class=\"form-table\" role=\"presentation\"><tr><th scope=\"row\">Blend</th><td><input name=\"tea_blend\"></td></tr></table>'",
  "error": null
 }

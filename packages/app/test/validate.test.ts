@@ -392,6 +392,24 @@ describe('a documented seam', () => {
     expect(await covered({ examples: ran(true) })).toEqual([]);
   });
 
+  test('a_function_listed_unrunnable_needs_only_a_page', async () => {
+    const unrunnable = [{ symbol: 'function:get_option', reason: 'It ends the request with exit.' }];
+    expect(await covered({ seams: [{ ...options, unrunnable }], examples: { results: [], problems: [], declared: [] } })).toEqual([]);
+  });
+
+  test('an_unrunnable_function_still_needs_a_page', async () => {
+    const unrunnable = [{ symbol: 'function:get_option', reason: 'It ends the request with exit.' }];
+    const f = await covered({ seams: [{ ...options, unrunnable }], examples: { results: [], problems: [], declared: [] }, pages: (await ctx({ 'wordpress/options/filter/option_{option}.mdx': '---\nsymbol: "filter:option_{$option}"\n---\nx' })).pages });
+    expect(f).toEqual([{ rule: 'DocumentedSeamCovered', where: 'function:get_option', message: 'the options seam is documented: function:get_option needs a WordPress page' }]);
+  });
+
+  test('an_unrunnable_entry_outside_the_seam_fails', async () => {
+    const unrunnable = [{ symbol: 'function:not_here', reason: 'It ends the request with exit.' }];
+    expect(await covered({ seams: [{ ...options, unrunnable }], examples: ran(true) })).toEqual([
+      { rule: 'DocumentedSeamCovered', where: 'seams/options/seam.yaml', message: 'lists function:not_here as unrunnable, but it is not a function of the options seam' },
+    ]);
+  });
+
   test('a_failing_example_does_not_count', async () => {
     expect((await covered({ examples: ran(false) })).map((f) => f.where)).toEqual(['function:get_option']);
   });

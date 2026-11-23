@@ -40,6 +40,18 @@ files:
   - 'wp-includes/class-wp-classic-to-block-menu-converter.php'
   - 'wp-includes/class-wp-duotone.php'
 # WordPress is booted by the setup (see boot.php); the runner needs one file to load first.
+# Functions no example can run on WordPress; the coverage gate asks only for their pages.
+unrunnable:
+  - symbol: "function:block_core_navigation_get_menu_items_at_location"
+    reason: "It is defined only when the Gutenberg plugin's IS_GUTENBERG_PLUGIN is true."
+  - symbol: "function:block_core_navigation_sort_menu_items_by_parent_id"
+    reason: "It is defined only when the Gutenberg plugin's IS_GUTENBERG_PLUGIN is true."
+  - symbol: "function:block_core_navigation_get_inner_blocks_from_unstable_location"
+    reason: "It is defined only when the Gutenberg plugin's IS_GUTENBERG_PLUGIN is true."
+  - symbol: "function:wp_font_library_render_page"
+    reason: "It prints the full page and ends the request with exit."
+  - symbol: "function:wp_options_connectors_render_page"
+    reason: "It prints the full page and ends the request with exit."
 wordpress:
   - wp-includes/version.php
 setup: setup.php

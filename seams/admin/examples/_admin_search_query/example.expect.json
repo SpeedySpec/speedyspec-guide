@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "'green &quot;tea&quot;'",
  "error": null
 }

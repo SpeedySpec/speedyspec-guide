@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "array (\n  0 => 'Tea &#038; cake',\n  1 => '(no title)',\n)",
  "error": null
 }

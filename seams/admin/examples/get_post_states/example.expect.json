@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": null,
+ "return": "array (\n  'protected' => 'Password protected',\n  'draft' => 'Draft',\n)",
  "error": null
 }
