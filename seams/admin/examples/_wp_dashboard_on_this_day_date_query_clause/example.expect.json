@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'month' => 3,\n  'day' => 15,\n)",
+ "error": null
+}

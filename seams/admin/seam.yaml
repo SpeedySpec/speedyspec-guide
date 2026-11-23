@@ -3,7 +3,10 @@ job: "Renders and handles the WordPress admin screens and the functions they inc
 ported: false
 files:
   - wp-admin/**
-wordpress: []
+wordpress:
+  - wp-includes/version.php
+setup: setup.php
+mysql: true
 # Symbols whose file belongs to another seam.
 symbols:
   - "action:customize_controls_enqueue_scripts"

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<![CDATA[Fish & chips ]]]]><![CDATA[> here]]>'",
+ "error": null
+}

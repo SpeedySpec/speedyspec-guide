@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => \n  array (\n    0 => 'External object cache.',\n    1 => true,\n  ),\n)",
+ "error": null
+}

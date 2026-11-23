@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"http://example.org/trip/lake/\" rel=\"attachment wp-att-2\">Lake</a>'",
+ "error": null
+}

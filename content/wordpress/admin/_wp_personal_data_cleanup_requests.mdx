@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_personal_data_cleanup_requests"
+---
+
+## Behaviour
+
+Marks privacy requests that weren't confirmed within the expiry time as failed. <Ev source="wp:wp-admin/includes/privacy-tools.php#L195-L231" hash="11cb8b068642f179cbd9517b9a2889734fb4177f8154f28420b97f9fe6d791c2"/>
+
+## Override
+
+`user_request_key_expiration` filters it.

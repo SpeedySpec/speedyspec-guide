@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'created' => \n  array (\n    0 => 'Created table guide_my_plugin_reads',\n  ),\n  'run again' => \n  array (\n  ),\n  'table' => 'guide_my_plugin_reads',\n  'db version' => '1',\n)",
+ "error": null
+}

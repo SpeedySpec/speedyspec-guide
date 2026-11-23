@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'width=device-width,initial-scale=1.0,minimum-scale=0.5,maximum-scale=1.2'",
+ "error": null
+}

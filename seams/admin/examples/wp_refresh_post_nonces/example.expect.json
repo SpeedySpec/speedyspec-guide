@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'getpermalinknonce',\n  1 => 'samplepermalinknonce',\n  2 => 'closedpostboxesnonce',\n  3 => '_ajax_linking_nonce',\n  4 => '_wpnonce',\n)",
+ "error": null
+}

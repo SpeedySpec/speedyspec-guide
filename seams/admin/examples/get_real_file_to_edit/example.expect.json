@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'WP_CONTENT_DIRstyle.css',\n  1 => 'deprecated get_real_file_to_edit since 2.9.0',\n)",
+ "error": null
+}

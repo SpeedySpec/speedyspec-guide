@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'method' => 'direct',\n  'saved as' => 'Reading-list.csv',\n  'contents' => 'book,read_on\nDune,2026-01-10\n',\n  'exists' => true,\n  'after delete' => false,\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'first check' => \n  array (\n    0 => 'Added column guide_my_plugin_reads.rating',\n  ),\n  'second check' => \n  array (\n  ),\n  'columns' => \n  array (\n    0 => 'id',\n    1 => 'user_id',\n    2 => 'book',\n    3 => 'read_on',\n    4 => 'rating',\n  ),\n)",
+ "error": null
+}

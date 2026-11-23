@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_edit_posts_query"
+---
+
+## Behaviour
+
+Runs the main query for a posts list screen from the request (status, order, per page), giving the statuses and their counts. <Ev source="wp:wp-admin/includes/post.php#L1239-L1332" hash="6d631dea92ade568efefa6b0ef18ff6abbd2f26bf432a3903e5ba002512a8107"/>
+
+## Override
+
+`edit_{$post_type}_per_page`, `edit_posts_per_page` filter it.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 'Ipsum',\n    1 => 'Twenty Eleven',\n    2 => 'Twenty Fifteen',\n    3 => 'Twenty Fourteen',\n    4 => 'Twenty Nineteen',\n    5 => 'Twenty Seventeen',\n    6 => 'Twenty Sixteen',\n    7 => 'Twenty Ten',\n    8 => 'Twenty Thirteen',\n    9 => 'Twenty Twelve',\n    10 => 'Twenty Twenty',\n    11 => 'Twenty Twenty-Five',\n    12 => 'Twenty Twenty-Four',\n    13 => 'Twenty Twenty-One',\n    14 => 'Twenty Twenty-Three',\n    15 => 'Twenty Twenty-Two',\n  ),\n  1 => 'deprecated get_allowed_themes since 3.4.0, use wp_get_themes( array( \\'allowed\\' => true ) )',\n)",
+ "error": null
+}

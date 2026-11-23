@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"https://jquery.com/\">jQuery</a>'",
+ "error": null
+}

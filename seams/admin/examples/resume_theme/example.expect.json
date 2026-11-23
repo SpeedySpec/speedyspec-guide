@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "\\WP_Error::__set_state(array(\n   'errors' => \n  array (\n    'could_not_resume_theme' => \n    array (\n      0 => 'Could not resume the theme.',\n    ),\n  ),\n   'error_data' => \n  array (\n  ),\n   'additional_data' => \n  array (\n  ),\n))",
+ "error": null
+}

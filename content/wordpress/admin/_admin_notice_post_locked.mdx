@@ -1,0 +1,11 @@
+---
+symbol: "function:_admin_notice_post_locked"
+---
+
+## Behaviour
+
+Prints the dialog the editor shows when another user is editing the post, with options to go back, preview or take over. <Ev source="wp:wp-admin/includes/post.php#L1815-L1975" hash="bd4a447cb6de2721a78ac7e9fef4e9d92cb5f2215cf3d56b2621ff816a8269fe"/>
+
+## Override
+
+`show_post_locked_dialog`, `override_post_lock` filter it; `post_locked_dialog`, `post_lock_lost_dialog` fire.

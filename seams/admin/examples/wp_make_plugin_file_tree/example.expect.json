@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'tea.php' => 'tea/tea.php',\n  'includes' => \n  array (\n    'blend.php' => 'tea/includes/blend.php',\n  ),\n)",
+ "error": null
+}

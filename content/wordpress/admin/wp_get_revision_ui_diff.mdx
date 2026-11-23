@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_get_revision_ui_diff"
+---
+
+## Behaviour
+
+The differences between two revisions of a post, field by field (title, content, excerpt), as rendered diffs for the revisions screen. <Ev source="wp:wp-admin/includes/revision.php#L21-L164" hash="cacf2fb3eac9cc8048537c61bffe7c772cee976483627565adaeb7753874d3b3"/>
+
+## Override
+
+`_wp_post_revision_field_{$field}`, `revision_text_diff_options`, `wp_get_revision_ui_diff` filter it.

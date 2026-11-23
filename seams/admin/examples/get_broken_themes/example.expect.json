@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n  ),\n  1 => 'deprecated get_broken_themes since 3.4.0, use wp_get_themes( array( \\'errors\\' => true )',\n)",
+ "error": null
+}

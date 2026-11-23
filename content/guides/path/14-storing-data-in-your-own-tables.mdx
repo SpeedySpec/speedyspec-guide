@@ -1,0 +1,71 @@
+---
+title: Storing data in your own tables
+summary: When a plugin needs its own database table, create it with dbDelta() on activation, change it with a versioned upgrade check, query it safely through $wpdb, and drop it on uninstall.
+---
+
+Most plugins never need a table of their own. Options, post types and meta, covered in
+[Storing your own content](/guides/path/storing-your-own-content/), store almost anything, and WordPress's own tools
+work with them. A table of your own is worth it when you have many small rows that you query by their columns, such
+as a log of every book each person reads. This guide creates that table, changes it in a later version, reads and
+writes it safely, and removes it when the plugin is deleted.
+
+## Creating the table with dbDelta()
+
+<Sym id="function:dbDelta" /> takes `CREATE TABLE` statements and makes the database match them. A missing table is
+created. An existing one gains the columns and indexes the statement adds. Call it from your activation hook, and
+record which version of the table you installed in an option:
+
+<Example id="guides/storing-data-in-your-own-tables/create-the-table" />
+
+`dbDelta()` reports what it did, and running it again changed nothing, so it is safe to call more than once. It
+reads your statement with patterns rather than a full SQL parser, so write it the way it expects:
+
+- one column or index per line, because it splits the statement at line breaks;
+- `KEY` or `INDEX` with a name for each index, so it can tell whether the index already exists;
+- `CREATE TABLE` followed directly by the name, without `IF NOT EXISTS`.
+
+Older guides insist on two spaces after `PRIMARY KEY`. Current versions of WordPress accept any spacing there.
+
+Build the table name from `$wpdb->prefix`, so each site of a multisite network and each installation sharing a
+database gets its own table. Add `$wpdb->get_charset_collate()` so the table uses the site's character set.
+`dbDelta()` lives in `wp-admin/includes/upgrade.php`, which isn't loaded on every request, so require it first.
+
+<Example id="app-upgrader/dbDelta/example" />
+
+## Changing the table later
+
+To change the table in a later release, change its `CREATE TABLE` statement and run `dbDelta()` again. Do it from an
+upgrade check that compares the version you installed with the version your code expects. Activation hooks don't run
+when a plugin is updated, so check on `plugins_loaded`:
+
+<Example id="guides/storing-data-in-your-own-tables/upgrade-adds-a-column" />
+
+The first check added the `rating` column and stored version 2. Every later check returns at once, after reading one
+option that WordPress has already loaded, so it costs almost nothing on each request.
+
+`dbDelta()` only adds and changes. It never drops a column, a table or an index, so it can't lose data. Remove a
+column with your own `ALTER TABLE` in the upgrade check, after deciding what happens to the data in it.
+
+## Reading and writing rows
+
+Read and write through the global <Sym id="class:wpdb" />. Its `insert()`, `update()` and `delete()` methods take the
+values as an array and a **format** for each, `%d` for whole numbers and `%s` for strings, and escape the values for
+you. For your own queries, <Sym id="method:wpdb::prepare" /> does the same: `%i` for a table or column name, `%d` and
+`%s` for values. Never put a variable into SQL by hand:
+
+<Example id="guides/storing-data-in-your-own-tables/read-and-write-rows" />
+
+Formats escape values for SQL, but they don't make a value acceptable. The book's title was sanitized before it was
+stored, so the script tag never reached the table. Sanitize on the way in and escape on the way out, as
+[Keeping your plugin safe](/guides/path/keeping-your-plugin-safe/) explains. <OnSpeedySpecNote id="class:wpdb" />
+
+## Removing the table on uninstall
+
+A plugin that creates a table removes it when it is deleted. Do it in `uninstall.php`, or a callback registered with
+<Sym id="function:register_uninstall_hook" />, never on deactivation: people deactivate a plugin for a moment and
+expect their data to still be there when they switch it back on.
+
+<Example id="guides/storing-data-in-your-own-tables/drop-on-uninstall" />
+
+The table and the version option are both gone, so a later installation starts from nothing. On a multisite network,
+an uninstall that removes per-site tables does this for each site.

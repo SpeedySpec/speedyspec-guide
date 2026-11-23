@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wpmu_checkAvailableSpace since 3.0.0, use is_upload_space_available()',\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:update_option_new_admin_email"
+---
+
+## Behaviour
+
+Hooked to the new site email being saved: emails the new address a link to confirm it, and keeps it pending until then. <Ev source="wp:wp-admin/includes/misc.php#L1518-L1610" hash="10b5db38dfc3acd9b3fd43a7c8c8cf37002a9005135e959610ade690641ed02a"/>
+
+## Override
+
+`new_admin_email_content`, `new_admin_email_subject` filter it.

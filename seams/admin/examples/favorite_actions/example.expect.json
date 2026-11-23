@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated favorite_actions since 3.2.0, use WP_Admin_Bar',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'post_mime_type' => 'image',\n  'post_type' => 'attachment',\n  'post_status' => 'inherit,private',\n)",
+ "error": null
+}

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => \n  array (\n    0 => 128,\n    1 => 85,\n  ),\n  1 => 'deprecated get_udims since 3.5.0, use wp_constrain_dimensions()',\n)",
+ "error": null
+}

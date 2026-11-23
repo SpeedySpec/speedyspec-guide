@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wp_print_editor_js since 3.3.0, use wp_editor()',\n)",
+ "error": null
+}

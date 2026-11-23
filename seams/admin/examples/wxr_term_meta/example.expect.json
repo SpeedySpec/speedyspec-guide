@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<wp:termmeta> <wp:meta_key><![CDATA[color]]></wp:meta_key> <wp:meta_value><![CDATA[green]]></wp:meta_value> </wp:termmeta>'",
+ "error": null
+}

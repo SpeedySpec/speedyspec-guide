@@ -1,0 +1,11 @@
+---
+symbol: "function:register_and_do_post_meta_boxes"
+---
+
+## Behaviour
+
+Registers the edit screen's boxes for a post: Publish, Format, taxonomies, Featured image, Excerpt, Custom Fields and the others; then fires add_meta_boxes. <Ev source="wp:wp-admin/includes/meta-boxes.php#L1531-L1733" hash="6f07f220193670e04df67714e36bb9ebc416ec76aea16af1669cea6f319dcac0"/>
+
+## Override
+
+`dbx_post_advanced`, `add_meta_boxes`, `add_meta_boxes_{$post_type}`, `do_meta_boxes` fire.

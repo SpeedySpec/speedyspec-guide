@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_create_image_subsizes"
+---
+
+## Behaviour
+
+Creates an image's sub-sizes, scaling down an image larger than big_image_size_threshold first, and saves its metadata as it goes; gives the metadata. <Ev source="wp:wp-admin/includes/image.php#L240-L413" hash="6523230d8547b078eebc1daa5576555f9a97b274f18b50819abd7782949bd48c"/>
+
+## Override
+
+`big_image_size_threshold`, `intermediate_image_sizes_advanced` filter it.

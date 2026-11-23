@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<div class=\"rss-widget\"><p><strong>RSS Error:</strong> Retrieved unsupported status code &quot;404&quot;</p></div>'",
+ "error": null
+}

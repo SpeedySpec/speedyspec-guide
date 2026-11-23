@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<textarea name=\"attachments[1][post_excerpt]\" id=\"attachments[1][post_excerpt]\">A calm lake</textarea>'",
+ "error": null
+}

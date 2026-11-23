@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'writable' => \n  array (\n    0 => 'good',\n    1 => 'My Plugin can save exports',\n  ),\n  'read-only' => \n  array (\n    0 => 'recommended',\n    1 => 'My Plugin cannot save exports',\n    2 => 'Make the uploads folder writable so reading lists can be exported.',\n  ),\n)",
+ "error": null
+}

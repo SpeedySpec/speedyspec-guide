@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'[caption id=\"attachment_5\" align=\"aligncenter\" width=\"300\"]<img src=\"lake.jpg\" width=\"300\" height=\"200\" /> A calm lake[/caption]'",
+ "error": null
+}

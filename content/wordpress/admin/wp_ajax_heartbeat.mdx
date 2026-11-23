@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_ajax_heartbeat"
+---
+
+## Behaviour
+
+Ajax handler for the Heartbeat API: passes the data scripts sent through heartbeat_received and heartbeat_send, and sends the answer with the server time as JSON. <Ev source="wp:wp-admin/includes/ajax-actions.php#L3449-L3527" hash="399f249995e6f8899bdace2a958879aa800ab2548b0c57dc03f6f6305efce583"/>
+
+## Override
+
+`wp_refresh_nonces`, `heartbeat_received`, `heartbeat_send` filter it; `heartbeat_tick` fires.

@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated wpmu_menu since 3.0.0',\n)",
+ "error": null
+}

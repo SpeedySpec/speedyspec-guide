@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_ajax_query_themes"
+---
+
+## Behaviour
+
+Ajax handler for the theme installer's browsing and search: asks the Themes API and sends the themes, with install and preview links, as JSON. <Ev source="wp:wp-admin/includes/ajax-actions.php#L3608-L3729" hash="6a0a331975338756aa648d719b0fcda6b053e4895e4e9c6e0256c4defaaef788"/>
+
+## Override
+
+`install_themes_table_api_args_` filters it.

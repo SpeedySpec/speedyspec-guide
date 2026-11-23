@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'deprecated media_upload_image since 3.3.0, use wp_media_upload_handler() '",
+ "error": null
+}

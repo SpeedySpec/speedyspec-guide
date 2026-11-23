@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => 'guide',\n  1 => 'ipsum',\n)",
+ "error": null
+}

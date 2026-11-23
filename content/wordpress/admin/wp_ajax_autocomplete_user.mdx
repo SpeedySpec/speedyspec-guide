@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_ajax_autocomplete_user"
+---
+
+## Behaviour
+
+Ajax handler for user autocomplete on a network: sends the users matching the typed text as JSON; refuses on single sites. <Ev source="wp:wp-admin/includes/ajax-actions.php#L223-L309" hash="1de6066d97cf335bc0596809be6c074957a1515d13ea0f9c3f963565c72c61a5"/>
+
+## Override
+
+`autocomplete_users_for_site_admins` filters it.

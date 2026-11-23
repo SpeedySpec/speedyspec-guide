@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated the_attachment_links since 3.7.0',\n)",
+ "error": null
+}

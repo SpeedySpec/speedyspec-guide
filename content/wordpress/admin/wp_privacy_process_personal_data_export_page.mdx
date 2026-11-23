@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_privacy_process_personal_data_export_page"
+---
+
+## Behaviour
+
+Hooked to wp_privacy_personal_data_export_page: keeps each exporter page's data, and builds and sends or offers the export file when the last is done. <Ev source="wp:wp-admin/includes/privacy-tools.php#L780-L902" hash="c9569fc132040a3a13e8a96b4f7f861920987c431541a1ef3f90e3254783c5e1"/>
+
+## Override
+
+`wp_privacy_personal_data_exporters` filters it; `wp_privacy_personal_data_export_file` fires.

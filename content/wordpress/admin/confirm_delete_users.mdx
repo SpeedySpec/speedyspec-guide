@@ -1,0 +1,11 @@
+---
+symbol: "function:confirm_delete_users"
+---
+
+## Behaviour
+
+Prints the form confirming the deletion of users from the network, asking whom their posts go to on each site. <Ev source="wp:wp-admin/includes/ms.php#L858-L1047" hash="bd08ed0953b984f1369bec9ed031d0d1e692069736cc99c5dddceef4fc6dee5d"/>
+
+## Override
+
+`users_have_additional_content` filters it; `delete_user_form` fires.

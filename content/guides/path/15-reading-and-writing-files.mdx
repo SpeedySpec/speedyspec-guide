@@ -1,0 +1,73 @@
+---
+title: Reading and writing files
+summary: Where a plugin's generated files belong, how the Filesystem API writes them on any server, what happens when WordPress needs credentials, and how to unzip and clean up safely.
+---
+
+Some plugins make files: an export people download, a generated stylesheet, an imported archive. Where you put them
+and how you write them decides whether your plugin works on every host, survives updates, and stays safe. This guide
+covers the uploads folder, WordPress's Filesystem API, the credentials form it falls back to, and archives.
+
+The examples keep their uploads in a temporary folder, through the `upload_dir` filter, so they never touch a real
+site's files.
+
+## Generated files go in uploads
+
+Never write into your plugin's own folder. An update replaces that folder completely, and on many hosts PHP isn't
+allowed to write there at all. Files your plugin makes belong in the **uploads folder**, in a folder named for your
+plugin. <Sym id="function:wp_upload_dir" /> gives its path and its address, and <Sym id="function:wp_mkdir_p" />
+creates a folder and any missing parents:
+
+<Example id="guides/reading-and-writing-files/uploads-for-generated-files" />
+
+Pass `false` as the second argument, as the example does, when you need only the base folder. Otherwise
+`wp_upload_dir()` creates this month's folder too. Its `basedir` and `baseurl` follow the site's settings, including a
+multisite network's folder for each site, so build every path from them rather than from `WP_CONTENT_DIR`.
+
+<Example id="support/wp_upload_dir/upload" />
+
+## The Filesystem API
+
+PHP's own file functions work on most servers, but not all. Some hosts run PHP as a different user from the one who
+owns the site's files, and only FTP or SSH may change them. WordPress's **Filesystem API** hides that difference.
+<Sym id="function:WP_Filesystem" /> picks a method and connects, then the global `$wp_filesystem` object reads and
+writes with the same methods whichever way it reaches the disk:
+
+<Example id="guides/reading-and-writing-files/wp-filesystem-direct" />
+
+The name people chose became `Reading-list.csv`. <Sym id="function:sanitize_file_name" /> removed the `../` that
+would have climbed out of the folder, along with the space. Pass every file name that came from outside your code
+through it. `FS_CHMOD_FILE` gives the file the permissions WordPress uses for its own.
+
+<Sym id="function:get_filesystem_method" /> reports the method: `direct` when PHP owns the files it would write,
+otherwise `ssh2`, `ftpext` or `ftpsockets`. A site's owner can choose one with the `FS_METHOD` constant in
+`wp-config.php`.
+
+<Example id="app-upgrader/get_filesystem_method/example" />
+
+## When WordPress needs credentials
+
+When the method isn't `direct`, writing needs a hostname, username and password. Ask for them with
+<Sym id="function:request_filesystem_credentials" />. It prints a form and returns `false` until the person submits
+it, then returns the credentials to pass to `WP_Filesystem()`:
+
+<Example id="guides/reading-and-writing-files/when-not-direct" />
+
+Only call this from an admin screen of your own, after checking the person's capability, because it asks for a server
+password. Never ask for credentials during a front-end request or a scheduled task. There is nobody there to fill in
+the form, so give up with a clear message instead.
+
+Writing into uploads almost always works with the `direct` method, because WordPress already needs to write there to
+save media. That is one more reason to keep generated files there.
+
+## Archives and temporary files
+
+<Sym id="function:unzip_file" /> extracts a zip archive through the Filesystem API, so it works with any method.
+<Sym id="function:wp_tempnam" /> gives a unique temporary file to build or download into first:
+
+<Example id="guides/reading-and-writing-files/unzip-to-uploads" />
+
+Clean up after yourself: <Sym id="function:wp_delete_file" /> removes one file, and `$wp_filesystem->delete()` with
+`true` removes a folder and everything in it. Don't extract archives people upload into a folder the web server can
+run PHP from. A PHP file inside the archive could then be requested and run.
+
+The Filesystem API isn't ported to SpeedySpec yet, so this guide makes no promise about how files are written there.

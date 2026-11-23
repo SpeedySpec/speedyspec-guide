@@ -1,0 +1,54 @@
+---
+title: Adding a dashboard widget
+summary: Put a box of your plugin's own on the admin dashboard, show it only to the people it is for, place it, give it a settings form, and remove widgets people don't need.
+---
+
+The dashboard is the first screen people see after they log in. A **dashboard widget** puts something of your
+plugin's there: a summary, a reminder, a shortcut. Add one only when people will want it every time they log in.
+Everything else belongs on your plugin's own screen, as in
+[Adding a settings page](/guides/path/adding-a-settings-page/).
+
+## Adding a widget
+
+Add widgets on the <Sym id="action:wp_dashboard_setup" /> action, which fires as the dashboard screen loads.
+<Sym id="function:wp_add_dashboard_widget" /> takes an id, a title, and a callback that prints the widget's content:
+
+<Example id="guides/adding-a-dashboard-widget/add-a-widget" />
+
+The callback prints, so it escapes what it prints and translates its strings, like any other output. Keep it quick:
+it runs on every visit to the dashboard. Something slow to work out, such as a count over many rows, belongs in a
+transient that a scheduled task refreshes, as
+[Running tasks on a schedule](/guides/path/running-tasks-on-a-schedule/) shows.
+
+<Example id="admin/wp_add_dashboard_widget/example" />
+
+## Who sees it, and where
+
+Check the capability before adding the widget, so people who can't use it never see it. The dashboard lays widgets
+out in columns, and `wp_add_dashboard_widget()` takes a **context**, `normal` or `side`, and a **priority**, `high`,
+`core`, `default` or `low`, for where it starts. People can drag widgets elsewhere and hide them under Screen
+Options, and WordPress remembers their choice.
+
+A plugin can also take widgets away. <Sym id="function:remove_meta_box" /> removes one by its id, its screen and its
+context. Do it on the same action with a later priority, after WordPress has added its own:
+
+<Example id="guides/adding-a-dashboard-widget/who-sees-it-and-where" />
+
+The administrator got the widget and the subscriber didn't, and WordPress Events and News was removed. Think twice
+before removing widgets people may rely on. Hiding them under Screen Options is each person's choice to make.
+
+## A settings form
+
+Pass a fourth argument, a **control callback**, and the widget gets a Configure link that shows a form in its place.
+The control callback both prints the form and saves it when it is posted:
+
+<Example id="guides/adding-a-dashboard-widget/configure-a-widget" />
+
+WordPress adds the form's nonce field itself, and checks it with <Sym id="function:check_admin_referer" /> before it
+calls your control callback, then sends the browser back to the dashboard. The example calls the control directly,
+to show the save. Your callback still checks the capability before it saves, because a nonce proves where the request
+came from, not that the person may change the setting. It sanitizes the value, as
+[Keeping your plugin safe](/guides/path/keeping-your-plugin-safe/) explains.
+
+The admin screens aren't ported to SpeedySpec yet, so this guide makes no promise about how the dashboard behaves
+there.

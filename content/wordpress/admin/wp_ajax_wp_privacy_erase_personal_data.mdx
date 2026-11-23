@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_ajax_wp_privacy_erase_personal_data"
+---
+
+## Behaviour
+
+Ajax handler for erasing a user's personal data: runs a page of one eraser for the request and sends how many items it removed or kept. <Ev source="wp:wp-admin/includes/ajax-actions.php#L5118-L5347" hash="518246066d35c4d410684a3e390353fb999f60a82a02426231ea95ab93b4da5b"/>
+
+## Override
+
+`wp_privacy_personal_data_erasers`, `wp_privacy_personal_data_erasure_page` filter it.

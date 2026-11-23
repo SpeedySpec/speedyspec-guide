@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_stream_image"
+---
+
+## Behaviour
+
+Sends an image editor's image to the browser in its MIME type; gives whether it worked. <Ev source="wp:wp-admin/includes/image-edit.php#L349-L408" hash="5059423830e3a32e1545540b8aad83b93ee0687641d2c034f54d3cb5abbc3f07"/>
+
+## Override
+
+`image_editor_save_pre`, `image_save_pre` filter it.

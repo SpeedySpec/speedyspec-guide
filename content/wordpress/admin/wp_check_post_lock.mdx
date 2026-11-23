@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_check_post_lock"
+---
+
+## Behaviour
+
+The ID of the user editing a post when someone else holds its lock within the last 150 seconds, or false. <Ev source="wp:wp-admin/includes/post.php#L1744-L1773" hash="c6cb07ce0fc6254fc30f7c627330fb82a4c031d740adfaa6d1298e47453983ac"/>
+
+## Override
+
+`wp_check_post_lock_window` filters it.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'user 1 reads' => \n  array (\n    0 => 'Emma',\n    1 => 'Dune',\n  ),\n  'rows deleted' => 1,\n  'user 2 reads' => \n  array (\n  ),\n)",
+ "error": null
+}

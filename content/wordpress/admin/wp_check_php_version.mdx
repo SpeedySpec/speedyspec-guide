@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_check_php_version"
+---
+
+## Behaviour
+
+Asks the WordPress.org Serve Happy API whether the server's PHP version is supported, secure or recommended, cached for a week. <Ev source="wp:wp-admin/includes/misc.php#L1651-L1709" hash="fe96dbf7e2f8550e01174ad93d0576f082349d4bcdc89382d77d3cdfa5569912"/>
+
+## Override
+
+`wp_is_php_version_acceptable` filters it.

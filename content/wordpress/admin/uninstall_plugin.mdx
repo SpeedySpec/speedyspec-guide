@@ -1,0 +1,11 @@
+---
+symbol: "function:uninstall_plugin"
+---
+
+## Behaviour
+
+Runs a plugin's uninstall routine: its uninstall.php, or the callback it registered with register_uninstall_hook(). <Ev source="wp:wp-admin/includes/plugin.php#L1313-L1365" hash="31593c772134253746ab9445f5b1502c71a70ce966c8a9a5f225f91454760d53"/>
+
+## Override
+
+`pre_uninstall_plugin`, `uninstall_{$file}` fire.

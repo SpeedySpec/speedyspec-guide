@@ -1,0 +1,9 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "multisite": true,
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated install_global_terms since 6.1.0',\n)",
+ "error": null
+}

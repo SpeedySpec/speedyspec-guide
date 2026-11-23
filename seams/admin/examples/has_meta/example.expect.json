@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  '_encloseme' => '1',\n  '_pingme' => '1',\n  'origin' => 'Fujian',\n)",
+ "error": null
+}

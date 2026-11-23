@@ -1,0 +1,11 @@
+---
+symbol: "function:media_upload_form_handler"
+---
+
+## Behaviour
+
+Saves the old media dialog's form: each attachment's fields, then inserts one into the editor or saves the gallery. <Ev source="wp:wp-admin/includes/media.php#L793-L914" hash="890492381643f07e9bb91ca30b8661ea73c2efc63f7a474ce57e2a6cc45ba676"/>
+
+## Override
+
+`attachment_fields_to_save`, `media_send_to_editor` filter it.

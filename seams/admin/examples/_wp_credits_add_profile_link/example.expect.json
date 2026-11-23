@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<a href=\"https://profiles.wordpress.org/ada/\">Ada Lovelace</a>'",
+ "error": null
+}

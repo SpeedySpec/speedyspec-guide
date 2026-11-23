@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'administrator sees it' => true,\n  'subscriber sees it' => false,\n  'Events and News removed' => true,\n)",
+ "error": null
+}

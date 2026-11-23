@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated _insert_into_post_button since 3.5.0',\n)",
+ "error": null
+}

@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_dashboard_setup"
+---
+
+## Behaviour
+
+Registers the dashboard's widgets (At a Glance, Activity, Quick Draft, Events and News, Site Health and the others), fires wp_dashboard_setup and saves widget control forms. <Ev source="wp:wp-admin/includes/dashboard.php#L47-L198" hash="8afda4173432d0736b26ef6235656717849026b339f20a37ce33e1568e32bf65"/>
+
+## Override
+
+`wp_network_dashboard_widgets`, `wp_user_dashboard_widgets`, `wp_dashboard_widgets` filter it; `wp_network_dashboard_setup`, `wp_user_dashboard_setup`, `wp_dashboard_setup`, `do_meta_boxes` fire.

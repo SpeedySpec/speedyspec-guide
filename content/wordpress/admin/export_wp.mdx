@@ -1,0 +1,11 @@
+---
+symbol: "function:export_wp"
+---
+
+## Behaviour
+
+Prints the WordPress eXtended RSS export of the site's content (all, or posts of a type, author, date or status), with its authors, terms and comments, and sends the download headers. <Ev source="wp:wp-admin/includes/export.php#L57-L752" hash="548dd1f4377f2384842eaa027f6cb8b0a3c2244e403d654d5893410b54d8b839"/>
+
+## Override
+
+`export_wp_filename`, `wxr_export_skip_termmeta`, `the_title_export`, `the_content_export`, `the_excerpt_export`, `wxr_export_skip_postmeta`, `wxr_export_skip_commentmeta` filter it; `export_wp`, `rss2_head` fire.

@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'Image restored successfully.',\n  1 => 40,\n  2 => 30,\n)",
+ "error": null
+}

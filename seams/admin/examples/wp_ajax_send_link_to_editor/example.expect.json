@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => true,\n  1 => '<a href=\"https://example.org/notes.pdf\">Notes</a>',\n)",
+ "error": null
+}

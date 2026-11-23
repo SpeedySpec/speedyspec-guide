@@ -1,0 +1,11 @@
+---
+symbol: "function:wp_generate_attachment_metadata"
+---
+
+## Behaviour
+
+Makes an uploaded file's metadata: for images its size, the sub-sizes it creates and EXIF data; for audio and video their ID3 data; filtered by wp_generate_attachment_metadata. <Ev source="wp:wp-admin/includes/image.php#L579-L751" hash="f6f6462372a48a3c9be2f9f43043c3ec9aed9c3b0bb2bff2a370df798d7888bf"/>
+
+## Override
+
+`attachment_thumbnail_args`, `fallback_intermediate_image_sizes`, `wp_generate_attachment_metadata` filter it.

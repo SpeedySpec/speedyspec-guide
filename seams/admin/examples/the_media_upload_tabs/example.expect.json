@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<ul id=\\'sidemenu\\'> <li id=\\'tab-type\\'><a href=\\'/?tab=type\\' class=\\'current\\'>From Computer</a></li> <li id=\\'tab-type_url\\'><a href=\\'/?tab=type_url\\'>From URL</a></li> <li id=\\'tab-library\\'><a href=\\'/?tab=library\\'>Media Library</a></li> </ul>'",
+ "error": null
+}

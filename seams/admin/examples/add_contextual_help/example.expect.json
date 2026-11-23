@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => NULL,\n  1 => 'deprecated add_contextual_help since 3.3.0, use get_current_screen()->add_help_tab()',\n)",
+ "error": null
+}

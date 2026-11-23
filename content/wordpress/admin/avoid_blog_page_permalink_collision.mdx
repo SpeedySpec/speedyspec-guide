@@ -1,0 +1,11 @@
+---
+symbol: "function:avoid_blog_page_permalink_collision"
+---
+
+## Behaviour
+
+Hooked to wp_insert_post_data on a subdirectory network's main site: renames a page whose slug would clash with a site's path. <Ev source="wp:wp-admin/includes/ms.php#L722-L752" hash="72e749cc815fe07f1a0cfae272aabd04f64bb7aa9a2fac47ac071dcaa34eb3c6"/>
+
+## Override
+
+Not overridable.

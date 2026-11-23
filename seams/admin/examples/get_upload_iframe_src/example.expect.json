@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'http://example.org/wp-admin/media-upload.php?post_id=5&type=image&TB_iframe=1',\n  1 => 'http://example.org/wp-admin/media-upload.php?post_id=5&tab=library&TB_iframe=1',\n)",
+ "error": null
+}

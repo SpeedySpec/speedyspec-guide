@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  0 => 'dashboard_site_health',\n  1 => 'dashboard_right_now',\n  2 => 'dashboard_activity',\n)",
+ "error": null
+}

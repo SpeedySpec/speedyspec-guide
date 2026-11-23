@@ -1,0 +1,11 @@
+---
+symbol: "function:edit_form_image_editor"
+---
+
+## Behaviour
+
+Prints the attachment edit screen's main area: the image with its Edit Image button, or the player, and the caption, alt and description fields. <Ev source="wp:wp-admin/includes/media.php#L3215-L3402" hash="c69cb7a663e373e3c4ead5ef768d4949a3932afe68c0af16cd3816f0b74c30e9"/>
+
+## Override
+
+`activate_tinymce_for_media_description` filters it; `wp_edit_form_attachment_display` fires.

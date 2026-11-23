@@ -1,0 +1,11 @@
+---
+symbol: "function:iframe_header"
+---
+
+## Behaviour
+
+Prints the start of an admin page shown in an iframe, such as the old media dialog: head, styles, scripts and the opening body. <Ev source="wp:wp-admin/includes/template.php#L2129-L2232" hash="4a345fc6456152d0dd6d10bde9ba6e50529a0497d8acc783001991808b6aa49b"/>
+
+## Override
+
+`admin_body_class` filters it; `admin_enqueue_scripts`, `admin_print_styles-{$hook_suffix}`, `admin_print_styles`, `admin_print_scripts-{$hook_suffix}`, `admin_print_scripts`, `admin_head-{$hook_suffix}`, `admin_head` fire.

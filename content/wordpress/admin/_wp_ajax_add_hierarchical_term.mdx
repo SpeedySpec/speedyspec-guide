@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_ajax_add_hierarchical_term"
+---
+
+## Behaviour
+
+Ajax handler for a category box's Add New link: inserts a hierarchical term and sends back the checkbox list item and the parent dropdown as XML. <Ev source="wp:wp-admin/includes/ajax-actions.php#L538-L663" hash="0b1921aae6eaf2519f2eed59391640c1c5ba991f157e1a81d6f899ef700b5eae"/>
+
+## Override
+
+`post_edit_category_parent_dropdown_args` filters it.

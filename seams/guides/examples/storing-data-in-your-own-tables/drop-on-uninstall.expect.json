@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'table' => NULL,\n  'db version' => 'gone',\n)",
+ "error": null
+}

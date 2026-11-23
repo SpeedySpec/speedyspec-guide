@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "'<img src=\"http://example.org/wp-content/uploads/2026/11/lake.jpg\" alt=\"A lake\" width=\"1200\" height=\"800\" class=\"alignnone size-full wp-image-1\" />'",
+ "error": null
+}
