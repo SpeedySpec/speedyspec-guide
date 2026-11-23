@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'name' => 'My Plugin reading list',\n  'pages' => \n  array (\n    0 => \n    array (\n      'books' => \n      array (\n        0 => 'Dune',\n        1 => 'Emma',\n      ),\n      'done' => false,\n    ),\n    1 => \n    array (\n      'books' => \n      array (\n        0 => 'Ivanhoe',\n      ),\n      'done' => true,\n    ),\n  ),\n)",
+ "error": null
+}

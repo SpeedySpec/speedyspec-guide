@@ -1,0 +1,72 @@
+---
+title: Supporting privacy requests
+summary: Plug your plugin's personal data into WordPress's export and erase tools with an exporter and an eraser, and suggest text for the site's privacy policy.
+---
+
+Privacy laws give people the right to a copy of the personal data a site holds about them, and to have it erased.
+WordPress has tools for both under Tools, Export Personal Data and Erase Personal Data. A site's owner confirms the
+person's email address, then runs the request. WordPress gathers its own data, such as comments and the user's
+profile, but it can't know what your plugin stores. If your plugin keeps anything about a person, register an
+**exporter** and an **eraser** so those tools include it.
+
+The examples keep a reading list and purchase records for each person, in user meta.
+
+## Exporting a person's data
+
+Register an exporter on the <Sym id="filter:wp_privacy_personal_data_exporters" /> filter, with a name people read
+and a callback. WordPress calls the callback with the person's email address and a page number, starting at 1. It
+returns the items for that page, and `done` once there are no more:
+
+<Example id="guides/supporting-privacy-requests/register-an-exporter" />
+
+WordPress kept calling until the second page said it was done. Paging keeps each request short, so a person with
+thousands of items doesn't make one request time out. Each item has:
+
+- a `group_id` and a `group_label`, which put related items under one heading in the export;
+- an `item_id`, unique within the group;
+- its `data`, a list of names and values, which the export shows as a table.
+
+Find the person by their email address, and remember that they may have no account. Someone who only left a comment
+can ask too, so return no items, with `done`, when you have nothing for them. WordPress puts everything the
+exporters return into a zip file the person downloads.
+
+## Erasing a person's data
+
+Register an eraser on the <Sym id="filter:wp_privacy_personal_data_erasers" /> filter. Its callback takes the same
+email address and page, removes what it can, and reports back:
+
+<Example id="guides/supporting-privacy-requests/register-an-eraser" />
+
+The eraser reports four things:
+
+- `items_removed`: whether it removed anything;
+- `items_retained`: whether it kept anything it was asked to remove;
+- `messages`: why it kept it, shown to the site's owner;
+- `done`: whether this was the last page.
+
+Erasing doesn't have to mean deleting. Some data must be kept, here purchase records for tax law. Say so in a
+message, so the site's owner can tell the person. Other data can be kept once it no longer identifies anyone.
+<Sym id="function:wp_privacy_anonymize_data" /> replaces a value with an anonymous one of the same type, which keeps a
+record's shape without the person in it:
+
+<Example id="support/wp_privacy_anonymize_data/data" />
+
+Erasers change data that can't be recovered, so WordPress only runs them from the Erase Personal Data screen, for
+someone who may erase others' data and delete users: an administrator. Don't add a way to start one from anywhere
+else.
+
+## Suggesting privacy policy text
+
+A site's privacy policy should say what each plugin collects. Suggest wording with
+<Sym id="function:wp_add_privacy_policy_content" />, on `admin_init`. The site's owner sees it in the policy guide, at
+Settings, Privacy, and decides what to copy into their policy:
+
+<Example id="admin/wp_add_privacy_policy_content/example" />
+
+Write it for the people who visit the site, not for the site's owner: what you store, why, for how long, and who
+else receives it. Translate it with your text domain, as
+[Making your plugin translatable](/guides/path/making-your-plugin-translatable/) explains, because it ends up on the
+site in the site's language.
+
+The Privacy tools aren't ported to SpeedySpec yet, so this guide makes no promise about how privacy requests are
+handled there.

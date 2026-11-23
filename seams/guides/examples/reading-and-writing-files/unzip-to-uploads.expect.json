@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'unzipped' => true,\n  'files' => \n  array (\n    0 => 'dune.txt',\n    1 => 'emma.txt',\n  ),\n  'cleaned up' => true,\n)",
+ "error": null
+}

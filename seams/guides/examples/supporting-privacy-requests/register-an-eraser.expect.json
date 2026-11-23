@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'result' => \n  array (\n    'items_removed' => true,\n    'items_retained' => true,\n    'messages' => \n    array (\n      0 => 'Purchase records are kept for seven years for tax law.',\n    ),\n    'done' => true,\n  ),\n  'reading list' => '',\n  'purchases kept' => \n  array (\n    0 => 'order 1001',\n  ),\n  'unknown email' => false,\n)",
+ "error": null
+}

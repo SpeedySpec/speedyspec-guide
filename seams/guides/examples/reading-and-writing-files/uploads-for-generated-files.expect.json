@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'folder exists' => true,\n  'path' => '<tmp>/guide-uploads/my-plugin/exports',\n  'url' => 'http://example.org/wp-content/uploads/my-plugin/exports',\n)",
+ "error": null
+}

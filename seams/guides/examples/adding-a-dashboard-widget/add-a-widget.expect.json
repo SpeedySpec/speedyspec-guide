@@ -1,0 +1,8 @@
+{
+ "sides": [
+  "wordpress"
+ ],
+ "output": "",
+ "return": "array (\n  'title' => 'Reading stats',\n  'content' => '<p>You have read 2 of 12 books this year.</p>',\n)",
+ "error": null
+}

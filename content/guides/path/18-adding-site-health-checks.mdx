@@ -1,0 +1,61 @@
+---
+title: Adding Site Health checks
+summary: Add tests of your plugin's own to Tools, Site Health, so a site's owner learns what is wrong and how to fix it, and add a section to its Info tab that is safe to share.
+---
+
+Tools, Site Health checks a site for problems and explains how to fix them: an old PHP version, a folder WordPress
+can't write to, scheduled tasks that never run. Its **Info** tab lists the site's configuration, and people copy it
+into support requests. Your plugin can add to both, so problems with its own setup are found on the same screen, and
+people asking you for help can send the details you need.
+
+## Adding a test
+
+Register a test on the <Sym id="filter:site_status_tests" /> filter, under `direct`, with a label and a callback. The
+callback checks one thing and returns its result:
+
+<Example id="guides/adding-site-health-checks/add-a-direct-test" />
+
+A result has:
+
+- a `label`, the headline people read, which says what is true rather than naming the test;
+- a `status`: `good`, `recommended` for an improvement, or `critical` for something that will break the site;
+- a `badge` with a `label` and a `color`, which names the area, such as Performance or Security;
+- a `description`, HTML that explains the result, and `actions`, HTML with links to fix it;
+- the `test` name, matching the one you registered.
+
+Change the label with the status, as the example does, so the headline still reads true when the test fails. Use
+`critical` sparingly. Site Health counts critical results in its summary and on the dashboard, and people learn to
+ignore a tool that cries wolf.
+
+The description and actions are printed as HTML, so escape everything you put in them.
+
+## How tests run
+
+<Sym id="method:WP_Site_Health::get_tests" /> gathers every test, WordPress's and every plugin's, through the
+filter:
+
+<Example id="guides/adding-site-health-checks/tests-are-listed" />
+
+There are two kinds. A **direct** test runs in PHP while the Status screen loads, so it must be quick: read an
+option, check a folder. An **async** test runs afterwards, one at a time, through a REST endpoint or an Ajax action
+the screen calls, so it can take longer, for example to make an HTTP request. WordPress's own check for background
+updates is async. Register an async test under `async`, with `has_rest` set to `true` and the endpoint as its `test`,
+and give it an `async_direct_test` callback too, for when it is run without the screen.
+
+That happens once a week. A scheduled task runs every test to keep the count of problems on the dashboard current.
+Set `skip_cron` to `true` on a test that shouldn't run then.
+
+## Adding to the Info tab
+
+Add a section of your own on the <Sym id="filter:debug_information" /> filter, keyed by your plugin's slug, with a
+label and its fields. Each field has a label and a value:
+
+<Example id="guides/adding-site-health-checks/debug-information" />
+
+The Info tab shows both fields. The copied report, built by <Sym id="method:WP_Debug_Data::format" />, left out the
+one marked `private`. People paste that report into public support forums, so mark every field that is secret, or
+that identifies the site or a person, as private. Better still, show only whether a secret is set, as the example
+does, and never the secret itself.
+
+The admin screens aren't ported to SpeedySpec yet, so this guide makes no promise about how Site Health behaves
+there.
