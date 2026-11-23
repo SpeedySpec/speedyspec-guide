@@ -1,5 +1,5 @@
 import type { SeamRepository } from '@speedyspec-guide/contracts';
-import { type Citation, type DependencyState, type Edge, type EdgeKind, type Elsewhere, parseCitation, type Seam } from '@speedyspec-guide/domain';
+import { type Citation, type DependencyState, type Edge, type EdgeKind, type Elsewhere, parseCitation, type Seam, type Unrunnable } from '@speedyspec-guide/domain';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
@@ -80,6 +80,18 @@ export class SeamFiles implements SeamRepository {
         return { name: e.name, docs: e.docs, files, note: typeof e.note === 'string' ? e.note : '' };
       });
     };
+    const unrunnable = (): Unrunnable[] => {
+      const v = data.unrunnable;
+      if (v === undefined) return [];
+      if (!Array.isArray(v)) throw new Error(`${where}: "unrunnable" must be a list`);
+      return v.map((entry, i) => {
+        const e = (entry ?? {}) as { symbol?: unknown; reason?: unknown };
+        if (typeof e.symbol !== 'string' || e.symbol === '' || typeof e.reason !== 'string' || e.reason.trim() === '') {
+          throw new Error(`${where}: unrunnable entry ${i + 1} needs a symbol and a reason`);
+        }
+        return { symbol: e.symbol, reason: e.reason };
+      });
+    };
     let setup: string | undefined;
     if (data.setup !== undefined) {
       if (typeof data.setup !== 'string' || data.setup.trim() === '') throw new Error(`${where}: "setup" must be a file name`);
@@ -95,6 +107,7 @@ export class SeamFiles implements SeamRepository {
       symbols: list('symbols'),
       exclude: list('exclude'),
       elsewhere: elsewhere(),
+      unrunnable: unrunnable(),
       roles: roles as Record<string, string[]>,
       wordpress: list('wordpress'),
       crates: list('crates'),

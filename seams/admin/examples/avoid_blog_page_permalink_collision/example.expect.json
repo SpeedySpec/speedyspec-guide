@@ -4,6 +4,6 @@
  ],
  "multisite": true,
  "output": "",
- "return": "'tea6'",
+ "return": "array (\n  0 => true,\n  1 => true,\n)",
  "error": null
 }

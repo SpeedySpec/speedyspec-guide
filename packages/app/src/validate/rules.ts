@@ -149,11 +149,18 @@ export const DocumentedSeamCovered: Rule = {
         .filter(([id, s]) => s === seam && !id.startsWith('method:'))
         .map(([id]) => id)
         .sort();
+      // Functions no example can run (seam.yaml `unrunnable`) need a page only.
+      const unrunnable = new Set((ctx.seams.find((s) => s.id === seam)?.unrunnable ?? []).map((u) => u.symbol));
+      for (const symbol of [...unrunnable].sort()) {
+        if (!symbol.startsWith('function:') || !members.includes(symbol)) {
+          f.push({ rule: this.id, where: `seams/${seam}/seam.yaml`, message: `lists ${symbol} as unrunnable, but it is not a function of the ${seam} seam` });
+        }
+      }
       for (const id of members) {
         const fail = (need: string) => f.push({ rule: this.id, where: id, message: `the ${seam} seam is documented: ${id} needs ${need}` });
         if (!ctx.pages.some((p) => p.section === 'wordpress' && p.symbol === id)) fail('a WordPress page');
         // A function's examples are in the folder named after it.
-        else if (id.startsWith('function:') && !passed.has(`${seam}/${id.slice('function:'.length)}`)) fail('an example run on WordPress');
+        else if (id.startsWith('function:') && !unrunnable.has(id) && !passed.has(`${seam}/${id.slice('function:'.length)}`)) fail('an example run on WordPress');
       }
     }
     return f;

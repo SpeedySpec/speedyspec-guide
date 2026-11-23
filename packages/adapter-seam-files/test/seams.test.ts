@@ -39,6 +39,20 @@ describe('SeamFiles', () => {
     rmSync(dir, { recursive: true });
   });
 
+  test('an_unrunnable_entry_names_a_symbol_and_why', async () => {
+    const dir = only('unrunnable', 'a');
+    const [a, u] = await new SeamFiles(dir).all();
+    rmSync(dir, { recursive: true });
+    expect(a?.unrunnable).toEqual([]);
+    expect(u?.unrunnable).toEqual([{ symbol: 'function:ends_with_exit', reason: 'It ends the request with exit.' }]);
+  });
+
+  test('an_unrunnable_entry_needs_a_reason', async () => {
+    const dir = only('unrunnable-broken');
+    await expect(new SeamFiles(dir).all()).rejects.toThrow('unrunnable-broken/seam.yaml: unrunnable entry 1 needs a symbol and a reason');
+    rmSync(dir, { recursive: true });
+  });
+
   test('fork_fields_are_refused', async () => {
     const dir = only('forked');
     await expect(new SeamFiles(dir).all()).rejects.toThrow("forked/seam.yaml: forkPackages is no longer supported; list the seam's WordPress files");

@@ -12,6 +12,8 @@ export interface Seam {
   exclude: string[];
   /** APIs in this seam's files that are documented elsewhere, so the guide leaves their symbols out. */
   elsewhere: Elsewhere[];
+  /** Functions no example can run, such as those that end the request, which the coverage gate checks for a page only. */
+  unrunnable?: Unrunnable[];
   roles: Record<string, string[]>;
   edges: Edge[];
   /** WordPress files an example of this seam loads first, on the WordPress side (relative to the release). */
@@ -49,4 +51,12 @@ export interface Assignment {
   seamOf: Record<string, string>;
   unassigned: string[];
   conflicts: { symbol: string; seams: string[] }[];
+}
+
+/** A function of a seam that no example can run on WordPress, and why, so the coverage gate asks for its page only. */
+export interface Unrunnable {
+  /** The function's symbol id, such as `function:redirect_post`. */
+  symbol: string;
+  /** Why no example can run it, for readers and reviewers. */
+  reason: string;
 }

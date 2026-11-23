@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "\\WP_Post::__set_state(array(\n   'ID' => 1,\n   'post_author' => '1',\n   'post_date' => '2026-11-23 03:34:29',\n   'post_date_gmt' => '0000-00-00 00:00:00',\n   'post_content' => '',\n   'post_title' => 'Docs',\n   'post_excerpt' => '',\n   'post_status' => 'draft',\n   'comment_status' => 'closed',\n   'ping_status' => 'closed',\n   'post_password' => '',\n   'post_name' => '',\n   'to_ping' => '',\n   'pinged' => '',\n   'post_modified' => '2026-11-23 03:34:29',\n   'post_modified_gmt' => '0000-00-00 00:00:00',\n   'post_content_filtered' => '',\n   'post_parent' => 0,\n   'guid' => 'http://example.org/?p=1',\n   'menu_order' => 1,\n   'post_type' => 'nav_menu_item',\n   'post_mime_type' => '',\n   'comment_count' => '0',\n   'filter' => 'raw',\n))",
+ "return": "array (\n  0 => NULL,\n  1 => 'draft',\n)",
  "error": null
 }

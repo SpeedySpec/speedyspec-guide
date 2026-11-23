@@ -1,0 +1,7 @@
+name: Unrunnable
+job: Fixture seam with a function no example can run.
+ported: false
+files: ["u/*.php"]
+unrunnable:
+  - symbol: "function:ends_with_exit"
+    reason: It ends the request with exit.

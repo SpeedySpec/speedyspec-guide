@@ -1,0 +1,6 @@
+name: Broken unrunnable
+job: Fixture seam with an unrunnable entry missing its reason.
+ported: false
+files: []
+unrunnable:
+  - symbol: "function:ends_with_exit"
