@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "array (\n  0 => 'instance_vertical-header',\n  1 => 'instance_footer-columns',\n  2 => 'instance_footer-newsletter',\n)",
+ "return": "array (\n  0 => 'instance_footer',\n  1 => 'instance_footer-columns',\n  2 => 'instance_footer-newsletter',\n)",
  "error": null
 }
