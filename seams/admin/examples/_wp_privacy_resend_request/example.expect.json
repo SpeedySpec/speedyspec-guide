@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "true",
+ "return": "array (\n  0 => true,\n  1 => 'ada@example.org',\n)",
  "error": null
 }
