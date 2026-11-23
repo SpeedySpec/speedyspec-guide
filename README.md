@@ -59,6 +59,17 @@ bun run runner:build
 
 `GUIDE_RUNNER` points the pipeline at another binary. With `--offline` and no binary, the runner stages are skipped.
 
+On Linux, speedyspec-server builds its static PHP for musl, so build PHP and the runner in a musl container with
+`scripts/linux-runner.sh`, as CI does. The PHP build goes to `<server>/.php-build-linux` (`-arm64` on arm64), and the
+runner comes out fully static, ready to run on the host:
+
+```bash
+scripts/linux-runner.sh bash -c 'cd .cache/speedyspec-server && scripts/build-php.sh'
+GUIDE_PHP_BUILDROOT=.cache/speedyspec-server/.php-build-linux/buildroot bun run runner:link
+scripts/linux-runner.sh bash -c 'cd runner && cargo test && cargo build --release'
+GUIDE_RUNNER=runner/target/x86_64-unknown-linux-musl/release/speedyspec-guide-examples bun run guide examples
+```
+
 Examples live in `seams/<seam>/examples/<symbol>/<name>.php`, each with `<name>.expect.json`:
 `{ "sides": ["wordpress", "runtime"], "output": "", "return": "20", "error": null }`. `return` is PHP's
 `var_export()` of what the file returns (`"1"` when it returns nothing); an `error` ending in `*` matches by prefix.

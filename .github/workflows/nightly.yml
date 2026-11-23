@@ -27,6 +27,8 @@ jobs:
     env:
       GUIDE_MYSQL_URL: mysql://root:password@127.0.0.1:3306/guide_examples
       GUIDE_SERVER_DIR: ${{ github.workspace }}/.cache/speedyspec-server
+      # The runner is built for musl, in a container (scripts/linux-runner.sh), and runs here fully static.
+      GUIDE_RUNNER: ${{ github.workspace }}/runner/target/x86_64-unknown-linux-musl/release/speedyspec-guide-examples
     steps:
       - uses: actions/checkout@v4
 
@@ -43,36 +45,28 @@ jobs:
           ref: main
           path: .cache/speedyspec-server
 
+      # speedyspec-server's static PHP is built for musl, so it and the runner that links it are built in a musl
+      # container; on this glibc host the link fails on musl-only symbols.
       - name: Cache the static PHP
         id: php
         uses: actions/cache@v4
         with:
-          path: .cache/speedyspec-server/.php-build/buildroot
-          key: php-${{ runner.os }}-${{ hashFiles('.cache/speedyspec-server/php-version', '.cache/speedyspec-server/craft.yml', '.cache/speedyspec-server/scripts/build-php.sh') }}
+          path: .cache/speedyspec-server/.php-build-linux
+          key: php-musl-${{ runner.os }}-${{ hashFiles('.cache/speedyspec-server/php-version', '.cache/speedyspec-server/craft.yml', '.cache/speedyspec-server/scripts/build-php.sh', 'scripts/linux-runner.sh') }}
 
       - name: Build the static PHP
         if: steps.php.outputs.cache-hit != 'true'
-        working-directory: .cache/speedyspec-server
         env:
-          SPEEDYSPEC_ALLOW_HOST_INSTALL: "1"
-        run: scripts/build-php.sh
-
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: "1.99"
-
-      # ubuntu-latest ships clang 20, 21 and 22. bindgen (ext-php-rs) loads the newest libclang, 22, but takes its
-      # builtin headers from the default clang, 21, whose SSE intrinsics call builtins that clang 22 removed. Point
-      # bindgen at the libclang of the default clang so the two agree.
-      - name: Use the libclang that matches clang
-        run: echo "LIBCLANG_PATH=$(dirname "$(dirname "$(clang -print-resource-dir)")")" >> "$GITHUB_ENV"
+          # spc looks up source releases through the GitHub API; the read-only token avoids rate limits.
+          GITHUB_TOKEN: ${{ github.token }}
+        run: scripts/linux-runner.sh bash -c 'cd .cache/speedyspec-server && scripts/build-php.sh'
 
       - name: Cache the runner build
         uses: actions/cache@v4
         with:
           path: runner/target
-          key: runner-nightly-${{ runner.os }}-${{ github.run_id }}${{ hashFiles('runner/Cargo.toml', 'runner/src/**') }}
-          restore-keys: runner-nightly-${{ runner.os }}-
+          key: runner-nightly-musl-${{ runner.os }}-${{ github.run_id }}${{ hashFiles('runner/Cargo.toml', 'runner/src/**') }}
+          restore-keys: runner-nightly-musl-${{ runner.os }}-
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -95,10 +89,11 @@ jobs:
           key: wordpress-${{ steps.pins.outputs.wordpress }}
 
       - name: Test and build the runner
+        env:
+          GUIDE_PHP_BUILDROOT: ${{ github.workspace }}/.cache/speedyspec-server/.php-build-linux/buildroot
         run: |
           bun run runner:link
-          bun run runner:test
-          bun run runner:build
+          scripts/linux-runner.sh bash -c 'cd runner && cargo test && cargo build --release'
 
       - name: Run the examples and list the runtime's API
         id: run
