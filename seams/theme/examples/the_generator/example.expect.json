@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "'<meta name=\"generator\" content=\"WordPress 7.2-RC1-65559-src\" />'",
+ "return": "'<meta name=\"generator\" content=\"WordPress <version>\" />'",
  "error": null
 }

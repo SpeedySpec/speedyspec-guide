@@ -9,7 +9,7 @@ const fixtures = join(import.meta.dir, 'fixtures');
 let d: GuideData;
 let diagram: string;
 beforeAll(async () => {
-  d = await readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content') });
+  d = await readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SOURCES: join(fixtures, 'sources.json'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content') });
   diagram = seamDiagram(seamView('hooks', 'wordpress', d), d)!;
 });
 

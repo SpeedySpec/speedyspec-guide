@@ -3,6 +3,6 @@
   "wordpress"
  ],
  "output": "",
- "return": "'http://example.org/wp-admin/css/login.css?version=7.2-RC1-65559-src'",
+ "return": "'http://example.org/wp-admin/css/login.css?version=<version>'",
  "error": null
 }

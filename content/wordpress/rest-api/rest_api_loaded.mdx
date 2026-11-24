@@ -4,7 +4,7 @@ symbol: "function:rest_api_loaded"
 
 ## Behaviour
 
-Hooked to parse_request: when the request has a rest_route query variable, serves it through the REST server and stops; otherwise does nothing. <Ev source="wp:wp-includes/rest-api.php#L456-L500" hash="3168163e8c5526653465edc5e0c0d396cd04758f64d4defffd2a65a1de5275d7"/>
+Hooked to parse_request: when the request has a rest_route query variable and isn't an admin screen (`WP_ADMIN`), serves it through the REST server and stops; otherwise does nothing. <Ev source="wp:wp-includes/rest-api.php#L456-L504" hash="f31517a9bd0f63bd0036bd9a9065cdd3419ba7ad7fac2a0f800ecba5540d78f7"/>
 
 ## Override
 

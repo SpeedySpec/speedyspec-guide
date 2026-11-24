@@ -8,4 +8,4 @@ An empty final class, declared when `plugin.php` loads. <Ev source="wp:wp-includ
 
 Each instance is a distinct object, so `===` tells it apart from any other value. Passed as a filter's value, it comes back as the same object when no callback replaces it. <Ev example="hooks/class--WP_Filter_Sentinel/identity"/>
 
-WordPress uses one as the default of `wp_pre_execute_ability`: `WP_Ability::execute()` continues only when the filter returns that same instance. <Ev source="wp:wp-includes/abilities-api/class-wp-ability.php#L998-L1025" hash="d1e3fcc7a55d1711b4d73d42a1351f3fc716d1ca56b321374de31234364a5ee3"/>
+WordPress uses one as the default of `wp_pre_execute_ability`: `WP_Ability::execute()` continues only when the filter returns that same instance. <Ev source="wp:wp-includes/abilities-api/class-wp-ability.php#L1021-L1048" hash="d1e3fcc7a55d1711b4d73d42a1351f3fc716d1ca56b321374de31234364a5ee3"/>

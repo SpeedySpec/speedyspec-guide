@@ -1,0 +1,5 @@
+---
+symbol: "method:WP_Customize_Setting::sanitize_option_value"
+---
+
+Runs an option setting's value through `sanitize_option()`, as `update_option()` would, with the option's preview suspended. A multidimensional value is sanitized as part of its whole option. Errors added with `add_settings_error()` while sanitizing come back as a `WP_Error`, and the site's other settings errors are left as they were. <Ev source="wp:wp-includes/class-wp-customize-setting.php#L730-L793" hash="125078a6ef8e575be674932f9645bc96590011524d666130bcd8174900c10703"/>

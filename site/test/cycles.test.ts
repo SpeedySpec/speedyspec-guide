@@ -6,7 +6,7 @@ import { seamCycles } from '../src/model/sections.ts';
 const fixtures = join(import.meta.dir, 'fixtures');
 let d: GuideData;
 beforeAll(async () => {
-  d = await readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content') });
+  d = await readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SOURCES: join(fixtures, 'sources.json'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content') });
 });
 
 describe('seamCycles', () => {

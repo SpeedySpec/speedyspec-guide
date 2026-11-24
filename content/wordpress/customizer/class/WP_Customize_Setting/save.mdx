@@ -2,4 +2,4 @@
 symbol: "method:WP_Customize_Setting::save"
 ---
 
-Saves the setting's customized value, when the user may and the theme supports it; fires `customize_save_{base}`. <Ev source="wp:wp-includes/class-wp-customize-setting.php#L523-L545" hash="6113b81896c82bd7dc1aaf81693560a6f5c4ebfdd2fb7ea70cde7b23df02db7e"/>
+Saves the setting's customized value, when the user may and the theme supports it; fires `customize_save_{base}`. An option setting's preview is suspended while it saves, so `update_option()` compares against the stored value. <Ev source="wp:wp-includes/class-wp-customize-setting.php#L601-L650" hash="af6653139bbd9a95fd973afcd35ea08cb9de6fc74b8269f84c427fc1138c4e3c"/>

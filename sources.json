@@ -1,8 +1,8 @@
 {
   "wordpress": {
     "repo": "https://github.com/WordPress/wordpress-develop.git",
-    "commit": "ce78d2d6eb8b7dc98a5e896760f5642049288868",
-    "version": "7.2-RC1",
+    "commit": "1ccce2133e92fad7cea0837fb5da432ea6ba980f",
+    "version": "7.2-RC2",
     "path": "src",
     "tags": "https://github.com/WordPress/wordpress-develop.git"
   },

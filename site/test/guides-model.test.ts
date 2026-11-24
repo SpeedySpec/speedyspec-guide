@@ -6,7 +6,7 @@ import { readGuideData } from '../src/model/data.ts';
 import { symbolHref, topicReferenceHref } from '../src/model/guides.ts';
 
 const fixtures = join(import.meta.dir, 'fixtures');
-const env = (seams: string) => ({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SEAMS_DIR: seams, GUIDE_CONTENT_DIR: join(fixtures, 'content') });
+const env = (seams: string) => ({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SOURCES: join(fixtures, 'sources.json'), GUIDE_SEAMS_DIR: seams, GUIDE_CONTENT_DIR: join(fixtures, 'content') });
 
 /** The fixtures plus a seam that only SpeedySpec has: it lists a runtime class and no WordPress files. */
 async function withSpeedySpecOnlySeam() {

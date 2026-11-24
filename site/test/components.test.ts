@@ -5,7 +5,7 @@ import { buildSite, html } from './helpers.ts';
 const fixtures = join(import.meta.dir, 'fixtures');
 let dist = '';
 beforeAll(() => {
-  const build = buildSite({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content'), GUIDE_COMPONENT_TESTS: '1' });
+  const build = buildSite({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SOURCES: join(fixtures, 'sources.json'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content'), GUIDE_COMPONENT_TESTS: '1' });
   if (build.exitCode !== 0) throw new Error(build.output);
   dist = build.dist;
 }, 180_000);
