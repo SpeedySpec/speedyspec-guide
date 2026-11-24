@@ -1,0 +1,11 @@
+---
+symbol: "function:_wp_check_comment_target_post"
+---
+
+## Behaviour
+
+Checks whether the current user may move a comment to another post; gives `true` or a `comment_post_invalid` error. Any comment can go to a post the user can edit, and a user who can moderate comments can move one to any post. A note can only go to a post the user can edit and read, which isn't in the trash and whose post type's editor supports notes. `edit_comment()` calls it when the edit form changes the comment's post. <Ev source="wp:wp-admin/includes/comment.php#L237-L287" hash="fc0c1e659985acf3d68339fd60ecf19b1a0f9fa4196424cb28f4873b9a1af244"/>
+
+## Override
+
+Not overridable.

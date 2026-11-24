@@ -4,7 +4,7 @@ symbol: "function:wp_notify_postauthor"
 
 ## Behaviour
 
-Emails a post's author about a new comment, when the comment is approved and the author is neither the commenter nor the current user; the recipients, text, subject and headers are filtered. <Ev source="wp:wp-includes/pluggable.php#L1755-L1998" hash="6b1556477942489f8d91cce935a55fd3c6ec7c06f4a3e4adb940111ab0a58a3d"/>
+Emails a post's author about a new comment, when the comment is approved and the author is neither the commenter nor the current user; the recipients, text, subject and headers are filtered. Line breaks in the commenter's name, email and URL become spaces, and Reply-To is set only for a valid email. <Ev source="wp:wp-includes/pluggable.php#L1755-L2011" hash="b284cd2da6e41654ea1ab6cf5309f3370a059dece96740d4c744e90a8efd98a0"/>
 
 ## Override
 
