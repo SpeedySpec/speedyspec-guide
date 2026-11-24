@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { readGuideData } from '../src/model/data.ts';
 
 const fixtures = join(import.meta.dir, 'fixtures');
-const env = { GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content') };
+const env = { GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SOURCES: join(fixtures, 'sources.json'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content') };
 
 describe('readGuideData', () => {
   test('reads generated data, seams with their extra fields, examples and content', async () => {

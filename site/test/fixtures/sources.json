@@ -1,0 +1,13 @@
+{
+  "wordpress": {
+    "repo": "https://github.com/WordPress/wordpress-develop.git",
+    "commit": "ce78d2d6eb8b7dc98a5e896760f5642049288868",
+    "version": "7.2-RC1",
+    "path": "src",
+    "tags": "https://github.com/WordPress/wordpress-develop.git"
+  },
+  "server": {
+    "repo": "https://github.com/SpeedySpec/speedyspec-server.git",
+    "commit": "8fc498313cd9b6cd381fed1fc68e2e106a86b3b3"
+  }
+}

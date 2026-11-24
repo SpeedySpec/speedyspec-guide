@@ -7,7 +7,7 @@ import { pageOf, seamView, symbolView } from '../src/model/views.ts';
 const fixtures = join(import.meta.dir, 'fixtures');
 let d: GuideData;
 beforeAll(async () => {
-  d = await readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content') });
+  d = await readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SOURCES: join(fixtures, 'sources.json'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content') });
 });
 
 async function withRuntimeListed(): Promise<GuideData> {
@@ -18,7 +18,7 @@ async function withRuntimeListed(): Promise<GuideData> {
   cpSync(dir, seams, { recursive: true });
   const file = join(seams, 'hooks', 'seam.yaml');
   writeFileSync(file, readFileSync(file, 'utf8').replace('symbols: [global:wp_filter]', 'symbols: [global:wp_filter, "class:SpeedySpec\\\\Hooks\\\\Hook"]'));
-  return readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SEAMS_DIR: seams, GUIDE_CONTENT_DIR: join(fixtures, 'content') });
+  return readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SOURCES: join(fixtures, 'sources.json'), GUIDE_SEAMS_DIR: seams, GUIDE_CONTENT_DIR: join(fixtures, 'content') });
 }
 
 describe('which pages exist', () => {

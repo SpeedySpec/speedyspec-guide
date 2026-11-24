@@ -45,14 +45,14 @@ describe('installation guide model', () => {
 
 describe('reading the guide', () => {
   test('reads content/install/ in reading order', async () => {
-    const d = await readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content') });
+    const d = await readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SOURCES: join(fixtures, 'sources.json'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: join(fixtures, 'content') });
     expect(d.install.map((p) => p.slug)).toEqual(['index', 'cli', 'server']);
     expect(d.install[1]).toEqual({ slug: 'cli', title: 'The CLI', summary: 'Installing the CLI.', order: 10, file: 'install/cli.mdx' });
   });
 
   test('a content folder without install/ gives no pages', async () => {
     const content = mkdtempSync(join(tmpdir(), 'guide-content-'));
-    const d = await readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: content });
+    const d = await readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SOURCES: join(fixtures, 'sources.json'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: content });
     expect(d.install).toEqual([]);
   });
 
@@ -60,7 +60,7 @@ describe('reading the guide', () => {
     const content = mkdtempSync(join(tmpdir(), 'guide-content-'));
     mkdirSync(join(content, 'install'));
     writeFileSync(join(content, 'install', 'cli.mdx'), '---\nsummary: no title\norder: 1\n---\nText.\n');
-    const read = readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: content });
+    const read = readGuideData({ GUIDE_DATA_DIR: join(fixtures, 'generated'), GUIDE_SOURCES: join(fixtures, 'sources.json'), GUIDE_SEAMS_DIR: join(fixtures, 'seams'), GUIDE_CONTENT_DIR: content });
     expect(read).rejects.toThrow('install/cli.mdx: front matter needs a title');
   });
 });
