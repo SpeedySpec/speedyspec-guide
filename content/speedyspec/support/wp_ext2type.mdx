@@ -11,6 +11,6 @@ Native, and WordPress's own algorithm: it lowercases the extension and returns t
 
 ## Differences
 
-`wp_get_ext_types()` files the extensions SpeedySpec adds, so this function knows them too. <Ev source="ss:compat/media/DIFFERENCES.md#L59-L66" hash="dfa8345b5217bd15fc49cf7474ffc5bae6e68a73ba8fde5db26352b022791ecf"/> No server test calls `wp_ext2type()` with an added extension; the difference follows from the list. <Ev test="speedyspec-wp-media-php::mime::wordpress_lists_are_kept"/>
+`wp_get_ext_types()` files the extensions SpeedySpec adds, so this function knows them too. <Ev source="ss:compat/media/DIFFERENCES.md#L59-L66" hash="5fa550f0d720b383cfa18ad15f467e68981dd19c98a6fdd7bee6eb9ab9a2b094"/> No server test calls `wp_ext2type()` with an added extension; the difference follows from the list. <Ev test="speedyspec-wp-media-php::mime::wordpress_lists_are_kept"/>
 
 See the [Media architecture](/speedyspec/architecture/media/) page.

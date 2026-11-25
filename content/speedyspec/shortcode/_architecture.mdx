@@ -62,5 +62,5 @@ fn expand_excerpt(container: Rc<Container>, excerpt: &[u8]) -> Vec<u8> {
 ## How to change this
 
 - **What must pass:** the crates' own tests; the recorded scenarios in `compat/shortcode`, replayed by `speedyspec-wp-shortcode-php`'s `compat` test through every scanner and parser; and WordPress's shortcode tests, run by its `wordpress` test. <Ev test="speedyspec-wp-shortcode-php::wordpress::wordpress_shortcode_tests_pass"/>
-- **Recording a new scenario:** add it to `compat/shortcode/scenarios.json` and run `cargo run -p speedyspec-compat -- record shortcode --wordpress 7.1.5`; a difference the port can't match goes in `breaks.json` with its reason.
+- **Recording a new scenario:** add it to `compat/shortcode/scenarios.json` and run `cargo run -p speedyspec-compat -- record shortcode --wordpress 7.2-RC2` (the pin in `compat/wordpress.json`); a difference the port can't match goes in `breaks.json` with its reason.
 - **Linking it into the runtime** means adding the area to the worker and preparing WordPress's files so its `shortcodes.php` doesn't declare the functions twice. <Ev source="ss:crates/speedyspec-wp-theme-json/README.md#L101-L103" hash="67bfdcd9955266fb5c1444fca27ae3b3eb8ecb89145ed55ca3509428bd7e493d"/>
