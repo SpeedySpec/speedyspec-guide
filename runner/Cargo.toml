@@ -16,6 +16,7 @@ publish = false
 edition = "2024"
 rust-version = "1.99"
 license = "MIT"
+repository = "https://github.com/SpeedySpec/speedyspec-server"
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
@@ -29,6 +30,21 @@ speedyspec-php-ext = { path = "server/crates/speedyspec-php-ext" }
 speedyspec-wp-hooks = { path = "server/crates/speedyspec-wp-hooks" }
 speedyspec-wp-hooks-memory = { path = "server/crates/speedyspec-wp-hooks-memory" }
 speedyspec-wp-hooks-php = { path = "server/crates/speedyspec-wp-hooks-php" }
+speedyspec-wp-crypto-php = { path = "server/crates/speedyspec-wp-crypto-php" }
+speedyspec-wp-crypto-sodium = { path = "server/crates/speedyspec-wp-crypto-sodium" }
+speedyspec-wp-password-php = { path = "server/crates/speedyspec-wp-password-php" }
+speedyspec-wp-text-diff-php = { path = "server/crates/speedyspec-wp-text-diff-php" }
+speedyspec-wp-media-contracts = { path = "server/crates/speedyspec-wp-media-contracts" }
+speedyspec-wp-media-php = { path = "server/crates/speedyspec-wp-media-php" }
+speedyspec-wp-cron-contracts = { path = "server/crates/speedyspec-wp-cron-contracts" }
+# The database areas (database.rs), booted when DB_NAME is set.
+speedyspec-data-mysql = { path = "server/crates/speedyspec-data-mysql" }
+speedyspec-data-query = { path = "server/crates/speedyspec-data-query" }
+speedyspec-wp-cron-php = { path = "server/crates/speedyspec-wp-cron-php" }
+speedyspec-wp-db = { path = "server/crates/speedyspec-wp-db" }
+speedyspec-wp-db-php = { path = "server/crates/speedyspec-wp-db-php" }
+speedyspec-wp-object-cache-php = { path = "server/crates/speedyspec-wp-object-cache-php" }
+speedyspec-wp-options-php = { path = "server/crates/speedyspec-wp-options-php" }
 
 [dev-dependencies]
 tempfile = "3"

@@ -79,3 +79,37 @@ fn classes_and_methods_are_listed() {
         "{m}"
     );
 }
+
+#[test]
+fn runtime_has_every_worker_area() {
+    let baseline = reflect("baseline");
+    let runtime = reflect("runtime");
+    for id in [
+        "function:SpeedySpec\\Runtime\\report_next_wake",
+        "function:wp_fast_hash",
+        "function:wp_hash_password",
+        "function:wp_text_diff",
+        "function:wp_read_video_metadata",
+    ] {
+        assert!(
+            find(&runtime, id).is_some(),
+            "{id} missing from the runtime"
+        );
+        assert!(find(&baseline, id).is_none(), "{id} in the baseline");
+    }
+}
+
+/// The database areas boot only when the environment names a database, as in the worker.
+#[test]
+fn database_areas_follow_db_name() {
+    let runtime = reflect("runtime");
+    let configured = std::env::var("DB_NAME").is_ok_and(|name| !name.is_empty());
+    for id in [
+        "class:wpdb",
+        "function:wp_cache_get",
+        "function:get_option",
+        "function:wp_schedule_event",
+    ] {
+        assert_eq!(find(&runtime, id).is_some(), configured, "{id}");
+    }
+}
