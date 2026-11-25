@@ -1,0 +1,10 @@
+---
+symbol: "class:WP_Metadata_Lazyloader"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `class-wp-metadata-lazyloader.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+The lazy loader's Rust port is phase 3 of the posts and meta port, with the meta use cases. Each method below is WordPress's own until then.

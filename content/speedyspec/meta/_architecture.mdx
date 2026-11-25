@@ -1,0 +1,109 @@
+---
+---
+
+Phase 1 of the posts and meta port: the self-contained half of `meta.php` in Rust, proven against recordings of WordPress 7.1.5. Nothing here is wired into PHP. The runtime worker links none of the meta crates, so PHP on SpeedySpec runs WordPress's own `meta.php` and `WP_Metadata_Lazyloader` until phase 3. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The crates
+
+Each declares `seam = "meta"` and its role in `[package.metadata.speedyspec]`.
+
+- **`speedyspec-wp-meta-contracts`** (contracts): the values `MetaType`, `MetaKey`, `ObjectId`, `MetaId` and `SerializedValue`, the `Meta` entity, `MetaError`, the ports, and the repository conformance suites behind the `conformance` feature. It depends only on `speedyspec-php-serialize`. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/lib.rs#L1-L16" hash="374e255b2a9568831098c4f0811d7d7c3a9a66f21b394ea8691decab075db66d"/> <Ev source="ss:crates/speedyspec-wp-meta-contracts/Cargo.toml#L10-L18" hash="3bb87a85a4a82989ab9bf51689ede031cd767f8089c941ba9c59514fb5d81edf"/>
+- **`speedyspec-wp-meta`** (implementation): the rules. `is_protected_key`, `MetaHookNames`, `register_meta()` split at its `register_meta_args` filter (`prepare_registration`, `allowed_args`, `resolve_registration`), and `MetaKeyRegistry` with `filters_to_remove`. <Ev source="ss:crates/speedyspec-wp-meta/src/lib.rs#L1-L16" hash="14d1c4d2a0e42f3ff261ce89c5ee3765c2eea5f44eb17092868cd3cf07259540"/>
+- **`speedyspec-wp-meta-memory`** (adapter): `MemoryMetaRepository`, one table in memory, and `MemoryMetaRepositories`, one per meta type. <Ev source="ss:crates/speedyspec-wp-meta-memory/src/lib.rs#L1-L4" hash="ceb86a45f686f9390845660fb79b1641cd2410e649c8b0872a44c1a371ea5bd6"/>
+- **`speedyspec-wp-meta-sql`** (adapter): `MetaMapper` only, a meta row to the entity and back. The SQL repository is phase 3. <Ev source="ss:crates/speedyspec-wp-meta-sql/src/lib.rs#L1-L5" hash="819203d0e3cebfb54365f429b44cef7215d31ba4f22354fb586f3a7b578830e4"/>
+
+No meta crate depends on hooks, the object cache, `wpdb`, text or posts.
+
+## The ports
+
+All are in the contracts crate.
+
+- **`MetaRepository`**: one meta table, with one method per `$wpdb` statement `meta.php` makes, so query counts will match WordPress's. A failure `$wpdb` hides is `Ok` with the empty answer; `Err` is only for failures it wouldn't hide. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L1-L4" hash="8b609d351116374d62cd52e1173e69c251f4ce07a1d9df403b472237505c78ad"/> <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L12-L66" hash="0eae961394f6df5935358da6fc558ae2cd2aff1dcee3107e5ebfea566385c385"/>
+- **`MetaRepositories`**: `_get_meta_table()` as a factory. `for_type` gives the shared repository for a meta type, or `None` when the type has no table. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L68-L72" hash="293bcc5276b730f7be2f109fb0a0ccde17ff00f787100fb978063bf0c91f3ccb"/>
+- **`ObjectSubtypes`**: `get_object_subtype()`, which the seam that owns the objects binds for its meta type, so meta needs no other seam's contracts. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L74-L77" hash="8296b0309cdcbdb236919b6e652a7e871e092f993c386e0ea7ef54ea5c0f7b61"/>
+- **`RevisionSupport`**, **`DefaultSchemaCheck`** and **`Callables`**: what `register_meta()` asks of post types, the REST schema check and PHP's `is_callable()`. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L79-L92" hash="cb3c860f0f02b26835db84e1fbd7085e9371fc67488d26ee9da5428d61ed2a2d"/>
+- **`ProtectedMeta`**: `is_protected_meta()`'s answer, bound by the seam that applies the `is_protected_meta` filter. `UnfilteredProtection` answers with the built-in rule alone. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L94-L98" hash="1c81915d95d46e90c1fd21bfd8fe5be8d3ca2f45ef6be7bb17f607a839b39c0f"/> <Ev source="ss:crates/speedyspec-wp-meta/src/protected.rs#L19-L26" hash="8888e37ae44c2481f19e10b0b057be4cc7e47d8aab2e0a7f454b80bc56f7d329"/>
+
+## Use cases
+
+None yet. `add_metadata()`, `get_metadata()` and the other commands and queries are phase 3, with the SQL repository, the lazy loader and `speedyspec-wp-meta-php`. They wait for the hooks, object cache and db contracts. What exists now are the rules those use cases will call:
+
+- `is_protected_key(&MetaKey)`: the byte rule `is_protected_meta()` applies before its filter. <Ev source="ss:crates/speedyspec-wp-meta/src/protected.rs#L14-L17" hash="6fdad06d9fc6e18f05fbbe75706d009598412f9d6cc6458da831c1bdc432b310"/>
+- `prepare_registration` and `resolve_registration`: `register_meta()` before and after its `register_meta_args` filter. The result is a `Registration`: `Registered` (store the key, add the filters), `HooksOnly` (the legacy callable forms) or `Rejected` (a `_doing_it_wrong()` message). <Ev source="ss:crates/speedyspec-wp-meta/src/register.rs#L41-L65" hash="f8dbbf1a32177a5b1cce731978ee4afcfe7ce04e03f8be73eb5c60f9a4931bcd"/>
+- `allowed_args`: `_wp_register_meta_args_allowed_list()`. <Ev source="ss:crates/speedyspec-wp-meta/src/register.rs#L130-L137" hash="e45637a6f60e4c285d6eac73a382df935a7c403c6870a602257554c3b40ba401"/>
+- `MetaKeyRegistry`: `$wp_meta_keys`, with `insert`, `remove` (`unregister_meta_key()`'s storage half; `filters_to_remove` gives its `remove_filter()` calls), `exists`, `keys` and `default_for` (`filter_default_metadata()`). <Ev source="ss:crates/speedyspec-wp-meta/src/registry.rs#L15-L19" hash="207223d23a0505b2d6d2f5bd4e97f4a1e06243348598a4d940e84d41f2cce251"/>
+- `MetaHookNames`: the names of the hooks `meta.php` fires, for one meta type. <Ev source="ss:crates/speedyspec-wp-meta/src/hook_names.rs#L1-L12" hash="c465b6c54d23056cbb8ce2e2b636ac4811a30e77ea88b9c525e64f3c85dd9f53"/>
+
+## Adapters and the container
+
+The memory repository passes the conformance suite, for `post` and for `user` meta, whose id column is `umeta_id`. <Ev test="speedyspec-wp-meta-memory::conformance::memory_repository_passes_the_suite"/> It also passes `binary_safe_suite`, which is opt-in: on stock utf8mb4 tables `$wpdb` refuses invalid text, so a faithful SQL repository fails it by design. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/conformance.rs#L318-L322" hash="51db4c143aaaebf78ee9c90b0ebad4409c7c84579fd69b87df78e44d7b3acac4"/> <Ev test="speedyspec-wp-meta-memory::conformance::memory_repository_passes_the_binary_safe_suite"/> `MetaMapper` reads the id and object columns the meta type names, and builds the columns `add_metadata()` hands `$wpdb->insert()`, in its order. <Ev source="ss:crates/speedyspec-wp-meta-sql/src/mapper.rs#L36-L63" hash="0376c92a52f54d78e70ad0c7b921ffbe0cabf6e7212882f5814acdf1ed5c7286"/> <Ev test="speedyspec-wp-meta-sql::mapper::user_row_uses_umeta_id"/>
+
+Nothing is bound in the service container yet, and there are no container keys. To replace an implementation today, implement `MetaRepository` and `MetaRepositories` in Rust, and run `meta_repository_suite` against your repository. Replacing one from PHP comes with phase 3's PHP crate.
+
+## Patterns
+
+- **Repository per meta type**: `MetaRepository`, one statement per method.
+- **Abstract Factory**: `MetaRepositories::for_type`, which is `_get_meta_table()`.
+- **Strategy**: `MetaType` decides the table suffix, the object column, the id column (`umeta_id` for users) and the cache group. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/values.rs#L21-L43" hash="491c7aba5a38bf967040c5c880116ae7403209ab1e05ccd39d611a8c706f0be8"/> <Ev test="speedyspec-wp-meta-contracts::values::meta_type_columns_user"/>
+- **Data Mapper**: `MetaMapper`. The `Meta` entity is a plain value that knows nothing of how it is stored. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/entity.rs#L1-L13" hash="3e34fc7824430363ff07c5a5d103d2672b49761296462c0813adb24441473509"/>
+- **Serialized LOB**: `meta_value` is the caller's `maybe_serialize()`d bytes, and `None` is SQL `NULL`. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/values.rs#L83-L85" hash="fb5bce72d9220821e30d3fe67bfeaf37dd1ba46660f2bdadd1ce30668bd29d98"/>
+- **Registry**: `MetaKeyRegistry` keeps PHP's order at each level: object type, subtype, key.
+- **Template Method seam**: `register_meta()` is split so phase 3 can run the `register_meta_args` filter between the two halves. <Ev source="ss:crates/speedyspec-wp-meta/src/register.rs#L1-L11" hash="13373f7929f07c785a43ce9bbfeec54bba9fa30c73e524249a160f9fe3c2c3cb"/>
+
+## Review focus
+
+Two rules need care when they change.
+
+**Protected keys are bytes.** WordPress strips the key with `preg_replace( '/[^\x20-\x7E\p{L}]/', '', $key )`, with no `u` flag, so it works on bytes: bytes 0x20 to 0x7E survive, and of 0x80 to 0xFF only the Latin-1 letter bytes do. The key is protected when its first surviving byte is `_`. A `MetaKey` is bytes, not a `String`, so keys that aren't UTF-8 keep their meaning. <Ev source="ss:crates/speedyspec-wp-meta/src/protected.rs#L5-L17" hash="a96496edb6ce5ca234b928a8f09889ecbdd2a7350379d579618bd48b31ee8819"/> All 28 recorded keys match WordPress, including control bytes, a no-break space and Latin-1 letters. <Ev test="speedyspec-wp-meta::recorded::protected_keys_match_wordpress"/>
+
+**Registration order.** `register_meta()`'s steps run in PHP's order. Array meta shown in REST needs an item schema. Revisions are checked next, then the `auth_callback` falls back to `is_protected_meta()`, and the sanitize and auth filters are added. The default's type is checked last, so a rejected default leaves those filters added, as WordPress 7.1.5 does. <Ev source="ss:crates/speedyspec-wp-meta/src/register.rs#L56-L64" hash="e337195a1d7d84bdcc051ef623235693c46796775298916d711f9a80f279aa55"/> `$wp_meta_keys` keeps insertion order at every level; a key registered again keeps its place, and removing the last key of a subtype or type removes that level too. <Ev source="ss:crates/speedyspec-wp-meta/src/registry.rs#L26-L54" hash="42e9691f9070adcfee805530fd92625428a8902c9c5b9e837786cdaaad108bba"/> <Ev test="speedyspec-wp-meta::registry::insert_same_key_replaces_in_place"/> <Ev test="speedyspec-wp-meta::registry::remove_last_key_removes_subtype_and_type"/>
+
+## The recorded proof
+
+`compat/meta/record.php` runs WordPress 7.1.5's `meta.php` on PHP 8.5.12 and writes `compat/meta/cases.json`. <Ev source="ss:compat/meta/cases.json#L1-L3" hash="2805a50532760d87464df368f551117cf3df8c9a2360db539c31b607451a437b"/> The replay tests in `speedyspec-wp-meta` read it:
+
+- `protected`: 28 `is_protected_meta()` cases, with no filter added. <Ev test="speedyspec-wp-meta::recorded::protected_keys_match_wordpress"/>
+- `register`: 21 scenarios, 41 calls of `register_meta()`, `unregister_meta_key()`, `registered_meta_key_exists()` and `get_registered_meta_keys()`. Each call's result, its `_doing_it_wrong()` messages and the filters it added and removed must match, and so must the whole `$wp_meta_keys` at the end of each scenario. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/>
+- `default`: 14 `filter_default_metadata()` cases. <Ev test="speedyspec-wp-meta::recorded::defaults_match_wordpress"/>
+
+The recorder stubs what `meta.php` calls in files it doesn't load: `__()`, `post_type_supports()` (true for `post` and `page`), `get_post_type()` and `rest_validate_value_from_schema()`. It doesn't load `default-filters.php`, so `_wp_register_meta_args_allowed_list` is hooked only in the scenario that hooks it. <Ev source="ss:compat/meta/record.php#L36-L46" hash="15dcefe9533a32dcbf7c2c2f47c16192fd1dd0013fccea36df2804ff42359d62"/> The proof is of the rules under those stubs, not of WordPress's real post types or REST schema check.
+
+Not yet proven: the use cases, WordPress's meta PHPUnit tests and any SQL repository. These come with phase 3.
+
+## Calling it from Rust
+
+A runtime feature registers a key and reads its default without PHP. The ports are the caller's: in phase 3, PHP adapters answer for real callables, post types and schemas.
+
+```rust
+use speedyspec_php_serialize::{PhpKey, PhpValue};
+use speedyspec_wp_meta::{MetaKeyRegistry, RegisterPorts, Registration, prepare_registration, resolve_registration};
+use speedyspec_wp_meta_contracts::{MetaKey, MetaType, ObjectId, ObjectSubtypes};
+
+/// Registers `color` for posts, single with the default `blue`, then asks the registry for post 10's default.
+fn color_default(
+    registry: &mut MetaKeyRegistry,
+    ports: &RegisterPorts<'_>,
+    subtypes: &dyn ObjectSubtypes,
+) -> Option<PhpValue> {
+    let key = MetaKey::from("color");
+    let args = PhpValue::Array(vec![
+        (PhpKey::Str(b"single".to_vec()), PhpValue::Bool(true)),
+        (PhpKey::Str(b"default".to_vec()), PhpValue::Str(b"blue".to_vec())),
+    ]);
+    // The steps before the register_meta_args filter; phase 3 runs the filter on `prepared.args` here.
+    let prepared = prepare_registration(args, None, ports.callables);
+    match resolve_registration("post", &key, prepared, ports) {
+        // Phase 3 also adds `filters`, and filter_default_metadata when asked.
+        Registration::Registered { key: registered, .. } => registry.insert(registered),
+        Registration::HooksOnly { .. } | Registration::Rejected { .. } => return None,
+    }
+    let post = MetaType::new("post")?;
+    registry.default_for(&post, ObjectId(10), &key, true, subtypes)
+}
+```
+
+## How to change this
+
+- **What must still pass:** the three replay tests over `compat/meta/cases.json`, the registry tests, and `meta_repository_suite` for every repository.
+- **Recording more cases:** add them to `compat/meta/record.php` in speedyspec-server and run it with the runtime's static PHP against the WordPress 7.1.5 release, as its header says. <Ev source="ss:compat/meta/record.php#L1-L8" hash="a247ff2f5e8f6e30016aa34640a1a7f64c3c3ac0fe702c92b98da98e6af18384"/>
+- **Carried to phase 3:** a registry read port, so PHP's `$wp_meta_keys` stays authoritative during a PHP request; the `is_protected_meta` filter, through `ProtectedMeta`; the `wp_installing()` check in `default_for`; and the legacy `*_postmeta` and `delete_{type}meta` hook names.

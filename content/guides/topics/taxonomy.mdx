@@ -107,30 +107,31 @@ serves them all, taking the kind of object as the first argument. `get_post_meta
 <Sym id="function:add_metadata" /> adds a value. A key may hold several values, unless you ask for it to be unique.
 Arrays and objects are stored serialized:
 
-<Example id="taxonomy/add_metadata/add" />
+<Example id="meta/add_metadata/add" />
 
 <Sym id="function:get_metadata" /> returns every key, one key's values, or the first value. A missing key gives the
 registered default, or an empty string (or an empty array) when there is none:
 
-<Example id="taxonomy/get_metadata/get" />
+<Example id="meta/get_metadata/get" />
 
 <Sym id="function:update_metadata" /> changes values, and can be limited to rows holding a previous value.
 <Sym id="function:delete_metadata" /> removes them, for one object or, with `delete_all`, for every object at once:
 
-<Example id="taxonomy/update_metadata/update" />
+<Example id="meta/update_metadata/update" />
 
-<Example id="taxonomy/delete_metadata/delete" />
+<Example id="meta/delete_metadata/delete" />
 
 Because a registered default makes a missing key look present, use <Sym id="function:metadata_exists" /> when you
 need to know whether a value was really saved:
 
-<Example id="taxonomy/metadata_exists/exists" />
+<Example id="meta/metadata_exists/exists" />
 
 <Sym id="function:register_meta" /> gives a key its type, single or multiple values, default, sanitize and auth
 callbacks, and whether the REST API shows it. Keys starting with an underscore are **protected**:
 <Sym id="function:is_protected_meta" /> says so, and they are hidden from the editor's custom fields box:
 
-<Example id="taxonomy/is_protected_meta/protected" />
+<Example id="meta/is_protected_meta/protected" />
 
-The Taxonomy seam isn't ported to SpeedySpec yet, so this guide makes no promise about how taxonomies or meta behave
-there.
+Neither the Taxonomies seam nor the Metadata seam is ported to SpeedySpec yet, so this guide makes no promise about
+how taxonomies or meta behave there. SpeedySpec has the first of meta's rules in Rust, not yet wired into PHP; see
+the Metadata seam's SpeedySpec pages.

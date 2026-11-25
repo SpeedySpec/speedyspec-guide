@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Gives each Taxonomies and metadata example a fresh site in MySQL (see `database.php`), with the post types and
+ * Gives each Taxonomies example a fresh site in MySQL (see `database.php`), with the post types and
  *  taxonomies `wp-settings.php` registers at `init`, and the default filters that make slugs and format lists.
  *
  *  Options: siteurl and home `http://example.org`, blogname `Guide`, stylesheet and template `guide`, so the theme

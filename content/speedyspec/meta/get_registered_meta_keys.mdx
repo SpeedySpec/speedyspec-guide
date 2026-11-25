@@ -1,0 +1,12 @@
+---
+symbol: "function:get_registered_meta_keys"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`MetaKeyRegistry::keys`: the keys of an object type and subtype in insertion order, empty for an unknown one. <Ev source="ss:crates/speedyspec-wp-meta/src/registry.rs#L62-L67" hash="648486574ffefdaf00b2ff5f34923e4b96d257ae47f36400c5a3c692531bc807"/> <Ev test="speedyspec-wp-meta::registry::keys_of_unknown_type_is_empty"/> Its calls in the recorded `unregister-clean-up` scenario give WordPress 7.1.5's arrays, in order. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/> <Ev source="ss:compat/meta/record.php#L293-L310" hash="68c6b7b04804c89a8bb31483ff289063f905076810178ea5b0192cc1e56a461c"/>

@@ -1,0 +1,14 @@
+---
+symbol: "function:unregister_meta_key"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rules
+
+`MetaKeyRegistry::remove` is the storage half: it removes the entry, then the subtype and the object type once they are empty. `filters_to_remove` gives the `remove_filter()` calls for the entry's sanitize and auth callbacks. <Ev source="ss:crates/speedyspec-wp-meta/src/registry.rs#L36-L54" hash="38adf34a40647dc968d9c559c92e3141b043c8840e0233d39e4fcb3be432f082"/> <Ev source="ss:crates/speedyspec-wp-meta/src/registry.rs#L119-L138" hash="fd92371a96f3c0f17678afd3c696e4d9d2daadc980c2a9d2db3cbce3254424c9"/> <Ev test="speedyspec-wp-meta::registry::remove_last_key_removes_subtype_and_type"/>
+
+The recorded `unregister-clean-up` and `unregister-missing` scenarios replay as in WordPress 7.1.5, with the filters each call removes. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/> <Ev source="ss:compat/meta/record.php#L293-L317" hash="6e9147896d2893f807b403ba7803bb380183e49b7c66a1e53696df699195b45b"/>
