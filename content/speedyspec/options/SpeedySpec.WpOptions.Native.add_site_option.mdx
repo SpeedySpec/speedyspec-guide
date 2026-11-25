@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\add_site_option"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `add_site_option()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L150-L153" hash="191a9b82408981f91776ac00deba47c15ca4e11b830f87561b64245a400f319c"/>
+
+It sends the `AddNetworkOption` command through the handler bound under `SpeedySpec\WpOptions\AddNetworkOptionHandler`. <Ev scenario="network_option_per_network" area="options"/>

@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_cache_add_non_persistent_groups"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. WordPress's `cache.php` does nothing here; SpeedySpec records the groups, which matters only when a second level is configured. The result is the same. <Ev scenario="non_persistent_groups_noop" area="object-cache"/> <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L212-L219" hash="640c7a2b7b33335e8a30c1eacbd2e2fd2757b3792d9afc473b37a4e52d655247"/> <Ev test="speedyspec-wp-object-cache-php::php::replayed_scenarios_match_wordpress"/>
+
+## Override
+
+The function dispatches a use case through the container; bind another handler under its key, or put a `WP_Object_Cache` subclass in `$wp_object_cache`. See the architecture page.

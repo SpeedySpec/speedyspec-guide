@@ -1,0 +1,14 @@
+---
+symbol: "global:new_whitelist_options"
+verdict: works-with-differences
+differences:
+  - summary: "Made a reference at the start of every request; WordPress makes it at the first register_setting() (found by the guide)."
+---
+
+## Behaviour
+
+A reference to `$new_allowed_options`, as `register_setting()` makes it in WordPress; SpeedySpec's settings helpers keep it one. <Ev source="ss:crates/speedyspec-wp-options-php/tests/php.rs#L302-L311" hash="168022555254084aab642a7717f494988d14aa30330617513ef696df74cb3fa7"/> <Ev scenario="register_setting_defaults" area="options"/>
+
+## Differences
+
+SpeedySpec makes the reference at the start of every request; WordPress makes it at the first `register_setting()` (found by the guide). <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L221-L226" hash="ab61c6201b01f0001e7b6696b1cb1c34dee91f333b8196f492e8d6b8bde8940c"/>

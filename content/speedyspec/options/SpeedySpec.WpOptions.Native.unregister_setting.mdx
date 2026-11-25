@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\unregister_setting"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `unregister_setting()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L206-L209" hash="c259bcc5807a50f73b4d28f44028ef9938ae628cd9e12d7ae5aa0bf05fb742bc"/>
+
+It sends the `UnregisterSetting` command through the handler bound under `SpeedySpec\WpOptions\UnregisterSettingHandler`. <Ev scenario="register_setting_callable" area="options"/>

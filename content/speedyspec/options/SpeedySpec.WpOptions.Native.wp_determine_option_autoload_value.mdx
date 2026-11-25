@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\wp_determine_option_autoload_value"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `wp_determine_option_autoload_value()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L80-L83" hash="50fb18befbead13a4d2bd8f714184009838994e5602013705759f1931de291cb"/>
+
+It sends the `DetermineOptionAutoloadValue` query through the handler bound under `SpeedySpec\WpOptions\DetermineOptionAutoloadValueHandler`. <Ev scenario="determine_autoload_value_direct" area="options"/>

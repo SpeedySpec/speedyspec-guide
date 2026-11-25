@@ -1,0 +1,61 @@
+---
+---
+
+## The crates
+
+- **`speedyspec-wp-object-cache`** is `WP_Object_Cache` in Rust. `ObjectCache` is one instance: the first level holds values as they are, and an optional second level keeps them in a Caching Store in PHP's serialize format. `CurrentObjectCache` is the request's current instance and makes the others. It holds no PHP. <Ev source="ss:crates/speedyspec-wp-object-cache/src/lib.rs#L1-L7" hash="616b8790fe9283df418a25b3a2e53c299abed2e9449d03e0ab1597442af7458b"/> <Ev source="ss:crates/speedyspec-wp-object-cache/src/current.rs#L10-L16" hash="852f67039d50d5d8af85d08f93d4c39b664d99607fad0f05f9b8459a367cec46"/>
+- **`speedyspec-wp-object-cache-php`** is the PHP area, `ObjectCacheArea`: at the start of every request it declares `cache.php`'s functions and `WP_Object_Cache`, thin PHP over the `SpeedySpec\WpObjectCache\Native` functions, and at the end it drops every cache. <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/lib.rs#L1-L7" hash="4f06425d166a30a7122b3d9b01c1c894976c0660ca6d10df5394fac564e583a1"/> <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/lib.rs#L490-L500" hash="35694022c0396ce1ea42d6b6033852f6170359d46e10d6f6326aa0ac6a0d5cc6"/>
+- **`speedyspec-cache`** holds the Caching Store contract, `CachingStore`: byte values by group and key, with expiry. Its implementations are separate crates: `speedyspec-cache-memory`, `-cache-sql`, `-cache-kv` and `-cache-file`. Each runs the shared suite in `speedyspec-cache-conformance`. <Ev source="ss:crates/speedyspec-cache/src/lib.rs#L11-L20" hash="c918a0cebd392427cbcb7d9aff6aa2cc41f6c0d2a3a03e7defc91afbf9f79a48"/> <Ev test="speedyspec-cache-memory::conformance::memory_cache_conformance"/> <Ev test="speedyspec-cache-sql::conformance::sql_cache_conformance"/> <Ev test="speedyspec-cache-file::file_cache::file_cache_conformance"/> <Ev test="speedyspec-cache-kv::kv::kv_cache_on_memory"/>
+- **`speedyspec-cache-routing`** chooses the second level from the engine the `object-cache` use is routed to. Unrouted, the cache lives for the request. <Ev source="ss:crates/speedyspec-cache-routing/src/lib.rs#L1-L2" hash="d43817f3fa0f480a4790403a879c292c1d77bb291bd400fe7739a4cfbcedda16"/>
+
+## Ports
+
+`ObjectCachePorts` is what only the host knows: `SiteContext` (`is_multisite()`, `get_current_blog_id()`), `CacheNotices` (`_doing_it_wrong()`, `_deprecated_function()`, a value the second level couldn't keep), `AdditionSuspension` (`wp_suspend_cache_addition()`) and `ValueCodec`, how values become second-level bytes. Each has a Rust adapter; the PHP area binds adapters that call WordPress's functions when they exist. <Ev source="ss:crates/speedyspec-wp-object-cache/src/ports.rs#L80-L99" hash="328d90125b3e16ebeb13fce2d742d7eb405c48d5d94af1d5f42d8980229e467f"/> The second level is the `CachingStore` the cache is given. A value it refuses, such as a closure, stays in the first level. <Ev test="speedyspec-wp-object-cache-php::php_persistent::closure_refused_by_second_level"/>
+
+## Use cases
+
+Every `wp_cache_*` function is a command or a query: `CacheAdd`, `CacheAddMultiple`, `CacheReplace`, `CacheSet`, `CacheSetMultiple`, `CacheDelete`, `CacheDeleteMultiple`, `CacheIncr`, `CacheDecr`, `CacheFlush`, `CacheFlushRuntime`, `CacheFlushGroup`, `CacheAddGlobalGroups`, `CacheAddNonPersistentGroups`, `CacheSwitchToBlog` and `CacheReset` are commands; `CacheGet`, `CacheGetMultiple` and `CacheSupports` are queries. Each handler is bound in the container under `SpeedySpec\WpObjectCache\<Message>Handler`, for example `SpeedySpec\WpObjectCache\CacheSetHandler`, and acts on the current cache. <Ev source="ss:crates/speedyspec-wp-object-cache/src/messages.rs#L20-L31" hash="93fe72f3d452b307f2cd7a4702f0b3acc8e6305a582f0a823eaac338c9f0c304"/> <Ev source="ss:crates/speedyspec-wp-object-cache/src/messages.rs#L81-L88" hash="b2407feae31d7b2053a7d18b35f28c08f6b8eb65e256e4d9d61415e5c46b78b8"/> <Ev test="speedyspec-wp-object-cache::messages::bus_round_trip"/>
+
+`WP_Object_Cache`'s own methods skip the buses and act straight on that object's Rust cache. A `wp_cache_*` call first selects the global object's cache as current. <Ev test="speedyspec-wp-object-cache::messages::select_switches_target"/>
+
+## How to change this
+
+- **Replace one use case from Rust:** bind another handler under its key. The buses then call it. <Ev test="speedyspec-wp-object-cache::messages::override_by_key"/>
+- **Replace the cache from PHP:** put an object of a `WP_Object_Cache` subclass in `$wp_object_cache`. Each `wp_cache_*` function then calls that object's method, as WordPress does. <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L30-L33" hash="cd19e67b2a0cc2894fb39e2e383a4e9aac89492f120c6aff65d08946d2376896"/> An `object-cache.php` drop-in isn't loaded. <Ev test="speedyspec-wp-object-cache-php::php::drop_in_refused"/>
+- **Keep values across requests:** give the cache a `CachingStore`, or route the `object-cache` use to an engine. The worker doesn't do this yet. <Ev source="ss:crates/speedyspec-php-runtime/src/database.rs#L76-L77" hash="0c1f0f38e5a5d11361ec47ef760adf9d0209f0336a8de3de6f0bd60ad590b1d5"/> <Ev test="speedyspec-wp-object-cache-php::php_persistent::flush_runtime_keeps_second_level"/>
+- **Add a Caching Store:** implement `CachingStore` and run `speedyspec-cache-conformance`'s suite against it.
+- **What must still pass:** the recorded scenarios (`compat/object-cache/scenarios.json`) and WordPress's own cache tests, on a single site and on multisite. A test the port can't match is marked `@group documented-break` and listed in `compat/object-cache/breaks.json`; none is. <Ev test="speedyspec-wp-object-cache-php::php::replayed_scenarios_match_wordpress"/> <Ev source="ss:crates/speedyspec-wp-object-cache-php/tests/common/mod.rs#L61" hash="440768da1e50a58c820493cb93ae5cd34a2ca670e753d503ba347b0d21cef329"/>
+
+## Patterns
+
+- **Ports and Adapters** for what the host knows (`ObjectCachePorts`) and for the second level (`CachingStore`).
+- **Strategy** for the Caching Store implementations and for `ValueCodec`.
+- **Decorator**: the second level wraps the first.
+- **Command and query handlers** for each function, bound in the container (**Registry**).
+- **Facade**: the PHP functions and class over the native functions. A **Registry** maps each PHP object to its Rust cache.
+- **Abstract Factory** in `speedyspec-cache-routing`, which picks the store for the routed engine.
+
+## A runtime feature calling the API
+
+A Rust feature reads and writes the same cache PHP sees, through the buses. A value PHP set is visible to it. <Ev test="speedyspec-wp-object-cache-php::php::rust_caller_sees_php_set"/>
+
+```rust
+use std::rc::Rc;
+
+use speedyspec_container::Container;
+use speedyspec_cqrs::{CommandBus, QueryBus};
+use speedyspec_hooks::Value;
+use speedyspec_wp_object_cache::{CacheGet, CacheSet};
+
+fn remember_page_count(container: Rc<Container>, count: i64) -> Result<(), Box<dyn std::error::Error>> {
+    let group = Value::Str("guide-feature".into());
+    let key = Value::Str("page-count".into());
+    let cached = QueryBus::new(container.clone())
+        .ask(CacheGet { key: key.clone(), group: group.clone(), force: false })??;
+    if cached.is_none() {
+        CommandBus::new(container)
+            .dispatch(CacheSet { key, data: Value::Int(count), group, expire: 0 })??;
+    }
+    Ok(())
+}
+```

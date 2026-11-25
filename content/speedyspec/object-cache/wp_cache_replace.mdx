@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_cache_replace"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Replaces a value only when the key exists. <Ev scenario="replace_missing_is_false" area="object-cache"/> <Ev test="speedyspec-wp-object-cache-php::php::replayed_scenarios_match_wordpress"/>
+
+## Override
+
+The function dispatches a use case through the container; bind another handler under its key, or put a `WP_Object_Cache` subclass in `$wp_object_cache`. See the architecture page.

@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_next_scheduled"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Returns the timestamp of the next event for a hook and arguments, through `wp_next_scheduled`. Every recorded scenario replays as in WordPress, and WordPress's own cron tests pass. <Ev area="cron" scenario="single_event_args"/> <Ev area="cron" scenario="numeric_hook_and_string_timestamp"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
+
+## Override
+
+The `cron` option is read and written through the `CronStore` port. To keep events somewhere else, build `CronApi` with another store; see the architecture page.

@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\wp_autoload_values_to_autoload"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `wp_autoload_values_to_autoload()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L90-L93" hash="0faef826369f683581f30a6503b1a32938345bd66e9168900d9e8b9c233dbe9a"/>
+
+It sends the `AutoloadValuesToAutoload` query through the handler bound under `SpeedySpec\WpOptions\AutoloadValuesToAutoloadHandler`. <Ev scenario="autoload_values_filtered_add" area="options"/>

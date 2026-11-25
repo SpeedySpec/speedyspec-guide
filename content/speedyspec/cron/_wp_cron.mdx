@@ -1,0 +1,12 @@
+---
+symbol: "function:_wp_cron"
+verdict: works-with-differences
+differences:
+  - summary: "Spawning sends no loopback request; see spawn_cron()."
+---
+
+## Behaviour
+
+WordPress's body, declared by SpeedySpec's `cron.php` over the native `spawn_cron()`: returns 0 for a request to `wp-cron.php`, with `DISABLE_WP_CRON`, or when nothing is due; otherwise the number of spawns, or `false`. <Ev source="ss:crates/speedyspec-wp-cron-php/src/cron.php#L370-L417" hash="953094dd46a53b58353bce5063c0747aad9e334b52efde1fa18d64634488548d"/> <Ev source="ss:crates/speedyspec-wp-cron-php/tests/php.rs#L243-L246" hash="6b0ddf44436f85f1bd90e5e3eb0fc0ac4525923e78c7009b266cc5ba61163568"/> <Ev test="speedyspec-wp-cron::spawn::no_ready_jobs_refuses"/>
+
+What a spawn does differs: no loopback request is sent. See [spawn_cron](/speedyspec/cron/spawn_cron/). No compat scenario records `_wp_cron()`.

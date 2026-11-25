@@ -1,0 +1,12 @@
+---
+symbol: "function:set_transient"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `SetTransient` command. The hooks fire in WordPress's order; a timeout makes both rows non-autoloaded; a name too long for the table fails. <Ev scenario="transient_with_timeout" area="options"/> <Ev scenario="transient_hooks_order" area="options"/> <Ev scenario="transient_add_timeout_to_existing" area="options"/> <Ev scenario="transient_long_name_fails" area="options"/> <Ev scenario="transient_odd_expirations" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+
+## Override
+
+Transients go through the options API, or the object cache when it is persistent; the `ExternalObjectCache` and `Clock` ports decide which and when. See the architecture page.

@@ -1,0 +1,12 @@
+---
+symbol: "function:update_option"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `UpdateOption` command. Every recorded scenario replays as in WordPress, including an unchanged value, a missing option (which is added) and a serialized value equal to the stored one. <Ev scenario="update_option_unchanged" area="options"/> <Ev scenario="update_option_missing_adds" area="options"/> <Ev scenario="update_option_serialized_equal" area="options"/> <Ev scenario="protected_update_option_alloptions" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+
+## Override
+
+Options live in `wp_options` behind the `OptionRepository` port; the use case is a handler in the container. See the architecture page.

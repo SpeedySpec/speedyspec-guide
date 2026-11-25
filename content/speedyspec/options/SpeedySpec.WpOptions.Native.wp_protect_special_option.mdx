@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\wp_protect_special_option"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `wp_protect_special_option()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L95-L98" hash="ff0554da6ad26a8575a6740413a22cac34188bee7f4e160e397a1209d3e9d8aa"/>
+
+It sends the `ProtectSpecialOption` command through the handler bound under `SpeedySpec\WpOptions\ProtectSpecialOptionHandler`. <Ev scenario="protect_special_option_direct" area="options"/>

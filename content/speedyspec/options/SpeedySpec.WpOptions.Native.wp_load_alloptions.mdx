@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\wp_load_alloptions"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `wp_load_alloptions()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L50-L53" hash="65b45c7e4e6606a8e023c2ecac00bb253fce0ddb180f612c207c60ff80b39eb1"/>
+
+It sends the `LoadAlloptions` query through the handler bound under `SpeedySpec\WpOptions\LoadAlloptionsHandler`. <Ev scenario="autoload_stored_auto" area="options"/>

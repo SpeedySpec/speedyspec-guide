@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_cache_incr"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Follows WordPress's casts: a non-numeric value resets to the offset, floats and numeric strings are cast, and an integer overflow behaves as in PHP. <Ev scenario="incr_numeric" area="object-cache"/> <Ev scenario="incr_non_numeric_resets" area="object-cache"/> <Ev scenario="incr_float_and_numeric_string" area="object-cache"/> <Ev scenario="incr_int_overflow" area="object-cache"/> <Ev scenario="incr_offset_cast" area="object-cache"/> <Ev test="speedyspec-wp-object-cache-php::php::replayed_scenarios_match_wordpress"/>
+
+## Override
+
+The function dispatches a use case through the container; bind another handler under its key, or put a `WP_Object_Cache` subclass in `$wp_object_cache`. See the architecture page.

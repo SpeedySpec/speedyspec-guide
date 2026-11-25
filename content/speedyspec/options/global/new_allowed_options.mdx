@@ -1,0 +1,14 @@
+---
+symbol: "global:new_allowed_options"
+verdict: works-with-differences
+differences:
+  - summary: "Set to an empty array at the start of every request; WordPress leaves it undefined until the first register_setting() (found by the guide)."
+---
+
+## Behaviour
+
+A real array that `register_setting()` and `unregister_setting()` write through `SpeedySpec\WpOptions\Php\settings_allow()` and `settings_disallow()`, keeping PHP's index holes as WordPress does. <Ev scenario="register_setting_defaults" area="options"/> <Ev scenario="unregister_setting_removes_default" area="options"/> <Ev scenario="prime_by_group" area="options"/> <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L289-L315" hash="d157e471f741c7ad38607d0a511dfb05e342e9c2d229afc94efe47e5e15928b9"/>
+
+## Differences
+
+SpeedySpec sets it to an empty array at the start of every request when it is unset; WordPress leaves it undefined until the first `register_setting()` (found by the guide). <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L221-L226" hash="ab61c6201b01f0001e7b6696b1cb1c34dee91f333b8196f492e8d6b8bde8940c"/>

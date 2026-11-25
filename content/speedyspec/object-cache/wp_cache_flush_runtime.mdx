@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_cache_flush_runtime"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Empties the request's cache. WordPress's `cache.php` calls `wp_cache_flush()`; SpeedySpec empties only the first level, so a second level, when one is configured, keeps its values. The worker configures none, so the result is the same. <Ev scenario="flush_runtime" area="object-cache"/> <Ev test="speedyspec-wp-object-cache-php::php_persistent::flush_runtime_keeps_second_level"/> <Ev source="wp:wp-includes/cache.php#L280-L282" hash="2d04e521ad69ee676488f556aa4157c0c9dd0d59d06f2350ca2f5e98ee394ddc"/> <Ev test="speedyspec-wp-object-cache-php::php::replayed_scenarios_match_wordpress"/>
+
+## Override
+
+The function dispatches a use case through the container; bind another handler under its key, or put a `WP_Object_Cache` subclass in `$wp_object_cache`. See the architecture page.

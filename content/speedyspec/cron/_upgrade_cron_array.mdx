@@ -1,0 +1,12 @@
+---
+symbol: "function:_upgrade_cron_array"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Upgrades a cron array from before WordPress 2.1 to the keyed form. `_get_cron_array()` calls it on a version-less option, and saves the result. Every recorded scenario replays as in WordPress, and WordPress's own cron tests pass. <Ev area="cron" scenario="legacy_array_is_upgraded"/> <Ev area="cron" scenario="legacy_array_without_args"/> <Ev test="speedyspec-wp-cron::read::version_less_array_is_upgraded_and_saved"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
+
+## Override
+
+The `cron` option is read and written through the `CronStore` port. To keep events somewhere else, build `CronApi` with another store; see the architecture page.

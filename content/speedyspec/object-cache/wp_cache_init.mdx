@@ -1,0 +1,18 @@
+---
+symbol: "function:wp_cache_init"
+verdict: works-with-differences
+differences:
+  - summary: "An object-cache.php drop-in in WP_CONTENT_DIR makes wp_cache_init() throw an Error: SpeedySpec's object cache is native, and persistence comes from configuring a Caching Store."
+---
+
+## Behaviour
+
+Sets `$wp_object_cache` to a new `WP_Object_Cache`, as WordPress does, and makes it the cache the `wp_cache_*` functions use. <Ev scenario="global_groups_on_multisite" area="object-cache"/> <Ev scenario="switch_to_blog_multisite" area="object-cache"/> <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L14-L25" hash="3bf0bee5a774ee623bbea6a89ab3a1ac703dbb5beafc503193f249f90fd03c39"/>
+
+## Limits
+
+When `WP_CONTENT_DIR/object-cache.php` exists, it throws an `Error` naming the file instead. WordPress loads the drop-in and uses it. <Ev test="speedyspec-wp-object-cache-php::php::drop_in_refused"/>
+
+## Porting
+
+Remove the `object-cache.php` drop-in. To keep values across requests, configure a Caching Store; see the architecture page.

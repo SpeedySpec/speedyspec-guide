@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_load_alloptions"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `LoadAlloptions` query. Its filters, the forced cache read and the fallback that reads every option while the table has no autoloaded rows replay as in WordPress. <Ev scenario="load_alloptions_pre_filter" area="options"/> <Ev scenario="load_alloptions_pre_cache_filter" area="options"/> <Ev scenario="load_alloptions_force_cache" area="options"/> <Ev scenario="load_alloptions_empty_table_reads_all" area="options"/> What a `pre_cache_alloptions` callback returns is cached as a copy. <Ev test="speedyspec-wp-options-php::php::filtered_alloptions_cached_as_copy"/>
+
+## Override
+
+Options live in `wp_options` behind the `OptionRepository` port; the use case is a handler in the container. See the architecture page.

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpCron\\Native\\wp_unschedule_event"
+verdict: new-in-speedyspec
+---
+
+The native `wp_unschedule_event()`, which SpeedySpec's `cron.php` wraps. It takes WordPress's arguments with the defaults filled in and returns WordPress's value, or an error marker the wrapper turns into a `WP_Error`. <Ev source="ss:crates/speedyspec-wp-cron-php/src/natives.rs#L142-L151" hash="c7648a19ffd976337285d05aba994f70449dd5289f7d61fb2dcf121cdb7510f8"/> <Ev test="speedyspec-wp-cron-php::compat::main"/> Not for plugins: call [wp_unschedule_event](/speedyspec/cron/wp_unschedule_event/) instead.

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpObjectCache\\Native\\cache_replace"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's `wp_cache_replace()` to dispatch its use case on the current cache; not for plugins. Call the WordPress function instead. <Ev test="speedyspec-wp-object-cache-php::php::replayed_scenarios_match_wordpress"/>

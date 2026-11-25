@@ -1,0 +1,8 @@
+---
+symbol: "global:_updated_user_settings"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Written and read only by the user settings functions, which stay WordPress's own PHP. <Ev source="ss:crates/speedyspec-wp-options-php/src/release.rs#L8-L9" hash="4d0c5e8cfb2e67e7dd8ed3fd5236df71a9de05feaaec024063b5c7b7ddf0e02e"/> <Ev test="speedyspec-wp-options-php::release::strips_exactly_the_ported_functions"/> <Ev test="speedyspec-wp-options-php::php::stripped_option_php_loads"/>

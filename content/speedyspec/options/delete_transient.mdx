@@ -1,0 +1,12 @@
+---
+symbol: "function:delete_transient"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `DeleteTransient` command. <Ev scenario="transient_basics" area="options"/> <Ev scenario="transient_hooks_order" area="options"/> <Ev scenario="transient_ext_object_cache" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+
+## Override
+
+Transients go through the options API, or the object cache when it is persistent; the `ExternalObjectCache` and `Clock` ports decide which and when. See the architecture page.

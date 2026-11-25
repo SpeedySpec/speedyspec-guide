@@ -1,0 +1,12 @@
+---
+symbol: "function:_get_cron_array"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Returns the `cron` option without its version, upgrading a pre-2.1 array first. An option that isn't an array reads as empty, and entries it can't read as events are kept as they are. Every recorded scenario replays as in WordPress, and WordPress's own cron tests pass. <Ev area="cron" scenario="junk_in_the_option"/> <Ev area="cron" scenario="non_array_option"/> <Ev area="cron" scenario="legacy_array_is_upgraded"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
+
+## Override
+
+The `cron` option is read and written through the `CronStore` port. To keep events somewhere else, build `CronApi` with another store; see the architecture page.

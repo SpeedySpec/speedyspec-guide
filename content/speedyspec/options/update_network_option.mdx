@@ -1,0 +1,12 @@
+---
+symbol: "function:update_network_option"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `UpdateNetworkOption` command. Updating with an equal object returns `false`, as in WordPress. <Ev scenario="network_option_update_same_object" area="options"/> <Ev scenario="network_option_hooks_order" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+
+## Override
+
+Network options live in `wp_sitemeta` behind the `SitemetaRepository` port on multisite, and in the options API on a single site. See the architecture page.

@@ -1,0 +1,12 @@
+---
+symbol: "function:set_site_transient"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `SetSiteTransient` command. <Ev scenario="site_transient_single_site" area="options"/> <Ev scenario="site_transient_multisite" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+
+## Override
+
+Transients go through the options API, or the object cache when it is persistent; the `ExternalObjectCache` and `Clock` ports decide which and when. See the architecture page.

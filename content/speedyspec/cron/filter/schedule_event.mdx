@@ -1,0 +1,6 @@
+---
+symbol: "filter:schedule_event"
+verdict: works-as-wordpress
+---
+
+Run by the native cron functions through the native Hook API. Filters the event about to be scheduled; `false` stops it. <Ev area="cron" scenario="schedule_event_filter_false_False"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>

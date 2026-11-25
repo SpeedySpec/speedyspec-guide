@@ -1,6 +1,6 @@
 name: "Object Cache"
 job: "Stores and fetches values in the object cache by key and group."
-ported: false
+ported: true
 files:
   - 'wp-includes/cache-compat.php'
   - 'wp-includes/cache.php'
@@ -17,6 +17,53 @@ wordpress:
   - wp-includes/cache.php
   - wp-includes/cache-compat.php
 setup: setup.php
+crates: [speedyspec-wp-object-cache, speedyspec-wp-object-cache-php, speedyspec-cache, speedyspec-cache-memory, speedyspec-cache-sql, speedyspec-cache-kv, speedyspec-cache-file, speedyspec-cache-routing, speedyspec-cache-conformance]
+symbols:
+  - "method:WP_Object_Cache::__destruct"
+  - "function:SpeedySpec\\WpObjectCache\\clone_objects"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_add"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_add"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_add_multiple"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_add_multiple"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_replace"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_replace"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_set"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_set"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_set_multiple"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_set_multiple"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_get"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_get"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_get_multiple"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_get_multiple"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_delete"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_delete"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_delete_multiple"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_delete_multiple"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_incr"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_incr"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_decr"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_decr"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_flush"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_flush"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_flush_runtime"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_flush_runtime"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_flush_group"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_flush_group"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_add_global_groups"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_add_global_groups"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_add_non_persistent_groups"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_add_non_persistent_groups"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_switch_to_blog"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_switch_to_blog"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_reset"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_reset"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\cache_supports"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\found"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\select"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_construct"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_destruct"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_prop_get"
+  - "function:SpeedySpec\\WpObjectCache\\Native\\object_prop_set"
 roles:
   store: [function:wp_cache_add, function:wp_cache_add_multiple, function:wp_cache_replace, function:wp_cache_set, function:wp_cache_set_multiple, function:wp_cache_set_salted, function:wp_cache_set_multiple_salted, function:wp_cache_incr, function:wp_cache_decr]
   read: [function:wp_cache_get, function:wp_cache_get_multiple, function:wp_cache_get_salted, function:wp_cache_get_multiple_salted]
@@ -24,6 +71,43 @@ roles:
   groups-and-sites: [function:wp_cache_add_global_groups, function:wp_cache_add_non_persistent_groups, function:wp_cache_switch_to_blog, function:wp_cache_reset]
   lifecycle: [function:wp_cache_init, function:wp_cache_close, function:wp_cache_supports]
   classes-and-state: [class:WP_Object_Cache, global:wp_object_cache]
+  speedyspec: ["function:SpeedySpec\\WpObjectCache\\clone_objects"]
+  speedyspec-internals: ["function:SpeedySpec\\WpObjectCache\\Native\\cache_add", "function:SpeedySpec\\WpObjectCache\\Native\\object_add", "function:SpeedySpec\\WpObjectCache\\Native\\cache_add_multiple", "function:SpeedySpec\\WpObjectCache\\Native\\object_add_multiple", "function:SpeedySpec\\WpObjectCache\\Native\\cache_replace", "function:SpeedySpec\\WpObjectCache\\Native\\object_replace", "function:SpeedySpec\\WpObjectCache\\Native\\cache_set", "function:SpeedySpec\\WpObjectCache\\Native\\object_set", "function:SpeedySpec\\WpObjectCache\\Native\\cache_set_multiple", "function:SpeedySpec\\WpObjectCache\\Native\\object_set_multiple", "function:SpeedySpec\\WpObjectCache\\Native\\cache_get", "function:SpeedySpec\\WpObjectCache\\Native\\object_get", "function:SpeedySpec\\WpObjectCache\\Native\\cache_get_multiple", "function:SpeedySpec\\WpObjectCache\\Native\\object_get_multiple", "function:SpeedySpec\\WpObjectCache\\Native\\cache_delete", "function:SpeedySpec\\WpObjectCache\\Native\\object_delete", "function:SpeedySpec\\WpObjectCache\\Native\\cache_delete_multiple", "function:SpeedySpec\\WpObjectCache\\Native\\object_delete_multiple", "function:SpeedySpec\\WpObjectCache\\Native\\cache_incr", "function:SpeedySpec\\WpObjectCache\\Native\\object_incr", "function:SpeedySpec\\WpObjectCache\\Native\\cache_decr", "function:SpeedySpec\\WpObjectCache\\Native\\object_decr", "function:SpeedySpec\\WpObjectCache\\Native\\cache_flush", "function:SpeedySpec\\WpObjectCache\\Native\\object_flush", "function:SpeedySpec\\WpObjectCache\\Native\\cache_flush_runtime", "function:SpeedySpec\\WpObjectCache\\Native\\object_flush_runtime", "function:SpeedySpec\\WpObjectCache\\Native\\cache_flush_group", "function:SpeedySpec\\WpObjectCache\\Native\\object_flush_group", "function:SpeedySpec\\WpObjectCache\\Native\\cache_add_global_groups", "function:SpeedySpec\\WpObjectCache\\Native\\object_add_global_groups", "function:SpeedySpec\\WpObjectCache\\Native\\cache_add_non_persistent_groups", "function:SpeedySpec\\WpObjectCache\\Native\\object_add_non_persistent_groups", "function:SpeedySpec\\WpObjectCache\\Native\\cache_switch_to_blog", "function:SpeedySpec\\WpObjectCache\\Native\\object_switch_to_blog", "function:SpeedySpec\\WpObjectCache\\Native\\cache_reset", "function:SpeedySpec\\WpObjectCache\\Native\\object_reset", "function:SpeedySpec\\WpObjectCache\\Native\\cache_supports", "function:SpeedySpec\\WpObjectCache\\Native\\found", "function:SpeedySpec\\WpObjectCache\\Native\\select", "function:SpeedySpec\\WpObjectCache\\Native\\object_construct", "function:SpeedySpec\\WpObjectCache\\Native\\object_destruct", "function:SpeedySpec\\WpObjectCache\\Native\\object_prop_get", "function:SpeedySpec\\WpObjectCache\\Native\\object_prop_set"]
 edges:
   - { from: function:wp_cache_set, to: function:wp_cache_delete, kind: undone-by, at: { area: object-cache, scenario: delete_existing_and_missing } }
   - { from: function:wp_cache_incr, to: function:wp_cache_decr, kind: undone-by, at: { area: object-cache, scenario: decr_clamps_at_zero } }
+# The state of each symbol this seam depends on in another seam (DependencyStateRecorded).
+dependencies:
+  function:__:
+    # The CacheNotices port's PHP adapter translates a _doing_it_wrong() message with WordPress's __() when it exists.
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-object-cache-php/src/ports.rs#L21-L28", hash: "b9487f0e470b2a36b2e999350837971b2be31835a87b30cb69d6041ef56173d3" }
+  function:wp_load_translations_early:
+    # WordPress loads translations before its notice; the CacheNotices port's PHP adapter calls __() only when it exists.
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-object-cache-php/src/ports.rs#L21-L28", hash: "b9487f0e470b2a36b2e999350837971b2be31835a87b30cb69d6041ef56173d3" }
+  function:_doing_it_wrong:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-object-cache-php/src/ports.rs#L48-L77", hash: "3ac0fd8badbf1cee845120c9162e86bda97646161287f07fdf240a455018c460" }
+  function:_deprecated_function:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-object-cache-php/src/ports.rs#L48-L77", hash: "3ac0fd8badbf1cee845120c9162e86bda97646161287f07fdf240a455018c460" }
+  function:is_multisite:
+    # The SiteContext port's PHP adapter calls WordPress's function.
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-object-cache-php/src/ports.rs#L30-L46", hash: "9dbcd30f9f8b17f9ec6ca362370e684d24065a6036d742fd39963e648942e6bf" }
+  function:get_current_blog_id:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-object-cache-php/src/ports.rs#L30-L46", hash: "9dbcd30f9f8b17f9ec6ca362370e684d24065a6036d742fd39963e648942e6bf" }
+  function:wp_suspend_cache_addition:
+    # The AdditionSuspension port's PHP adapter calls WordPress's function.
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-object-cache-php/src/ports.rs#L86-L97", hash: "3c05d9759be886907ce129786d67d9bbe99c314cc67d116d57a8f86cdde5f857" }
+  function:esc_html:
+    # WP_Object_Cache::stats(), in the facade's PHP, calls WordPress's function when it exists.
+    state: php
+    cite: { source: "ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L384", hash: "cb69669f38c9e3025b79f41d063cf46dddc8796b140e08a8839dd8ad76c3ccb4" }
+  function:wp_cache_switch_to_blog_fallback:
+    # cache-compat.php uses it only when wp_cache_switch_to_blog() is undefined; SpeedySpec declares that natively.
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L169-L177", hash: "198ba61158351ba95d6532d16adce7f42abc1046f07ceda59acbe010b7a97b0f" }

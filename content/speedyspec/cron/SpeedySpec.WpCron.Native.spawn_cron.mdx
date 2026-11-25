@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpCron\\Native\\spawn_cron"
+verdict: new-in-speedyspec
+---
+
+`spawn_cron()`'s checks in Rust. Takes the time, whether a cron request is already running, and the lock timeout; returns `false` or the `doing_cron` value it set, and reports a wake time of now. <Ev source="ss:crates/speedyspec-wp-cron/src/spawn.rs#L51-L54" hash="114b100da24eb4a96ad83d7176143dee0440f88b92c4cfa425f5f2210901f746"/> <Ev test="speedyspec-wp-cron::spawn::due_job_spawns_sets_lock_and_wakes_now"/> Not for plugins: call [spawn_cron](/speedyspec/cron/spawn_cron/) instead.

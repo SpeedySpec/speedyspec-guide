@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpCron\\result"
+verdict: new-in-speedyspec
+---
+
+Turns a native function's answer into WordPress's: an error marker becomes a `WP_Error`, and `wp_clear_scheduled_hook()`'s merge marker one `WP_Error` holding each error. `false` when `WP_Error` isn't loaded. <Ev source="ss:crates/speedyspec-wp-cron-php/src/cron.php#L17-L41" hash="f3e32d937082a854cdb57730b4e42bbb9b6416c269370ebedf9deac4bdfaebf4"/> <Ev test="speedyspec-wp-cron::write::clear_merges_unschedule_errors"/> Used by SpeedySpec's cron wrapper; not for plugins.

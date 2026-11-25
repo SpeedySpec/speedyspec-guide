@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\update_option"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `update_option()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L40-L43" hash="37582fb5df20273ecb5341c6bbfbe82d917b891d1588e3315989ff700875f0ce"/>
+
+It sends the `UpdateOption` command through the handler bound under `SpeedySpec\WpOptions\UpdateOptionHandler`. <Ev scenario="autoload_requested_1" area="options"/>

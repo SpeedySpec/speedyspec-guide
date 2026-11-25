@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpCron\\due_sites"
+verdict: new-in-speedyspec
+---
+
+On a network's main cron call: the other active sites with an event due now, each as the query string of a follow-up call (`site=…&host=…&path=…`), in id order. A single site gets an empty list. <Ev source="ss:crates/speedyspec-wp-cron-php/src/natives.rs#L207-L221" hash="e6f4b603b1ae458f70104635c5a1a9a4e8916c156ddfcb93c49be2ce0f635037"/> <Ev test="speedyspec-wp-cron::network::lists_due_sites_in_id_order"/> <Ev test="speedyspec-wp-cron::network::single_site_lists_nothing_and_calls_no_port"/> <Ev source="ss:crates/speedyspec-wp-cron-php/tests/network_php.rs#L174-L181" hash="c36f08d1230df37e58c2ca0e86b6f417fa4f8e7e5a7cc51411b4dcedc80dfcaa"/> Called by the cron endpoint, not by plugins.

@@ -1,0 +1,18 @@
+---
+symbol: "function:SpeedySpec\\Runtime\\report_next_wake"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+`report_next_wake( int $timestamp )` tells the server when this app next wants its scheduled call. The earliest time reported in a request wins, a negative time is reported as 0, and the report is cleared at the start of every request. A float is truncated; any other type throws a `TypeError`. <Ev source="ss:crates/speedyspec-php-runtime/src/wake.rs#L43-L68" hash="9ab9d2d0f2a84c7df68b933852520090ce12977ce15e148fd1f3a85454e6a424"/> <Ev test="speedyspec-php-runtime::worker::reported_wake_reaches_the_report"/> <Ev test="speedyspec-php-runtime::worker::earliest_wake_wins"/> <Ev test="speedyspec-php-runtime::worker::a_wake_never_leaks_into_the_next_request"/>
+
+It is generic: the server learns a time, not a WordPress fact. WordPress's cron already reports through the same slot after every write and run, so a WordPress plugin doesn't need it. <Ev source="ss:crates/speedyspec-php-runtime/src/wake.rs#L1-L4" hash="6145800b76db4dc997d677078fd039e85a16a397a37fe6cbfa7cdb911160f97f"/> <Ev test="speedyspec-wp-cron::run::writes_report_earliest_to_wake"/>
+
+## Example
+
+A PHP app without WordPress's cron asks to be called again in an hour:
+
+```php
+\SpeedySpec\Runtime\report_next_wake( time() + 3600 );
+```

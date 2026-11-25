@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_prime_site_option_caches"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `PrimeNetworkOptionCaches` command for the current network. <Ev scenario="prime_network_option_caches" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+
+## Override
+
+Network options live in `wp_sitemeta` behind the `SitemetaRepository` port on multisite, and in the options API on a single site. See the architecture page.

@@ -1,0 +1,17 @@
+---
+---
+
+Native: SpeedySpec answers all 17 functions of `cron.php` in Rust. Fourteen are native functions behind a thin PHP wrapper; `spawn_cron()` runs its checks natively; `wp_cron()` and `_wp_cron()` keep WordPress's PHP bodies over them. <Ev source="ss:crates/speedyspec-wp-cron-php/src/release.rs#L18-L37" hash="8c14529b772df75a9632b46c73c87d31c7caf0ba4cbe90a50f430ea702feb023"/> <Ev source="ss:crates/speedyspec-wp-cron-php/tests/php.rs#L136-L145" hash="6cef3ccf9c000ab66aff9d7f26fd6c7a98735b7720271a00baf60bc76697e88c"/>
+
+How it is verified:
+
+- 106 recorded WordPress 7.1.5 scenarios replay through the native functions on MySQL, exactly, except one documented break. <Ev test="speedyspec-wp-cron-php::compat::main"/> They cover scheduling, rescheduling, unscheduling and clearing, every `pre_*` short-circuit, lookups, schedules, ready events, legacy and odd `cron` options, and running due events. They don't cover `spawn_cron()`, `wp_cron()` or `_wp_cron()`.
+- WordPress's own cron tests (72 with their data sets) pass against the native functions on MySQL; none is listed as a break. <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
+
+The documented differences:
+
+- **Concurrent writes.** Every write is a compare-and-swap on the `cron` option, retried on conflict, so two processes scheduling at once both keep their events. After five conflicting attempts a write returns `could_not_set`, where WordPress would have overwritten the other process's change. <Ev test="speedyspec-wp-cron::write::conflict_retries_and_keeps_both"/> <Ev test="speedyspec-wp-cron::write::five_conflicts_give_could_not_set"/>
+- **Running due events.** The server's scheduler calls SpeedySpec's cron endpoint, which runs the due events natively; `wp-cron.php` answers 404. Each event is claimed with one write, so the `cron` option's update hooks fire once per event instead of twice for a recurring one. <Ev area="cron" break="run_cron_single_and_recurring"/> <Ev source="ss:crates/speedyspec-wp-cron-php/src/wp-cron-stub.php#L1-L7" hash="c2e853ba904b82fb647a2846ec56f31f4505d551956c7739258a3f4efed53dc8"/>
+- **Spawning.** `spawn_cron()` sends no loopback request: it tells the server to call the endpoint now. The filtered `cron_request` is not used, and `ALTERNATE_WP_CRON` has no effect on it. See [spawn_cron](/speedyspec/cron/spawn_cron/).
+
+Still WordPress's PHP: `WP_Error`, the translations, `add_query_arg()` and `site_url()` that the wrapper calls, and, on a network, `get_sites()` and `switch_to_blog()`.

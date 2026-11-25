@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_get_schedules"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Returns WordPress's built-in recurrences and those `cron_schedules` adds; a filter cannot change a built-in one. Every recorded scenario replays as in WordPress, and WordPress's own cron tests pass. <Ev area="cron" scenario="schedules"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
+
+## Override
+
+The `cron` option is read and written through the `CronStore` port. To keep events somewhere else, build `CronApi` with another store; see the architecture page.

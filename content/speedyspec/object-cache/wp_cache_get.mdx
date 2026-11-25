@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_cache_get"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Sets `$found` by reference, treats an empty group as `default` and a numeric-string key as an integer key, and returns a copy of a cached object. A read is one native call that never crosses into PHP. <Ev scenario="add_get" area="object-cache"/> <Ev scenario="found_flag" area="object-cache"/> <Ev scenario="empty_group_is_default" area="object-cache"/> <Ev scenario="numeric_string_key_is_int_key" area="object-cache"/> <Ev test="speedyspec-wp-object-cache-php::php::no_boundary_crossing_for_get"/> <Ev test="speedyspec-wp-object-cache-php::php::replayed_scenarios_match_wordpress"/>
+
+## Override
+
+The function dispatches a use case through the container; bind another handler under its key, or put a `WP_Object_Cache` subclass in `$wp_object_cache`. See the architecture page.

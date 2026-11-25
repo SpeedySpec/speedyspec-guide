@@ -1,0 +1,6 @@
+---
+symbol: "filter:pre_reschedule_event"
+verdict: works-as-wordpress
+---
+
+Run by the native cron functions through the native Hook API. Runs before an event is rescheduled; a non-null value short-circuits. <Ev area="cron" scenario="pre_reschedule_event_speedyspec_cron_reschedule___return_false_False"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>

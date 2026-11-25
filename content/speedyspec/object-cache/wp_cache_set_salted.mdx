@@ -1,0 +1,14 @@
+---
+symbol: "function:wp_cache_set_salted"
+verdict: works-with-differences
+differences:
+  - summary: "Not native: SpeedySpec doesn't declare it. It exists only where WordPress's cache-compat.php is loaded, and no scenario or test runs it on SpeedySpec (found by the guide)."
+---
+
+## Behaviour
+
+Still WordPress's PHP. SpeedySpec's object cache doesn't declare it; WordPress's `cache-compat.php` defines it when it isn't defined, over `wp_cache_set()`, which is native. <Ev source="wp:wp-includes/cache-compat.php#L230-L244" hash="cb23fc49d0f815a21c4d6347ef0ef57d21eecda72ca911ba43eee89af8a73d3f"/> <Ev scenario="set_overwrites" area="object-cache"/>
+
+## Limits
+
+What is proven is only the native function it calls. No recorded scenario, WordPress test or guide example runs `wp_cache_set_salted()` on SpeedySpec, and where `cache-compat.php` isn't loaded the function doesn't exist.

@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_protect_special_option"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `ProtectSpecialOption` command. For `alloptions` and `notoptions` it calls WordPress's `wp_die()` with WordPress's message, through the `ProtectedOptions` port; if `wp_die()` returns, the write still doesn't happen. <Ev scenario="protect_special_option_direct" area="options"/> <Ev scenario="protected_update_option_notoptions" area="options"/> <Ev source="ss:crates/speedyspec-wp-options-php/src/adapters.rs#L189-L220" hash="def7ad779da3b8e19fb9878b520943a6f45796623be2bd05d186b1bd89043059"/>
+
+## Override
+
+Options live in `wp_options` behind the `OptionRepository` port; the use case is a handler in the container. See the architecture page.

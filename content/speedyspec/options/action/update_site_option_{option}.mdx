@@ -1,0 +1,6 @@
+---
+symbol: "action:update_site_option_{$option}"
+verdict: works-as-wordpress
+---
+
+Fired by the native [update_network_option()](/speedyspec/options/update_network_option/), with WordPress's arguments and in WordPress's order. <Ev scenario="network_option_hooks_order" area="options"/> <Ev scenario="network_option_per_network" area="options"/> <Ev scenario="site_option_fallback" area="options"/>

@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_determine_option_autoload_value"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `DetermineOptionAutoloadValue` query, decided by the `AutoloadPolicy` port (WordPress's rules in `WordPressAutoloadPolicy`). Every autoload value a caller can pass replays as in WordPress. <Ev scenario="determine_autoload_value_direct" area="options"/> <Ev scenario="autoload_requested_weird" area="options"/> <Ev scenario="autoload_requested_none" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+
+## Override
+
+Bind another `AutoloadPolicy` from Rust, or hook `wp_default_autoload_value` as in WordPress. See the architecture page.

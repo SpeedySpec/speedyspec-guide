@@ -1,0 +1,12 @@
+---
+symbol: "function:get_network_option"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `GetNetworkOption` query. On a single site it reads the options API; on multisite, `wp_sitemeta`, cached under `{network_id}:{option}` in `site-options`. An invalid network ID returns `false`. <Ev scenario="network_option_per_network" area="options"/> <Ev scenario="network_option_notoptions" area="options"/> <Ev scenario="network_option_bad_network_id" area="options"/> <Ev scenario="network_option_hooks_order" area="options"/> WordPress's tests pass on a single site and on multisite. <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+
+## Override
+
+Network options live in `wp_sitemeta` behind the `SitemetaRepository` port on multisite, and in the options API on a single site. See the architecture page.

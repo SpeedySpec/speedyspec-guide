@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_cache_add"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Adds a value only when the key is missing, and refuses while cache addition is suspended. A stored object is a copy. <Ev scenario="add_get" area="object-cache"/> <Ev scenario="add_existing_is_false" area="object-cache"/> <Ev scenario="suspend_addition" area="object-cache"/> <Ev scenario="invalid_keys_doing_it_wrong" area="object-cache"/> <Ev test="speedyspec-wp-object-cache-php::php::replayed_scenarios_match_wordpress"/>
+
+## Override
+
+The function dispatches a use case through the container; bind another handler under its key, or put a `WP_Object_Cache` subclass in `$wp_object_cache`. See the architecture page.

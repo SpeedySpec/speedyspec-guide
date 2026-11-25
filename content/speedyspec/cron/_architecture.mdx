@@ -1,0 +1,81 @@
+---
+---
+
+## The crates
+
+- **`speedyspec-wp-cron-contracts`** holds the contracts and nothing else: the cron array as plain values (`CronArray`, `ScheduledEvent`, `EventData`, `EventKey`), the outcomes (`CronResult`, `CronError`, `RunSummary`, `SaveOutcome`, `Version`) and the ports. A `CronArray` keeps every entry it can't read as an event, in place, so a read-modify-write never drops what WordPress would keep. <Ev source="ss:crates/speedyspec-wp-cron-contracts/src/lib.rs#L1-L7" hash="21f89fc4b24381575665af7918d22a250cb258afb1071faa21351f4c38f1d629"/> <Ev test="speedyspec-wp-cron-contracts::array::round_trip_keeps_order_and_junk"/>
+- **`speedyspec-wp-cron`** is `cron.php` in Rust: `CronApi` has one method per function, with WordPress's checks, filters and return values, plus the runner that replaces `wp-cron.php`. It holds memory adapters for tests (`MemoryCronStore`, `RecordingWake`, `MemoryNetwork`). <Ev source="ss:crates/speedyspec-wp-cron/src/lib.rs#L1-L5" hash="af154d716368b61edc4c7e0f3555bba735e55b55f005214f24e41d75748bbbbc"/>
+- **`speedyspec-wp-cron-options`** is the store adapter: `OptionCronStore` reads and writes the `cron` option through the options API, every write a compare-and-swap. <Ev source="ss:crates/speedyspec-wp-cron-options/src/lib.rs#L1-L6" hash="58946afbb54b624deaff5f0d3018c4d5c8c385024aae662a9379f8dc4002c785"/> <Ev test="speedyspec-wp-cron-options::memory::load_save_if_round_trip"/>
+- **`speedyspec-wp-cron-php`** is the PHP area, `CronArea`: it declares the natives (`SpeedySpec\WpCron\Native\…`, `run_due_events`, `due_sites`), evaluates `cron.php`, the thin wrapper that declares WordPress's functions over them, and holds the PHP adapters of the ports. It also prepares a WordPress release whose `cron.php` lacks the ported functions, with SpeedySpec's cron endpoint and a `wp-cron.php` that answers 404. <Ev source="ss:crates/speedyspec-wp-cron-php/src/lib.rs#L1-L11" hash="9600f2dd1d74757b10bf518983b750b921ad30da0c23ede67baca63a254790aa"/>
+
+## The ports
+
+`CronApi` is built from `CronParts`: the Rust Hook API and one port for each thing it needs from outside. <Ev source="ss:crates/speedyspec-wp-cron/src/api.rs#L11-L26" hash="736310a0b0f2bff86114b33e199e00bb26d2120822b8d64ac53227440dce1d50"/>
+
+- `CronStore`: the `cron` option (Repository), with `load`, `reload`, `save_if` (compare-and-swap) and `save`. <Ev source="ss:crates/speedyspec-wp-cron-contracts/src/ports.rs#L7-L21" hash="64c69d6269618abd0bec480b0528cc083f295de36a2231990759f3ca353bf0b8"/>
+- `ArgsKeyer` (`md5( serialize( $args ) )`), `Clock`, `Translator` (`__()`), `PhpObjects` (the `stdClass` events and `WP_Error` checks), `DoingCron` (the `doing_cron` transient), `ErrorReporter` (`wp-cron.php`'s error log), `NetworkSites` and `SiteSwitcher` (a network's sites).
+- `WakeReporter`: where the next due time goes. <Ev source="ss:crates/speedyspec-wp-cron-contracts/src/ports.rs#L51-L54" hash="e8e2b3b175a5de1169f63a53e78d8ee90ada037a4a3c278cbaa503994a66c68c"/> The runtime's adapter keeps the earliest time of the request and sends it to the server in the worker's report; PHP can write the same slot with `SpeedySpec\Runtime\report_next_wake()`. <Ev source="ss:crates/speedyspec-php-runtime/src/wake.rs#L30-L35" hash="0f49a57ca33117bfc81dfdb01c51418324d26ef34403d00941e20976ffe2a0e8"/> <Ev test="speedyspec-wp-cron::run::writes_report_earliest_to_wake"/>
+
+## The use cases
+
+- **Commands:** `schedule_single_event`, `schedule_event`, `reschedule_event`, `unschedule_event`, `clear_scheduled_hook`, `unschedule_hook`, `set_cron_array`, `run_due_events`, `spawn_cron`. Every write but `set_cron_array` mutates a fresh read and saves it with a compare-and-swap, up to five attempts (Optimistic Offline Lock). <Ev source="ss:crates/speedyspec-wp-cron/src/write.rs#L123-L126" hash="129f2627ffbf81e1aa07d784664e9dba48adb2c4451e3ca1b54ba0bffe46569f"/> <Ev test="speedyspec-wp-cron::write::a_write_between_two_reads_is_never_overwritten"/>
+- **Queries:** `get_scheduled_event`, `next_scheduled`, `get_schedules`, `get_schedule`, `get_ready_cron_jobs`, `get_cron_array`, `upgrade_cron_array`, `due_sites`.
+
+`run_due_events` claims each due event with one write that adds its next occurrence and removes this one, then fires its hook, so runners on several replicas never run an event twice. <Ev test="speedyspec-wp-cron::run::two_runners_run_each_event_once"/>
+
+## The adapters and how they are wired
+
+The worker builds `CronArea` over its Hook API and options API, with the request's wake slot, after the database, object cache and options areas. <Ev source="ss:crates/speedyspec-php-runtime/src/database.rs#L76-L78" hash="fd1f161366a7849207bad48598960e3b73c8dda6cd3356df0f21fcdef892d629"/> `CronArea` fills `CronParts` with `OptionCronStore` and the PHP adapters (`PhpArgsKeyer`, `PhpTranslator`, `PhpEventObjects`, `PhpDoingCron`, `PhpErrorReporter`, `PhpNetworkSites`, `PhpSiteSwitcher`, `SystemClock`). <Ev source="ss:crates/speedyspec-wp-cron-php/src/lib.rs#L60-L116" hash="1ee56b7b8e6442967f4b35bd8e7ea1c2490b09390c418c047c2af5326ebda51b"/>
+
+Cron registers nothing in the service container: there is no container key, and no PHP port. To replace a part:
+
+- **Keep cron's data somewhere else:** the `cron` option goes through the options API, so replacing the options store moves it too (see the Options seam). For a store of its own, implement `CronStore` in Rust and build `CronApi` with it; `CronArea` always uses `OptionCronStore`, so the worker must be changed to pass another one.
+- **Any other port:** implement it in Rust and build `CronApi` from your `CronParts`, as the crate's tests do with the memory adapters. <Ev test="speedyspec-wp-cron::write::conflict_retries_and_keeps_both"/>
+- **From PHP:** not possible today. The wrapper is evaluated at the start of every request, before any plugin loads.
+
+## Patterns
+
+- **Ports and Adapters**: `CronStore` and the other ports in their own contracts crate, with option, memory and PHP adapters.
+- **Repository** for the `cron` option (`CronStore`), with **Optimistic Offline Lock** for every write.
+- **Adapter**: `OptionCronStore` over the options API.
+- **Facade**: `cron.php`, the thin PHP wrapper over the natives.
+- **Value Objects**: `CronArray`, `ScheduledEvent`, `EventKey`, `CronResult`.
+
+<Diagram label="A due event on SpeedySpec, from the server's scheduler to the event's hook" code={`sequenceDiagram
+  participant S as Server scheduler
+  participant E as speedyspec-cron.php
+  participant R as run_due_events (Rust)
+  participant O as cron option (CronStore)
+  participant H as Hook API
+  S->>E: call at the reported wake time
+  E->>R: run_due_events($budget)
+  R->>O: read, claim the event (one compare-and-swap)
+  R->>H: do_action_ref_array($hook, $args)
+  R-->>E: ran, next
+  E-->>S: JSON summary (next wake)`} />
+
+## A runtime feature calling the API
+
+A Rust feature schedules an event and reads when it is due, as `wp_schedule_single_event()` and `wp_next_scheduled()` would:
+
+```rust
+use std::rc::Rc;
+use speedyspec_wp_cron::CronApi;
+use speedyspec_wp_cron_contracts::{CronError, CronResult};
+use speedyspec_wp_hooks::HookValue;
+
+fn schedule_cleanup(cron: &Rc<CronApi>, at: i64) -> Result<bool, CronError> {
+    let hook = HookValue::Str("my_feature_cleanup".into());
+    let args = HookValue::Array(Vec::new());
+    let scheduled = cron.schedule_single_event(&HookValue::Int(at), &hook, &args, false)?;
+    let next = cron.next_scheduled(&hook, &args)?;
+    Ok(matches!(scheduled, CronResult::Value(HookValue::Bool(true))) && next == HookValue::Int(at))
+}
+```
+
+`CronArea::api()` gives the worker's `CronApi`. The write fires WordPress's filters through the shared Hook API and reports the new wake time to the server.
+
+## How to change this
+
+- **What must still pass:** the recorded scenarios (`compat/cron/scenarios.json`, replayed by `speedyspec-wp-cron-php`'s `compat` test) and WordPress's own cron tests, except the break in `compat/cron/breaks.json`. <Ev test="speedyspec-wp-cron-php::compat::main"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
+- **Recording a new scenario:** add it to `compat/cron/scenarios.json` in speedyspec-server and record it against WordPress 7.1.5; a difference the port can't match goes in `breaks.json` with its reason.

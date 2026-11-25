@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\wp_prime_option_caches_by_group"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `wp_prime_option_caches_by_group()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L60-L63" hash="7175bd538c7c857810e6f3274f517ffe4d157c5b4b9b009f0c748a04b0734ae2"/>
+
+It sends the `PrimeOptionCachesByGroup` command through the handler bound under `SpeedySpec\WpOptions\PrimeOptionCachesByGroupHandler`. <Ev scenario="prime_by_group" area="options"/>
