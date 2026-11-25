@@ -1,0 +1,16 @@
+---
+symbol: "function:_get_meta_table"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`MetaRepositories::for_type` is `_get_meta_table()` as a factory: the repository for a meta type, or `None` when the type has no table. `MetaType` names the `$wpdb` property `{type}meta`, the object column and the id column (`umeta_id` for users). <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L68-L72" hash="293bcc5276b730f7be2f109fb0a0ccde17ff00f787100fb978063bf0c91f3ccb"/> <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/values.rs#L21-L38" hash="3b2f30a4a5240d6928bfcf4e8d2fc3529917e68a9223cad32b1718d39b74e315"/> <Ev test="speedyspec-wp-meta-memory::conformance::repositories_share_one_per_type"/> <Ev test="speedyspec-wp-meta-contracts::values::meta_type_columns_user"/>
+
+## Limits
+
+Only the memory factory exists. The SQL one, which reads the table names from `wpdb`, is phase 3, so no recording of `_get_meta_table()` is replayed yet.

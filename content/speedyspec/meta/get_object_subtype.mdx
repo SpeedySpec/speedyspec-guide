@@ -1,0 +1,10 @@
+---
+symbol: "function:get_object_subtype"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts. The `ObjectSubtypes` port is its seam: each seam that owns objects will bind its own meta type, so meta needs no other seam's contracts. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L74-L77" hash="8296b0309cdcbdb236919b6e652a7e871e092f993c386e0ea7ef54ea5c0f7b61"/>

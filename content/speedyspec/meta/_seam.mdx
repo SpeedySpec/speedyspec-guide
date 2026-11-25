@@ -1,0 +1,28 @@
+---
+---
+
+Not native yet. speedyspec-server has the first of the metadata API's rules in Rust, but nothing declares them in PHP and the runtime worker doesn't link the meta crates. PHP on SpeedySpec still gets WordPress's own `meta.php` and `WP_Metadata_Lazyloader`, so every function here works as in WordPress. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## What the port covers
+
+The seam has 24 functions and one class, `WP_Metadata_Lazyloader`, with six methods. None is native. Phase 1 of the posts and meta port has Rust rules for eight functions, proven against recordings of WordPress 7.1.5 but not wired into PHP:
+
+- `is_protected_meta()`: its byte rule, before the `is_protected_meta` filter, as `is_protected_key`. <Ev test="speedyspec-wp-meta::recorded::protected_keys_match_wordpress"/>
+- `register_meta()`: as `prepare_registration` and `resolve_registration`, split at its `register_meta_args` filter. `_wp_register_meta_args_allowed_list()`, the filter's default callback, is `allowed_args`. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/>
+- `unregister_meta_key()`, `registered_meta_key_exists()` and `get_registered_meta_keys()`: `MetaKeyRegistry`, which is `$wp_meta_keys`. The same replay covers them. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/>
+- `filter_default_metadata()`: `MetaKeyRegistry::default_for`, without its `wp_installing()` check. <Ev test="speedyspec-wp-meta::recorded::defaults_match_wordpress"/>
+- `_get_meta_table()`: the `MetaRepositories` factory, with `MetaType` naming the table. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L68-L72" hash="293bcc5276b730f7be2f109fb0a0ccde17ff00f787100fb978063bf0c91f3ccb"/>
+
+The statements `add_metadata()`, `update_metadata()`, `delete_metadata()`, the three `*_by_mid()` functions and `update_meta_cache()` make are the `MetaRepository` port's methods, with an in-memory adapter that passes the port's conformance suite. <Ev test="speedyspec-wp-meta-memory::conformance::memory_repository_passes_the_suite"/> The functions themselves, the SQL repository and the lazy loader are phase 3, which waits for the hooks, object cache and db contracts. `get_meta_sql()` waits for the port of `WP_Meta_Query`, the area after the posts and meta port.
+
+## The evidence
+
+`compat/meta/cases.json` holds what WordPress 7.1.5 answered on PHP 8.5.12: 28 protected-key cases, 21 `register_meta()` scenarios (41 calls) and 14 default cases. <Ev source="ss:compat/meta/cases.json#L1-L3" hash="2805a50532760d87464df368f551117cf3df8c9a2360db539c31b607451a437b"/> The replay compares each call's result, its `_doing_it_wrong()` messages, the filters it added and removed, and the whole `$wp_meta_keys` in order. The recorder stubs post types and the REST schema check, so the proof is of the rules under those stubs. <Ev source="ss:compat/meta/record.php#L36-L46" hash="15dcefe9533a32dcbf7c2c2f47c16192fd1dd0013fccea36df2804ff42359d62"/> WordPress's meta PHPUnit tests don't run against the port yet; they come with phase 3.
+
+## Documented differences
+
+None recorded. `register_meta()`'s rules approximate three inputs WordPress documents no use for: a float `object_subtype` is truncated to an int, where PHP's hook name keeps the decimals; an array or object `object_subtype` becomes `""`, where PHP throws; and a non-array `show_in_rest.schema` isn't merged, where PHP's `array_merge()` throws. No recording covers them, and none reaches PHP until the rules are wired. <Ev source="ss:crates/speedyspec-wp-meta/src/register.rs#L8-L11" hash="310ef5b575de773d054537b2377e84efac7e4d509127781c54cc4c0064b182bd"/>
+
+## Still WordPress's PHP
+
+Everything: all 24 functions, the lazy loader, the `$wp_meta_keys` global and every meta hook. See the architecture page for the Rust API and what phase 3 adds.

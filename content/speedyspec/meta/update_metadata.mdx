@@ -1,0 +1,10 @@
+---
+symbol: "function:update_metadata"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts. The `$wpdb` statements it makes are already the `MetaRepository` port's `ids_for` and `update_by_key`. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L27-L36" hash="60783f22ca67086334f9c2969ce9c5bffcc83dc15d24048a2c90db0ecee763f0"/>
