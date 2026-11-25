@@ -14,6 +14,6 @@ Of this seam's 11 classes, the port replaces one, `wp_xmlrpc_server`, with a shi
 
 ## How it is checked against WordPress
 
-The XML-RPC area has no recorded compat scenarios. WordPress's own tests from `tests/phpunit/tests/xmlrpc/` that need no database (`basic`, `client`, `message` and `demo/addTwoNumbers`), copied from the 7.1 branch, run with the pinned PHPUnit against the shim: 36 tests, data sets counted, every one run and none failing. <Ev source="ss:crates/speedyspec-xmlrpc-php/tests/wordpress.rs#L21-L25" hash="54b9185bd5178b02cbf41927ebc2b2345be5577990e7970333b1275907d42ed2"/> <Ev source="ss:crates/speedyspec-xmlrpc-php/tests/wordpress.rs#L137-L145" hash="bc181868415c57faa8c64c96b4d2e17853ea79ddc58d89873fedecf28d8aa754"/>
+The XML-RPC area has no recorded compat scenarios. WordPress's own tests from `tests/phpunit/tests/xmlrpc/` that need no database (`basic`, `client`, `message` and `demo/addTwoNumbers`), copied from the 7.1 branch, run with the pinned PHPUnit against the shim: 36 tests, data sets counted, every one run and none failing. <Ev source="ss:crates/speedyspec-xmlrpc-php/tests/wordpress.rs#L21-L25" hash="54b9185bd5178b02cbf41927ebc2b2345be5577990e7970333b1275907d42ed2"/> <Ev source="ss:crates/speedyspec-xmlrpc-php/tests/wordpress.rs#L138-L146" hash="bc181868415c57faa8c64c96b4d2e17853ea79ddc58d89873fedecf28d8aa754"/>
 
 That suite leaves out WordPress's tests of the `wp.*`, `mw.*`, `mt.*` and `blogger.*` methods, which need a database, so the port's results for those methods are not checked against WordPress.

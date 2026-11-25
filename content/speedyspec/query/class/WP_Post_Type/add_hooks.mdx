@@ -3,4 +3,4 @@ symbol: "method:WP_Post_Type::add_hooks"
 verdict: works-as-wordpress
 ---
 
-Served by WordPress's PHP, as the whole class is until phase 4. In Rust, registering returns its `add_action()` call instead of making it: `future_{$post_type}` with `_future_post_hook`, priority 5, two arguments. Phase 4's adapter adds it. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L55-L62" hash="3575ca0ac3ef1655f55ca6e961acd876ac6b51da878a3c5357086fcdacacafa2"/> Every recorded registration's actions match WordPress 7.1.5's. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>
+Served by WordPress's PHP, as the whole class is until phase 4. In Rust, registering returns its `add_action()` call instead of making it: `future_{$post_type}` with `_future_post_hook`, priority 5, two arguments. Phase 4's adapter adds it. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L58-L65" hash="3575ca0ac3ef1655f55ca6e961acd876ac6b51da878a3c5357086fcdacacafa2"/> Every recorded registration's actions match WordPress 7.1.5's. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>

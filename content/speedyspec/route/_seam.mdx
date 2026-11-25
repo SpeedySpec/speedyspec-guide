@@ -3,7 +3,7 @@
 
 Not native yet: speedyspec-server has a Rust port of the Rewrite API, but the runtime worker doesn't link it, so PHP still gets WordPress's own `rewrite.php`, `WP_Rewrite` and the rest of this seam. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
 
-The port covers 9 of the seam's 23 functions and 2 of its 4 classes: `add_rewrite_rule`, `add_rewrite_tag`, `remove_rewrite_tag`, `add_permastruct`, `remove_permastruct`, `add_feed`, `flush_rewrite_rules`, `add_rewrite_endpoint` and `_wp_filter_taxonomy_base`, with `WP_Rewrite` and `WP_MatchesMapRegex`. <Ev source="ss:crates/speedyspec-wp-rewrite-php/src/rewrite.php#L664-L742" hash="cfd9f5321658ed7e34f3fc7da9127f8963014d509caa418cee0a58ae7dd5b91f"/> Request matching, `WP::parse_request()`'s rule loop, is ported too, but `parse_request()` belongs to the Query seam. <Ev test="speedyspec-router-presentation::subject::requested_path_matches_parse_request"/>
+The port covers 9 of the seam's 23 functions and 2 of its 4 classes: `add_rewrite_rule`, `add_rewrite_tag`, `remove_rewrite_tag`, `add_permastruct`, `remove_permastruct`, `add_feed`, `flush_rewrite_rules`, `add_rewrite_endpoint` and `_wp_filter_taxonomy_base`, with `WP_Rewrite` and `WP_MatchesMapRegex`. <Ev source="ss:crates/speedyspec-wp-rewrite-php/src/rewrite.php#L704-L782" hash="cfd9f5321658ed7e34f3fc7da9127f8963014d509caa418cee0a58ae7dd5b91f"/> Request matching, `WP::parse_request()`'s rule loop, is ported too, but `parse_request()` belongs to the Query seam. <Ev test="speedyspec-router-presentation::subject::requested_path_matches_parse_request"/>
 
 How it's checked:
 

@@ -15,5 +15,5 @@ The 14 recorded status scenarios (19 calls) replay as in WordPress 7.1.5, and so
 
 ## Limits
 
-- Recorded from WordPress 7.1.5 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L49-L62" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/> `_n_noop()` is copied from `l10n.php`.
+- Recorded from WordPress 7.1.5 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/> `_n_noop()` is copied from `l10n.php`.
 - `$args` must be an array. The query-string form `wp_parse_args()` accepts is the adapter's to parse. <Ev source="ss:crates/speedyspec-wp-posts/src/status.rs#L5-L6" hash="7d3288d67d1538167e8f2036d43941adaadbfa7c53231454454a269722ceb084"/>

@@ -68,7 +68,7 @@ Two rules need care when they change.
 - `register`: 21 scenarios, 41 calls of `register_meta()`, `unregister_meta_key()`, `registered_meta_key_exists()` and `get_registered_meta_keys()`. Each call's result, its `_doing_it_wrong()` messages and the filters it added and removed must match, and so must the whole `$wp_meta_keys` at the end of each scenario. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/>
 - `default`: 14 `filter_default_metadata()` cases. <Ev test="speedyspec-wp-meta::recorded::defaults_match_wordpress"/>
 
-The recorder stubs what `meta.php` calls in files it doesn't load: `__()`, `post_type_supports()` (true for `post` and `page`), `get_post_type()` and `rest_validate_value_from_schema()`. It doesn't load `default-filters.php`, so `_wp_register_meta_args_allowed_list` is hooked only in the scenario that hooks it. <Ev source="ss:compat/meta/record.php#L36-L46" hash="15dcefe9533a32dcbf7c2c2f47c16192fd1dd0013fccea36df2804ff42359d62"/> The proof is of the rules under those stubs, not of WordPress's real post types or REST schema check.
+The recorder stubs what `meta.php` calls in files it doesn't load: `__()`, `post_type_supports()` (true for `post` and `page`), `get_post_type()` and `rest_validate_value_from_schema()`. It doesn't load `default-filters.php`, so `_wp_register_meta_args_allowed_list` is hooked only in the scenario that hooks it. <Ev source="ss:compat/meta/record.php#L40-L50" hash="15dcefe9533a32dcbf7c2c2f47c16192fd1dd0013fccea36df2804ff42359d62"/> The proof is of the rules under those stubs, not of WordPress's real post types or REST schema check.
 
 Not yet proven: the use cases, WordPress's meta PHPUnit tests and any SQL repository. These come with phase 3.
 

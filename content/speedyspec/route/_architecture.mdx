@@ -33,7 +33,7 @@ At request time, `WpRouting::resolve()` matches a path against the stored rules 
 
 - **The rewrite handlers:** bind another handler under a message's key, from Rust or from PHP through the container.
 - **The route table store:** bind a PHP object implementing `SpeedySpec\Routing\RouteTableStore` (the `#[php_port]` twin of the Rust trait) under that key. Route data crosses as an opaque, versioned byte string; data that doesn't decode is a miss. Outside a PHP request the worker's memory store answers. <Ev source="ss:crates/speedyspec-router-php/src/lib.rs#L20-L29" hash="19b0e1b26348214278e12f167e7bb812c7df4147c1cc5488d0350259630ea1f5"/> <Ev test="speedyspec-router-php::php::php_store_binds"/> <Ev test="speedyspec-router-php::php::garbage_from_php_store_is_a_miss"/>
-- **The dispatch strategy:** `RewriteArea` builds its `TableCache` with `ChunkedAlternation`; `RegexSetStrategy` is the other `DispatchStrategy`. <Ev source="ss:crates/speedyspec-wp-rewrite-php/src/lib.rs#L51-L59" hash="b5b553d355445e6c14139a13450e10cc0bb0fa1f4dbafb14f283d73d20a77eb6"/>
+- **The dispatch strategy:** `RewriteArea` builds its `TableCache` with `ChunkedAlternation`; `RegexSetStrategy` is the other `DispatchStrategy`. <Ev source="ss:crates/speedyspec-wp-rewrite-php/src/lib.rs#L52-L60" hash="b5b553d355445e6c14139a13450e10cc0bb0fa1f4dbafb14f283d73d20a77eb6"/>
 - The router itself can't be replaced from PHP; only its store can.
 
 ## Patterns

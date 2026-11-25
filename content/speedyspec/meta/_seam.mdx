@@ -17,7 +17,7 @@ The statements `add_metadata()`, `update_metadata()`, `delete_metadata()`, the t
 
 ## The evidence
 
-`compat/meta/cases.json` holds what WordPress 7.1.5 answered on PHP 8.5.12: 28 protected-key cases, 21 `register_meta()` scenarios (41 calls) and 14 default cases. <Ev source="ss:compat/meta/cases.json#L1-L3" hash="2805a50532760d87464df368f551117cf3df8c9a2360db539c31b607451a437b"/> The replay compares each call's result, its `_doing_it_wrong()` messages, the filters it added and removed, and the whole `$wp_meta_keys` in order. The recorder stubs post types and the REST schema check, so the proof is of the rules under those stubs. <Ev source="ss:compat/meta/record.php#L36-L46" hash="15dcefe9533a32dcbf7c2c2f47c16192fd1dd0013fccea36df2804ff42359d62"/> WordPress's meta PHPUnit tests don't run against the port yet; they come with phase 3.
+`compat/meta/cases.json` holds what WordPress 7.1.5 answered on PHP 8.5.12: 28 protected-key cases, 21 `register_meta()` scenarios (41 calls) and 14 default cases. <Ev source="ss:compat/meta/cases.json#L1-L3" hash="2805a50532760d87464df368f551117cf3df8c9a2360db539c31b607451a437b"/> The replay compares each call's result, its `_doing_it_wrong()` messages, the filters it added and removed, and the whole `$wp_meta_keys` in order. The recorder stubs post types and the REST schema check, so the proof is of the rules under those stubs. <Ev source="ss:compat/meta/record.php#L40-L50" hash="15dcefe9533a32dcbf7c2c2f47c16192fd1dd0013fccea36df2804ff42359d62"/> WordPress's meta PHPUnit tests don't run against the port yet; they come with phase 3.
 
 ## Documented differences
 
