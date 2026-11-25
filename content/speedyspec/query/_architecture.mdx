@@ -161,11 +161,11 @@ impl GuideSettings {
 - **Keep the request state somewhere else:** implement `WpdbState` in Rust, or `SpeedySpec\WpDb\WpdbState` in PHP wrapped in `PhpWpdbState`, and bind it under `SpeedySpec\WpDb\WpdbState`. The worker doesn't yet declare that key as a port PHP may bind, so for now the binding is made from Rust. <Ev test="speedyspec-wp-db-php::php::php_state_twin_replaces_memory"/>
 - **Rewrite statements:** add a PHP or Rust callback to `query`, as in WordPress (it turns off the fast path), or a Rust callback to `speedyspec_query_statement`, which keeps it.
 - **What must still pass:** the recorded scenarios (`compat/wp-db/scenarios.json`, replayed on MySQL, SQLite and PostgreSQL by `speedyspec-wp-db-php`'s replay tests) and WordPress's own database tests, except the breaks in `compat/wp-db/breaks.json` and the engine lists `compat/phpunit-sqlite.json` and `compat/phpunit-postgres.json`. <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/> <Ev test="speedyspec-wp-db-php::wordpress::documented_breaks_are_listed"/>
-- **Recording a new scenario:** add it to `compat/wp-db/scenarios.json` in speedyspec-server and run `cargo run -p speedyspec-compat -- record wp-db --wordpress 7.1.5`; a difference the port can't match goes in `breaks.json` with its reason.
+- **Recording a new scenario:** add it to `compat/wp-db/scenarios.json` in speedyspec-server and run `cargo run -p speedyspec-compat -- record wp-db --wordpress 7.2-RC2` (the pin in `compat/wordpress.json`); a difference the port can't match goes in `breaks.json` with its reason.
 
 ## Post types and statuses (Rust, not wired yet)
 
-Phase 2a of the posts and meta port: WordPress 7.1.5's post type and post status rules in Rust, proven against recordings of WordPress. Nothing here is wired into PHP. The runtime worker links neither crate, so PHP on SpeedySpec runs WordPress's own `post.php` and `WP_Post_Type` until phase 4, which waits for the hooks contracts. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+Phase 2a of the posts and meta port: WordPress 7.2-RC2's post type and post status rules in Rust, proven against recordings of WordPress. Nothing here is wired into PHP. The runtime worker links neither crate, so PHP on SpeedySpec runs WordPress's own `post.php` and `WP_Post_Type` until phase 4, which waits for the hooks contracts. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
 
 ### The crates
 
@@ -187,10 +187,10 @@ All are in the contracts crate. Three are outbound, for what `set_props()` reads
 
 ### Use cases
 
-None yet: `register_post_type()` and the rest become commands and queries in phase 4, with the PHP adapter. Hooks are never called. Each rule returns what WordPress computes with no callback added, split where phase 4 must run a filter, and returns the `add_action()` and `remove_action()` calls to make (`ActionToAdd`, `SupportToAdd`, `ActionToRemove`) and the taxonomies to register. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L1-L13" hash="2d396b524685e09b10532f6e61727f646968b4d6758a5efecc5a3561da7eef41"/>
+None yet: `register_post_type()` and the rest become commands and queries in phase 4, with the PHP adapter. Hooks are never called. Each rule returns what WordPress computes with no callback added, split where phase 4 must run a filter, and returns the `add_action()` and `remove_action()` calls to make (`ActionToAdd`, `SupportToAdd`, `ActionToRemove`) and the taxonomies to register. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L1-L13" hash="42b1cdc1ac27679409dee3252c0e7ac9e27e1d3e823b8976814a649170a8285b"/>
 
 - `check_post_type_name` and `PostTypeRegistry::register` and `unregister`: `register_post_type()` and `unregister_post_type()`. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L242-L250" hash="b57142023dbe6972237ca930455c55b16b3a56941a123b92bc9ca1b180fb3e99"/>
-- `resolve_post_type`: `new WP_Post_Type()`, after the two `register_post_type_args` filters; `apply_filtered_labels` takes the `post_type_labels_{$post_type}` filter's result. <Ev source="ss:crates/speedyspec-wp-posts/src/post_type.rs#L1-L7" hash="9faef411f20b92468f39aa2ecf2f2626490213f10a5427f33a17d5d1d5e79dfa"/>
+- `resolve_post_type`: `new WP_Post_Type()`, after the two `register_post_type_args` filters; `apply_filtered_labels` takes the `post_type_labels_{$post_type}` filter's result. <Ev source="ss:crates/speedyspec-wp-posts/src/post_type.rs#L1-L6" hash="28f351def0346ad166666326bc06bcd8c4f5746e9e7427a99156980fa47a674c"/>
 - `post_type_labels`, `custom_object_labels`, `default_labels`, `post_type_capabilities` and `meta_capabilities`: the label and capability functions.
 - `add_supports`, `unregistration`, and the registry's `add_support`, `remove_support` and `all_supports`: the supports functions, pure first so the adapter can apply them to PHP's globals itself.
 - `PostStatusRegistry::register` and `resolve_post_status`; `post_statuses`, `page_statuses` and `privacy_statuses`.
@@ -203,13 +203,13 @@ Nothing is bound in the service container yet, and there are no container keys. 
 
 - **Registry**: `PostTypeRegistry` and `PostStatusRegistry`. A name registered again keeps its place, as in PHP's arrays. <Ev test="speedyspec-wp-posts::registry::re_register_keeps_position_and_old_features"/>
 - **Strategy**: the read ports, so phase 4's adapter can read PHP's globals live in place of the in-memory registries.
-- **Command**: `create_initial_post_types()`'s table of steps, so its order and data live in one place. <Ev source="ss:crates/speedyspec-wp-posts/src/initial.rs#L1-L7" hash="b5efff681a3699ec91916eb6e701cfc6b49d9f0b9ef14f4412abcae4c799376d"/>
-- **Specification**: the list filter, one presence test per entry shape (`ListItem`) and PHP 8's `==` for the match. <Ev source="ss:crates/speedyspec-wp-posts/src/list.rs#L1-L11" hash="751f912862323eae0a0c72f9a13944b8fcbeb8c1ac91bad75811940251b27c46"/>
+- **Command**: `create_initial_post_types()`'s table of steps, so its order and data live in one place. <Ev source="ss:crates/speedyspec-wp-posts/src/initial.rs#L1-L7" hash="9e66dcc45d32d5ecdca9442c304f83e64eb156fc36accc24cb67408fd49a7892"/>
+- **Specification**: the list filter, one presence test per entry shape (`ListItem`) and PHP 8's `==` for the match. <Ev source="ss:crates/speedyspec-wp-posts/src/list.rs#L1-L11" hash="a8043967dee9aed4185800fcbb50c8aed36527d18642411aca550fc252bc0cbf"/>
 - **Value Object**: the names, and `PostType` and `PostStatusObject`, plain values that know nothing of how they are stored. <Ev test="speedyspec-wp-posts-contracts::values::setting_the_name_property_keeps_the_field_in_step"/>
 
 ### Review focus
 
-Five rules need care when they change.
+Six rules need care when they change.
 
 **Loose `==` in the lists.** `get_post_types()` and `get_post_stati()` match with PHP 8's `==` after `isset()`: `'public' => 1`, `'1'` and `'yes'` all match `public => true`; a null property never matches, even `'menu_position' => null`; empty arguments return everything whatever the operator; an unknown operator returns nothing. <Ev source="ss:crates/speedyspec-wp-posts/src/list.rs#L114-L121" hash="901c811955f72ed15726eddbc8090a5d2f0892b5373a6a656ec45428806c194c"/> <Ev test="speedyspec-wp-posts::recorded::list_scenarios_match_wordpress"/>
 
@@ -217,18 +217,20 @@ Five rules need care when they change.
 
 **Registering again.** The new object replaces the old one in its original place; the old features stay, since nothing clears them; meta capabilities accumulate. <Ev test="speedyspec-wp-posts::registry::re_register_keeps_position_and_old_features"/> <Ev test="speedyspec-wp-posts::registry::re_register_accumulates_meta_caps"/>
 
+**Unregistering rebuilds the meta capabilities.** As in WordPress 7.2, `unregister_post_type()` doesn't unset the type's own `$post_type_meta_caps` entries: it empties the map and rebuilds it from every remaining type whose `map_meta_cap` is truthy, in registration order. One custom capability can be owed to several types, so a capability another type still uses survives. `unregistration` takes the registered types and returns the whole rebuilt map, which the adapter assigns. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L169-L179" hash="b265b980a5d751b8baeb322580d4b80abf755cc28086787612f7d83288e495f7"/> <Ev test="speedyspec-wp-posts::registry::unregister_keeps_meta_caps_another_type_still_owes"/> <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>
+
 **Names.** `sanitize_key()` runs before the length check, so `"Book Type!"` registers as `booktype`; `"0"` fails as `empty()`, as do `""` and 21 bytes. Statuses have no length check, so `register_post_status( '' )` stores `''`. An integer-like name (`"123"`) works and is keyed by its string in Rust. <Ev source="ss:crates/speedyspec-wp-posts/src/key.rs#L17-L25" hash="a442803b563e5cbdafec4743b197bb6db1721253fbe47563cfda95bcf9e3b34f"/> <Ev test="speedyspec-wp-posts::registry::integer_like_name_is_a_string_key"/> <Ev test="speedyspec-wp-posts::recorded::status_scenarios_match_wordpress"/>
 
 **The rewrite context.** With neither `is_admin()` nor a permalink structure, `rewrite => true` stays `true`. With one, it becomes an array with `slug`, `with_front`, `pages`, `feeds` (forced to `has_archive` when that is falsy) and `ep_mask` (`permalink_epmask`, else `EP_PERMALINK`). <Ev test="speedyspec-wp-posts::recorded::set_props_matches_wordpress"/>
 
 ### The recorded proof
 
-`compat/posts/record.php` runs WordPress 7.1.5 on PHP 8.5.12 and writes `compat/posts/cases.json`. <Ev source="ss:compat/posts/cases.json#L1-L3" hash="2805a50532760d87464df368f551117cf3df8c9a2360db539c31b607451a437b"/> The replay tests in `speedyspec-wp-posts` read it and compare whole objects, in order:
+`compat/posts/record.php` runs WordPress 7.2-RC2 on PHP 8.5.12 and writes `compat/posts/cases.json`. <Ev source="ss:compat/posts/cases.json#L1-L3" hash="95c151eda2ec0c47f8cc871276c9eb6fdcaf414ed5cebef1db14c0bc0f88444f"/> The replay tests in `speedyspec-wp-posts` read it and compare whole objects, in order:
 
 - `labels`: 12 `get_post_type_labels()` cases. <Ev test="speedyspec-wp-posts::recorded::labels_match_wordpress"/>
 - `caps`: 9 `get_post_type_capabilities()` cases, with the meta capabilities each remembered. <Ev test="speedyspec-wp-posts::recorded::capabilities_match_wordpress"/>
-- `set_props`: 21 `new WP_Post_Type()` objects, with and without permalinks. <Ev test="speedyspec-wp-posts::recorded::set_props_matches_wordpress"/>
-- `post_types`: 11 scenarios, 33 calls of `register_post_type()`, `unregister_post_type()` and the supports functions, each with its result, `_doing_it_wrong()` messages, actions added and removed, taxonomies and `$post_type_meta_caps`, then the globals at the end. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>
+- `set_props`: 27 `new WP_Post_Type()` objects, with and without permalinks, and with 7.2's `randomable` and `show_in_abilities` defaulted and given. <Ev test="speedyspec-wp-posts::recorded::set_props_matches_wordpress"/>
+- `post_types`: 12 scenarios, 38 calls of `register_post_type()`, `unregister_post_type()` and the supports functions, each with its result, `_doing_it_wrong()` messages, actions added and removed, taxonomies and `$post_type_meta_caps`, then the globals at the end. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>
 - `statuses`: 14 scenarios, 19 calls of `register_post_status()` and `get_post_status_object()`. <Ev test="speedyspec-wp-posts::recorded::status_scenarios_match_wordpress"/>
 - `status_labels`: the three label tables. <Ev test="speedyspec-wp-posts::recorded::status_label_tables_match_wordpress"/>
 - `lists`: 87 calls of the list functions and predicates over registered types, statuses and features. <Ev test="speedyspec-wp-posts::recorded::list_scenarios_match_wordpress"/>
@@ -305,5 +307,5 @@ fn public_post_types() -> Vec<String> {
 ### How to change this
 
 - **What must still pass:** the eight replay tests over `compat/posts/cases.json`, and the registry tests.
-- **Recording more cases:** add them to `compat/posts/record.php` in speedyspec-server and run it with the runtime's static PHP against the WordPress 7.1.5 release, as its header says. <Ev source="ss:compat/posts/record.php#L1-L8" hash="05d8d62b8cedc8323bb11e16e973df86963097191b01c4acd6b14aaa12f126c0"/>
+- **Recording more cases:** add them to `compat/posts/record.php` in speedyspec-server and run it with the runtime's static PHP against the pinned release, `compat/wordpress.json`'s `wordpress`, as its header says. It stops unless the release's `$wp_version` is that release. <Ev source="ss:compat/posts/record.php#L1-L11" hash="7a2eb15c90202a78a0719223bf2a37bc9bf5b5969bb94fe01ceee63bd4b51853"/>
 - **Carried to phase 4:** the PHP adapter over the read ports; the hooks; `is_post_type_hierarchical()`'s raw property; the string conversion in `get_post_types_by_support()`; unregistering's taxonomy removal; and `wp_parse_args()`' query strings.

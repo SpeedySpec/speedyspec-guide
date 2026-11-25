@@ -11,8 +11,8 @@ Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime w
 
 `post_stati` (objects) and `post_status_names` (names) filter the `PostStatuses` port's list with the same `filter_object_list` as `get_post_types()`. An argument matches when the object has the property (`isset()`) and it is loosely equal, by PHP 8's `==`, to the wanted value: `'public' => 1`, `'1'` and `'yes'` all match `public => true`, and a null property never matches. Empty arguments return every entry whatever the operator; an unknown operator returns none. <Ev source="ss:crates/speedyspec-wp-posts/src/list.rs#L166-L185" hash="1cb39adcc2fba3db80e9af476758a3d26bef5ab45d6560fb748ea745eaaed86b"/>
 
-The 4 recorded calls in the `lists` scenario and 4 after `create_initial_post_types()` replay as in WordPress 7.1.5. <Ev test="speedyspec-wp-posts::recorded::list_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::recorded::initial_post_types_match_wordpress"/>
+The 4 recorded calls in the `lists` scenario and 4 after `create_initial_post_types()` replay as in WordPress 7.2-RC2. <Ev test="speedyspec-wp-posts::recorded::list_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::recorded::initial_post_types_match_wordpress"/>
 
 ## Limits
 
-- Recorded from WordPress 7.1.5 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
+- Recorded from WordPress 7.2-RC2 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
