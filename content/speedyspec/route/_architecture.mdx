@@ -16,16 +16,19 @@ The port is built and tested in speedyspec-server, but the runtime worker doesn'
 ## Contracts
 
 - **`RewriteStateSource`**: where `WP_Rewrite`'s state lives between calls. In PHP that's the `$wp_rewrite` object plugins write to; the state itself is a plain `RewriteState`. <Ev source="ss:crates/speedyspec-wp-rewrite/src/ports.rs#L9-L20" hash="a6d591148e11ab9ee1135409bf0a469c99e72582095d8d743b191917d045ce30"/> <Ev test="speedyspec-wp-rewrite::state_source::failed_load_never_writes_defaults_back"/>
-- **What the service needs from the rest of WordPress**, each a port in `RewriteDeps`: `RewriteOptions`, `SiteUrls`, `Multisite`, `WpLoaded`, `PageUris`, `PostTypes`, `PublicQueryVars`, and the Hook API. `OptionsRewriteOptions` adapts the ported options API.
+- **What the service needs from the rest of WordPress**, each a port in `RewriteDeps`: `RewriteOptions`, `SiteUrls`, `Multisite`, `WpLoaded`, `PageUris`, `PostTypes`, `PublicQueryVars`, and the Hook API. `OptionsRewriteOptions` adapts the ported options API; `RewriteOptions::get_string` reads an option only when it is a string, as `init()` reads `wp_random_base`. <Ev source="ss:crates/speedyspec-wp-rewrite/src/service.rs#L68-L84" hash="99d458d27ee257afbb7f8ad3df02ab7d968a92dfcfe244513d8b28f7dbdcfbf5"/>
+- **The random content ports (WordPress 7.2)**, each a Gateway that PHP answers until its area is ported, and each returning `Result<_, RewriteError>`: `PostTypes::randomable_post_types` (`get_post_types( array( 'randomable' => true ), 'objects' )`), `Taxonomies` (the publicly queryable taxonomies), `ViewablePosts` (`get_page_by_path()` with `is_post_publicly_viewable()`), `RandomContentRedirects` (query.php's `wp_is_random_content_redirect_enabled()`) and `SiteTranslations` (the default base, translated in the site language). <Ev source="ss:crates/speedyspec-wp-rewrite/src/ports.rs#L47-L106" hash="1708502276c0908cfa9a0ee461f5b9a9f4f86245746a8ec33162fad6cdcc9363"/>
+- **`RewriteState.random_base`**: the custom base from `wp_random_base`, empty for the translated default; the facade declares it as `public string $random_base = ''`, after `$feed_base`. <Ev source="ss:crates/speedyspec-wp-rewrite/src/state.rs#L38-L39" hash="8a6a3c6ad1cfe6db6411135fa8332deabc69baedf88d84f383cab7d5f665aba2"/> <Ev source="ss:crates/speedyspec-wp-rewrite-php/src/rewrite.php#L144-L150" hash="29253e1e9b3b39c0dab799e14e1b18ede9ef1d0a15c2dac54e6d1502d856b6c7"/>
 - **`RouteTableStore`**: caches compiled route data by fingerprint. Every worker can rebuild the data itself, so no store needs replicas to coordinate. <Ev source="ss:crates/speedyspec-routing/src/store.rs#L17-L25" hash="a31f0b54269430bff336294bafc21e3299863eb99eebe79fed0fec2fc20c44d9"/>
 - **`RuleGuard`**: answers a rule's guard (such as verbose page rules) or says only PHP can answer it.
 
 ## Use cases
 
-Each `WP_Rewrite` method is a command or query on the CQRS buses, handled by `RewriteService` and bound in the container under `SpeedySpec\WpRewrite\<Name>Handler`. Each message carries the state source it works on; the handler loads the state, runs the method and stores it back only if it changed. <Ev source="ss:crates/speedyspec-wp-rewrite/src/messages.rs#L95-L109" hash="a84fae431936b6a1237cf4017d59b63f092f1631e05c72a590f6134437c88396"/>
+Each `WP_Rewrite` method is a command or query on the CQRS buses, handled by `RewriteService` and bound in the container under `SpeedySpec\WpRewrite\<Name>Handler`. Each message carries the state source it works on; the handler loads the state, runs the method and stores it back only if it changed. <Ev source="ss:crates/speedyspec-wp-rewrite/src/messages.rs#L97-L111" hash="d41e7a304400bd39b8cecb73cee519437632451c420adde0b6cad1c8df3f8146"/>
 
-- **Commands:** `InitRewrite`, `AddRewriteRule`, `AddExternalRule`, `AddRewriteTag`, `RemoveRewriteTag`, `AddPermastruct`, `RemovePermastruct`, `AddRewriteEndpoint`, `FlushRewriteRules`, `SetPermalinkStructure`, `SetCategoryBase`, `SetTagBase`.
-- **Queries:** `GetRewriteRules`, `GenerateAllRewriteRules`, `GeneratePermastructRules`, `GetModRewriteRules`, `GetIis7RewriteRules`.
+- **Commands:** `InitRewrite`, `AddRewriteRule`, `AddExternalRule`, `AddRewriteTag`, `RemoveRewriteTag`, `AddPermastruct`, `RemovePermastruct`, `AddRewriteEndpoint`, `FlushRewriteRules`, `SetPermalinkStructure`, `SetCategoryBase`, `SetTagBase`, `SetRandomBase`.
+- **Queries:** `GetRewriteRules`, `GenerateAllRewriteRules`, `GeneratePermastructRules`, `GenerateRandomRewriteRules`, `GetModRewriteRules`, `GetIis7RewriteRules`.
+- **Read on the service, with no message:** `get_random_base()` (a `Result`, since translating may throw) and `post_permalinks_share_random_base()`. <Ev source="ss:crates/speedyspec-wp-rewrite/src/structures.rs#L257-L283" hash="b434e234a9701d1bcea035fa981754dd9f6fe19f3b942e36327f8d065fa52a54"/>
 
 At request time, `WpRouting::resolve()` matches a path against the stored rules and answers `NoRewrite`, `NoMatch`, `Matched`, or hands PHP the rule to continue from when a guard or a regex needs PHP. <Ev test="speedyspec-wp-rewrite::routing::plain_permalinks_are_no_rewrite"/> <Ev test="speedyspec-router::rule_set::rejected_guard_resumes_next_rule"/>
 
@@ -34,11 +37,14 @@ At request time, `WpRouting::resolve()` matches a path against the stored rules 
 - **The rewrite handlers:** bind another handler under a message's key, from Rust or from PHP through the container.
 - **The route table store:** bind a PHP object implementing `SpeedySpec\Routing\RouteTableStore` (the `#[php_port]` twin of the Rust trait) under that key. Route data crosses as an opaque, versioned byte string; data that doesn't decode is a miss. Outside a PHP request the worker's memory store answers. <Ev source="ss:crates/speedyspec-router-php/src/lib.rs#L20-L29" hash="19b0e1b26348214278e12f167e7bb812c7df4147c1cc5488d0350259630ea1f5"/> <Ev test="speedyspec-router-php::php::php_store_binds"/> <Ev test="speedyspec-router-php::php::garbage_from_php_store_is_a_miss"/>
 - **The dispatch strategy:** `RewriteArea` builds its `TableCache` with `ChunkedAlternation`; `RegexSetStrategy` is the other `DispatchStrategy`. <Ev source="ss:crates/speedyspec-wp-rewrite-php/src/lib.rs#L52-L60" hash="b5b553d355445e6c14139a13450e10cc0bb0fa1f4dbafb14f283d73d20a77eb6"/>
+- **The random content adapters:** `PhpTaxonomies`, `PhpViewablePosts`, `PhpRandomContentRedirects`, `PhpSiteTranslations` and `PhpPostTypes::randomable_post_types` call WordPress's PHP with `call_catching`. What PHP throws becomes the `RewriteError`'s cause, and the native method rethrows that same object, as it does a hook callback's exception. The memory adapters are `MemoryTaxonomies`, `MemoryViewablePosts`, `UntranslatedSite` and `MemoryPostTypes`; `FilteredRandomContentRedirects` answers the switch from the Rust Hook API, for Rust callers with no PHP. <Ev source="ss:crates/speedyspec-wp-rewrite-php/src/adapters.rs#L96-L113" hash="6afa9672f64f38fdcc00b9f6f9af5f9578b205864af852b6c55c8b9fdbba2f2c"/> <Ev source="ss:crates/speedyspec-wp-rewrite/src/ports.rs#L126-L147" hash="eac64de3a3376aead12b8aa934932b4ca7c310406f40468b8945eb77b0a4afb7"/>
+- **Older adapters still swallow PHP failures:** `PhpPostTypes::custom_post_types`, `PhpSiteUrls`, `PhpMultisite`, `PhpPageUris`, `PhpQueryVars` and `PhpPageByPath` log what PHP throws and answer a default, where WordPress would let it propagate. Making them rethrow is a server follow-up.
 - The router itself can't be replaced from PHP; only its store can.
 
 ## Patterns
 
 - **Ports and Adapters**: `RouteTableStore` (memory and PHP adapters), `RewriteStateSource` (`$wp_rewrite` or memory), and the ports in `RewriteDeps`.
+- **Gateway**: the random content ports, over areas that aren't ported yet, each answered by WordPress's PHP until they are.
 - **Command and Query handlers** for each `WP_Rewrite` method, registered in the container (**Registry**).
 - **Builder** and **Facade**: `Router` and `RouteBuilder` for the app's own routes.
 - **Strategy**: `DispatchStrategy` for how a table's regexes are matched.
@@ -69,7 +75,28 @@ fn add_sitemap_rule(
 }
 ```
 
+A feature that moves WordPress 7.2's random content redirects to another base, then reads the rules that now lead there. The rules come back empty when the `wp_enable_random_content_redirect` filter turns the feature off:
+
+```rust
+use speedyspec_cqrs::{CommandBus, QueryBus};
+use speedyspec_routing::Rule;
+use speedyspec_wp_rewrite::{GenerateRandomRewriteRules, RewriteService, SetRandomBase};
+
+fn move_random_base(
+    commands: &CommandBus,
+    queries: &QueryBus,
+    rewrite: &RewriteService,
+) -> Result<Vec<Rule>, Box<dyn std::error::Error>> {
+    let source = rewrite.deps().state.clone();
+    commands.dispatch(SetRandomBase {
+        source: source.clone(),
+        base: "surprise".into(),
+    })??;
+    Ok(queries.ask(GenerateRandomRewriteRules { source })??)
+}
+```
+
 ## How to change this
 
 - **What must still pass:** the recorded scenarios (`compat/rewrite/scenarios.json`, replayed by `speedyspec-wp-rewrite-php`'s `compat` test), WordPress's own rewrite tests run against the port (`tests/wordpress.rs`), and the crates' unit tests. <Ev test="speedyspec-wp-rewrite-php::wordpress::wordpress_rewrite_tests_pass"/> <Ev test="speedyspec-wp-rewrite-php::wordpress::documented_breaks_are_listed"/>
-- **Recording a new scenario:** add it to `compat/rewrite/scenarios.json` in speedyspec-server and run `cargo run -p speedyspec-compat -- record rewrite --wordpress 7.1.5`. A difference the port can't match goes in `breaks.json` with its reason. The recorder runs WordPress's own rewrite files; the replay runs the release's `class-wp.php` patched by `compat/rewrite/class-wp.patch`, so `parse_request()` matches through `speedyspec_rewrite_match()`. Everything else is stubbed the same on both sides. <Ev source="ss:compat/rewrite/setup.php#L26-L37" hash="3bb1914303ae740ae83e78202a390c416674276b96dcda43bf842f52a4646b5b"/> <Ev source="ss:compat/rewrite/class-wp.patch#L63-L68" hash="224688f5f2b1fd74cdc8c626801609980541bd26e08e9369f8a5162529f8495a"/>
+- **Recording a new scenario:** add it to `compat/rewrite/scenarios.json` in speedyspec-server and run `cargo run -p speedyspec-compat -- record rewrite --wordpress 7.2-RC2` (the pin in `compat/wordpress.json`). A difference the port can't match goes in `breaks.json` with its reason. The recorder runs WordPress's own rewrite files; the replay runs the release's `class-wp.php` patched by `compat/rewrite/class-wp.patch`, so `parse_request()` matches through `speedyspec_rewrite_match()`. Everything else is stubbed the same on both sides. <Ev source="ss:compat/rewrite/setup.php#L26-L37" hash="3bb1914303ae740ae83e78202a390c416674276b96dcda43bf842f52a4646b5b"/> <Ev source="ss:compat/rewrite/class-wp.patch#L63-L68" hash="224688f5f2b1fd74cdc8c626801609980541bd26e08e9369f8a5162529f8495a"/>
