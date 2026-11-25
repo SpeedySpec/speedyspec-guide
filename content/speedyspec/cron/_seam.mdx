@@ -5,7 +5,7 @@ Native: SpeedySpec answers all 17 functions of `cron.php` in Rust. Fourteen are 
 
 How it is verified:
 
-- 106 recorded WordPress 7.1.5 scenarios replay through the native functions on MySQL, exactly, except one documented break. <Ev test="speedyspec-wp-cron-php::compat::main"/> They cover scheduling, rescheduling, unscheduling and clearing, every `pre_*` short-circuit, lookups, schedules, ready events, legacy and odd `cron` options, and running due events. They don't cover `spawn_cron()`, `wp_cron()` or `_wp_cron()`.
+- 106 recorded WordPress 7.2-RC2 scenarios replay through the native functions on MySQL, exactly, except one documented break. <Ev test="speedyspec-wp-cron-php::compat::main"/> They cover scheduling, rescheduling, unscheduling and clearing, every `pre_*` short-circuit, lookups, schedules, ready events, legacy and odd `cron` options, and running due events. They don't cover `spawn_cron()`, `wp_cron()` or `_wp_cron()`.
 - WordPress's own cron tests (72 with their data sets) pass against the native functions on MySQL; none is listed as a break. <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
 
 The documented differences:

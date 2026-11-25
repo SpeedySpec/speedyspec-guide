@@ -7,7 +7,7 @@ differences:
 
 ## Behaviour
 
-Native. Schedules a recurring event, with WordPress's checks, filters and `WP_Error`s. Every recorded scenario replays as in WordPress, and WordPress's own cron tests pass. <Ev area="cron" scenario="recurring_event"/> <Ev area="cron" scenario="invalid_schedule_False"/> <Ev area="cron" scenario="schedule_event_filter_moves"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
+Native. Schedules a recurring event, with WordPress's checks, filters and `WP_Error`s. Every recorded scenario replays as in WordPress, and WordPress's own cron tests pass. The cron array is then sorted as WordPress 7.2's `ksort()` sorts it; see the architecture page. <Ev area="cron" scenario="recurring_event"/> <Ev area="cron" scenario="invalid_schedule_False"/> <Ev area="cron" scenario="schedule_event_filter_moves"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
 
 ## Concurrent writes
 
