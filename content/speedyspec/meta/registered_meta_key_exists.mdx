@@ -9,4 +9,4 @@ Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime w
 
 ## The Rust rule
 
-`MetaKeyRegistry::exists`, over the registry that is `$wp_meta_keys`. <Ev source="ss:crates/speedyspec-wp-meta/src/registry.rs#L56-L60" hash="026c9f798b99e8dd8227c9a905b1765853077f11e2953ccb64bd9ba61778671b"/> Its calls in the recorded `unregister-clean-up` scenario, with and without a subtype, give WordPress 7.1.5's answers. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/> <Ev source="ss:compat/meta/record.php#L301-L318" hash="68c6b7b04804c89a8bb31483ff289063f905076810178ea5b0192cc1e56a461c"/>
+`MetaKeyRegistry::exists`, over the registry that is `$wp_meta_keys`. <Ev source="ss:crates/speedyspec-wp-meta/src/registry.rs#L56-L60" hash="026c9f798b99e8dd8227c9a905b1765853077f11e2953ccb64bd9ba61778671b"/> Its calls in the recorded `unregister-clean-up` scenario, with and without a subtype, give WordPress 7.2-RC2's answers. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/> <Ev source="ss:compat/meta/record.php#L301-L318" hash="68c6b7b04804c89a8bb31483ff289063f905076810178ea5b0192cc1e56a461c"/>

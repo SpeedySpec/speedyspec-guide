@@ -9,7 +9,7 @@ Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime w
 
 ## The Rust rule
 
-`allowed_args` is `array_intersect_key( $args, $defaults )`: it keeps the arguments `register_meta()` knows, in the arguments' own order, `default` included. <Ev source="ss:crates/speedyspec-wp-meta/src/register.rs#L130-L137" hash="e45637a6f60e4c285d6eac73a382df935a7c403c6870a602257554c3b40ba401"/> The recorded scenario that hooks it on `register_meta_args` replays as in WordPress 7.1.5. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/> <Ev source="ss:compat/meta/record.php#L258-L261" hash="b4f714ae2664f442830e85bc4ef2b217f03b177bda6400fda25cf7c1d02c7491"/>
+`allowed_args` is `array_intersect_key( $args, $defaults )`: it keeps the arguments `register_meta()` knows, in the arguments' own order, `default` included. <Ev source="ss:crates/speedyspec-wp-meta/src/register.rs#L130-L137" hash="e45637a6f60e4c285d6eac73a382df935a7c403c6870a602257554c3b40ba401"/> The recorded scenario that hooks it on `register_meta_args` replays as in WordPress 7.2-RC2. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/> <Ev source="ss:compat/meta/record.php#L258-L261" hash="b4f714ae2664f442830e85bc4ef2b217f03b177bda6400fda25cf7c1d02c7491"/>
 
 ## Limits
 

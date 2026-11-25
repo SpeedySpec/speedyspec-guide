@@ -1,7 +1,7 @@
 ---
 ---
 
-Phase 1 of the posts and meta port: the self-contained half of `meta.php` in Rust, proven against recordings of WordPress 7.1.5. Nothing here is wired into PHP. The runtime worker links none of the meta crates, so PHP on SpeedySpec runs WordPress's own `meta.php` and `WP_Metadata_Lazyloader` until phase 3. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+Phase 1 of the posts and meta port: the self-contained half of `meta.php` in Rust, proven against recordings of WordPress 7.2-RC2. Nothing here is wired into PHP. The runtime worker links none of the meta crates, so PHP on SpeedySpec runs WordPress's own `meta.php` and `WP_Metadata_Lazyloader` until phase 3. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
 
 ## The crates
 
@@ -58,11 +58,11 @@ Two rules need care when they change.
 
 **Protected keys are bytes.** WordPress strips the key with `preg_replace( '/[^\x20-\x7E\p{L}]/', '', $key )`, with no `u` flag, so it works on bytes: bytes 0x20 to 0x7E survive, and of 0x80 to 0xFF only the Latin-1 letter bytes do. The key is protected when its first surviving byte is `_`. A `MetaKey` is bytes, not a `String`, so keys that aren't UTF-8 keep their meaning. <Ev source="ss:crates/speedyspec-wp-meta/src/protected.rs#L5-L17" hash="a96496edb6ce5ca234b928a8f09889ecbdd2a7350379d579618bd48b31ee8819"/> All 28 recorded keys match WordPress, including control bytes, a no-break space and Latin-1 letters. <Ev test="speedyspec-wp-meta::recorded::protected_keys_match_wordpress"/>
 
-**Registration order.** `register_meta()`'s steps run in PHP's order. Array meta shown in REST needs an item schema. Revisions are checked next, then the `auth_callback` falls back to `is_protected_meta()`, and the sanitize and auth filters are added. The default's type is checked last, so a rejected default leaves those filters added, as WordPress 7.1.5 does. <Ev source="ss:crates/speedyspec-wp-meta/src/register.rs#L56-L64" hash="e337195a1d7d84bdcc051ef623235693c46796775298916d711f9a80f279aa55"/> `$wp_meta_keys` keeps insertion order at every level; a key registered again keeps its place, and removing the last key of a subtype or type removes that level too. <Ev source="ss:crates/speedyspec-wp-meta/src/registry.rs#L26-L54" hash="42e9691f9070adcfee805530fd92625428a8902c9c5b9e837786cdaaad108bba"/> <Ev test="speedyspec-wp-meta::registry::insert_same_key_replaces_in_place"/> <Ev test="speedyspec-wp-meta::registry::remove_last_key_removes_subtype_and_type"/>
+**Registration order.** `register_meta()`'s steps run in PHP's order. Array meta shown in REST needs an item schema. Revisions are checked next, then the `auth_callback` falls back to `is_protected_meta()`, and the sanitize and auth filters are added. The default's type is checked last, so a rejected default leaves those filters added, as WordPress 7.2-RC2 does. <Ev source="ss:crates/speedyspec-wp-meta/src/register.rs#L56-L64" hash="e337195a1d7d84bdcc051ef623235693c46796775298916d711f9a80f279aa55"/> `$wp_meta_keys` keeps insertion order at every level; a key registered again keeps its place, and removing the last key of a subtype or type removes that level too. <Ev source="ss:crates/speedyspec-wp-meta/src/registry.rs#L26-L54" hash="42e9691f9070adcfee805530fd92625428a8902c9c5b9e837786cdaaad108bba"/> <Ev test="speedyspec-wp-meta::registry::insert_same_key_replaces_in_place"/> <Ev test="speedyspec-wp-meta::registry::remove_last_key_removes_subtype_and_type"/>
 
 ## The recorded proof
 
-`compat/meta/record.php` runs WordPress 7.1.5's `meta.php` on PHP 8.5.12 and writes `compat/meta/cases.json`. <Ev source="ss:compat/meta/cases.json#L1-L3" hash="2805a50532760d87464df368f551117cf3df8c9a2360db539c31b607451a437b"/> The replay tests in `speedyspec-wp-meta` read it:
+`compat/meta/record.php` runs WordPress 7.2-RC2's `meta.php` on PHP 8.5.12 and writes `compat/meta/cases.json`. <Ev source="ss:compat/meta/cases.json#L1-L3" hash="95c151eda2ec0c47f8cc871276c9eb6fdcaf414ed5cebef1db14c0bc0f88444f"/> The replay tests in `speedyspec-wp-meta` read it:
 
 - `protected`: 28 `is_protected_meta()` cases, with no filter added. <Ev test="speedyspec-wp-meta::recorded::protected_keys_match_wordpress"/>
 - `register`: 21 scenarios, 41 calls of `register_meta()`, `unregister_meta_key()`, `registered_meta_key_exists()` and `get_registered_meta_keys()`. Each call's result, its `_doing_it_wrong()` messages and the filters it added and removed must match, and so must the whole `$wp_meta_keys` at the end of each scenario. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/>
@@ -107,5 +107,5 @@ fn color_default(
 ## How to change this
 
 - **What must still pass:** the three replay tests over `compat/meta/cases.json`, the registry tests, and `meta_repository_suite` for every repository.
-- **Recording more cases:** add them to `compat/meta/record.php` in speedyspec-server and run it with the runtime's static PHP against the WordPress 7.1.5 release, as its header says. <Ev source="ss:compat/meta/record.php#L1-L8" hash="a247ff2f5e8f6e30016aa34640a1a7f64c3c3ac0fe702c92b98da98e6af18384"/>
+- **Recording more cases:** add them to `compat/meta/record.php` in speedyspec-server and run it with the runtime's static PHP against the pinned release, `compat/wordpress.json`'s `wordpress`, as its header says. It stops unless the release's `$wp_version` is that release. <Ev source="ss:compat/meta/record.php#L1-L11" hash="8eefdcda6bfd8f29656f5f845c31081820b5a86b438678af969d315d6dd0c413"/>
 - **Carried to phase 3:** a registry read port, so PHP's `$wp_meta_keys` stays authoritative during a PHP request; the `is_protected_meta` filter, through `ProtectedMeta`; the `wp_installing()` check in `default_for`; and the legacy `*_postmeta` and `delete_{type}meta` hook names.

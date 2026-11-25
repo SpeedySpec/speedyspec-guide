@@ -5,7 +5,7 @@ Not native yet. speedyspec-server has the first of the metadata API's rules in R
 
 ## What the port covers
 
-The seam has 24 functions and one class, `WP_Metadata_Lazyloader`, with six methods. None is native. Phase 1 of the posts and meta port has Rust rules for eight functions, proven against recordings of WordPress 7.1.5 but not wired into PHP:
+The seam has 24 functions and one class, `WP_Metadata_Lazyloader`, with six methods. None is native. Phase 1 of the posts and meta port has Rust rules for eight functions, proven against recordings of WordPress 7.2-RC2 but not wired into PHP:
 
 - `is_protected_meta()`: its byte rule, before the `is_protected_meta` filter, as `is_protected_key`. <Ev test="speedyspec-wp-meta::recorded::protected_keys_match_wordpress"/>
 - `register_meta()`: as `prepare_registration` and `resolve_registration`, split at its `register_meta_args` filter. `_wp_register_meta_args_allowed_list()`, the filter's default callback, is `allowed_args`. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/>
@@ -17,7 +17,7 @@ The statements `add_metadata()`, `update_metadata()`, `delete_metadata()`, the t
 
 ## The evidence
 
-`compat/meta/cases.json` holds what WordPress 7.1.5 answered on PHP 8.5.12: 28 protected-key cases, 21 `register_meta()` scenarios (41 calls) and 14 default cases. <Ev source="ss:compat/meta/cases.json#L1-L3" hash="2805a50532760d87464df368f551117cf3df8c9a2360db539c31b607451a437b"/> The replay compares each call's result, its `_doing_it_wrong()` messages, the filters it added and removed, and the whole `$wp_meta_keys` in order. The recorder stubs post types and the REST schema check, so the proof is of the rules under those stubs. <Ev source="ss:compat/meta/record.php#L40-L50" hash="15dcefe9533a32dcbf7c2c2f47c16192fd1dd0013fccea36df2804ff42359d62"/> WordPress's meta PHPUnit tests don't run against the port yet; they come with phase 3.
+`compat/meta/cases.json` holds what WordPress 7.2-RC2 answered on PHP 8.5.12: 28 protected-key cases, 21 `register_meta()` scenarios (41 calls) and 14 default cases. <Ev source="ss:compat/meta/cases.json#L1-L3" hash="95c151eda2ec0c47f8cc871276c9eb6fdcaf414ed5cebef1db14c0bc0f88444f"/> The replay compares each call's result, its `_doing_it_wrong()` messages, the filters it added and removed, and the whole `$wp_meta_keys` in order. The recorder stubs post types and the REST schema check, so the proof is of the rules under those stubs. <Ev source="ss:compat/meta/record.php#L40-L50" hash="15dcefe9533a32dcbf7c2c2f47c16192fd1dd0013fccea36df2804ff42359d62"/> WordPress's meta PHPUnit tests don't run against the port yet; they come with phase 3.
 
 ## Documented differences
 
@@ -26,3 +26,5 @@ None recorded. `register_meta()`'s rules approximate three inputs WordPress docu
 ## Still WordPress's PHP
 
 Everything: all 24 functions, the lazy loader, the `$wp_meta_keys` global and every meta hook. See the architecture page for the Rust API and what phase 3 adds.
+
+WordPress 7.2 changed some of that PHP, outside the eight rules above: `get_metadata_raw()` and `metadata_exists()` treat a cached value that isn't an array as a cache miss. No Rust rule covers those functions yet, so phase 3 must follow 7.2 there. <Ev source="wp:wp-includes/meta.php#L712-L713" hash="d1345e17d9a9ea3132f732a9d9a9bd1cf62cb998895e110aa59a35f0ea8c3edf"/> <Ev source="wp:wp-includes/meta.php#L823-L824" hash="d1345e17d9a9ea3132f732a9d9a9bd1cf62cb998895e110aa59a35f0ea8c3edf"/>
