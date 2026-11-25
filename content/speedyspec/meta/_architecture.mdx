@@ -8,11 +8,13 @@ Phase 1 of the posts and meta port: the self-contained half of `meta.php` in Rus
 Each declares `seam = "meta"` and its role in `[package.metadata.speedyspec]`.
 
 - **`speedyspec-wp-meta-contracts`** (contracts): the values `MetaType`, `MetaKey`, `ObjectId`, `MetaId` and `SerializedValue`, the `Meta` entity, `MetaError`, the ports, and the repository conformance suites behind the `conformance` feature. It depends only on `speedyspec-php-serialize`. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/lib.rs#L1-L16" hash="374e255b2a9568831098c4f0811d7d7c3a9a66f21b394ea8691decab075db66d"/> <Ev source="ss:crates/speedyspec-wp-meta-contracts/Cargo.toml#L10-L18" hash="3bb87a85a4a82989ab9bf51689ede031cd767f8089c941ba9c59514fb5d81edf"/>
-- **`speedyspec-wp-meta`** (implementation): the rules. `is_protected_key`, `MetaHookNames`, `register_meta()` split at its `register_meta_args` filter (`prepare_registration`, `allowed_args`, `resolve_registration`), and `MetaKeyRegistry` with `filters_to_remove`. <Ev source="ss:crates/speedyspec-wp-meta/src/lib.rs#L1-L16" hash="14d1c4d2a0e42f3ff261ce89c5ee3765c2eea5f44eb17092868cd3cf07259540"/>
+- **`speedyspec-wp-meta`** (implementation): the rules. `is_protected_key`, `MetaHookNames`, `register_meta()` split at its `register_meta_args` filter (`prepare_registration`, `allowed_args`, `resolve_registration`), and `MetaKeyRegistry` with `filters_to_remove`. <Ev source="ss:crates/speedyspec-wp-meta/src/lib.rs#L1-L15" hash="1b64e06e5ebf730f763c08033127894628b83334834fe3eb4355625497d06700"/>
 - **`speedyspec-wp-meta-memory`** (adapter): `MemoryMetaRepository`, one table in memory, and `MemoryMetaRepositories`, one per meta type. <Ev source="ss:crates/speedyspec-wp-meta-memory/src/lib.rs#L1-L4" hash="ceb86a45f686f9390845660fb79b1641cd2410e649c8b0872a44c1a371ea5bd6"/>
 - **`speedyspec-wp-meta-sql`** (adapter): `MetaMapper` only, a meta row to the entity and back. The SQL repository is phase 3. <Ev source="ss:crates/speedyspec-wp-meta-sql/src/lib.rs#L1-L5" hash="819203d0e3cebfb54365f429b44cef7215d31ba4f22354fb586f3a7b578830e4"/>
 
 No meta crate depends on hooks, the object cache, `wpdb`, text or posts.
+
+The PHP value semantics the rules lean on (`empty()`, `isset()`, array reads and writes, `array_merge()` and integer keys) live in `speedyspec_php_serialize::semantics`, which the post type and status rules share. Meta kept its own copy until then. <Ev source="ss:crates/speedyspec-php-serialize/src/semantics.rs#L1-L2" hash="2bd29fe8ffecad2dcb946cbfc9be0aa874b4f4849e4afd90b96b7fd010d47488"/> <Ev source="ss:crates/speedyspec-wp-meta/src/register.rs#L13-L13" hash="5a4a2ba2fd0a2f7fa40fd0f6a6db5c54ceb767b58eeadeabf4fc3e7b4d58bca3"/>
 
 ## The ports
 
