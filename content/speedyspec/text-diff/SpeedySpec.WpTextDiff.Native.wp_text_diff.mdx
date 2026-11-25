@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpTextDiff\\Native\\wp_text_diff"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shim to reach the bound `TextDiffer`, resolved on every call; not for plugins. Call `wp_text_diff()` instead. <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/text-diff.php#L191-L194" hash="148b1d763a339e9f55b1d877e4e02925deb0028ce12a91fdbf5c526e5249d089"/> <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/lib.rs#L81-L90" hash="62b639097e5bb8a13223c81b69181629c22d0e93615388f1b98a19b197692e40"/> <Ev test="speedyspec-wp-text-diff-php::php::wp_text_diff_is_the_facade"/>

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\Native\\max_bytes"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shims for the reader's byte limit, for copying a stream-wrapper path; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L32-L36" hash="4e2ebd0b87598f7890ce9ca31fb7dcc4f5928ae2e86aba12cbba950c83dd8dbd"/> <Ev test="speedyspec-wp-media-php::php::stream_wrapper_path_is_copied"/>

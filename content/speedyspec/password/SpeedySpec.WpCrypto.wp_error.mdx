@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpCrypto\\wp_error"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+Turns the native `verify_file_signature()`'s error into the `WP_Error` WordPress returns, with WordPress's data in WordPress's order, so `wp_error_added` fires as it does in WordPress. The caller's `$filename_for_errors` goes into the data as it was passed (an int stays an int); the file's base name is used when it is falsy. It returns `false` when `WP_Error` isn't loaded: there is nothing to return the error in. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/crypto.php#L6-L46" hash="1151326ff4f78ffe0432b9d2efa84e56323c299377ae04b6009c05e24a1fc0c2"/> <Ev test="speedyspec-wp-crypto-php::php::wp_error_added_fires"/> <Ev test="speedyspec-wp-crypto-php::php::filename_for_errors_keeps_its_type_in_the_data"/> <Ev test="speedyspec-wp-crypto-php::php::no_wp_error_class_returns_false"/> Not for plugins.

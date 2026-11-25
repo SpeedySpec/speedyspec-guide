@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\Native\\mime_types"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shims for `wp_get_mime_types()`'s list before its filter; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L199-L205" hash="92589e494bfd03b59f5496458fab58db1ea49b359b6419b3da17272477101e17"/> <Ev test="speedyspec-wp-media-php::php::mime_types_keep_wordpress_and_add_rows"/>

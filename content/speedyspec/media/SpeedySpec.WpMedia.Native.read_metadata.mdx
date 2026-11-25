@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\Native\\read_metadata"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shims for `wp_read_audio_metadata()` and `wp_read_video_metadata()`, through `SpeedySpec\WpMedia\read()`; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L19-L51" hash="2e09b9d5a36354b4b2f8209f722eaec23d6f92bc5571aa1c35e74c9ba7f3a2f2"/> <Ev test="speedyspec-wp-media-php::php::audio_metadata_from_php"/>

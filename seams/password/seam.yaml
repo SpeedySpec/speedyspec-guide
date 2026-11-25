@@ -17,3 +17,38 @@ wordpress:
   - wp-includes/version.php
 setup: setup.php
 mysql: true
+# SpeedySpec answers WordPress's pluggable password functions and its sodium functions natively, but they live in
+# pluggable.php, functions.php and wp-admin/includes/file.php (other seams). This seam's own files, phpass and
+# WP_Application_Passwords, are not in SpeedySpec, so it stays unported. Crypto belongs here because this seam owns
+# sodium_compat (see `elsewhere`).
+crates: [speedyspec-wp-password, speedyspec-wp-password-contracts, speedyspec-wp-password-bcrypt, speedyspec-wp-password-php, speedyspec-wp-crypto, speedyspec-wp-crypto-contracts, speedyspec-wp-crypto-sodium, speedyspec-wp-crypto-php]
+symbols:
+  - "class:SpeedySpec\\WpPassword\\PasswordHasher"
+  - "method:SpeedySpec\\WpPassword\\PasswordHasher::hash"
+  - "class:SpeedySpec\\WpPassword\\PasswordChecker"
+  - "method:SpeedySpec\\WpPassword\\PasswordChecker::check"
+  - "class:SpeedySpec\\WpPassword\\RehashPolicy"
+  - "method:SpeedySpec\\WpPassword\\RehashPolicy::needs_rehash"
+  - "class:SpeedySpec\\WpPassword\\PasswordGenerator"
+  - "method:SpeedySpec\\WpPassword\\PasswordGenerator::generate"
+  - "class:SpeedySpec\\WpPassword\\RandomNumber"
+  - "method:SpeedySpec\\WpPassword\\RandomNumber::rand"
+  - "class:SpeedySpec\\WpPassword\\PasswordCostLimits"
+  - "method:SpeedySpec\\WpPassword\\PasswordCostLimits::limits"
+  - "function:SpeedySpec\\WpPassword\\password_string"
+  - "function:SpeedySpec\\WpPassword\\application_password_hash"
+  - "function:SpeedySpec\\WpPassword\\application_password_check"
+  - "function:SpeedySpec\\WpPassword\\chunk_password"
+  - "function:SpeedySpec\\WpPassword\\Native\\wp_hash_password"
+  - "function:SpeedySpec\\WpPassword\\Native\\wp_check_password"
+  - "function:SpeedySpec\\WpPassword\\Native\\wp_password_needs_rehash"
+  - "function:SpeedySpec\\WpPassword\\Native\\wp_generate_password"
+  - "function:SpeedySpec\\WpPassword\\Native\\wp_rand"
+  - "function:SpeedySpec\\WpPassword\\Native\\application_password_hash"
+  - "function:SpeedySpec\\WpPassword\\Native\\application_password_check"
+  - "function:SpeedySpec\\WpPassword\\Native\\chunk_password"
+  - "function:SpeedySpec\\WpCrypto\\wp_error"
+  - "function:SpeedySpec\\WpCrypto\\Native\\wp_fast_hash"
+  - "function:SpeedySpec\\WpCrypto\\Native\\wp_verify_fast_hash"
+  - "function:SpeedySpec\\WpCrypto\\Native\\wp_trusted_keys"
+  - "function:SpeedySpec\\WpCrypto\\Native\\verify_file_signature"

@@ -1,0 +1,12 @@
+---
+symbol: "class:SpeedySpec\\WpMedia\\MediaReader"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+The PHP twin of the media reader port. Its one method, `read( $path )`, returns the neutral description of a file (an array with `schema` 1: `container`, `duration`, `file_size`, `streams`, `tags`, `pictures` and so on) or `false`. `#[php_port]` declares it at the start of every request from the Rust trait. <Ev source="ss:crates/speedyspec-wp-media-php/src/twins.rs#L5-L9" hash="9cbd9dad2ea92491a85c3423842e35e46a7341d6db73cdd194fb5bbca26ab4eb"/> An array that isn't schema 1 reads as an unreadable file. <Ev test="speedyspec-wp-media-php::php::php_reader_replaces_the_default"/> <Ev test="speedyspec-wp-media-php::php::malformed_php_reader_array_is_unreadable"/>
+
+## Override
+
+Bind a class implementing this interface under `SpeedySpec\WpMedia\MediaReader`. It then reads for the audio, video and image functions, from PHP and from Rust, until the request ends; an exception it throws reaches the caller. To add to what the default reads, call `SpeedySpec\WpMedia\Native\read_media( $path )` inside it. <Ev test="speedyspec-wp-media-php::php::php_reader_can_delegate_to_read_media"/> <Ev test="speedyspec-wp-media-php::php::php_reader_exception_propagates"/> A replacement runs in the worker, not in a probe child, so it must be safe with untrusted files. See the architecture page.

@@ -26,9 +26,24 @@ wordpress:
   - wp-includes/class-wp-text-diff-renderer-inline.php
   - wp-includes/class-wp-text-diff-renderer-table.php
 setup: ../basic-setup.php
+# SpeedySpec answers wp_text_diff() natively (it lives in pluggable.php, another seam); the Text_Diff classes and
+# WordPress's renderers stay WordPress's, so this seam is unported.
+crates: [speedyspec-wp-text-diff, speedyspec-wp-text-diff-contracts, speedyspec-wp-text-diff-php]
+symbols:
+  - "class:SpeedySpec\\WpTextDiff\\TextDiffer"
+  - "method:SpeedySpec\\WpTextDiff\\TextDiffer::diff"
+  - "class:SpeedySpec\\WpTextDiff\\KeptArgs"
+  - "function:SpeedySpec\\WpTextDiff\\parse_args"
+  - "function:SpeedySpec\\WpTextDiff\\legacy_with_kept_args"
+  - "function:SpeedySpec\\WpTextDiff\\load_renderer"
+  - "function:SpeedySpec\\WpTextDiff\\row_labels"
+  - "function:SpeedySpec\\WpTextDiff\\legacy_wp_text_diff"
+  - "function:SpeedySpec\\WpTextDiff\\Native\\wp_text_diff"
 roles:
   compare: [class:Text_Diff, class:Text_MappedDiff, class:Text_Exception]
   edits: [class:Text_Diff_Op, class:Text_Diff_Op_copy, class:Text_Diff_Op_delete, class:Text_Diff_Op_add, class:Text_Diff_Op_change]
   engines: [class:Text_Diff_Engine_native, class:Text_Diff_Engine_xdiff, class:Text_Diff_Engine_shell, class:Text_Diff_Engine_string]
   render: [class:Text_Diff_Renderer, class:Text_Diff_Renderer_inline, class:WP_Text_Diff_Renderer_inline, class:WP_Text_Diff_Renderer_Table]
   filters: [filter:process_text_diff_html]
+  speedyspec: ["class:SpeedySpec\\WpTextDiff\\TextDiffer"]
+  speedyspec-internals: ["class:SpeedySpec\\WpTextDiff\\KeptArgs", "function:SpeedySpec\\WpTextDiff\\parse_args", "function:SpeedySpec\\WpTextDiff\\legacy_with_kept_args", "function:SpeedySpec\\WpTextDiff\\load_renderer", "function:SpeedySpec\\WpTextDiff\\row_labels", "function:SpeedySpec\\WpTextDiff\\legacy_wp_text_diff", "function:SpeedySpec\\WpTextDiff\\Native\\wp_text_diff"]

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\Native\\read_image_size"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shims for `wp_getimagesize()`'s array for a type PHP's `getimagesize()` doesn't read, through the media reader; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L127-L131" hash="7d8db0609413e39f67dfed6954249873c2884ecba203d7d39c26950617cce745"/> <Ev test="speedyspec-wp-media-php::php::reader_path_jxl"/>

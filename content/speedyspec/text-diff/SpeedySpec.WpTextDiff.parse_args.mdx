@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpTextDiff\\parse_args"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+Parses `wp_text_diff()`'s arguments as WordPress does: `wp_parse_args()` over the defaults `title`, `title_left`, `title_right` (empty) and `show_split_view` (true). It keeps the result in `KeptArgs` too. Called by the Rust implementation; not for plugins. <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/text-diff.php#L5-L22" hash="22d2c7db0f2552ee6f28a147044d82f215692fec8e3041427fcdc6b5b7a538b2"/> <Ev test="speedyspec-wp-text-diff-php::php::query_string_args_parse_as_wordpress"/> <Ev test="speedyspec-wp-text-diff-php::php::unknown_arguments_keep_wordpress_deprecation"/>

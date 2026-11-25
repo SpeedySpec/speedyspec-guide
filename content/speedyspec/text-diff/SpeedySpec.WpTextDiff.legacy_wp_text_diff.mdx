@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpTextDiff\\legacy_wp_text_diff"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+WordPress 7.1's `wp_text_diff()` after `wp_parse_args()`: normalizes the whitespace, diffs the lines with `Text_Diff`, renders the rows with `WP_Text_Diff_Renderer_Table`, and wraps them in the table. The Rust implementation hands it the calls the native table doesn't cover (texts or titles that aren't strings, renderer properties passed as arguments), so their output is WordPress's own. Not for plugins. <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/text-diff.php#L90-L163" hash="a2f50cad7f90d18d751cae8ba5f19d69703aa66e37dba1cc200e9b83b5169d66"/> <Ev test="speedyspec-wp-text-diff-php::php::renderer_arguments_use_wordpress_classes"/> <Ev test="speedyspec-wp-text-diff-php::php::unreadable_argument_keys_use_wordpress_classes"/>

@@ -1,0 +1,30 @@
+---
+symbol: "function:wp_read_audio_metadata"
+verdict: works-with-differences
+differences:
+  - summary: "Reads files through FFmpeg in an isolated child, not getID3: bitrates, encoder options, the Vorbis encoder string and some header fields differ with the library."
+  - summary: "Tags are copied from every tag format (MP4, Vorbis, ASF, Matroska, RIFF, APE) when a file has no ID3; WordPress copies only ID3."
+  - summary: "Formats getID3 can't read (ADTS AAC, RealAudio, MIDI, CAF, TTA, WavPack, Wave64 and others) get full metadata; WordPress gets only the file size."
+  - summary: "ID3v1 Latin-1 text is decoded to UTF-8; WordPress returns the raw bytes."
+  - summary: "The filter's fourth argument is a getID3-shaped view with a speedyspec key, not getID3's whole analysis."
+---
+
+## Behaviour
+
+Native. The function reads the file through the media reader port and builds WordPress's array, keys in WordPress's order, then runs the `wp_read_audio_metadata` filter with its four arguments. It returns `false` for a missing file; a stream-wrapper path is copied to a temporary file first. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L167-L172" hash="a6f490ec59204d8c54c547c5158ffe9230414da20b60e813dd2400c3ca117ff6"/> <Ev test="speedyspec-wp-media-php::php::audio_metadata_from_php"/> <Ev test="speedyspec-wp-media-php::php::false_for_missing_file"/> <Ev test="speedyspec-wp-media-php::php::stream_wrapper_path_is_copied"/> <Ev test="speedyspec-wp-media-php::php::filter_sees_four_arguments_and_wins"/> Tag values go through `wp_kses_post()`, as in WordPress. <Ev source="ss:crates/speedyspec-wp-media-php/src/lib.rs#L18-L19" hash="2614cb34bd50131fb0cad06e376b469a448d6ad951f58ccf4b61e2fde9e3e95a"/>
+
+It is compared with WordPress 7.1.5 and its bundled getID3 over a corpus of audio files, and matches except for the differences listed with their reasons; a listed difference that stops differing fails the test. WordPress's own `metadata.php` tests pass against it. <Ev test="speedyspec-wp-media-corpus::corpus::corpus_matches_wordpress_except_listed_differences"/> <Ev test="speedyspec-wp-media-corpus::corpus::every_difference_is_still_needed"/> <Ev test="speedyspec-wp-media-corpus::uploads::uploads_match_wordpress_except_listed_differences"/> <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/>
+
+Untrusted files are never parsed in the worker: each read runs in a sandboxed child, and results are cached by the file's path, size, time and first bytes. The [Media seam](/speedyspec/media/) page has the limits.
+
+## Differences
+
+- **The library.** getID3 and FFmpeg disagree on bitrates (and the compression ratio that follows), encoder options, the Vorbis vendor string, a DTS file's bits per sample and an Opus file's input rate. <Ev source="ss:compat/media/DIFFERENCES.md#L21-L37" hash="bac496c63cc14f7724e46dce96933ad6a21ba46289a3b32c3ddf301d2580e556"/>
+- **Tags from every format.** When a file has no ID3, titles, artists and the rest come from its own tags, through the same kses filtering. <Ev source="ss:compat/media/DIFFERENCES.md#L15-L19" hash="07319193d8b7062fc5b329b2a4029cd0bbbaca5013998f1201f8e8aeb9726518"/>
+- **Latin-1 and unreadable files.** ID3v1 text is decoded to UTF-8; a file neither library can parse reports only its size, where getID3 still guesses a MIME type. <Ev source="ss:compat/media/DIFFERENCES.md#L38-L41" hash="af38c2976ee68c3846ee444647d9f6cb6f4b8f550c46cba33acf25fef4fda381"/> <Ev test="speedyspec-wp-media-php::php::non_utf8_title_survives"/>
+- **More formats.** Files getID3 reads only partly or not at all get full metadata. <Ev source="ss:compat/media/DIFFERENCES.md#L42-L44" hash="c34296ea2653cced9cf9ba39b386c3ae591f64e2c80bfc7ed48d0bd475834a81"/> <Ev source="ss:compat/media/DIFFERENCES.md#L136-L147" hash="ac61d062371af315facd1a7a9af279f9bdaa3d693adf41ab0aeb00595063decb"/>
+- **The filter's `$data`.** The fourth argument holds the getID3 keys WordPress reads and the ones plugins commonly read, plus the reader's neutral description under `speedyspec` (schema 1). Other getID3 keys are absent. <Ev source="ss:crates/speedyspec-wp-media/src/getid3/mod.rs#L1-L2" hash="c7359a262c53a10a414245735a00dfe756b6f6b3d27727c1a311b3f11ac9d18d"/> <Ev test="speedyspec-wp-media-php::php::speedyspec_key_has_schema_1"/>
+
+## Replacing the reader
+
+Bind a PHP object under `SpeedySpec\WpMedia\MediaReader` to replace the reader for the request; it can wrap the default through `SpeedySpec\WpMedia\Native\read_media()`. <Ev test="speedyspec-wp-media-php::php::php_reader_replaces_the_default"/> See the [Media architecture](/speedyspec/architecture/media/) page.

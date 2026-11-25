@@ -1,0 +1,10 @@
+---
+---
+
+Mostly not in SpeedySpec yet. Of this seam's 169 functions, the runtime answers two natively, both in `wp-admin/includes/file.php`: [`wp_trusted_keys()`](/speedyspec/app-upgrader/wp_trusted_keys/) and [`verify_file_signature()`](/speedyspec/app-upgrader/verify_file_signature/). The Passwords and crypto seam's Rust area declares them at the start of every request, each in a `function_exists` guard, over libsodium. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/lib.rs#L1-L11" hash="fd6a008235a8c861fa46eb194ccd325e2b05c36a3f88f61d584df43db9422a51"/> The upgraders, skins, filesystem classes and the rest of `file.php` are WordPress's PHP. The [Passwords and crypto architecture](/speedyspec/architecture/password/) page documents the API.
+
+## How they are verified
+
+WordPress's own `fileSignature.php` tests pass against the natives, and every signature check recorded from WordPress 7.1.5 (`compat/crypto/cases.json`) matches. <Ev test="speedyspec-wp-crypto-php::wordpress::wordpress_crypto_tests_pass_but_phpass"/> <Ev test="speedyspec-wp-crypto-sodium::recorded::signatures_match"/>
+
+Verdicts: `wp_trusted_keys()` works as in WordPress; `verify_file_signature()` works with one difference: it never returns `signature_verification_unsupported`, because the runtime always has ext-sodium and sha384. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/lib.rs#L13-L14" hash="1ddd9359643835ccc764343a75efb0d00056a6c0971af16516df295bce64bb78"/>

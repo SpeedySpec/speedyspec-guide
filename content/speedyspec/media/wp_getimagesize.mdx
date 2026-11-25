@@ -1,0 +1,14 @@
+---
+symbol: "function:wp_getimagesize"
+verdict: works-with-differences
+differences:
+  - summary: "JPEG XL, QOI, PCX, PPM/PGM, SGI and Radiance HDR images are sized through the media reader (IMAGETYPE_UNKNOWN); WordPress returns false for them."
+---
+
+## Behaviour
+
+Native. The facade sniffs the file's type from its first 64 bytes. For every type PHP 8.5's `getimagesize()` reads (JPEG, PNG, GIF, BMP, TIFF, WebP, AVIF, HEIF, JPEG 2000, PSD, ICO), and for anything not sniffed, it returns PHP's own answer, with `$image_info` and the debug-mode warnings as in WordPress. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L102-L133" hash="5ec8f83ea0b11587dc060c5f456f02ca507c13bfd98f98daf554db9a93f3568a"/> <Ev test="speedyspec-wp-media-php::php::getimagesize_fast_path_is_phps"/> <Ev test="speedyspec-wp-media-php::php::jpeg_app13_reaches_image_info"/> <Ev test="speedyspec-wp-media-php::php::image_info_only_when_passed"/> WordPress's own `getimagesize` tests pass against it. <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/>
+
+## Differences
+
+JPEG XL, QOI, PCX, PPM/PGM, SGI and Radiance HDR files, for which WordPress returns `false`, are sized through the media reader (FFmpeg, in a probe child): `IMAGETYPE_UNKNOWN`, with `bits` and `channels` when FFmpeg knows them. `$image_info` is then an empty array. A stream-wrapper path of one of these types returns `false`. <Ev source="ss:compat/media/DIFFERENCES.md#L51-L57" hash="e9888b4460dc8bed7148b948e9dbd1d75b3069ebf9863f8810303e4fd77d986d"/> <Ev test="speedyspec-wp-media-php::php::reader_path_jxl"/> <Ev test="speedyspec-wp-media-php::php::image_info_is_reset_on_the_reader_path"/> Over the recorded image corpus, these types are the only differences. <Ev test="speedyspec-wp-media-corpus::images::image_corpus_matches_wordpress_except_listed_differences"/> <Ev test="speedyspec-wp-media-corpus::images::every_image_difference_is_still_needed"/>

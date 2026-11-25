@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\Native\\id3_tag_changes"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shims for `wp_add_id3_tag_data()`: the keys it sets from `$data`, in order, which the facade assigns into `$metadata`; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L181-L190" hash="ca9c23fca92223824c5a3614d0a31b7d37abf18b9d04885a89fe737d9dd41787"/> <Ev test="speedyspec-wp-media-php::php::add_id3_tag_data_by_reference"/>

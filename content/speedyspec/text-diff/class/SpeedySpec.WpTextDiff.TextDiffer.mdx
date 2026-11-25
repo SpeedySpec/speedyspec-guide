@@ -1,0 +1,12 @@
+---
+symbol: "class:SpeedySpec\\WpTextDiff\\TextDiffer"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+The PHP twin of the `TextDiffer` port, which answers `wp_text_diff()`. Its one method, `diff( $left_string, $right_string, $args )`, gets the three arguments untouched and returns what `wp_text_diff()` should return. `#[php_port]` declares it at the start of every request from the Rust trait, so the two can't drift. <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/twins.rs#L9-L18" hash="c612633e540299c35f4b3e7d907a7c9bfa0f614a7d5bb97a27ffb7142c30e566"/>
+
+## Override
+
+Where WordPress lets a plugin declare `wp_text_diff()` first, bind a class implementing this interface under `SpeedySpec\WpTextDiff\TextDiffer`. It then answers `wp_text_diff()` for PHP and for Rust callers, until the request ends; an exception it throws reaches the caller unchanged. <Ev test="speedyspec-wp-text-diff-php::php::bound_twin_answers_wp_text_diff"/> <Ev test="speedyspec-wp-text-diff-php::php::rust_callers_get_the_php_binding"/> <Ev test="speedyspec-wp-text-diff-php::php::binding_ends_with_the_request"/> <Ev test="speedyspec-wp-text-diff-php::php::twin_exception_is_rethrown_unchanged"/> See the architecture page.

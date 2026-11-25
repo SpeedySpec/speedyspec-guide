@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpTextDiff\\row_labels"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+Returns the hidden labels of added, deleted and unchanged cells, translated with `__()`, in that order. The Rust table calls it once per `wp_text_diff()` call; WordPress's renderer translates each label once per row. Not for plugins. <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/text-diff.php#L70-L88" hash="5bdf3535152321cc62e705384bdaa0a6fd7f7decb3e34917b80610c454cbefd7"/> <Ev source="ss:crates/speedyspec-wp-text-diff/src/port.rs#L123" hash="2f57449aab2e7f3267ddb328a091bd807b62bb4df8f83f4957a4627a4a74f4ad"/>

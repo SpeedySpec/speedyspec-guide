@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpTextDiff\\load_renderer"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+Loads WordPress's diff classes from `wp-diff.php` when `WP_Text_Diff_Renderer_Table` isn't defined yet, as WordPress's `wp_text_diff()` does on every call, for code that relies on them being loaded afterwards. Not for plugins. <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/text-diff.php#L57-L68" hash="80988c91d176b0ca19eac2db686570fd242f4681f0821ba9275d13aebc302d63"/> <Ev test="speedyspec-wp-text-diff-php::php::classes_load_as_in_wordpress"/>

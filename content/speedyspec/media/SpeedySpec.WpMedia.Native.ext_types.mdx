@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\Native\\ext_types"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shims for `wp_get_ext_types()`'s list before its filter; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L207-L212" hash="bf3ba5f51b54d5a533475aae3c0c765761586a2f2eb91c7f908ce0b1e95d2c23"/> <Ev test="speedyspec-wp-media-php::php::mime_types_and_ext2type_filters_run"/>

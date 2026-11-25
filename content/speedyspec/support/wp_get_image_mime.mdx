@@ -1,0 +1,16 @@
+---
+symbol: "function:wp_get_image_mime"
+verdict: works-with-differences
+differences:
+  - summary: "Also recognises JPEG XL, QOI, PCX, PPM/PGM, SGI and Radiance HDR by their first bytes; WordPress returns false for them."
+---
+
+## Behaviour
+
+Native. The function sniffs the image type from the file's first 64 bytes, read the way PHP opens the path (stream wrappers included), and returns its MIME type or `false`. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L94-L108" hash="d6aaf7182cfe581e4f04fd43677f69db9dd480e8a2e679bab58a279f21b78ab3"/> A PNG named `.jpg` is `image/png`, and a truncated or empty file is `false`. <Ev test="speedyspec-wp-media-php::php::mislabelled_png_is_png"/> <Ev test="speedyspec-wp-media-php::php::truncated_and_empty_are_false"/> It matches WordPress over the recorded image corpus, except the types below, and WordPress's own `imageSize.php` tests pass against it. <Ev test="speedyspec-wp-media-corpus::images::image_corpus_matches_wordpress_except_listed_differences"/> <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/>
+
+## Differences
+
+JPEG XL, QOI, PCX, PPM/PGM, SGI and Radiance HDR are typed by their content, so the function returns their MIME type (`image/qoi` and so on) where WordPress returns `false`. TGA has no magic number and stays `false`, as in WordPress. <Ev source="ss:compat/media/DIFFERENCES.md#L54-L57" hash="7c0bec0e31de6c65f47e45b673eea4c1defcaad5e88f9348697d3d4e0a9ab1e1"/> <Ev test="speedyspec-wp-media-php::php::image_mime_for_reader_types"/> <Ev test="speedyspec-wp-media-corpus::images::every_image_difference_is_still_needed"/>
+
+See the [Media architecture](/speedyspec/architecture/media/) page.

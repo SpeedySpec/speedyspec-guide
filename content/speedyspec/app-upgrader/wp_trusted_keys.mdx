@@ -1,0 +1,14 @@
+---
+symbol: "function:wp_trusted_keys"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. The function returns WordPress's default keys after the `wp_trusted_keys` filter, which runs through the Hook API; the filter's value comes back untouched, whatever its type. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/crypto.php#L100-L103" hash="bc875e5a1969ec6fd534e891dd0de69f8feea606b7ab9df72bf4b0c266766235"/> <Ev test="speedyspec-wp-crypto-php::php::trusted_keys_returns_the_filtered_value_untouched"/> The default list follows WordPress's: its one WordPress.org key is trusted only before 1 April 2021 (the timestamp 1617235200), so today the list is empty. <Ev test="speedyspec-wp-crypto::core::trusted_keys_cut_off"/> The signature matches WordPress's. <Ev test="speedyspec-wp-crypto-php::php::signatures_match_wordpress"/>
+
+WordPress's own tests don't call `wp_trusted_keys()` directly; `fileSignature.php`, which reaches it through `verify_file_signature()`, passes. <Ev test="speedyspec-wp-crypto-php::wordpress::wordpress_crypto_tests_pass_but_phpass"/>
+
+## Replacing it
+
+There is no container port; filter `wp_trusted_keys` as on WordPress. The rules live in the [Passwords and crypto architecture](/speedyspec/architecture/password/) page's crypto crates.

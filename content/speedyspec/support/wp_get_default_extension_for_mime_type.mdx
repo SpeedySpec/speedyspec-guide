@@ -1,0 +1,16 @@
+---
+symbol: "function:wp_get_default_extension_for_mime_type"
+verdict: works-with-differences
+differences:
+  - summary: "Returns an extension for the MIME types SpeedySpec adds (audio/x-caf gives caf); WordPress returns false for them."
+---
+
+## Behaviour
+
+Native, and WordPress's own algorithm: the first extension of the first `wp_get_mime_types()` key whose type matches, or `false`. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L249-L260" hash="1d9ba7c00638f4cffc5496386cc13a83cd69f0feda4f81275402e87f86885b27"/> The added rows come after WordPress's, so a type both list keeps WordPress's default (`audio/mpeg` is still `mp3`, `video/mpeg` still `mpeg`). <Ev test="speedyspec-wp-media::mime::shared_mimes_keep_wordpress_default"/> <Ev test="speedyspec-wp-media-php::php::default_extension_unchanged_for_shared_mimes"/> WordPress's own `mimeFunctions.php` tests pass against it. <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/>
+
+## Differences
+
+A MIME type only SpeedySpec lists returns its extension: `audio/x-caf` gives `caf`. <Ev test="speedyspec-wp-media-php::php::default_extension_unchanged_for_shared_mimes"/> <Ev source="ss:compat/media/DIFFERENCES.md#L59-L66" hash="dfa8345b5217bd15fc49cf7474ffc5bae6e68a73ba8fde5db26352b022791ecf"/>
+
+See the [Media architecture](/speedyspec/architecture/media/) page.

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\Native\\wp_get_media_creation_timestamp"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shims for `wp_get_media_creation_timestamp()`; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L192-L197" hash="7a913416d3939f209c16719ff6e23dcc707f203edfb508b44f06c58b048e27bb"/> <Ev test="speedyspec-wp-media-php::php::creation_timestamp_matroska_string"/>

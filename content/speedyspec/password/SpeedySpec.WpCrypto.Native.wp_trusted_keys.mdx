@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpCrypto\\Native\\wp_trusted_keys"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shims to reach WordPress's sodium rules over libsodium; not for plugins. Call `wp_trusted_keys()` instead. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/crypto.php#L100-L103" hash="bc875e5a1969ec6fd534e891dd0de69f8feea606b7ab9df72bf4b0c266766235"/> <Ev source="ss:crates/speedyspec-wp-crypto-php/src/natives.rs#L62-L64" hash="3d91032fce15c80357e1967d8f841fc63f1018120cbc1eae79471bc8c1caf251"/> <Ev test="speedyspec-wp-crypto-php::php::trusted_keys_returns_the_filtered_value_untouched"/>

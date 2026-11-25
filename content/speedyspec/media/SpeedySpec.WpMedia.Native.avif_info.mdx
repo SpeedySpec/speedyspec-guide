@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\Native\\avif_info"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shims for `wp_get_avif_info()` through the media reader, when PHP's `getimagesize()` can't size the file; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L145-L165" hash="948f453d362d7fc92333b02319bf6932828e6672f11138ca5d496a202972157a"/> <Ev test="speedyspec-wp-media-php::php::avif_info_matches_wordpress"/>

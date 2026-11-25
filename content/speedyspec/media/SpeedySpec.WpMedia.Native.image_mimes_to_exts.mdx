@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\Native\\image_mimes_to_exts"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shims for the `getimagesize_mimes_to_exts` default in `wp_check_filetype_and_ext()`; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L313-L316" hash="b5f16717b542a5eeb69beb7a06b6c43728c2d2545116e8486438cecd2f1ea601"/> <Ev test="speedyspec-wp-media-php::php::jxl_named_png_becomes_jxl"/>

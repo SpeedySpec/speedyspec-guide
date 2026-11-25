@@ -1,0 +1,16 @@
+---
+symbol: "function:wp_ext2type"
+verdict: works-with-differences
+differences:
+  - summary: "Returns a kind for the extensions SpeedySpec adds to the MIME list (opus is audio, jxl is image); WordPress returns null for them."
+---
+
+## Behaviour
+
+Native, and WordPress's own algorithm: it lowercases the extension and returns the first kind of `wp_get_ext_types()` that lists it, or `null`. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L234-L247" hash="8a8a845bf77c6d5489f41a6b05bef037bd82122a68bc9f34abcf9bcbb9b83b97"/> WordPress's own `mimeFunctions.php` tests pass against it. <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/>
+
+## Differences
+
+`wp_get_ext_types()` files the extensions SpeedySpec adds, so this function knows them too. <Ev source="ss:compat/media/DIFFERENCES.md#L59-L66" hash="dfa8345b5217bd15fc49cf7474ffc5bae6e68a73ba8fde5db26352b022791ecf"/> No server test calls `wp_ext2type()` with an added extension; the difference follows from the list. <Ev test="speedyspec-wp-media-php::mime::wordpress_lists_are_kept"/>
+
+See the [Media architecture](/speedyspec/architecture/media/) page.

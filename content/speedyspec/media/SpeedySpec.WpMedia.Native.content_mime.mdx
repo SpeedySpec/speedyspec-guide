@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\Native\\content_mime"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shims for the content type `wp_check_filetype_and_ext()` compares with the claimed type; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L338-L346" hash="6f283e0f1f0dc7fc37759066f04e35443b091f58402b8505abfe24d509d1fa3d"/> <Ev test="speedyspec-wp-media-php::php::audio_only_matroska_is_accepted"/>

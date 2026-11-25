@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\local"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+Gives the canonical local path the native reader can open, or `null` for a stream-wrapper path, which the image functions then answer without the reader. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L72-L89" hash="811f63b07e2fb43dfaf3c21da2f5e0edb8cfb68fa6dbfaa7202f3d644b9d573c"/> <Ev test="speedyspec-wp-media-php::php::stream_wrapper_path_uses_fileinfo"/> Not for plugins.
