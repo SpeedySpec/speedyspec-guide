@@ -1,0 +1,18 @@
+---
+symbol: "function:get_page_statuses"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`page_statuses` gives the post statuses without `pending`, each label through the `Translator` port. <Ev source="ss:crates/speedyspec-wp-posts/src/status.rs#L158-L166" hash="d926573073b1a87413778480ee72093b8d0dab582771aec65b3db4c83080a71c"/>
+
+The recorded table matches WordPress 7.1.5's, in order. <Ev test="speedyspec-wp-posts::recorded::status_label_tables_match_wordpress"/>
+
+## Limits
+
+- Recorded untranslated: the recorder's `__()` and `_x()` return their text.

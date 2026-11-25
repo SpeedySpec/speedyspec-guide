@@ -1,0 +1,14 @@
+---
+symbol: "class:WP_Post_Type"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `class-wp-post-type.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rules
+
+`PostType` is a `WP_Post_Type` object's properties in `get_object_vars()` order, declared ones first; it knows nothing of how it is stored. `resolve_post_type` is the constructor and `set_props()`, `add_supports` and `unregistration` are the supports and removal methods, and `default_labels` is `get_default_labels()`. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/values.rs#L105-L111" hash="933246bb03fd9df9d5e260fbeddaeeac4ad6d9546a90914d34dbdbed12b2a085"/> <Ev source="ss:crates/speedyspec-wp-posts/src/post_type.rs#L1-L7" hash="9faef411f20b92468f39aa2ecf2f2626490213f10a5427f33a17d5d1d5e79dfa"/>
+
+The methods that add hooks, rewrite rules or taxonomies don't run in Rust. The rules return the `add_action()` and `remove_action()` calls and the taxonomies, for phase 4's adapter to apply; rewrite rules belong to the rewrite seam and the REST controllers to the REST API. Each method's page says which.

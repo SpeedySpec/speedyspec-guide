@@ -1,0 +1,19 @@
+---
+symbol: "function:_get_custom_object_labels"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`custom_object_labels` fills the given labels in WordPress's order (`name` from `label`, `singular_name` from `name`, `name_admin_bar`, then `menu_name`, `all_items` and `archives`, each from the one before), then merges them over the defaults for the object's hierarchy. It returns both, because `get_post_type_labels()` reads the given ones again for `template_name`. <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L224-L238" hash="efe06a38df33a0d2ab62d141a41f2142a2566ffa0b9817184275945234f370c1"/>
+
+The 12 recorded label cases cover it through `get_post_type_labels()`. <Ev test="speedyspec-wp-posts::recorded::labels_match_wordpress"/>
+
+## Limits
+
+- WordPress also builds taxonomy labels with it. Only post type labels are recorded; taxonomies are another seam.
+- Recorded with `__()` returning its text.

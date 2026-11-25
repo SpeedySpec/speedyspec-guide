@@ -1,0 +1,20 @@
+---
+symbol: "function:unregister_post_type"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rules
+
+`PostTypeRegistry::unregister` gives `Invalid` (`invalid_post_type`, "Invalid post type.") for a missing type and `Builtin` (the same code, "Unregistering a built-in post type is not allowed", with no full stop, as in 7.1.5) when its `_builtin` is truthy. Otherwise `unregistration` names what to remove: the type's entry in `$_wp_post_type_features`, the `$post_type_meta_caps` key of every `cap` value, and the `add_meta_boxes_{$post_type}` and `future_{$post_type}` actions. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L166-L168" hash="157ddbf0d1e7df39befd628b75845695060d986fe7705c7917b91db504a599ad"/> <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L281-L284" hash="e95877636117ad33ef44241598dee8124f15aac01700a26aec56665374ab6ca6"/> <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/error.rs#L5-L36" hash="8412889ae3269f39e145bc1335b3cd80d678f86d7ff1a3d629026dfab54eac85"/>
+
+The recorded `unregister` scenario replays as in WordPress 7.1.5, call by call, with `$post_type_meta_caps` after each. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::registry::unregister_removes_features_and_meta_caps"/> <Ev test="speedyspec-wp-posts::registry::unregister_builtin_is_refused"/> <Ev test="speedyspec-wp-posts::registry::unregister_missing_is_invalid"/>
+
+## Limits
+
+- Recorded from WordPress 7.1.5 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L49-L62" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
+- Removing the type from its taxonomies is the adapter's, in phase 4. The recorder's `get_object_taxonomies()` returns nothing, so no recording covers it.
+- Removing rewrite rules, permastructs and the query var belongs to the rewrite seam. The `unregistered_post_type` action runs only in phase 4.

@@ -14,6 +14,13 @@ Partly native. SpeedySpec answers one part of this seam in Rust: `wpdb`, WordPre
 
 The worker builds its database from the MySQL engine only. The SQLite and PostgreSQL engines translate WordPress's MySQL statements and answer with MySQL's results; they pass the replay with two SQLite differences (a duplicate-key error's wording, and latin1 columns that keep any UTF-8 character), and WordPress's tests with 19 (SQLite) and 20 (PostgreSQL) listed failures, for conversions to non-Unicode charsets and, on PostgreSQL, spatial types. The worker can't use them yet. <Ev source="ss:crates/speedyspec-php-runtime/src/database.rs#L55-L69" hash="a1fea6536a88fbf3850374be82ffec558e8ac3943802eb7cdcb60a361b002aab"/> <Ev source="ss:compat/wp-db/breaks.json#L25-L36" hash="069bce88f387e4c779c1b8e64767646303518de7f1b9896a325f2c5df734524e"/>
 
+## Post types and statuses
+
+Not native yet. speedyspec-server has `post.php`'s post type and post status rules and `WP_Post_Type`'s argument resolution in Rust (`speedyspec-wp-posts`), but the runtime worker doesn't link them, so all 24 of those functions and the class work as in WordPress. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+- **Proven against WordPress 7.1.5, not wired:** labels (12 cases), capabilities (9), `new WP_Post_Type()` (21), 11 post type and 14 status scenarios, the three status label tables, 87 list and predicate calls, and both runs of `create_initial_post_types()` with 68 queries after them, all from `compat/posts/cases.json`. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::recorded::list_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::recorded::initial_post_types_match_wordpress"/>
+- **Not proven:** the hooks these functions fire, rewrite rules, taxonomy removal and the REST controllers, which the rules leave to phase 4 or to other seams, and WordPress's post PHPUnit tests. See the architecture page.
+
 ### Still WordPress's PHP
 
 The `wp-db` scenarios and tests cover `wpdb` only. Everything else in this seam, and every query it builds, is WordPress's PHP calling the native `$wpdb`.

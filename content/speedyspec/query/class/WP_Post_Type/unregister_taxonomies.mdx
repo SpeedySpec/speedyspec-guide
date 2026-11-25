@@ -1,0 +1,6 @@
+---
+symbol: "method:WP_Post_Type::unregister_taxonomies"
+verdict: works-as-wordpress
+---
+
+Served by WordPress's PHP, as the whole class is until phase 4. No Rust rule: removing the post type from its taxonomies is phase 4's adapter's, through the taxonomy seam. The recorder's `get_object_taxonomies()` returns nothing, so no recording covers it. <Ev source="ss:compat/posts/record.php#L49-L62" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>

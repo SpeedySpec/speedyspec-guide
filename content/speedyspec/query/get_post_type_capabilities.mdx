@@ -1,0 +1,19 @@
+---
+symbol: "function:get_post_type_capabilities"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`post_type_capabilities` builds the capabilities in WordPress's key order: the eight base ones from the singular and plural `capability_type`, the six more when `map_meta_cap` is set, then `array_merge()` with `capabilities`, then `create_posts` as `edit_posts` unless it is set. A string `capability_type` gives the bases `$type` and `$type . 's'`; an array gives its `[0]` and `[1]`. <Ev source="ss:crates/speedyspec-wp-posts/src/caps.rs#L12-L24" hash="20edebdb472b1aa7720343e0b9f46e65341200adc66f943a4f703220ea0aff48"/>
+
+All 9 recorded cases replay as in WordPress 7.1.5, with the meta capabilities each remembered: `post` and `page` mapped, a custom type with and without mapping, a `[singular, plural]` pair, given `create_posts` (null too), an extra capability and an int type. <Ev test="speedyspec-wp-posts::recorded::capabilities_match_wordpress"/>
+
+## Limits
+
+- Recorded from WordPress 7.1.5 over plain objects, with `$post_type_meta_caps` empty before each case.
+- Unrecorded approximations: a non-array `capabilities` counts as empty, where PHP throws; an array `capability_type` missing an index gives `""`, where PHP warns and concatenates null.

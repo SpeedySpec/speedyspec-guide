@@ -1,0 +1,6 @@
+---
+symbol: "method:WP_Post_Type::remove_supports"
+verdict: works-as-wordpress
+---
+
+Served by WordPress's PHP, as the whole class is until phase 4. In Rust, `unregistration` names the `$_wp_post_type_features` entry to unset, the post type's name, and `PostTypeRegistry::unregister` unsets it. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L70-L80" hash="64d72f806d3f0764b0a83325e4bd1c42542cfcf9c598a47e22e0b2cb5c5a5216"/> <Ev test="speedyspec-wp-posts::registry::unregister_removes_features_and_meta_caps"/> The recorded `unregister` scenario matches WordPress 7.1.5. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>

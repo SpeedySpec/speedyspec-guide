@@ -1,0 +1,19 @@
+---
+symbol: "function:get_post_type_labels"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rules
+
+`post_type_labels` is `get_post_type_labels()` before its `post_type_labels_{$post_type}` filter: `WP_Post_Type::get_default_labels()` through the `Translator` port, `menu_name` added, `_get_custom_object_labels()`, then `template_name` from "Single item: %s". `merge_filtered_labels` is the `array_merge()` after the filter. <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L1-L3" hash="4e54162cefc927e84a6636cff1a0f94810960651d09ae8245f59e65643e9aa33"/> <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L284-L285" hash="771ca04eb0ac24de9a30ce2982baf2ce110db377f985556ff01228f7047b3ce5"/> <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L337-L343" hash="b06c1806a92692488c3d15e6059320bbb586dfada9a57471a25ac86edac446ce"/>
+
+All 12 recorded cases replay as in WordPress 7.1.5: no labels, a `label` only, `name` or `singular_name` alone, a given `template_name`, hierarchical types, `labels` as a string, an extra key, an empty name, a given `name_admin_bar` and a null `singular_name`. <Ev test="speedyspec-wp-posts::recorded::labels_match_wordpress"/>
+
+## Limits
+
+- Recorded with no `post_type_labels_{$post_type}` callback and `__()` returning its text. Phase 4 runs the filter and hands its result to `apply_filtered_labels`.
+- Labels with int keys (`labels => 'Books'` gives key `0`) are renumbered once more than PHP would when a filter's result is merged. No recording covers a filtered merge. <Ev source="ss:crates/speedyspec-wp-posts/src/post_type.rs#L13-L16" hash="6c8fe96425079306290f895bcb3c60cf281d4af16e033a669e3101e6ebe3cbae"/>

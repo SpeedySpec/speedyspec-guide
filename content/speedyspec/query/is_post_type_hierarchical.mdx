@@ -1,0 +1,19 @@
+---
+symbol: "function:is_post_type_hierarchical"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`is_post_type_hierarchical` is false for a missing type, else the PHP truth of its `hierarchical` property. <Ev source="ss:crates/speedyspec-wp-posts/src/queries.rs#L28-L34" hash="707c2d55b0d74da07aa80a8c8821ee87bf6b404d7bb3ca743067d6a0d85aa500"/>
+
+The 8 recorded calls replay as in WordPress 7.1.5. <Ev test="speedyspec-wp-posts::recorded::list_scenarios_match_wordpress"/>
+
+## Limits
+
+- Recorded from WordPress 7.1.5 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L49-L62" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
+- WordPress returns the property as it is, not a bool. The rule answers its truth, so phase 4's adapter must read the raw property from the post type. <Ev source="ss:crates/speedyspec-wp-posts/src/queries.rs#L28-L29" hash="565aa07ae97aadddaae2135e2878a9304cd17674a0378369f138a20cb870a1d9"/>

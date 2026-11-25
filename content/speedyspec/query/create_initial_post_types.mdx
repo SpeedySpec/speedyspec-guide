@@ -1,0 +1,20 @@
+---
+symbol: "function:create_initial_post_types"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`create_initial_post_types()` runs a table of steps against the two registries: the 16 post types in WordPress's order, with their arguments as PHP arrays in the source's key order and their labels through the `Translator` port; the supports calls WordPress makes between them; then the 12 statuses. It reads one option, `wp_attachment_pages_enabled`, through `InitialOptions`, and returns each post type's registration, whose `future_{$post_type}` action and taxonomies the phase 4 adapter applies. <Ev source="ss:crates/speedyspec-wp-posts/src/initial.rs#L1-L7" hash="b5efff681a3699ec91916eb6e701cfc6b49d9f0b9ef14f4412abcae4c799376d"/> <Ev source="ss:crates/speedyspec-wp-posts/src/initial.rs#L40-L47" hash="6c4af1bd6b1551bcfff515f9ac46cf94736fcdc89cabdbb16350a6875c633dcb"/>
+
+Both recorded runs replay as in WordPress 7.1.5: one with no permalink structure and attachment pages off, one with `/%postname%/` and attachment pages on. Each compares `$wp_post_types`, `$_wp_post_type_features`, `$post_type_meta_caps` and `$wp_post_statuses` after the call, the actions it added, the taxonomies it registered, and 68 queries run after it (`get_post_types()`, `get_post_stati()`, `get_post_types_by_support()` and the viewable checks). <Ev test="speedyspec-wp-posts::recorded::initial_post_types_match_wordpress"/>
+
+## Limits
+
+- Recorded from WordPress 7.1.5 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L49-L62" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
+- The `register_post_type_args`, `register_{$post_type}_post_type_args` and `post_type_labels_{$post_type}` filters, and the `registered_post_type` actions, run only in phase 4. The rules return what WordPress computes with no callback added.
+- The labels are the `Translator` port's; only WordPress's English is recorded.

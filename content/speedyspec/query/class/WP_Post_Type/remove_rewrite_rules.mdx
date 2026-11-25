@@ -1,0 +1,6 @@
+---
+symbol: "method:WP_Post_Type::remove_rewrite_rules"
+verdict: works-as-wordpress
+---
+
+Served by WordPress's PHP, as the whole class is until phase 4. Only its meta capability half is in Rust: `unregistration` names the `$post_type_meta_caps` key of every `cap` value, in order, and the registry unsets them. Removing the rewrite tag, permastruct and query var belongs to the rewrite seam. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L70-L80" hash="64d72f806d3f0764b0a83325e4bd1c42542cfcf9c598a47e22e0b2cb5c5a5216"/> <Ev test="speedyspec-wp-posts::registry::unregister_removes_features_and_meta_caps"/> The recorded `unregister` scenario compares `$post_type_meta_caps` after each call with WordPress 7.1.5's. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>
