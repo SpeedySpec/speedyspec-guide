@@ -1,17 +1,13 @@
 ---
 symbol: "function:register_setting"
-verdict: works-with-differences
-differences:
-  - summary: "WordPress 7.2 adds show_in_abilities => false to the defaults; SpeedySpec, like 7.1.5, doesn't (found by the guide)."
+verdict: works-as-wordpress
 ---
 
 ## Behaviour
 
-Native: the `RegisterSetting` command, handled by `SettingsRegistry`. Defaults, a callable as `$args`, the deprecated groups and the `register_setting_args` filter replay as in WordPress 7.1.5. <Ev scenario="register_setting_defaults" area="options"/> <Ev scenario="register_setting_callable" area="options"/> <Ev scenario="register_setting_deprecated_groups" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+Native: the `RegisterSetting` command, handled by `SettingsRegistry`. Defaults, a callable as `$args`, the deprecated groups and the `register_setting_args` filter replay as in WordPress 7.2-RC2. <Ev scenario="register_setting_defaults" area="options"/> <Ev scenario="register_setting_callable" area="options"/> <Ev scenario="register_setting_deprecated_groups" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
 
-## Differences
-
-WordPress 7.2 adds `show_in_abilities` (default `false`) to every registered setting; SpeedySpec's defaults don't have it, so `get_registered_settings()` entries lack the key (found by the guide). <Ev source="wp:wp-includes/option.php#L3081-L3089" hash="cbc6c79cadd1f6e48dc49a0efb9ce7f6faaf7481c70029a1d011470a43e8fa5d"/> <Ev source="ss:crates/speedyspec-wp-options/src/settings.rs#L182-L189" hash="37cd3eafcc5f32c23b2029cbe28f8599733ef0ef198177668f778ef212bad534"/>
+The defaults are 7.2's, `show_in_abilities => false` after `show_in_rest`, so every entry of `get_registered_settings()` has the key, as the recording shows. <Ev source="wp:wp-includes/option.php#L3081-L3089" hash="cbc6c79cadd1f6e48dc49a0efb9ce7f6faaf7481c70029a1d011470a43e8fa5d"/> <Ev source="ss:crates/speedyspec-wp-options/src/settings.rs#L182-L190" hash="aefa853a2ae4a855e7ffe0517fced13c15c2df67a5658b2dc951fd0934d4fa95"/> <Ev test="speedyspec-wp-options-memory::settings::defaults_merged_in_order"/>
 
 ## Override
 
