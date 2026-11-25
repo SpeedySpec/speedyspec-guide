@@ -1,0 +1,18 @@
+---
+symbol: "function:verify_file_signature"
+verdict: works-with-differences
+differences:
+  - summary: "Never returns the signature_verification_unsupported error: the runtime always has ext-sodium and sha384."
+---
+
+## Behaviour
+
+Native. The function checks the file's SHA-384 against each Ed25519 signature and trusted key, in WordPress's order, over libsodium. The file is hashed by PHP's own `hash_file()`, so stream wrappers work and PHP's warnings and errors are PHP's. Failures return a real `WP_Error` with WordPress's codes, data and translated messages, so `wp_error_added` fires. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/crypto.php#L120-L128" hash="87065902407571bff13235de76a15dbd8d09ea869e8f831a6dea6e3eedd8eeb8"/> <Ev source="ss:crates/speedyspec-wp-crypto-php/src/lib.rs#L9-L11" hash="7fb0175b6567827cf89e11c05c9ccb2f8ebf39d0465dd0eac9031dfba20c0f16"/> <Ev test="speedyspec-wp-crypto-php::php::a_stream_wrapper_path_is_hashed"/> <Ev test="speedyspec-wp-crypto-php::php::an_unreadable_file_raises_hash_files_warning"/> <Ev test="speedyspec-wp-crypto-php::php::wp_error_added_fires"/> <Ev test="speedyspec-wp-crypto-php::php::message_hooks_fire_only_with_their_error_and_in_wordpress_order"/>
+
+Every signature check recorded from WordPress 7.1.5 (`compat/crypto/cases.json`) matches, and WordPress's own `fileSignature.php` tests pass against it. <Ev test="speedyspec-wp-crypto-sodium::recorded::signatures_match"/> <Ev test="speedyspec-wp-crypto-php::php::replays_wordpress"/> <Ev test="speedyspec-wp-crypto-php::wordpress::wordpress_crypto_tests_pass_but_phpass"/> Keys and signatures are read lazily, as WordPress reads them: nothing after the first match is read. <Ev test="speedyspec-wp-crypto-php::php::a_key_after_the_match_is_never_read"/> <Ev test="speedyspec-wp-crypto-php::php::a_signature_after_the_match_is_never_read"/>
+
+## Differences
+
+`signature_verification_unsupported` is never returned. On WordPress it means the server lacks sodium or sha384; the runtime refuses to start without libsodium. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/lib.rs#L13-L14" hash="1ddd9359643835ccc764343a75efb0d00056a6c0971af16516df295bce64bb78"/> <Ev source="ss:crates/speedyspec-php-runtime/src/worker.rs#L284-L291" hash="62f298ea41f256c0a614b3a13233ce88462866d1a1891e61de1d441977d7b3ce"/>
+
+See the [Passwords and crypto architecture](/speedyspec/architecture/password/) page.

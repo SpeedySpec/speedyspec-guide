@@ -16,6 +16,27 @@ wordpress:
   - wp-includes/version.php
 setup: setup.php
 mysql: true
-# Symbols whose file belongs to another seam.
+# SpeedySpec answers wp_getimagesize(), wp_get_webp_info() and wp_get_avif_info() natively, and the metadata and MIME
+# functions in other seams' files; the rest of media.php is WordPress's, so the seam is unported.
+crates: [speedyspec-wp-media, speedyspec-wp-media-contracts, speedyspec-wp-media-php, speedyspec-wp-media-isolate, speedyspec-wp-media-ffmpeg, speedyspec-wp-media-midi, speedyspec-ffmpeg-sys, speedyspec-wp-media-corpus, speedyspec-wp-media-testkit]
+# Symbols whose file belongs to another seam, and the runtime's own.
 symbols:
   - "constant:GETID3_TEMP_DIR"
+  - "class:SpeedySpec\\WpMedia\\MediaReader"
+  - "method:SpeedySpec\\WpMedia\\MediaReader::read"
+  - "function:SpeedySpec\\WpMedia\\read"
+  - "function:SpeedySpec\\WpMedia\\head"
+  - "function:SpeedySpec\\WpMedia\\local"
+  - "function:SpeedySpec\\WpMedia\\Native\\read_metadata"
+  - "function:SpeedySpec\\WpMedia\\Native\\id3_tag_changes"
+  - "function:SpeedySpec\\WpMedia\\Native\\wp_get_media_creation_timestamp"
+  - "function:SpeedySpec\\WpMedia\\Native\\read_media"
+  - "function:SpeedySpec\\WpMedia\\Native\\max_bytes"
+  - "function:SpeedySpec\\WpMedia\\Native\\image_type"
+  - "function:SpeedySpec\\WpMedia\\Native\\read_image_size"
+  - "function:SpeedySpec\\WpMedia\\Native\\webp_info"
+  - "function:SpeedySpec\\WpMedia\\Native\\avif_info"
+  - "function:SpeedySpec\\WpMedia\\Native\\content_mime"
+  - "function:SpeedySpec\\WpMedia\\Native\\mime_types"
+  - "function:SpeedySpec\\WpMedia\\Native\\ext_types"
+  - "function:SpeedySpec\\WpMedia\\Native\\image_mimes_to_exts"

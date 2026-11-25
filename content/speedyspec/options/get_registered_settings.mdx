@@ -1,0 +1,18 @@
+---
+symbol: "function:get_registered_settings"
+verdict: works-with-differences
+differences:
+  - summary: "Entries lack WordPress 7.2's show_in_abilities key (found by the guide)."
+---
+
+## Behaviour
+
+Native: the `GetRegisteredSettings` query, read from `$wp_registered_settings`. <Ev scenario="register_setting_defaults" area="options"/>
+
+## Differences
+
+Entries lack WordPress 7.2's `show_in_abilities`; see [register_setting](/speedyspec/options/register_setting/).
+
+## Override
+
+The registry's state lives behind the `SettingsStore` port; in PHP it is `$wp_registered_settings` and `$new_allowed_options`. See the architecture page.

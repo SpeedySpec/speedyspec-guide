@@ -1,0 +1,6 @@
+---
+symbol: "filter:wp_next_scheduled"
+verdict: works-as-wordpress
+---
+
+Run by the native cron functions through the native Hook API. Filters the timestamp `wp_next_scheduled()` returns. <Ev area="cron" scenario="single_event"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>

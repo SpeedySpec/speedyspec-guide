@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\get_option"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `get_option()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L12-L15" hash="c3c107ed830e7e562de221307b7d4ef6698a9781ae8a097f7c1694bae459f909"/>
+
+It sends the `GetOption` query through the handler bound under `SpeedySpec\WpOptions\GetOptionHandler`. <Ev scenario="add_option_after_notoptions" area="options"/>

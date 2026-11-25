@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpCron\\to_object"
+verdict: new-in-speedyspec
+---
+
+`(object) $fields`: the `stdClass` event WordPress hands to the cron filters. The `PhpObjects` port's adapter calls it. <Ev source="ss:crates/speedyspec-wp-cron-php/src/cron.php#L110-L113" hash="57fd93f76b960b5da442689d240476d1234c46b17e1fa42a82ac4b14c2c219d5"/> <Ev test="speedyspec-wp-cron-php::compat::main"/> Used by SpeedySpec's cron wrapper; not for plugins.

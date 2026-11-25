@@ -1,6 +1,6 @@
 name: "Options"
 job: "Reads, adds, updates and deletes options, site options and transients."
-ported: false
+ported: true
 files:
   - 'wp-includes/option.php'
 # Loaded in this order before each example on the WordPress side (functions.php loads option.php), then setup.php
@@ -28,6 +28,51 @@ wordpress:
   - wp-includes/link-template.php
 setup: setup.php
 mysql: true
+crates: [speedyspec-wp-options, speedyspec-wp-options-sql, speedyspec-wp-options-memory, speedyspec-wp-options-php, speedyspec-wp-options-tests, speedyspec-php-serialize]
+symbols:
+  - "function:SpeedySpec\\WpOptions\\Native\\get_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\add_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\update_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\delete_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_load_alloptions"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_prime_option_caches"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_prime_option_caches_by_group"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_set_option_autoload_values"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_set_options_autoload"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_set_option_autoload"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_determine_option_autoload_value"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_filter_default_autoload_value_via_option_size"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_autoload_values_to_autoload"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_protect_special_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\get_site_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\add_site_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\update_site_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\delete_site_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\get_network_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\add_network_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\update_network_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\delete_network_option"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_prime_site_option_caches"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_prime_network_option_caches"
+  - "function:SpeedySpec\\WpOptions\\Native\\wp_load_core_site_options"
+  - "function:SpeedySpec\\WpOptions\\Native\\get_transient"
+  - "function:SpeedySpec\\WpOptions\\Native\\set_transient"
+  - "function:SpeedySpec\\WpOptions\\Native\\delete_transient"
+  - "function:SpeedySpec\\WpOptions\\Native\\get_site_transient"
+  - "function:SpeedySpec\\WpOptions\\Native\\set_site_transient"
+  - "function:SpeedySpec\\WpOptions\\Native\\delete_site_transient"
+  - "function:SpeedySpec\\WpOptions\\Native\\delete_expired_transients"
+  - "function:SpeedySpec\\WpOptions\\Native\\register_setting"
+  - "function:SpeedySpec\\WpOptions\\Native\\unregister_setting"
+  - "function:SpeedySpec\\WpOptions\\Native\\get_registered_settings"
+  - "function:SpeedySpec\\WpOptions\\Native\\filter_default_option"
+  - "function:SpeedySpec\\WpOptions\\clone_value"
+  - "function:SpeedySpec\\WpOptions\\allowed_options"
+  - "function:SpeedySpec\\WpOptions\\unserialize_value"
+  - "function:SpeedySpec\\WpOptions\\Php\\settings_put"
+  - "function:SpeedySpec\\WpOptions\\Php\\settings_remove"
+  - "function:SpeedySpec\\WpOptions\\Php\\settings_allow"
+  - "function:SpeedySpec\\WpOptions\\Php\\settings_disallow"
 roles:
   read: ["function:get_option", "function:get_options", "function:wp_load_alloptions", "function:form_option"]
   write: ["function:add_option", "function:update_option", "function:delete_option"]
@@ -40,6 +85,8 @@ roles:
   internals: ["function:wp_protect_special_option"]
   filters: ["filter:pre_option_{$option}", "filter:pre_option", "filter:default_option_{$option}", "filter:option_{$option}", "filter:wp_default_autoload_value", "filter:pre_wp_load_alloptions", "filter:pre_cache_alloptions", "filter:alloptions", "filter:pre_update_option_{$option}", "filter:wp_max_autoloaded_option_size", "filter:pre_transient_{$transient}", "filter:transient_{$transient}", "filter:pre_set_transient_{$transient}", "filter:expiration_of_transient_{$transient}", "filter:pre_site_option_{$option}", "filter:pre_site_option", "filter:default_site_option_{$option}", "filter:pre_update_option", "filter:site_option_{$option}", "filter:pre_add_site_option_{$option}", "filter:pre_update_site_option_{$option}", "filter:pre_site_transient_{$transient}", "filter:site_transient_{$transient}", "filter:pre_set_site_transient_{$transient}", "filter:expiration_of_site_transient_{$transient}", "filter:register_setting_args", "filter:wp_autoload_values_to_autoload"]
   actions: ["action:update_option", "action:update_option_{$option}", "action:updated_option", "action:add_option", "action:add_option_{$option}", "action:added_option", "action:delete_option", "action:delete_option_{$option}", "action:deleted_option", "action:delete_transient_{$transient}", "action:deleted_transient", "action:set_transient_{$transient}", "action:set_transient", "action:setted_transient", "action:add_site_option_{$option}", "action:add_site_option", "action:pre_delete_site_option_{$option}", "action:delete_site_option_{$option}", "action:delete_site_option", "action:update_site_option_{$option}", "action:update_site_option", "action:delete_site_transient_{$transient}", "action:deleted_site_transient", "action:set_site_transient_{$transient}", "action:set_site_transient", "action:setted_site_transient", "action:register_setting", "action:unregister_setting"]
+  speedyspec: ["function:SpeedySpec\\WpOptions\\clone_value", "function:SpeedySpec\\WpOptions\\allowed_options", "function:SpeedySpec\\WpOptions\\unserialize_value", "function:SpeedySpec\\WpOptions\\Php\\settings_put", "function:SpeedySpec\\WpOptions\\Php\\settings_remove", "function:SpeedySpec\\WpOptions\\Php\\settings_allow", "function:SpeedySpec\\WpOptions\\Php\\settings_disallow"]
+  speedyspec-internals: ["function:SpeedySpec\\WpOptions\\Native\\get_option", "function:SpeedySpec\\WpOptions\\Native\\add_option", "function:SpeedySpec\\WpOptions\\Native\\update_option", "function:SpeedySpec\\WpOptions\\Native\\delete_option", "function:SpeedySpec\\WpOptions\\Native\\wp_load_alloptions", "function:SpeedySpec\\WpOptions\\Native\\wp_prime_option_caches", "function:SpeedySpec\\WpOptions\\Native\\wp_prime_option_caches_by_group", "function:SpeedySpec\\WpOptions\\Native\\wp_set_option_autoload_values", "function:SpeedySpec\\WpOptions\\Native\\wp_set_options_autoload", "function:SpeedySpec\\WpOptions\\Native\\wp_set_option_autoload", "function:SpeedySpec\\WpOptions\\Native\\wp_determine_option_autoload_value", "function:SpeedySpec\\WpOptions\\Native\\wp_filter_default_autoload_value_via_option_size", "function:SpeedySpec\\WpOptions\\Native\\wp_autoload_values_to_autoload", "function:SpeedySpec\\WpOptions\\Native\\wp_protect_special_option", "function:SpeedySpec\\WpOptions\\Native\\get_site_option", "function:SpeedySpec\\WpOptions\\Native\\add_site_option", "function:SpeedySpec\\WpOptions\\Native\\update_site_option", "function:SpeedySpec\\WpOptions\\Native\\delete_site_option", "function:SpeedySpec\\WpOptions\\Native\\get_network_option", "function:SpeedySpec\\WpOptions\\Native\\add_network_option", "function:SpeedySpec\\WpOptions\\Native\\update_network_option", "function:SpeedySpec\\WpOptions\\Native\\delete_network_option", "function:SpeedySpec\\WpOptions\\Native\\wp_prime_site_option_caches", "function:SpeedySpec\\WpOptions\\Native\\wp_prime_network_option_caches", "function:SpeedySpec\\WpOptions\\Native\\wp_load_core_site_options", "function:SpeedySpec\\WpOptions\\Native\\get_transient", "function:SpeedySpec\\WpOptions\\Native\\set_transient", "function:SpeedySpec\\WpOptions\\Native\\delete_transient", "function:SpeedySpec\\WpOptions\\Native\\get_site_transient", "function:SpeedySpec\\WpOptions\\Native\\set_site_transient", "function:SpeedySpec\\WpOptions\\Native\\delete_site_transient", "function:SpeedySpec\\WpOptions\\Native\\delete_expired_transients", "function:SpeedySpec\\WpOptions\\Native\\register_setting", "function:SpeedySpec\\WpOptions\\Native\\unregister_setting", "function:SpeedySpec\\WpOptions\\Native\\get_registered_settings", "function:SpeedySpec\\WpOptions\\Native\\filter_default_option"]
 edges:
   - { from: function:add_option, to: function:delete_option, kind: undone-by, at: { area: options, scenario: delete_option } }
   - { from: function:set_transient, to: function:delete_transient, kind: undone-by, at: { area: options, scenario: transient_basics } }
@@ -47,3 +94,144 @@ edges:
   - { from: function:register_setting, to: function:unregister_setting, kind: undone-by, at: { area: options, scenario: unregister_setting_removes_default } }
   - { from: function:get_site_option, to: function:get_network_option, kind: alias, at: { area: options, scenario: network_option_per_network } }
   - { from: function:add_site_option, to: function:add_network_option, kind: alias, at: { area: options, scenario: network_option_per_network } }
+# The state of each symbol this seam depends on in another seam (DependencyStateRecorded).
+dependencies:
+  function:__:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/adapters.rs#L197-L205", hash: "d02c36bda5619af34cf66f942b55fdd12a4a72c5dfedbfa53deb7a82e306fe30" }
+  function:_deprecated_argument:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/adapters.rs#L150-L167", hash: "f131e15a40714bd65a5623e504ff70990b7d64d2498ab5edb3d001952d438a1d" }
+  function:_doing_it_wrong:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/adapters.rs#L169-L186", hash: "5f7fc4c42d38d0d993e9039e9750c74b5a0b5e8b7bbd12ffbfd210b12efc8346" }
+  function:add_filter:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/settings.rs#L223-L228", hash: "95824d5f097554c8187c4cc3d06846b0bcfd4828cc6af5a0d3c2d4a1aae9bbf7" }
+  # Called only by wp_user_settings(), which stays WordPress's PHP.
+  function:admin_url:
+    state: php
+    cite: { source: "wp:wp-includes/option.php#L1739", hash: "d2fa08d00208e4ccab9610c4b85fb4e78cd83c8b2c4fd55985ec3811c1d572a3" }
+  function:apply_filters:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L73-L86", hash: "3356f7adc13fe276ac29877c2415b965dda2cf078581e8f64f97689db1635f3b" }
+  # Called only by _wp_register_initial_settings_for_abilities(), which stays WordPress's PHP.
+  function:did_action:
+    state: php
+    cite: { source: "wp:wp-includes/option.php#L3015", hash: "7acc3c9085ae29ce7c841a7ff2483e0ac47288f7561ee22a21790ab7bb19f11c" }
+  function:do_action:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L88-L99", hash: "baf0166a85c1526adca326cc7e41493c8d695388d68f9d0d806ae2ea092cb5a7" }
+  function:do_action_deprecated:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/transients.rs#L120-L134", hash: "ef1a9f87cee74f2e075f0b2bbd6e80f6a7522bc17001d7a00e1d5d3349097114" }
+  # Called only by _wp_register_initial_settings_for_abilities(), which stays WordPress's PHP.
+  function:doing_action:
+    state: php
+    cite: { source: "wp:wp-includes/option.php#L3015", hash: "7acc3c9085ae29ce7c841a7ff2483e0ac47288f7561ee22a21790ab7bb19f11c" }
+  # form_option() is SpeedySpec PHP that calls WordPress's esc_attr().
+  function:esc_attr:
+    state: php
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/options.php#L103-L106", hash: "fe34173405d21ca63bb1e3ff5e52f9dd3f8c1b29323c2e1611d851ae46b08ba1" }
+  function:esc_html:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/adapters.rs#L206-L213", hash: "6d1cd7fb8da17b17d36086bab1500953dbeb38ce969de356749c5cdb0e1f3b65" }
+  # The repository builds its statements with the query builder; esc_sql() is never called.
+  function:esc_sql:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options-sql/src/repository.rs#L188-L199", hash: "39f33a9c8535e5221cca4070d23de092098f533fe33546784410256e797549d4" }
+  function:get_current_network_id:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/adapters.rs#L106-L108", hash: "9242368f7facab8969d1761e1c1a3afc6b60e13d7bf24f97a09ba1c602b12208" }
+  # The user settings functions stay WordPress's PHP.
+  function:get_current_user_id:
+    state: php
+    cite: { source: "wp:wp-includes/option.php#L1911", hash: "384d44b86249b4bc99bf5de9eade1c1775493616a5f2b5a223b1d3f4d12ddbc6" }
+  # The user settings functions stay WordPress's PHP.
+  function:get_user_option:
+    state: php
+    cite: { source: "wp:wp-includes/option.php#L1851", hash: "f6c55a242bfdc5dd6734fba9255fab2c73cff14836d70ef2ffb997bfac341fec" }
+  # The user settings functions stay WordPress's PHP.
+  function:is_admin:
+    state: php
+    cite: { source: "wp:wp-includes/option.php#L1700", hash: "0b7e1f728d67233b4eb1990ef481405d796aafb2b06948a4ac9fcb243da66d74" }
+  function:is_main_network:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/adapters.rs#L115-L118", hash: "e79ecf301273ad0d61ca8a257b245b770ed785df906233ffba5e33a1069f4699" }
+  function:is_main_site:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/adapters.rs#L110-L113", hash: "e43f3200f156c33cef9bfa61f33180ab9f73aad31297253f9c033eba60b96051" }
+  function:is_multisite:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/adapters.rs#L95-L100", hash: "08f544293a406742d48d3e8f40a9e70e9ffbf6f5357fc73e4e2d2ffdb0a55e0a" }
+  # The user settings functions stay WordPress's PHP.
+  function:is_user_member_of_blog:
+    state: php
+    cite: { source: "wp:wp-includes/option.php#L1882", hash: "ab96fa9511ff39a03a05416b3b234d4e74c3d6f740688deb2bedd7d061de00f2" }
+  # The ValueCodec port: Rust (speedyspec-php-serialize) unless a PHP object is inside.
+  function:maybe_serialize:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/codec.rs#L31-L36", hash: "8bf94678e4e5f50ea5e7bb5992608340705d625f1a731f09eca5d459bcf2bfce" }
+  function:maybe_unserialize:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/codec.rs#L38-L51", hash: "01f0ec0fc1f00128e44d31269f9a8115adb6eccc7a18352bf307a8386c25f0a0" }
+  function:remove_filter:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/settings.rs#L274-L278", hash: "590a506ca775eed6ca5f61ba5854ee9e06c897f7b598bfd4d32c7293976c4efc" }
+  function:sanitize_option:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/adapters.rs#L130-L143", hash: "f0fdeb1febb85541c478765a667173887054fc53a0955a7adcb861efb02cef26" }
+  # Reimplemented in Rust for siteurl, home, category_base and tag_base.
+  function:untrailingslashit:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/read.rs#L277-L288", hash: "b3551e8a5ca4ceead6199282babbe552c94a804899186d7c5bddfd741417393b" }
+  # The user settings functions stay WordPress's PHP.
+  function:update_user_option:
+    state: php
+    cite: { source: "wp:wp-includes/option.php#L1916", hash: "30a177bf251a58465f93a7e158ccc4ccdb22b6f46e609c4f60b5146f6ad23cfd" }
+  # The options API calls the request's current Rust object cache directly.
+  function:wp_cache_add:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+  function:wp_cache_delete:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+  function:wp_cache_delete_multiple:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+  function:wp_cache_get:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+  function:wp_cache_get_multiple:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+  function:wp_cache_set:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+  function:wp_cache_set_multiple:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+  function:wp_die:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/adapters.rs#L214-L219", hash: "74fecfe8aad30c7dbc490f9d5492c5772d522656dd35d7ae71abb58efc4c972b" }
+  # The user settings functions stay WordPress's PHP.
+  function:wp_doing_ajax:
+    state: php
+    cite: { source: "wp:wp-includes/option.php#L1700", hash: "0b7e1f728d67233b4eb1990ef481405d796aafb2b06948a4ac9fcb243da66d74" }
+  function:wp_installing:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/adapters.rs#L66-L72", hash: "db32ed9909cb87eaaa8762889f25904e1af432056ac700f450505a00b31dde97" }
+  function:wp_parse_args:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/settings.rs#L37-L45", hash: "a70fc7b759abc2a2ca9e267b4433304149cbfbea965d3c617a6d371e005ba754" }
+  function:wp_using_ext_object_cache:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/ports.rs#L8-L16", hash: "996b7e15356546a43061ee1f1b56cd42e268be139f0f90028768b76b88afc34e" }
+  # SqlOptionRepository works through the Rust wpdb (speedyspec-wp-db).
+  global:wpdb:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-options-php/src/lib.rs#L105", hash: "298270de510b7d7d2cfc84e7599376d61619bf9b9d0bd2cd120d1cb7a5dfccbd" }
+  # The customizer stays WordPress's PHP; it hooks pre_update_option, which the native update_option() runs.
+  "method:WP_Customize_Widgets::capture_filter_pre_update_option":
+    state: php
+    cite: { source: "wp:wp-includes/class-wp-customize-widgets.php#L2135", hash: "3b2539a2865b6a823ed6a3d47773b3c035b42f35d5966d3bf2191d9180bb310c" }

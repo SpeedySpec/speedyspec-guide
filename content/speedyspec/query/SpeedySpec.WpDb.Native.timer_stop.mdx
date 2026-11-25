@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\timer_stop"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::timer_stop()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L923-L923" hash="aa8f79be059dd63259558297e849d967b4a93c1644569b721d514a1cb592d72c"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

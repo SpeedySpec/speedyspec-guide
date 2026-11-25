@@ -1,0 +1,7 @@
+name: "Unified operations"
+job: "Declares each operation once, binds one handler to it, and exposes it on every transport: REST, XML-RPC and Abilities."
+ported: false
+files: []
+wordpress: []
+crates: [speedyspec-operation, speedyspec-operation-contracts, speedyspec-operation-dispatch, speedyspec-operation-php, speedyspec-transport, speedyspec-transport-contracts, speedyspec-transport-hooks-wp]
+symbols: []

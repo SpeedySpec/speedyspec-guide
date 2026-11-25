@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\supports_collation"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::supports_collation()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L944-L944" hash="00a33f3149e8cd34ad5eefca5a21a06898570887be8f2037aed0d49b8cb6a1bb"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

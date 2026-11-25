@@ -1,0 +1,22 @@
+---
+symbol: "function:wp_text_diff"
+verdict: works-with-differences
+differences:
+  - summary: "The hidden row labels are translated once per call, so gettext filters on them run three times per call instead of once per row."
+  - summary: "A changed block of more than 4,000,000 line pairs throws an Error; WordPress runs out of memory there."
+---
+
+## Behaviour
+
+Native. The global function resolves the `SpeedySpec\WpTextDiff\TextDiffer` port on every call. <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/text-diff.php#L191-L194" hash="148b1d763a339e9f55b1d877e4e02925deb0028ce12a91fdbf5c526e5249d089"/> <Ev test="speedyspec-wp-text-diff-php::php::wp_text_diff_is_the_facade"/> The default is a Rust port of Horde's native engine and of `WP_Text_Diff_Renderer_Table`, and its tables are WordPress 7.1.5's recorded ones, byte for byte. <Ev source="ss:crates/speedyspec-wp-text-diff/src/lib.rs#L1-L10" hash="f5b8164a72bbcf1b87d851c1ffd09abb66c4d0359509c9711d39b63484ff9054"/> <Ev test="speedyspec-wp-text-diff::recorded::wp_text_diff_cases"/> <Ev test="speedyspec-wp-text-diff-php::php::recorded_cases_replay"/> The signature, query-string arguments, the `process_text_diff_html` filter's exceptions and the `TypeError` for invalid UTF-8 behave as in WordPress. <Ev test="speedyspec-wp-text-diff-php::php::signature_matches_pluggable"/> <Ev test="speedyspec-wp-text-diff-php::php::query_string_args_parse_as_wordpress"/> <Ev test="speedyspec-wp-text-diff-php::php::filter_exceptions_propagate"/> <Ev test="speedyspec-wp-text-diff-php::php::invalid_utf8_throws_type_error"/> WordPress's diff tests pass with it loaded. <Ev test="speedyspec-wp-text-diff-php::wordpress::wordpress_diff_tests_pass"/>
+
+Calls the native table doesn't cover (texts or titles that aren't strings, renderer properties passed as arguments, arguments Rust can't read) go to WordPress's own classes, so their output is WordPress's. <Ev source="ss:crates/speedyspec-wp-text-diff/src/port.rs#L90-L95" hash="c7a13eb707e152b1dd3218643f69989ea84835d036df23662130a1ad24cfe5ef"/> <Ev test="speedyspec-wp-text-diff-php::php::renderer_arguments_use_wordpress_classes"/>
+
+## Differences
+
+- **Row labels.** "Added:", "Deleted:" and "Unchanged:" are translated once per call, not once per row. The text is the same unless a `gettext` filter keeps state. <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/text-diff.php#L70-L88" hash="5bdf3535152321cc62e705384bdaa0a6fd7f7decb3e34917b80610c454cbefd7"/>
+- **Huge blocks.** A changed block too large to pair line by line throws an `Error`. <Ev source="ss:crates/speedyspec-wp-text-diff/src/table.rs#L21-L26" hash="b8ae212958e48c692772c9a1086a1bf5b57ea399cfeaae4736b380387054fba8"/>
+
+## Replacing it
+
+Bind your own class under `SpeedySpec\WpTextDiff\TextDiffer` for the request, where WordPress would have a plugin declare `wp_text_diff()` first; Rust callers then get it too. <Ev test="speedyspec-wp-text-diff-php::php::bound_twin_answers_wp_text_diff"/> <Ev test="speedyspec-wp-text-diff-php::php::rust_callers_get_the_php_binding"/> See the [Text diff architecture](/speedyspec/architecture/text-diff/) page.

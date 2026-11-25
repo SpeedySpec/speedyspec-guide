@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\escape_data"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::_escape()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L676-L676" hash="5eb8c55b760ffdab105b55ecd9b6cceeaf1a3d3e0a90606337052f9f9908f6a4"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

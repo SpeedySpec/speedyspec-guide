@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\get_col_length"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::get_col_length()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L873-L873" hash="04fbd86ffacf08a3a962ae66834fe1bf79a38d254f51567536d7f91dfb581d34"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

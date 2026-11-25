@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\delete_site_option"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `delete_site_option()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L160-L163" hash="ec531a8ebc0042366419b730c334c595ea6a14ddae02c282fb2a1f053bee55d1"/>
+
+It sends the `DeleteNetworkOption` command through the handler bound under `SpeedySpec\WpOptions\DeleteNetworkOptionHandler`. <Ev scenario="site_option_fallback" area="options"/>

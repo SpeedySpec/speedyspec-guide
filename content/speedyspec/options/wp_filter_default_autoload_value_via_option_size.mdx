@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_filter_default_autoload_value_via_option_size"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `FilterDefaultAutoloadValueViaOptionSize` query. SpeedySpec registers it on `wp_default_autoload_value` as WordPress does. <Ev scenario="size_filter_direct" area="options"/> <Ev scenario="size_rule_at_limit" area="options"/> <Ev scenario="size_rule_filtered" area="options"/>
+
+## Override
+
+Options live in `wp_options` behind the `OptionRepository` port; the use case is a handler in the container. See the architecture page.

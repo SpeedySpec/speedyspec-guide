@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\get_site_transient"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `get_site_transient()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L129-L132" hash="fd92ff3c088edcd71b217a329d0d27b6650d21b279bba16d0ed94a8c491633cb"/>
+
+It sends the `GetSiteTransient` query through the handler bound under `SpeedySpec\WpOptions\GetSiteTransientHandler`. <Ev scenario="delete_expired_transients_multisite" area="options"/>

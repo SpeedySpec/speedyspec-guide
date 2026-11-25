@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\get_col_charset"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::get_col_charset()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L868-L868" hash="a64439b5f9d7e8c2ac9a2fc84e47694b0a6ba4c4cda8f609b24f4d38623fad78"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

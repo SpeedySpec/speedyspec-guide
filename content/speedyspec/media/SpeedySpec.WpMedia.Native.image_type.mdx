@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\Native\\image_type"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP shims for the image type of a file's first bytes, for `wp_get_image_mime()` and `wp_getimagesize()`; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L94-L108" hash="d6aaf7182cfe581e4f04fd43677f69db9dd480e8a2e679bab58a279f21b78ab3"/> <Ev test="speedyspec-wp-media-php::php::mislabelled_png_is_png"/>

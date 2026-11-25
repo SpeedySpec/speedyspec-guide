@@ -1,0 +1,14 @@
+---
+---
+
+Not in the runtime yet. SpeedySpec has ported part of the Abilities API to Rust, as the Abilities transport of the [unified operation API](/speedyspec/operation/), but the runtime worker doesn't link these crates, so PHP still gets WordPress's own `abilities-api.php` and `WP_Ability`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+What the port covers:
+
+- **`WP_Ability::execute()`.** The port replaces it with a shim whose `execute()` runs in Rust, in WordPress 7.1.5's order, with each ability's own steps (and a subclass's overrides) run in PHP. Everything else in the class is WordPress's, from a renamed copy. <Ev source="ss:crates/speedyspec-abilities-php/src/php/wp-ability.php#L3-L24" hash="73d0de9c95e465e45e98288f1c02b27299ad471f496e2e43415b33bbfac07e2a"/> <Ev test="speedyspec-abilities-php::legacy::a_plain_ability_executes_in_wordpress_order"/>
+- **The ability hooks** `execute()` fires, with WordPress's arguments, sentinel and coercions: `wp_ability_invoked`, `wp_pre_execute_ability`, the step filters, `wp_before_execute_ability` and `wp_after_execute_ability`. <Ev test="speedyspec-abilities::server::hooks_fire_in_wordpress_order"/> <Ev test="speedyspec-abilities-php::hooks::pre_execute_runs_when_the_sentinel_comes_back"/> <Ev test="speedyspec-abilities-php::hooks::validate_filters_turn_false_into_wordpress_s_errors"/>
+- **Its errors**: a `WP_Error` round-trips as the same object, and a refused or throwing ability gives WordPress's error codes. <Ev test="speedyspec-abilities-php::legacy::a_wp_error_comes_back_as_the_same_object"/> <Ev test="speedyspec-abilities-php::legacy::a_refused_ability_is_ability_invalid_permissions"/> <Ev test="speedyspec-abilities-php::legacy::a_throwing_callback_is_ability_callback_exception"/>
+
+The evidence beyond the crates' own tests is WordPress's Abilities PHPUnit tests, copied from wordpress-develop's 7.1 branch and run against the shim and the Rust server, with WordPress's other functions from the 7.1.5 release. The run expects 201 tests and lists no expected failures; one copied test is never collected, because PHPUnit 11 rejects its data provider, not because of the shim. <Ev source="ss:crates/speedyspec-abilities-php/tests/wordpress.rs#L1-L30" hash="6228a7388e0f6e315836f2c91a0cab0eeb9d7f425830e17eefce595ca0d52472"/> There is no recorded compat area for Abilities.
+
+What it doesn't cover: registering abilities and categories, and looking them up. `wp_register_ability()`, `wp_get_ability()`, `WP_Abilities_Registry`, the category registry and WordPress's own abilities stay WordPress's PHP; the port hooks into them to register each operation as an ability. <Ev source="ss:crates/speedyspec-abilities-php/src/php/abilities.php#L237-L258" hash="ac6a27d122763f2ec14c7e5746bf3d84237f0c912088f1e1a2de1c899459b122"/> The REST controllers for abilities are in the REST API seam.

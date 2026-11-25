@@ -1,0 +1,16 @@
+---
+symbol: "function:wp_check_filetype"
+verdict: works-with-differences
+differences:
+  - summary: "With the default list, the extensions SpeedySpec adds to the MIME list match; WordPress returns false for them."
+---
+
+## Behaviour
+
+Native, and WordPress's own algorithm, in PHP so a plugin's regular-expression keys (`svg|svgz`, `jpe?g2`) match exactly as in WordPress. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L262-L282" hash="82a8da71b67dce09c2807a1ab0d9f2b7bf446fbbb8573cbbb6100835bd19dc13"/> <Ev test="speedyspec-wp-media-php::php::check_filetype_reads_a_plugins_regex_key"/> WordPress's own `wpCheckFiletype.php` tests pass against it. <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/>
+
+## Differences
+
+When `$mimes` is empty, the function checks against SpeedySpec's `get_allowed_mime_types()`, so `tone.opus` or `photo.jxl` gets its type. With a `$mimes` list of your own, the answer is WordPress's. <Ev source="ss:compat/media/DIFFERENCES.md#L59-L66" hash="dfa8345b5217bd15fc49cf7474ffc5bae6e68a73ba8fde5db26352b022791ecf"/> <Ev test="speedyspec-wp-media-php::mime::filetype_checks_match_wordpress_except_listed_differences"/>
+
+See the [Media architecture](/speedyspec/architecture/media/) page.

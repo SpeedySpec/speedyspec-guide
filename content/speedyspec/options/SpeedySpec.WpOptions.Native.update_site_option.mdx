@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\update_site_option"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `update_site_option()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L155-L158" hash="5a5534fe479ed3e005ae1d64cf6dd092a48e7705ee8c619587fdff981f1314ce"/>
+
+It sends the `UpdateNetworkOption` command through the handler bound under `SpeedySpec\WpOptions\UpdateNetworkOptionHandler`. <Ev scenario="site_option_fallback" area="options"/>

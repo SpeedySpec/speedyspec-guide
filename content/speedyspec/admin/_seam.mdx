@@ -1,0 +1,14 @@
+---
+---
+
+Mostly not in SpeedySpec yet. Of this seam's 694 functions, the runtime answers four natively, all in `wp-admin/includes/media.php`: [`wp_read_audio_metadata()`](/speedyspec/admin/wp_read_audio_metadata/), [`wp_read_video_metadata()`](/speedyspec/admin/wp_read_video_metadata/), [`wp_add_id3_tag_data()`](/speedyspec/admin/wp_add_id3_tag_data/) and [`wp_get_media_creation_timestamp()`](/speedyspec/admin/wp_get_media_creation_timestamp/). The Media seam's Rust area declares them at the start of every request, each in a `function_exists` guard, and reads files through its media reader, never getID3. <Ev source="ss:crates/speedyspec-wp-media-php/src/lib.rs#L1-L19" hash="0861979e7c4de7bf6fb708584b4c071a30ac113445119a29df0e72f9dbdd6ef5"/> The admin screens and the rest of `wp-admin` are WordPress's PHP. The [Media architecture](/speedyspec/architecture/media/) page documents the API.
+
+## How they are verified
+
+WordPress's own `metadata.php` and `wpAddId3TagData.php` tests pass against the natives. <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/> `compat/media` records WordPress 7.1.5 with its bundled getID3 over a corpus of audio and video files; the natives match it except where a difference is listed with its reason, and a listed difference that stops differing fails the test. <Ev test="speedyspec-wp-media-corpus::corpus::corpus_matches_wordpress_except_listed_differences"/> <Ev test="speedyspec-wp-media-corpus::uploads::uploads_match_wordpress_except_listed_differences"/>
+
+Verdicts: `wp_get_media_creation_timestamp()` works as in WordPress; the other three work with differences.
+
+## Differences
+
+Bitrates, encoder options and a few header fields follow FFmpeg, not getID3; tags come from every tag format when a file has no ID3; formats getID3 can't read get full metadata; and the filters' fourth argument is a getID3-shaped view, not getID3's whole analysis. <Ev source="ss:compat/media/DIFFERENCES.md#L15-L44" hash="f428ca52e6b9c7eb6b802632c40c7550a61794a392363bf2e8b980b4059ef0e0"/> See the [Media seam](/speedyspec/media/).

@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\delete_option"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `delete_option()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L45-L48" hash="2e7d36a329ff42fe0e66f939f4536b2e9327600c1d70423ea75d9cd99a24b9be"/>
+
+It sends the `DeleteOption` command through the handler bound under `SpeedySpec\WpOptions\DeleteOptionHandler`. <Ev scenario="blank_and_odd_names" area="options"/>

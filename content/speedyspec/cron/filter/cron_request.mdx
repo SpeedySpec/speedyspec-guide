@@ -1,0 +1,8 @@
+---
+symbol: "filter:cron_request"
+verdict: works-with-differences
+differences:
+  - summary: "Filtered, but no request is sent with the result."
+---
+
+Run by `spawn_cron()` with WordPress's array, but no request is sent with the result: the server runs cron. <Ev source="ss:crates/speedyspec-wp-cron-php/src/cron.php#L306-L342" hash="d0239d2879333110e1e97333c7342f03d1edd0f4543a17caa4c3d7f0219fbccb"/> <Ev source="ss:crates/speedyspec-wp-cron-php/tests/php.rs#L232-L242" hash="8f98cca5083460694529716b239f575bdd1b714393204b8db2204af0c770b190"/> <Ev test="speedyspec-wp-cron::spawn::due_job_spawns_sets_lock_and_wakes_now"/> See [spawn_cron](/speedyspec/cron/spawn_cron/).

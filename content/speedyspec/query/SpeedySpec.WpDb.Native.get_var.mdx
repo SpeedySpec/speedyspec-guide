@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\get_var"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::get_var()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L819-L819" hash="a5edc45798f1604db40673b7b47a7eae1f96b330b6b9016b4ca6d061cd73114b"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

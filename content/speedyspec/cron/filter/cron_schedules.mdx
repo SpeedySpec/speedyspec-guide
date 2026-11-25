@@ -1,0 +1,6 @@
+---
+symbol: "filter:cron_schedules"
+verdict: works-as-wordpress
+---
+
+Run by the native cron functions through the native Hook API. Adds recurrences to `wp_get_schedules()`; it cannot change a built-in one. <Ev area="cron" scenario="schedules"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>

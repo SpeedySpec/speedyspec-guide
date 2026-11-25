@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\filter_default_option"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `filter_default_option()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L216-L219" hash="22478c14149e3f3a29fa6d3592c9f9228225b92e00205aedeebc2d045818b673"/>
+
+It sends the `FilterDefaultOption` query through the handler bound under `SpeedySpec\WpOptions\FilterDefaultOptionHandler`. <Ev scenario="filter_default_option_passed" area="options"/>

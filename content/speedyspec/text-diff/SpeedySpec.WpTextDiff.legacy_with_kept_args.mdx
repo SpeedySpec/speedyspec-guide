@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpTextDiff\\legacy_with_kept_args"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+Renders with WordPress's own classes and the arguments `parse_args()` last kept, then clears them, for a call whose parsed arguments can't reach Rust. Not for plugins. <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/text-diff.php#L39-L55" hash="5b6f678a4daa8fc4a1e41d344f552ae43b2b8c9ae514eb4a238c00ec0040c6f2"/> <Ev test="speedyspec-wp-text-diff-php::php::unreadable_parsed_arguments_use_wordpress_classes"/>

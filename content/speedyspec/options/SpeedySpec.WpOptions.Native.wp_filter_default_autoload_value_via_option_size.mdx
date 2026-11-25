@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\wp_filter_default_autoload_value_via_option_size"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `wp_filter_default_autoload_value_via_option_size()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L85-L88" hash="9a021db83f77027ffaa2a96ef4aaee868210f3891e16dbb3ea34fd29065eb800"/>
+
+It sends the `FilterDefaultAutoloadValueViaOptionSize` query through the handler bound under `SpeedySpec\WpOptions\FilterDefaultAutoloadValueViaOptionSizeHandler`. <Ev scenario="size_filter_direct" area="options"/>

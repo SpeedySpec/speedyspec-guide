@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Php\\settings_allow"
+verdict: new-in-speedyspec
+---
+
+Used by `PhpSettingsStore`, the PHP adapter of the `SettingsStore` port; not for plugins. Adds a name to `$new_allowed_options[ $group ]`, keeping `$new_whitelist_options` a reference to it. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L292-L297" hash="2eba6d3a8698e76e94a7923196e5f89a04014a4b2b71b85e8db1d112f799de01"/> <Ev source="ss:crates/speedyspec-wp-options-php/src/settings_store.rs#L74-L95" hash="b5053ad5ca3b7e362c469dca9c23a9c9bcd58f58cdb2d51e650cfacbe883931c"/> <Ev scenario="register_setting_defaults" area="options"/>

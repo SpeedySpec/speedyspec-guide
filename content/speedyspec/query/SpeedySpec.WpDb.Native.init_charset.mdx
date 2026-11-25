@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\init_charset"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::init_charset()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L621-L621" hash="0eb41140864f53ba303b0c72346b7903aba9ba2c4deae6e52cf9fc50eab8726b"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

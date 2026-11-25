@@ -1,6 +1,7 @@
 name: "XML-RPC"
 job: "Serves and calls XML-RPC through IXR and the WordPress XML-RPC server."
 ported: false
+crates: [speedyspec-xmlrpc, speedyspec-xmlrpc-contracts, speedyspec-xmlrpc-php]
 files:
   - 'wp-includes/IXR/class-IXR-base64.php'
   - 'wp-includes/IXR/class-IXR-client.php'

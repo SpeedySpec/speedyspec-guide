@@ -1,0 +1,16 @@
+---
+symbol: "function:get_allowed_mime_types"
+verdict: works-with-differences
+differences:
+  - summary: "Includes the rows SpeedySpec adds to wp_get_mime_types(), so those formats can be uploaded."
+---
+
+## Behaviour
+
+Native, and WordPress's own algorithm: it drops `swf` and `exe`, drops `htm|html` and `js` unless the user can `unfiltered_html`, and runs the `upload_mimes` filter. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L214-L232" hash="6a57e4b31b874c9ad67fc127348da4b3e0dcc3c033ff1ab5b3e83fbdd6fab710"/> <Ev test="speedyspec-wp-media-php::php::allowed_mime_types_drop_html_and_js_without_capability"/> With the added rows taken out, its list is WordPress 7.1.5's, and WordPress's own `mimeFunctions.php` tests pass against it. <Ev test="speedyspec-wp-media-php::mime::wordpress_lists_are_kept"/> <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/>
+
+## Differences
+
+The list starts from SpeedySpec's `wp_get_mime_types()`, so the formats added there (`caf`, `opus`, `jxl` and the others) are allowed uploads. WordPress rejects them. <Ev source="ss:compat/media/DIFFERENCES.md#L59-L66" hash="dfa8345b5217bd15fc49cf7474ffc5bae6e68a73ba8fde5db26352b022791ecf"/> <Ev test="speedyspec-wp-media-php::php::allowed_mime_types_drop_html_and_js_without_capability"/> A site that doesn't want them removes them in an `upload_mimes` filter.
+
+See the [Media architecture](/speedyspec/architecture/media/) page.

@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\wp_load_core_site_options"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `wp_load_core_site_options()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L195-L198" hash="1057efea1e98dd023124fcc37751e95615e58f2867f9abc9cfb43e3f5791bdb5"/>
+
+It sends the `LoadCoreSiteOptions` command through the handler bound under `SpeedySpec\WpOptions\LoadCoreSiteOptionsHandler`. <Ev test="speedyspec-wp-options-memory::network_options::load_core_site_options_only_on_multisite"/>

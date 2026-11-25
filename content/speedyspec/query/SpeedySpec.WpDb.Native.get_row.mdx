@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\get_row"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::get_row()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L824-L824" hash="647e57190fb37360eff13ef0dbd7c0a1a1f22bc5df0d0b4f1bafd8f4873cfa0b"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

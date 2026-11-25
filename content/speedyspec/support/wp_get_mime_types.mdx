@@ -1,0 +1,16 @@
+---
+symbol: "function:wp_get_mime_types"
+verdict: works-with-differences
+differences:
+  - summary: "WordPress's list, unchanged and in order, plus a row for each format the media reader reads (jxl, qoi, m2ts, opus, aiff and others)."
+---
+
+## Behaviour
+
+Native. The function runs the `mime_types` filter over a list built in Rust. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L199-L205" hash="92589e494bfd03b59f5496458fab58db1ea49b359b6419b3da17272477101e17"/> <Ev test="speedyspec-wp-media-php::php::mime_types_and_ext2type_filters_run"/> With the added rows taken out, the list is WordPress 7.1.5's, key for key and in order, and WordPress's own `wpGetMimeTypes.php` and `mimeFunctions.php` tests pass against it. <Ev test="speedyspec-wp-media-php::mime::wordpress_lists_are_kept"/> <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/>
+
+## Differences
+
+Each format the media reader reads that WordPress doesn't list gets one row, after the last WordPress row of its kind: `jp2`, `jxl`, `qoi`, `pcx`, `ppm`, `pgm`, `sgi`, `hdr`, `m2ts|mts`, `mxf`, `dv`, `vob`, `m2v|mpv`, `rm|rmvb`, `ogm`, `aif|aiff|aifc`, `ac3`, `eac3|ec3`, `opus`, `caf`, `wv`, `tta`, `au|snd`, `mp1|mp2|m2a`, `w64` and `voc`. Each added row has a corpus file the reader reads as that kind. <Ev source="ss:compat/media/DIFFERENCES.md#L59-L66" hash="dfa8345b5217bd15fc49cf7474ffc5bae6e68a73ba8fde5db26352b022791ecf"/> <Ev test="speedyspec-wp-media-php::php::mime_types_keep_wordpress_and_add_rows"/> <Ev test="speedyspec-wp-media-corpus::uploads::every_added_row_is_read"/> A plugin can still remove them through the `mime_types` filter.
+
+See the [Media architecture](/speedyspec/architecture/media/) page.

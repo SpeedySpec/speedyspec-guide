@@ -50,3 +50,5 @@ wordpress:
   - wp-includes/version.php
 setup: setup.php
 mysql: true
+# SpeedySpec answers wp_trusted_keys() and verify_file_signature() natively, from the Passwords and crypto seam's
+# crates (speedyspec-wp-crypto*), which that seam lists; the rest of this seam is WordPress's PHP, so it stays unported.

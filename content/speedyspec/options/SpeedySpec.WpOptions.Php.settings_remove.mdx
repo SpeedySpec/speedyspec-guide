@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Php\\settings_remove"
+verdict: new-in-speedyspec
+---
+
+Used by `PhpSettingsStore`, the PHP adapter of the `SettingsStore` port; not for plugins. Removes a setting from `$wp_registered_settings`. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L283-L287" hash="257ba53ad42e7b923fc60cc31835910b3b4f665863d657f0c14df48cd62679d3"/> <Ev source="ss:crates/speedyspec-wp-options-php/src/settings_store.rs#L74-L95" hash="b5053ad5ca3b7e362c469dca9c23a9c9bcd58f58cdb2d51e650cfacbe883931c"/> <Ev scenario="unregister_setting_removes_default" area="options"/>

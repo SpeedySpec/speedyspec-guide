@@ -1,0 +1,12 @@
+---
+symbol: "function:get_options"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+SpeedySpec declares it in PHP with WordPress's own body: it primes the caches, then calls `get_option()` for each name. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L24-L33" hash="4551d123e583678a4af8f20d87f365ca19c3a7278b6e4362178b2a85b5b9e04e"/> <Ev scenario="get_options" area="options"/>
+
+## Override
+
+Options live in `wp_options` behind the `OptionRepository` port; the use case is a handler in the container. See the architecture page.

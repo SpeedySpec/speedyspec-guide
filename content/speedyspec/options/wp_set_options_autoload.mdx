@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_set_options_autoload"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `SetOptionsAutoload` command. <Ev scenario="set_option_autoload_values" area="options"/> <Ev scenario="load_alloptions_empty_table_reads_all" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+
+## Override
+
+Options live in `wp_options` behind the `OptionRepository` port; the use case is a handler in the container. See the architecture page.

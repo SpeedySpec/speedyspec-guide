@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\esc_like"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::esc_like()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L704-L704" hash="91191053a6d8e4a877a44454699c07991bc4b0348f99169d27793d3a67c7cd03"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

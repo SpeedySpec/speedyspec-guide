@@ -1,0 +1,10 @@
+---
+symbol: "function:wp_cron"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Declared by SpeedySpec's `cron.php` with WordPress's body: registers `_wp_cron()` on `shutdown`, runs it at once during `shutdown`, or with `ALTERNATE_WP_CRON` on `wp_loaded`. <Ev source="ss:crates/speedyspec-wp-cron-php/src/cron.php#L347-L368" hash="9e6b429182f70b50dc3720c86132b43a0aff544f7eb78ff5b4a2c3d1215adb7a"/> WordPress's two `wp_cron()` tests pass with it. <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/> No compat scenario records it.
+
+What `_wp_cron()` then does differs; see [spawn_cron](/speedyspec/cron/spawn_cron/).

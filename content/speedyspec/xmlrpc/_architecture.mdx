@@ -1,0 +1,69 @@
+---
+---
+
+XML-RPC is a transport of the unified operation API: an operation is declared once, its handler is bound in the container, and the `xmlrpc` transport serves it from `xmlrpc.php`. The operation registries, the dispatcher, bindings and exposure are on [the operation seam's architecture page](/speedyspec/architecture/operation/). This page covers the XML-RPC transport's own crates. None is linked into the runtime worker yet. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The crates
+
+- **`speedyspec-xmlrpc-contracts`**: `XmlRpcBinding` (a method name and how its positional parameters map to the input), `MethodCall`, `MethodResponse`, `Fault` and `MethodEntry` (one row of the method table), and the ports. It depends only on `speedyspec-operation-contracts`. <Ev test="speedyspec-xmlrpc-contracts::contracts::binding_round_trips_through_value"/>
+- **`speedyspec-xmlrpc`**: the transport. `codec` reads and writes XML-RPC documents with IXR's types and limits; `DefaultXmlRpcMapping` names methods after WordPress's (`wp.getPost`, `wp.newPost`); `DefaultFaultMapping` gives WordPress's fault codes; `XmlRpcServer` serves `xmlrpc.php` with IXR's system methods, multicall and the failed-login latch; `XmlRpcMiddleware` puts it in the HTTP pipeline. <Ev test="speedyspec-xmlrpc::codec::parses_every_type"/> <Ev test="speedyspec-xmlrpc::server::multicall_wraps_results_and_faults"/>
+- **`speedyspec-xmlrpc-php`**: the PHP adapter. `PhpXmlRpcHooks` fires WordPress's XML-RPC hooks and fails closed when one throws; `PhpXmlRpcLogin` logs in with `wp_authenticate()`; `convert` types PHP values as IXR does; `XmlRpcService` builds the request's server; `XmlRpcArea` declares `SpeedySpec\XmlRpc\XmlRpc::bind()` and the `wp_xmlrpc_server` shim. <Ev source="ss:crates/speedyspec-xmlrpc-php/src/lib.rs#L3-L10" hash="ab38d09c50c0cbd6e2ab103512567e9e95183724fb3f463a5c2d666f0b6b39ce"/> <Ev test="speedyspec-xmlrpc-php::hooks::a_throwing_filter_fails_closed"/>
+
+## Contracts
+
+- **`XmlRpcMapping`** and **`FaultMapping`** (Strategy): an operation's default method, and the fault code for an error category.
+- **`XmlRpcLogin`**: the username and password in a call to a caller.
+- **`XmlRpcHooks`**: `enabled` (`xmlrpc_enabled` and the options before it), `element_limit`, `methods` (`xmlrpc_methods`), `call` (`xmlrpc_call`) and `login_error`. `NoXmlRpcHooks` gives WordPress's defaults. <Ev source="ss:crates/speedyspec-xmlrpc-contracts/src/ports.rs#L9-L39" hash="b1cf2a40d3bab12b73cd00f7411d1e639bec111064cb200864a5a7fe348a5638"/>
+
+## Use cases
+
+- **Serve a request** (`XmlRpcServer::serve`): refuse anything but POST, parse within the element limit, build the method table once from `xmlrpc_methods`, log in, fire `xmlrpc_call`, dispatch, and write the response; faults go out with status 200, as IXR sends them. <Ev test="speedyspec-xmlrpc::server::get_is_refused_with_allow_post"/> <Ev test="speedyspec-xmlrpc::server::the_table_is_built_once"/> <Ev test="speedyspec-xmlrpc::server::xmlrpc_call_fires_after_login_before_dispatch"/>
+- **Call a method by name** (`XmlRpcServer::call`), for `wp_xmlrpc_server::call()`. <Ev test="speedyspec-xmlrpc-php::legacy::call_reaches_an_operation_and_a_legacy_method"/>
+- **Log in** (`XmlRpcServer::login`): one failed login fails every later login in the request, as WordPress's `auth_failed` does. <Ev test="speedyspec-xmlrpc::server::one_failed_login_fails_every_later_login"/>
+
+## Adapters and how to replace them
+
+- **The `wp_xmlrpc_server` shim** extends `SpeedySpec_TrunkXmlRpcServer`, WordPress 7.1.5's class renamed, and overrides construction, `login()`, `call()` and `serve_request()`. Each entry of the method table, WordPress's own `wp.*` methods included, runs as an operation; WordPress's method bodies are the copied ones. <Ev source="ss:crates/speedyspec-xmlrpc-php/src/php/wp-xmlrpc-server.php#L6-L14" hash="9b47ff8b0bcc3eccde8996e9ee09d95ca4ca67615177f1937d6bf4f8477f8811"/> <Ev test="speedyspec-xmlrpc-php::legacy::wordpress_core_methods_are_served"/>
+- **A handler** is bound in the container under its operation's name. A plugin can also override a core method through `xmlrpc_methods`. <Ev test="speedyspec-xmlrpc-php::legacy::a_plugin_can_override_a_core_method"/>
+- **A method name**: `SpeedySpec\XmlRpc\XmlRpc::bind( $operation )->method( $name )->params( … )` stores a checked binding; system names are refused. From Rust, `XmlRpcTransport::with_mapping()` and `XmlRpcServer::with_mapping()` take another `XmlRpcMapping`. <Ev test="speedyspec-xmlrpc-php::facade::bind_stores_method_and_params"/> <Ev test="speedyspec-xmlrpc-php::facade::bind_refuses_system_names"/>
+- **Hooks, login and fault codes** are passed to `XmlRpcServer::new()`; any implementation of the ports works.
+
+The transport has no container key of its own; it is installed in a `TransportRegistry` under the name `xmlrpc`.
+
+## Patterns
+
+- **Ports and Adapters**: the hooks and login ports, with Rust defaults and PHP adapters.
+- **Strategy**: `XmlRpcMapping` and `FaultMapping`.
+- **Template Method**: `XmlRpcServer`'s fixed serve order.
+- **Adapter**: the codec, and the `wp_xmlrpc_server` shim with its legacy methods.
+
+## A Rust example
+
+A feature calling an exposed operation through the XML-RPC server, as `speedyspec-xmlrpc`'s tests do:
+
+```rust
+use std::rc::Rc;
+use speedyspec_operation_contracts::Value;
+use speedyspec_xmlrpc::{DefaultFaultMapping, XmlRpcServer};
+use speedyspec_xmlrpc_contracts::{Fault, NoXmlRpcHooks, XmlRpcLogin};
+
+fn edit_report(
+    container: Rc<speedyspec_container::Container>,
+    registries: Rc<speedyspec_operation::Registries>,
+    exposure: Rc<speedyspec_transport::Exposure>,
+    login: Rc<dyn XmlRpcLogin>,
+    identity: Rc<dyn speedyspec_operation_contracts::Identity>,
+    username: &str,
+    password: &str,
+) -> Result<Value, Fault> {
+    let server = XmlRpcServer::new(container, registries, exposure, Rc::new(NoXmlRpcHooks), login, Rc::new(DefaultFaultMapping), identity);
+    // acme/update-report, mapped by default to acme.editReport( blog_id, username, password, id, struct ).
+    let fields = Value::map([("title", Value::String("Q3".into()))]);
+    server.call("acme.editReport", vec![Value::Int(1), Value::String(username.into()), Value::String(password.into()), Value::Int(7), fields])
+}
+```
+
+## How to change this
+
+- **What must still pass:** the three crates' tests and checks, and WordPress's XML-RPC tests run against the shim (`speedyspec-xmlrpc-php`'s `tests/wordpress.rs`), which lists no expected failures.
+- **Adding a hook point:** add a method to `XmlRpcHooks`, call it in `XmlRpcServer`, and implement it in `NoXmlRpcHooks` and `PhpXmlRpcHooks`.

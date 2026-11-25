@@ -1,0 +1,12 @@
+---
+symbol: "function:unregister_setting"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `UnregisterSetting` command. It removes the setting's sanitize and default filters and fires `unregister_setting`. <Ev scenario="unregister_setting_removes_default" area="options"/> <Ev scenario="register_setting_deprecated_groups" area="options"/> <Ev test="speedyspec-wp-options-memory::settings::unregister_removes_filters_and_fires"/>
+
+## Override
+
+The registry's state lives behind the `SettingsStore` port; in PHP it is `$wp_registered_settings` and `$new_allowed_options`. See the architecture page.

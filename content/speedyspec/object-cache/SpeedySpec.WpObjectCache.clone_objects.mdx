@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpObjectCache\\clone_objects"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+Returns the array with each top-level object replaced by a clone, as WordPress's `add()`, `set()` and `get()` copy one value. The `*_multiple()` functions and methods use it, so a caller's object is never the cached one. <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L404-L414" hash="734b2e8136c98b8a5c387b1b4c59a66dc053285764e79d41c736a760ada067fe"/> <Ev scenario="object_refs_multiple" area="object-cache"/> Not for plugins.

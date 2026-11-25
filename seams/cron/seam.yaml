@@ -1,6 +1,6 @@
 name: "Cron"
 job: "Schedules, reschedules and runs events stored in the cron option."
-ported: false
+ported: true
 files:
   - 'wp-includes/cron.php'
 # Loaded before each example on the WordPress side. The HTTP API is there for spawn_cron(), whose request the
@@ -28,3 +28,108 @@ wordpress:
   - wp-includes/class-wp-http-requests-hooks.php
   - wp-includes/cron.php
 setup: setup.php
+crates: [speedyspec-wp-cron, speedyspec-wp-cron-contracts, speedyspec-wp-cron-options, speedyspec-wp-cron-php]
+symbols:
+  - "function:SpeedySpec\\WpCron\\run_due_events"
+  - "function:SpeedySpec\\WpCron\\due_sites"
+  - "function:SpeedySpec\\Runtime\\report_next_wake"
+  - "function:SpeedySpec\\WpCron\\Native\\wp_schedule_single_event"
+  - "function:SpeedySpec\\WpCron\\Native\\wp_schedule_event"
+  - "function:SpeedySpec\\WpCron\\Native\\wp_reschedule_event"
+  - "function:SpeedySpec\\WpCron\\Native\\wp_unschedule_event"
+  - "function:SpeedySpec\\WpCron\\Native\\wp_clear_scheduled_hook"
+  - "function:SpeedySpec\\WpCron\\Native\\wp_unschedule_hook"
+  - "function:SpeedySpec\\WpCron\\Native\\wp_get_scheduled_event"
+  - "function:SpeedySpec\\WpCron\\Native\\wp_next_scheduled"
+  - "function:SpeedySpec\\WpCron\\Native\\wp_get_ready_cron_jobs"
+  - "function:SpeedySpec\\WpCron\\Native\\wp_get_schedules"
+  - "function:SpeedySpec\\WpCron\\Native\\wp_get_schedule"
+  - "function:SpeedySpec\\WpCron\\Native\\_get_cron_array"
+  - "function:SpeedySpec\\WpCron\\Native\\_set_cron_array"
+  - "function:SpeedySpec\\WpCron\\Native\\_upgrade_cron_array"
+  - "function:SpeedySpec\\WpCron\\Native\\spawn_cron"
+  - "function:SpeedySpec\\WpCron\\result"
+  - "function:SpeedySpec\\WpCron\\error"
+  - "function:SpeedySpec\\WpCron\\report_error"
+  - "function:SpeedySpec\\WpCron\\to_object"
+  - "function:SpeedySpec\\WpCron\\property"
+  - "function:SpeedySpec\\WpCron\\is_wp_error"
+  - "function:SpeedySpec\\WpCron\\network_sites"
+roles:
+  schedule: [function:wp_schedule_single_event, function:wp_schedule_event, function:wp_reschedule_event]
+  unschedule: [function:wp_unschedule_event, function:wp_clear_scheduled_hook, function:wp_unschedule_hook]
+  read: [function:wp_get_scheduled_event, function:wp_next_scheduled, function:wp_get_ready_cron_jobs, function:wp_get_schedules, function:wp_get_schedule]
+  run: [function:spawn_cron, function:wp_cron, function:_wp_cron]
+  cron-array: [function:_get_cron_array, function:_set_cron_array, function:_upgrade_cron_array]
+  speedyspec: ["function:SpeedySpec\\WpCron\\run_due_events", "function:SpeedySpec\\WpCron\\due_sites", "function:SpeedySpec\\Runtime\\report_next_wake"]
+  speedyspec-internals: ["function:SpeedySpec\\WpCron\\Native\\wp_schedule_single_event", "function:SpeedySpec\\WpCron\\Native\\wp_schedule_event", "function:SpeedySpec\\WpCron\\Native\\wp_reschedule_event", "function:SpeedySpec\\WpCron\\Native\\wp_unschedule_event", "function:SpeedySpec\\WpCron\\Native\\wp_clear_scheduled_hook", "function:SpeedySpec\\WpCron\\Native\\wp_unschedule_hook", "function:SpeedySpec\\WpCron\\Native\\wp_get_scheduled_event", "function:SpeedySpec\\WpCron\\Native\\wp_next_scheduled", "function:SpeedySpec\\WpCron\\Native\\wp_get_ready_cron_jobs", "function:SpeedySpec\\WpCron\\Native\\wp_get_schedules", "function:SpeedySpec\\WpCron\\Native\\wp_get_schedule", "function:SpeedySpec\\WpCron\\Native\\_get_cron_array", "function:SpeedySpec\\WpCron\\Native\\_set_cron_array", "function:SpeedySpec\\WpCron\\Native\\_upgrade_cron_array", "function:SpeedySpec\\WpCron\\Native\\spawn_cron", "function:SpeedySpec\\WpCron\\result", "function:SpeedySpec\\WpCron\\error", "function:SpeedySpec\\WpCron\\report_error", "function:SpeedySpec\\WpCron\\to_object", "function:SpeedySpec\\WpCron\\property", "function:SpeedySpec\\WpCron\\is_wp_error", "function:SpeedySpec\\WpCron\\network_sites"]
+# The state of each symbol this seam depends on in another seam (DependencyStateRecorded).
+dependencies:
+  class:WP_Error:
+    # cron.php's wrapper builds WordPress's WP_Error from the natives' error markers.
+    state: php
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/cron.php#L51-L58", hash: "cd041f7903bdf908b4c88b89a49a9e860d821068ce3e16fcece9cb804682ec50" }
+  function:__:
+    # The Translator port's PHP adapter calls WordPress's __().
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/adapters.rs#L53-L60", hash: "585e90472a1d43bb118a49dfff5ffc21472af15e74d1787ab8688b96a3e9fa53" }
+  function:_deprecated_argument:
+    state: php
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/cron.php#L227-L240", hash: "d407866d56fd911068f6f8c050f61b3fe434ca5f82d6a207924a0deba37958a1" }
+  function:add_action:
+    # Called from the PHP wp_cron(); the Hook API is native.
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/cron.php#L347-L368", hash: "9e6b429182f70b50dc3720c86132b43a0aff544f7eb78ff5b4a2c3d1215adb7a" }
+  function:did_action:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/cron.php#L347-L368", hash: "9e6b429182f70b50dc3720c86132b43a0aff544f7eb78ff5b4a2c3d1215adb7a" }
+  function:doing_action:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/cron.php#L347-L368", hash: "9e6b429182f70b50dc3720c86132b43a0aff544f7eb78ff5b4a2c3d1215adb7a" }
+  function:apply_filters:
+    # CronApi runs every cron filter through the Rust HookApi.
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-cron/src/api.rs#L50-L61", hash: "336b2aaf75736388dc90cce31ca98e767ffa2d349b9c9c52ad83528a54b48ff2" }
+  function:add_query_arg:
+    state: php
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/cron.php#L325", hash: "47fd69eaa89abf36368c4e24cec169b5762486416b4f6deacccd70be3c6e4a4b" }
+  function:site_url:
+    state: php
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/cron.php#L325", hash: "47fd69eaa89abf36368c4e24cec169b5762486416b4f6deacccd70be3c6e4a4b" }
+  function:str_contains:
+    # PHP 8's own function; WordPress's polyfill is never needed.
+    state: php
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/cron.php#L374-L381", hash: "5bea3a6ae1ff21b13e93d7b389ed16e62e99a92740063b59efb2a5194d5d9df6" }
+  function:get_option:
+    # The CronStore port's adapter reads the cron option through the Rust OptionsApi.
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-cron-options/src/lib.rs#L42-L44", hash: "a161f06f96471c46b4d3e17120b33e0fe0bf8cb876b5c97cd5386e3ba35fe692" }
+  function:update_option:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-cron-options/src/lib.rs#L91-L95", hash: "dd0178ed47466a61663a3bdf7f0ecd11d5e49e45d8f0fa93cbde0d1b4a2ebd16" }
+  function:get_transient:
+    # The DoingCron port's PHP adapter calls the transient functions, which the options area answers natively.
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/adapters.rs#L124-L135", hash: "d031a1581448793e5e8cba0db85cb74a7f0c36042ff5e1539d260a824cd4355e" }
+  function:set_transient:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/adapters.rs#L141-L150", hash: "c89c447cc0daa76197164017b4adc7617c999ddd546ebf945ca88566fbaba579" }
+  function:is_wp_error:
+    # The PhpObjects port's adapter, through SpeedySpec\WpCron\is_wp_error(), which calls WordPress's function.
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/adapters.rs#L94-L100", hash: "1f1ba7b4eb73b48f424f3ea9220e7fa9f4f226fafac1d74944d8a0dde610a723" }
+  # WordPress's spawn_cron() sends a loopback request (wp_remote_post), or with ALTERNATE_WP_CRON redirects
+  # (wp_redirect, wp_ob_end_flush_all, wp_unslash). SpeedySpec calls none of them: spawn_cron() reports a wake time
+  # to the server in Rust instead.
+  function:wp_remote_post:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-cron/src/spawn.rs#L51-L54", hash: "114b100da24eb4a96ad83d7176143dee0440f88b92c4cfa425f5f2210901f746" }
+  function:wp_redirect:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/cron.php#L306-L342", hash: "d0239d2879333110e1e97333c7342f03d1edd0f4543a17caa4c3d7f0219fbccb" }
+  function:wp_ob_end_flush_all:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/cron.php#L306-L342", hash: "d0239d2879333110e1e97333c7342f03d1edd0f4543a17caa4c3d7f0219fbccb" }
+  function:wp_unslash:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-cron-php/src/cron.php#L306-L342", hash: "d0239d2879333110e1e97333c7342f03d1edd0f4543a17caa4c3d7f0219fbccb" }

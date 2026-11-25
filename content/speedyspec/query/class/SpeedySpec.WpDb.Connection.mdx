@@ -1,0 +1,8 @@
+---
+symbol: "class:SpeedySpec\\WpDb\\Connection"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+What `$wpdb->dbh` holds while `wpdb` is connected. It has no methods: the connection belongs to the engine and lives for the worker, so it is not a `mysqli`, and code that passes `$wpdb->dbh` to a `mysqli_*` function fails. Test `! empty( $wpdb->dbh )` to see whether `wpdb` is connected. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L4-L12" hash="7372306fac3618d6e571ccfa051a8d1a80056c8f591e247c4d87eff98f438768"/> <Ev area="wp-db" break="dbh_is_not_mysqli"/>

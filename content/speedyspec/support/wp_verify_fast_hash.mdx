@@ -1,0 +1,16 @@
+---
+symbol: "function:wp_verify_fast_hash"
+verdict: works-with-differences
+differences:
+  - summary: "A phpass ($P$) hash never verifies; WordPress falls back to phpass for hashes without the $generic$ prefix."
+---
+
+## Behaviour
+
+Native, over libsodium. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/crypto.php#L83-L89" hash="606aa695e6a9dd93bcfa71b5818830a2669742e0a7f9a8039deb54f4d238d62c"/> Every verification recorded from WordPress 7.1.5 matches. <Ev test="speedyspec-wp-crypto-sodium::recorded::verifications_match"/> <Ev test="speedyspec-wp-crypto-php::php::replays_wordpress"/>
+
+## Differences
+
+SpeedySpec carries no phpass, so a hash without the `$generic$` prefix never verifies. WordPress's `test_wp_verify_fast_hash_verifies_phpass_hash` is the one sodium test that fails, on purpose. <Ev test="speedyspec-wp-crypto::core::verify_rejects_unprefixed_and_phpass"/> <Ev test="speedyspec-wp-crypto-php::wordpress::wordpress_crypto_tests_pass_but_phpass"/>
+
+See the [Passwords and crypto architecture](/speedyspec/architecture/password/) page.

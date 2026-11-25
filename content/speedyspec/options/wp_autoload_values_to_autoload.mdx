@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_autoload_values_to_autoload"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `AutoloadValuesToAutoload` query. <Ev scenario="autoload_values_filtered_add" area="options"/> <Ev scenario="autoload_values_filtered_remove" area="options"/> <Ev scenario="autoload_values_filtered_empty" area="options"/>
+
+## Override
+
+Options live in `wp_options` behind the `OptionRepository` port; the use case is a handler in the container. See the architecture page.

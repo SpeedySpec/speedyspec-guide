@@ -1,0 +1,12 @@
+---
+symbol: "function:_set_cron_array"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Writes the whole cron array, adding the version, without a compare-and-swap: as in WordPress, it replaces what is stored. <Ev test="speedyspec-wp-cron::write::set_cron_array_is_unconditional"/> Returns `could_not_set` when the option isn't written. <Ev area="cron" scenario="set_cron_array_directly"/> <Ev area="cron" scenario="could_not_set_True"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
+
+## Override
+
+The `cron` option is read and written through the `CronStore` port. To keep events somewhere else, build `CronApi` with another store; see the architecture page.

@@ -1,0 +1,66 @@
+---
+---
+
+The REST API is a transport of the unified operation API: an operation is declared once, its handler is bound in the container, and the `rest` transport serves it under `/wp-json`. The operation registries, the dispatcher, bindings and exposure are on [the operation seam's architecture page](/speedyspec/architecture/operation/). This page covers the REST transport's own crates. None is linked into the runtime worker yet. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The crates
+
+- **`speedyspec-rest-contracts`**: `RestBinding` (an operation's namespace, route and methods), `RestRequest` and `RestResponse` (what `WP_REST_Request` and `WP_REST_Response` hold), and the `RestHooks` port. It depends only on `speedyspec-operation-contracts`. <Ev test="speedyspec-rest-contracts::contracts::binding_round_trips_and_validates"/> <Ev test="speedyspec-rest-contracts::contracts::params_merge_in_trunk_order"/>
+- **`speedyspec-rest`**: the transport. `RestTransport` with its default mapping, `RouteTable` (matching as WordPress does), HTTP decoding and encoding, WordPress's error statuses and bodies, `_fields`, `_links` and `_embed`, the index routes, and `RestServer`, which serves a request in WordPress trunk's hook order. `RestMiddleware` puts the server in the HTTP pipeline. <Ev source="ss:crates/speedyspec-rest/src/server.rs#L24-L34" hash="ffd9bc6a2fd1c8d40f9307a3690682de966dfd7ac34cea6ddf6cdfa838dd6a90"/> <Ev test="speedyspec-rest::server::hooks_fire_in_trunk_order"/>
+- **`speedyspec-rest-php`**: the PHP adapter. `PhpRestHooks` fires the REST hooks with `apply_filters`, passing live proxies (`SpeedySpec\Rest\RequestProxy` extends `WP_REST_Request`, `ResponseProxy` extends `WP_REST_Response`); `errors` maps `WP_Error` to operation errors by its `status`; `PhpRestAuthenticator` makes WordPress's current user the caller; `RestArea` declares `SpeedySpec\Rest\Rest::bind()` and the `WP_REST_Server` shim; `RestService` keeps one `RestServer` per site. <Ev source="ss:crates/speedyspec-rest-php/src/lib.rs#L3-L11" hash="fd49272d9e5fc64b94e3e700f691aa82d877ccc3fdac9215b504e536b0317077"/> <Ev test="speedyspec-rest-php::hooks::request_proxy_reads_and_writes_live"/>
+
+## Contracts
+
+- **`RestHooks`**: one method per WordPress hook, in the order the server fires them, from `rest_authentication_errors` to `rest_pre_serve_request`. `NoRestHooks` is the do-nothing default; `PhpRestHooks` is the PHP one. <Ev source="ss:crates/speedyspec-rest-contracts/src/hooks.rs#L10-L37" hash="5c925cf0d2e27cec7224efda53ad508b424029c2a4a33a0cf392136ac0508425"/>
+- **`RestMapping`** (in `speedyspec-rest`): how an operation is routed when it has no explicit binding. `DefaultRestMapping` routes by resource and action under `{vendor}/v1`: list and create on `/{plural}`, get, update and delete on `/{plural}/{identity}`. <Ev source="ss:crates/speedyspec-rest/src/mapping.rs#L8-L28" hash="ed2adf31a629047edfa299f17351d652c7bbc9d5b16fd4ea8add11ce80eacb7d"/> <Ev test="speedyspec-rest::routes::default_routes_follow_the_actions"/>
+- From the operation seam, the transport implements `Transport` and takes an `Authenticator<HttpServerRequest>`.
+
+## Use cases
+
+- **Serve an HTTP request** (`RestServer::serve`): authenticate, `rest_pre_dispatch`, match a route, `rest_request_before_callbacks`, the permission check, `rest_dispatch_request`, the handler, `rest_prepare_{type}` per item, `rest_request_after_callbacks`, links and embeds, `rest_post_dispatch`, `_fields`, `rest_pre_serve_request`. <Ev test="speedyspec-rest::server::before_callbacks_error_skips_permission_and_handler_but_not_after_callbacks"/> <Ev test="speedyspec-rest::server::embeds_are_cached_per_request_and_follow_the_relation_list"/>
+- **Dispatch a request object** (`RestServer::dispatch_raw`), for PHP's `WP_REST_Server::dispatch()` and `rest_do_request()`: links stay apart from the data and nothing is embedded. <Ev test="speedyspec-rest-php::caller::rest_do_request_reaches_a_new_style_operation"/> <Ev test="speedyspec-rest-php::caller::dispatch_data_has_no_links"/>
+- **Register a legacy route**: `register_rest_route()` on the `WP_REST_Server` shim becomes an operation restricted to `rest`, whose permission callback, `args`, defaults and sanitizers keep WordPress's behaviour. <Ev test="speedyspec-rest-php::legacy::rest_api_init_registers_through_the_shim"/> <Ev test="speedyspec-rest-php::legacy::args_validate_in_wordpress_words"/>
+
+## Adapters and how to replace them
+
+- **The `WP_REST_Server` shim** extends `SpeedySpec_TrunkRestServer`, WordPress 7.1.5's class renamed, and overrides `register_route()`, `dispatch()`, `get_routes()` and `get_namespaces()` so routes and dispatch go through Rust. <Ev source="ss:crates/speedyspec-rest-php/src/php/wp-rest-server.php#L3-L8" hash="e709b25a407de8516dfce3193d20326eb0802006858dfacecfda61b28238f04b"/>
+- **A handler** is bound in the container under its operation's name, so a PHP handler can replace a Rust one. <Ev test="speedyspec-rest-php::end_to_end::php_handler_replaces_rust_handler_over_rest"/>
+- **A route**: `SpeedySpec\Rest\Rest::bind( $operation )->route( $namespace, $route )->methods( … )` stores a checked binding that wins over the default mapping. From Rust, `RestTransport::with_mapping()` takes another `RestMapping`. <Ev test="speedyspec-rest-php::end_to_end::rest_bind_overrides_the_default_route"/> <Ev test="speedyspec-rest::routes::the_default_mapping_is_replaceable"/>
+- **The hooks and the authenticator** are passed to `RestServer::new()`; any `RestHooks` or `Authenticator` works. `RestService` rebuilds the server when the site's registries or the bindings change. <Ev test="speedyspec-rest-php::service::rebinding_rebuilds_the_server"/>
+
+The transport has no container key of its own; it is installed in a `TransportRegistry` under the name `rest`.
+
+## Patterns
+
+- **Ports and Adapters**: `RestHooks` and the authenticator, with Rust and PHP adapters.
+- **Strategy**: `RestMapping` for default routes.
+- **Template Method**: `RestServer`'s fixed serve order.
+- **Proxy**: `RequestProxy` and `ResponseProxy`, PHP objects over the Rust request and response; a proxy used after its request throws. <Ev test="speedyspec-rest-php::hooks::a_stale_handle_throws"/>
+- **Adapter**: the `WP_REST_Server` shim and the legacy route handler.
+
+## A Rust example
+
+A feature serving the site's operations over REST, as `speedyspec-rest`'s tests build it:
+
+```rust
+use std::rc::Rc;
+use speedyspec_rest::{NoRestHooks, RestMiddleware, RestServer, RestTransport};
+use speedyspec_transport::{MemoryBindingStore, TransportRegistry};
+
+fn rest_middleware(
+    container: Rc<speedyspec_container::Container>,
+    registries: Rc<speedyspec_operation::Registries>,
+    auth: Rc<dyn speedyspec_transport_contracts::Authenticator<speedyspec_http_message::HttpServerRequest>>,
+) -> RestMiddleware {
+    let transports = TransportRegistry::new(Rc::new(MemoryBindingStore::new()));
+    transports.install(Rc::new(RestTransport::new(registries.clone()))).expect("rest installs");
+    let exposure = Rc::new(transports.expose(&registries).expect("operations are exposed"));
+    let server = RestServer::new(container, registries, exposure, Rc::new(NoRestHooks), auth, "https://example.com/wp-json");
+    RestMiddleware::new(Rc::new(server))
+}
+```
+
+## How to change this
+
+- **What must still pass:** `speedyspec-rest`'s and `speedyspec-rest-contracts`' tests, `speedyspec-rest-php`'s checks, and WordPress's REST server tests run against the shim (`tests/wordpress.rs`), except the failures it lists with their reasons.
+- **Adding a hook point:** add a method to `RestHooks`, fire it in `RestServer` at WordPress's position, and implement it in `NoRestHooks` and `PhpRestHooks`.

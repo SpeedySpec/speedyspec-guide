@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_prime_option_caches_by_group"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `PrimeOptionCachesByGroup` command. It reads the group from `$new_allowed_options` through `SpeedySpec\WpOptions\allowed_options()`. <Ev scenario="prime_by_group" area="options"/>
+
+## Override
+
+Options live in `wp_options` behind the `OptionRepository` port; the use case is a handler in the container. See the architecture page.

@@ -1,0 +1,12 @@
+---
+symbol: "function:add_option"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `AddOption` command. Every recorded scenario replays as in WordPress: the hooks and their order, the autoload values requested and decided, an existing name, protected names and the deprecated argument. <Ev scenario="add_option_existing" area="options"/> <Ev scenario="add_option_deprecated_argument" area="options"/> <Ev scenario="autoload_requested_auto" area="options"/> <Ev scenario="protected_add_option_alloptions" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+
+## Override
+
+Options live in `wp_options` behind the `OptionRepository` port; the use case is a handler in the container. See the architecture page.

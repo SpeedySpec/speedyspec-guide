@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_get_ready_cron_jobs"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Returns the events due now, with `pre_get_ready_cron_jobs`. Every recorded scenario replays as in WordPress, and WordPress's own cron tests pass. <Ev area="cron" scenario="ready_jobs"/> <Ev area="cron" scenario="ready_jobs_filtered"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
+
+## Override
+
+The `cron` option is read and written through the `CronStore` port. To keep events somewhere else, build `CronApi` with another store; see the architecture page.

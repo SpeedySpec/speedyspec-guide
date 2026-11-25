@@ -1,0 +1,71 @@
+---
+---
+
+## The crates
+
+kses and formatting are two ports that share one Hook API. Neither is linked into the runtime worker yet. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+- **`speedyspec-wp-kses-contracts`**: the plain types kses works with (`AllowedHtml`, attribute rules, `Protocols`, `Context`) and the ports, with no implementation. All text is bytes, because kses's regexes run without `/u`. <Ev source="ss:crates/speedyspec-wp-kses-contracts/src/lib.rs#L1-L5" hash="ca1a1eac72b64af9e3e0cc4e2e3c80086b48dc8d40993b04b1ec17b32a57ad1c"/>
+- **`speedyspec-wp-kses-lexical`**: kses.php's pure string functions (entities, protocols, attribute parsing), one byte matcher per kses regex.
+- **`speedyspec-wp-kses`**: `KsesApi`, the facade: `wp_kses()` and the functions around it, firing kses's filters through the Rust Hook API. One fused scanner tokenizes, checks attributes and writes the output. <Ev source="ss:crates/speedyspec-wp-kses/src/lib.rs#L1-L7" hash="52108af744bd1a0d406f13a528bba79a5da4e8eb4f35bc384ae71ebdbcf531ab"/>
+- **`speedyspec-wp-kses-php`**: `KsesArea`, which declares the ported `kses.php` functions in PHP with WordPress's signatures, each one line over a native function. <Ev source="ss:crates/speedyspec-wp-kses-php/src/lib.rs#L1-L8" hash="41dec22a027ba15eae7601a37a197eb815bccc3e431cc4dd7db37b5be98b7cf5"/>
+- **`speedyspec-wp-kses-security`** and **`speedyspec-wp-kses-testkit`**: test support. The first is a security oracle (could the output run script, or carry an XML bomb); the second runs WordPress's own `kses.php` in a PHP process so each Rust function is compared with it byte for byte.
+- **`speedyspec-wp-text-contracts`**: the ports formatting reads through: settings, translations, locale, diagnostics and the rest. It depends on no SpeedySpec crate. <Ev source="ss:crates/speedyspec-wp-text-contracts/src/lib.rs#L1-L6" hash="10d7e0f4c950443009e4c02c5ad33a0dd1c869f2d0605429a1cb723021883488"/>
+- **`speedyspec-wp-text-escape`**: `EscapeApi` and the escaping functions, with a port of PHP's `htmlspecialchars()` underneath. <Ev source="ss:crates/speedyspec-wp-text-escape/src/lib.rs#L1-L5" hash="dd014c0f5a05f818a6c3e5ab8f7ef2a2e124f54b58b163fa7c01f3ae15999175"/>
+- **`speedyspec-wp-text`**: `TextApi` and the content filters (`wptexturize`, `wpautop`, sanitizers, links, smilies) as pure functions over bytes. <Ev source="ss:crates/speedyspec-wp-text/src/lib.rs#L1-L4" hash="1d1dfc3289cb51af7b1b74e1e63bd1e5e5dbeafad1bd67574bc903f52168a0ae"/>
+- **`speedyspec-wp-html-split`**: `wp_html_split()`, the regular-expression splitter several formatting functions and the shortcode API depend on, as an allocation-free scan. <Ev source="ss:crates/speedyspec-wp-html-split/src/lib.rs#L1-L7" hash="20a4148cf3d09a0d3beb8655144a3226d37b697d2c0c42456f24bb03ad8fcc0f"/>
+- **`speedyspec-wp-text-memory`**: fixed adapters that answer as a fresh English install, for tests and Rust callers with no PHP.
+- **`speedyspec-wp-text-corpus`**: reads the recorded formatting corpus (`compat/formatting`) with no PHP, so each crate checks its output against it.
+- **`speedyspec-wp-text-php`**: `TextArea`, the formatting functions as native PHP functions over both facades.
+
+## Contracts
+
+- **Inbound (kses):** `KsesLexical` (the pure string functions), `Kses` (`kses`, `one_attr`, `post`, `data`), `AllowedHtmlSource` and `SafeCss`. <Ev source="ss:crates/speedyspec-wp-kses-contracts/src/ports.rs#L11-L61" hash="9ab63e229bb6a6c50d6196ae55d79bae4eb125a8016d8469f99d24120189f80e"/>
+- **Outbound (kses):** `AttributeEscaper` (`esc_attr()`, owned by the text port) and `UnfilteredHtmlPolicy` (`current_user_can( 'unfiltered_html' )`), in the contracts; `AllowedGlobals` (the four allowlist globals), `ValueCallbacks` and `UploadsLocation` in `speedyspec-wp-kses`. `KsesDeps` holds them all with the Hook API. <Ev source="ss:crates/speedyspec-wp-kses/src/api.rs#L24-L32" hash="1ce33289def4fa0c0f35bf53bb94712a6ee57286c3108fb66e88efcce48409da"/>
+- **Outbound (formatting):** `SiteSettings`, `Translator`, `Locale`, `Diagnostics`, `TexturizeOverrides`, `MimeTypes`, `RandomSource`, `Smilies` and `LinkContext`. `TextDeps` adds the shortcode tag names, `EscapeApi` and `KsesApi`. <Ev source="ss:crates/speedyspec-wp-text/src/api.rs#L29-L46" hash="8e04e1f52ec41b47df97402d98c5c5d24fc8a88eb7e92117ebb2e327097978e0"/>
+
+## Use cases
+
+Every kses function is a query or command on the `speedyspec-cqrs` buses, handled by `KsesApi`: `KsesQuery` (`wp_kses()`), `KsesPost`, `KsesData`, the `Filter*Kses` queries, `OneAttr`, `AllowedHtmlQuery`, `SafecssFilterAttr` and the rest, and the commands `KsesInitFilters`, `KsesRemoveFilters` and `KsesInit`. <Ev source="ss:crates/speedyspec-wp-kses/src/messages.rs#L97-L103" hash="402d3105e1fd008f7226dca1872d278591fecbd0607a713b9821cf4a781019ee"/> Formatting's are queries only: ten in `EscapeApi` (`EscHtml`, `EscAttr`, `EscJs`, …) and 44 in `TextApi` (`Wptexturize`, `Wpautop`, `SanitizeTitle`, `EscUrl`, `MakeClickable`, …). <Ev source="ss:crates/speedyspec-wp-text/src/messages.rs#L109-L118" hash="9cca5da7422bde5107bd7551c145c40c14be88f1f89ef2f032152dbbeca6a994"/> Functions that fire no filter and read nothing outside, such as `wp_html_split()` or `normalize_whitespace()`, are plain functions with no use case.
+
+## Adapters and container keys
+
+Each handler is bound under its message's key: `SpeedySpec\WpKses\<Name>Handler`, `SpeedySpec\WpTextEscape\<Name>Handler` or `SpeedySpec\WpText\<Name>Handler`. <Ev source="ss:crates/speedyspec-wp-kses/src/messages.rs#L25-L36" hash="81f659afac3e33f29db530b8d19a57770de409e11aae558faab3faf229484720"/> <Ev test="speedyspec-wp-kses::init::handlers_are_bound"/>
+
+- **PHP:** `KsesArea::new` builds `KsesApi` over PHP adapters (`PhpAllowedGlobals`, `PhpEscaper`, `PhpPolicy`, `PhpUploads`, `PhpValueCallbacks`) and binds its handlers. The allowlist adapter reads `$allowedposttags` and the other globals live, so a plugin that writes them changes what kses allows. `TextArea::new` does the same for formatting over `KsesApi`. <Ev source="ss:crates/speedyspec-wp-kses-php/src/lib.rs#L68-L79" hash="1fcedb0ae23aa41725e238954a2abef023cb8c3e808750964e4d6cd8fb1a9361"/> <Ev source="ss:crates/speedyspec-wp-text-php/src/lib.rs#L66-L91" hash="221a528330030cc63e409b98bb53d0e28441c5dbafcb02f4d6ee3e259be084c0"/>
+- **Memory:** `speedyspec-wp-text-memory`'s fixed adapters and kses's `DefaultGlobals` and `NoValueCallbacks`, for Rust callers with no PHP. <Ev test="speedyspec-wp-text-memory::adapters::fixed_site_settings_default_to_wordpress_install_defaults"/>
+- **Replacing one:** bind another handler under a use case's key, from Rust or from PHP; the native functions dispatch through the bound handler. To change where kses or formatting reads an outside fact, give the facade another adapter of that port.
+
+## Patterns
+
+- **Ports and Adapters**: the contracts crates, with PHP and memory adapters.
+- **Facade**: `KsesApi`, `EscapeApi` and `TextApi` over the Hook API and the ports; the PHP functions over the native ones.
+- **Command and Query** handlers per function, bound in the container (**Registry**).
+- **Flyweight**: kses's default allowlists are shared tables, read once per thread. <Ev source="ss:crates/speedyspec-wp-kses/src/lib.rs#L7" hash="be649c321d9fe1054123d5882701420df97a20354e90de34166ce9a9446b329a"/>
+- **Decorator**: `TextArea` decorates the Hook API's add-filter use case, so `add_filter( 'the_content', 'wpautop' )` stores a Rust callback in the same slot and a chain of formatting callbacks runs without entering PHP. <Ev source="ss:crates/speedyspec-wp-text-php/src/swap.rs#L1-L7" hash="7b1ca139c88b9305cface5870496cb4aa6f604c7b50784b93e73ca3195f04563"/>
+
+## Calling it from Rust
+
+A runtime feature that prints a comment body runs it through kses for posts, then `wpautop()`, through the buses, so a handler PHP binds is the one that runs:
+
+```rust
+use std::rc::Rc;
+
+use speedyspec_container::Container;
+use speedyspec_cqrs::QueryBus;
+use speedyspec_wp_kses::KsesPost;
+use speedyspec_wp_text::messages::Wpautop;
+
+/// A comment body as a theme prints it.
+fn render_comment(container: Rc<Container>, body: &[u8]) -> Option<Vec<u8>> {
+    let queries = QueryBus::new(container);
+    let clean = queries.ask(KsesPost { data: body.to_vec() }).ok()?.ok()?;
+    queries.ask(Wpautop { text: clean, br: true }).ok()?.ok()
+}
+```
+
+## How to change this
+
+- **kses must still pass:** the recorded scenarios in `compat/kses`, replayed through the native functions with every hook invocation and the hook globals; WordPress's own kses tests run against the port by the pinned PHPUnit; and the differential and security tests against WordPress's `kses.php`. <Ev source="ss:crates/speedyspec-wp-kses-php/tests/compat.rs#L61" hash="dee32562acaadeb9da77c519dbc05fe80c3cd320be1ec484dd212d339a612835"/> <Ev test="speedyspec-wp-kses-php::wordpress::wordpress_kses_tests_pass"/> <Ev test="speedyspec-wp-kses::differential::corpus_matches_php"/> <Ev test="speedyspec-wp-kses::security::no_exploit_survives_kses"/>
+- **Formatting must still pass:** the corpus in `compat/formatting`, replayed through the native functions and checked crate by crate, and WordPress's own formatting tests, except the breaks listed in `compat/formatting/breaks.json`. <Ev source="ss:crates/speedyspec-wp-text-php/tests/compat.rs#L64" hash="f7c5ac015a40ac583457af0c42d4f4427686cd8e83fcf08361fb66d38a55a853"/> <Ev test="speedyspec-wp-text::coverage::ported_functions_cover_their_corpus"/> <Ev test="speedyspec-wp-text-php::wordpress::wordpress_formatting_tests_pass"/> <Ev test="speedyspec-wp-text-php::wordpress::documented_breaks_are_listed"/>
+- **Recording a new scenario:** add it to `compat/kses/scenarios.json` (or regenerate `compat/formatting` from WordPress's data providers) and record it with `speedyspec-compat` against WordPress 7.1.5; a difference the port keeps on purpose goes in that area's `breaks.json` with its reason.

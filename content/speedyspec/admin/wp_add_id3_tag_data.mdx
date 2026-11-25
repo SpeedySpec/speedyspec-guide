@@ -1,0 +1,16 @@
+---
+symbol: "function:wp_add_id3_tag_data"
+verdict: works-with-differences
+differences:
+  - summary: "When $data has no ID3v2 or ID3v1 comments, the tags are copied from getID3's merged comments (every other tag format); WordPress copies nothing."
+---
+
+## Behaviour
+
+Native. Rust works out the keys WordPress's function would set from `$data`, in its order, and the facade assigns only those into `$metadata` by reference, so every other value (objects included) is untouched, and a `$metadata` nothing is copied into stays as it was. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L181-L190" hash="ca9c23fca92223824c5a3614d0a31b7d37abf18b9d04885a89fe737d9dd41787"/> <Ev test="speedyspec-wp-media-php::php::add_id3_tag_data_by_reference"/> <Ev test="speedyspec-wp-media-php::php::add_id3_tag_data_leaves_other_values_alone"/> ID3v2 wins over ID3v1, and WordPress's fix for getID3's "Copyright notice." bug is kept. <Ev test="speedyspec-wp-media::functions::id3v2_wins_over_id3v1"/> <Ev test="speedyspec-wp-media::functions::terms_of_use_fix"/> WordPress's own `wpAddId3TagData.php` tests pass against it. <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/>
+
+## Differences
+
+When neither ID3v2 nor ID3v1 comments exist, the same copy runs over the merged `comments`, pictures excepted, so an MP4, Vorbis or ASF file's title reaches the attachment. <Ev source="ss:compat/media/DIFFERENCES.md#L15-L19" hash="07319193d8b7062fc5b329b2a4029cd0bbbaca5013998f1201f8e8aeb9726518"/> <Ev test="speedyspec-wp-media::functions::tags_from_other_formats_when_no_id3"/> <Ev test="speedyspec-wp-media::functions::id3_present_ignores_other_formats"/>
+
+See the [Media architecture](/speedyspec/architecture/media/) page.

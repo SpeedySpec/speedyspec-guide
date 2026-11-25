@@ -1,0 +1,24 @@
+---
+symbol: "function:spawn_cron"
+verdict: works-with-differences
+differences:
+  - summary: "No loopback request is sent: the server is told to call its cron endpoint now. The filtered cron_request is not used."
+  - summary: "ALTERNATE_WP_CRON has no effect on spawn_cron(): no redirect, no run in the same request."
+  - summary: "wp-cron.php answers 404 in a SpeedySpec release."
+---
+
+## Behaviour
+
+Runs WordPress's checks natively, in WordPress's order: a cron request already running, the `doing_cron` lock within `WP_CRON_LOCK_TIMEOUT`, no ready events, the first one still ahead. When they pass it sets `doing_cron` and filters `cron_request` with WordPress's array, then returns `true`. <Ev source="ss:crates/speedyspec-wp-cron-php/src/cron.php#L306-L342" hash="d0239d2879333110e1e97333c7342f03d1edd0f4543a17caa4c3d7f0219fbccb"/> <Ev test="speedyspec-wp-cron::spawn::due_job_spawns_sets_lock_and_wakes_now"/> <Ev test="speedyspec-wp-cron::spawn::fresh_lock_refuses"/>
+
+## Differences
+
+- No request is sent. WordPress posts to `wp-cron.php` with the filtered `cron_request` <Ev source="wp:wp-includes/cron.php#L1012-L1014" hash="a76160a015b46462738e6247082a93df9d76483f69f3a836446a51b901a40c9d"/>; SpeedySpec reports the wake time to the server, whose scheduler calls its cron endpoint at once. The filtered request is not used. <Ev source="ss:crates/speedyspec-wp-cron-php/tests/php.rs#L232-L242" hash="8f98cca5083460694529716b239f575bdd1b714393204b8db2204af0c770b190"/>
+- `ALTERNATE_WP_CRON` has no effect here. WordPress redirects the visitor and runs `wp-cron.php` in the same request <Ev source="wp:wp-includes/cron.php#L950-L968" hash="46755051c31d704000cb5cbde0ebc1dd4a129391736116ffc183f10fcd463b3a"/>; SpeedySpec takes the same path as without it.
+- `wp-cron.php` answers 404 in a SpeedySpec release, so a visitor can't start a run. <Ev source="ss:crates/speedyspec-wp-cron-php/src/wp-cron-stub.php#L1-L7" hash="c2e853ba904b82fb647a2846ec56f31f4505d551956c7739258a3f4efed53dc8"/>
+
+No compat scenario records `spawn_cron()`, and WordPress's cron tests don't call it; the checks above are SpeedySpec's own tests.
+
+## Porting
+
+Code that hooks `cron_request` to change the loopback (its URL, timeout or SSL check) has no effect: the server runs cron. Code that calls `spawn_cron()` to start a run still works; the run happens in the server's call, not in a loopback.

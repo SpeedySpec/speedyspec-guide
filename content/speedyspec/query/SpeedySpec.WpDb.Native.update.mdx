@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\update"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::update()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L789-L789" hash="61126b823e2e9b05406bf2ccab775db0e52c05b2cb692d4ba8da30f10b6bad3c"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\wp_set_option_autoload"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `wp_set_option_autoload()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L75-L78" hash="12e177d5dc459dd506270828a0ba4daeab0917368f02aea9d3a3938b651deaeb"/>
+
+It sends the `SetOptionAutoload` command through the handler bound under `SpeedySpec\WpOptions\SetOptionAutoloadHandler`. <Ev scenario="autoload_stored_auto_off" area="options"/>

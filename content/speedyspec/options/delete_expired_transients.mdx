@@ -1,0 +1,12 @@
+---
+symbol: "function:delete_expired_transients"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `DeleteExpiredTransients` command. Its statements run through `SqlExpiredTransients` on `wpdb`. <Ev scenario="delete_expired_transients_single" area="options"/> <Ev scenario="delete_expired_transients_multisite" area="options"/> <Ev test="speedyspec-wp-options-sql::expired::purges_only_expired_pairs_on_mysql"/>
+
+## Override
+
+Transients go through the options API, or the object cache when it is persistent; the `ExternalObjectCache` and `Clock` ports decide which and when. See the architecture page.

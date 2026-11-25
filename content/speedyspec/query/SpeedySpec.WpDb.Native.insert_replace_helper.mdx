@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\insert_replace_helper"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::_insert_replace_helper()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L784-L784" hash="5b300fd700348d52ac8041d359587215a83fa7698ec0aba3a2e405ef23d69a0c"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

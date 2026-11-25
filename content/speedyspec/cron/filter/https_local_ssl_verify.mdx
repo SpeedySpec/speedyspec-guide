@@ -1,0 +1,8 @@
+---
+symbol: "filter:https_local_ssl_verify"
+verdict: works-with-differences
+differences:
+  - summary: "spawn_cron() runs it, but the request it configures is never sent."
+---
+
+Run by `spawn_cron()` for the `sslverify` argument of the cron request, as in WordPress, but the request is never sent. <Ev source="ss:crates/speedyspec-wp-cron-php/src/cron.php#L306-L342" hash="d0239d2879333110e1e97333c7342f03d1edd0f4543a17caa4c3d7f0219fbccb"/> <Ev test="speedyspec-wp-cron::spawn::due_job_spawns_sets_lock_and_wakes_now"/> Other code that runs this filter (the HTTP API) is outside this seam.

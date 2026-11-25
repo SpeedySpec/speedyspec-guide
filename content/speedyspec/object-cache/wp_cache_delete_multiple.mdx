@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_cache_delete_multiple"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Returns a result per key. <Ev scenario="multiple_ops" area="object-cache"/> <Ev test="speedyspec-wp-object-cache-php::php::replayed_scenarios_match_wordpress"/>
+
+## Override
+
+The function dispatches a use case through the container; bind another handler under its key, or put a `WP_Object_Cache` subclass in `$wp_object_cache`. See the architecture page.

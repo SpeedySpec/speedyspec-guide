@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\delete_site_transient"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `delete_site_transient()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L139-L142" hash="898ee1ebe6a940f60f3db168436363d9a7dfffe522ef67c54a4ba22140cdc82c"/>
+
+It sends the `DeleteSiteTransient` command through the handler bound under `SpeedySpec\WpOptions\DeleteSiteTransientHandler`. <Ev scenario="site_transient_multisite" area="options"/>

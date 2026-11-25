@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\add_option"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `add_option()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L35-L38" hash="88a00dcc66430e20d3e7421b524c11c84cd5cb18eb673114a6f3c1ab5f9eb2b9"/>
+
+It sends the `AddOption` command through the handler bound under `SpeedySpec\WpOptions\AddOptionHandler`. <Ev scenario="add_option_after_notoptions" area="options"/>

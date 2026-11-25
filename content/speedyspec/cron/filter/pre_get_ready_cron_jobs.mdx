@@ -1,0 +1,6 @@
+---
+symbol: "filter:pre_get_ready_cron_jobs"
+verdict: works-as-wordpress
+---
+
+Run by the native cron functions through the native Hook API. Runs before the due events are read; a non-null value is the answer, both for `wp_get_ready_cron_jobs()` and for the server's run. <Ev area="cron" scenario="ready_jobs_filtered"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>

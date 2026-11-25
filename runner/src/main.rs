@@ -8,9 +8,11 @@ use std::process::ExitCode;
 use speedyspec_hooks::Value;
 use speedyspec_php::Php;
 
+mod database;
 mod manifest;
 mod request_hooks;
 mod sides;
+mod wake;
 
 use manifest::{Manifest, RunResult};
 
@@ -98,10 +100,11 @@ fn run(side: Side, manifest: &str) -> Result<String, String> {
     let text = std::fs::read_to_string(manifest).map_err(|e| format!("{manifest}: {e}"))?;
     let manifest: Manifest =
         serde_json::from_str(&text).map_err(|e| format!("{}: {e}", manifest))?;
-    let php = sides::boot(side)?;
+    let booted = sides::boot(side)?;
     let mut results = Vec::new();
     for example in &manifest.examples {
-        results.push(run_one(&php, side, &manifest, example));
+        results.push(run_one(&booted.php, side, &manifest, example));
+        booted.end_example()?;
     }
     serde_json::to_string(&results).map_err(|e| e.to_string())
 }
@@ -161,11 +164,12 @@ fn run_one(
 
 /// Lists what PHP has declared: with no native areas (`baseline`), or with the runtime's (`runtime`).
 fn reflect(runtime: bool) -> Result<String, String> {
-    let php = sides::boot(if runtime {
+    let booted = sides::boot(if runtime {
         Side::Runtime
     } else {
         Side::WordPress
     })?;
+    let php = &booted.php;
     php.restart_request()
         .map_err(|e| format!("starting a request: {e}"))?;
     php.eval("speedyspec://guide/reflect", REFLECT)

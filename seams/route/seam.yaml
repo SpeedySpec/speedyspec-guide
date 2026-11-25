@@ -1,6 +1,7 @@
 name: "Rewrite and canonical URLs"
 job: "Builds rewrite rules, matches request URLs against them, redirects to canonical URLs, and emits speculation rules."
 ported: false
+crates: [speedyspec-routing, speedyspec-router, speedyspec-router-store-memory, speedyspec-router-php, speedyspec-router-presentation, speedyspec-wp-rewrite, speedyspec-wp-rewrite-php]
 files:
   - 'wp-includes/canonical.php'
   - 'wp-includes/class-wp-matchesmapregex.php'

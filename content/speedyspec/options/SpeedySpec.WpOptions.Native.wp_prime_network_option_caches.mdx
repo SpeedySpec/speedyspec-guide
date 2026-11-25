@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\wp_prime_network_option_caches"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `wp_prime_network_option_caches()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L190-L193" hash="deabfed4382d4313857691065bd78d2155a063af85017d72b87d6d5527ac4733"/>
+
+It sends the `PrimeNetworkOptionCaches` command through the handler bound under `SpeedySpec\WpOptions\PrimeNetworkOptionCachesHandler`. <Ev scenario="prime_network_option_caches" area="options"/>

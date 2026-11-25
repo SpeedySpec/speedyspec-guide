@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\delete_expired_transients"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `delete_expired_transients()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L124-L127" hash="2b5502760aa771a00c8fb29aa874f3ebdff4f37b6026862bac6b6e065b480b9c"/>
+
+It sends the `DeleteExpiredTransients` command through the handler bound under `SpeedySpec\WpOptions\DeleteExpiredTransientsHandler`. <Ev scenario="delete_expired_transients_multisite" area="options"/>

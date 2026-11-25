@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\construct"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::__construct()` after `open()`: turns on `show_errors` when `WP_DEBUG` and `WP_DEBUG_DISPLAY` are set and connects unless `WP_SETUP_CONFIG` is defined, as WordPress's constructor does. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L494-L494" hash="a3f4e7eeac83388e9e83d8e0e679c87e4f8967c5104d332440ace9fc74574664"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

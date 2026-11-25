@@ -1,0 +1,63 @@
+---
+---
+
+## theme.json
+
+The theme.json engine is ported to Rust in speedyspec-server, but the runtime worker doesn't link these crates yet, so nothing below runs in a SpeedySpec request today. The rest of the Themes seam has no Rust port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+### The crates
+
+- **`speedyspec-wp-theme-json-contracts`** holds the typed model (`ThemeJson`, `Settings`, `StyleNode`, `Preset`), the value objects (`Origin`, `ByOrigin`, `Leaf`), WordPress's class constants and layout definitions as embedded data, and the ports. It knows nothing of PHP, files or a database. <Ev source="ss:crates/speedyspec-wp-theme-json-contracts/src/lib.rs#L1-L4" hash="a111b90c80a9988bf3a1ad429957cb6562f67ced76c9887bd12174060647e679"/>
+- **`speedyspec-wp-theme-json`** holds `ThemeJsonApi`, one method per public method of `WP_Theme_JSON`, and the domain pieces behind it: the codec, migration, sanitizing, construction, merging, selectors, nodes, presets and fluid font sizes, declarations, layout, security, duotone and the stylesheet; the resolver (`ThemeJsonResolver`) and the global styles functions (`GlobalStylesApi`); and memory adapters. It has no PHP. <Ev source="ss:crates/speedyspec-wp-theme-json/README.md#L14-L18" hash="c6aeac503eb5dda0af94fb877e1fc8585dbe6dcb68fcea5e9467c40ddec1eb06"/>
+- **`speedyspec-wp-theme-json-php`** holds `ThemeJsonArea`: `WP_Theme_JSON`, `WP_Theme_JSON_Schema`, `WP_Theme_JSON_Data` and `WP_Theme_JSON_Resolver` as thin PHP over a per-request handle arena, the PHP adapters for every port, and `prepare_release()`, which empties WordPress's class files so nothing is declared twice. <Ev source="ss:crates/speedyspec-wp-theme-json-php/src/lib.rs#L1-L5" hash="e9cdae1225d779ca166dd7a5e68e42988d4a746ed3c3cabe447b5e1f1c36227e"/> <Ev source="ss:crates/speedyspec-wp-theme-json-php/src/release.rs#L1-L15" hash="1b0d33fdf3ce1e17a7fff4b89b370d953ef3a965c9d1926a87db799f733bfdc1"/>
+
+### The contracts
+
+What the engine needs from outside, each a port: `BlockMetadata` (the registered blocks), `TextFunctions` (`sanitize_title()` and the escapers), `Gettext`, `Diagnostics`, `SafeCss` (kses's `safecss_filter_attr()`), `GlobalSettings`, `ThemeJsonFilters`, `ActiveTheme` and `Capabilities`; the resolver adds `LayerFilters`, `GlobalStylesPost`, `BlockStyleVariationRegistrar` and `WpCache`. <Ev source="ss:crates/speedyspec-wp-theme-json-contracts/src/ports/mod.rs#L1-L26" hash="3a53b0087e5e7dd9149f60f9df922357c1b734d5f37c1474a286dd4d6ef728d0"/> `ThemeJsonDeps` carries them into `ThemeJsonApi`; the first five are required, the rest have defaults. <Ev source="ss:crates/speedyspec-wp-theme-json/src/deps.rs#L39-L84" hash="6d4273e9e4fad45dc1016037bbfaee9244c86c5bcf7d7f47533692a7db52584a"/>
+
+### The use cases
+
+Each method is a message on `speedyspec-cqrs`'s buses: one command, `SetSpacingSizes`, and queries such as `ConstructThemeJson`, `MergeThemeJson`, `GetSettings`, `GetData`, `GetStylesheet`, `GetStylesForBlock`, `RemoveInsecureProperties` and `ResolveVariables`. Each is bound under `SpeedySpec\WpThemeJson\<Message>Handler`, with `ThemeJsonApi` as the handler. <Ev source="ss:crates/speedyspec-wp-theme-json/src/messages.rs#L97-L105" hash="77d4fe8d979074cadac653d96f564f3fb65b54cfc1386eead8e59e29c4ea94cd"/>
+
+### The adapters
+
+- **PHP** (`speedyspec-wp-theme-json-php`): `PhpBlockRegistry`, `PhpTextFunctions`, `PhpGettext`, `PhpDiagnostics`, `PhpSafeCss`, `PhpActiveTheme`, `PhpCapabilities`, `PhpLayerFilters`, `PhpGlobalStylesPost`, `PhpVariationRegistrar` and `PhpWpCache` call WordPress's PHP; filters go through the Rust Hook API (`HookApiFilters`). `ThemeJsonArea::new()` wires them together. <Ev source="ss:crates/speedyspec-wp-theme-json-php/src/lib.rs#L67-L104" hash="f3810f32b9a01bbc4877fb17e015114c2282a90217c7e2a5ec701fce88d89507"/>
+- **Memory** (`speedyspec-wp-theme-json`): `MemoryBlockMetadata`, `MemoryGlobalSettings`, `MemoryThemeSupports`, `MemoryActiveTheme`, `MemoryWpCache` and the null objects, for Rust-only use and tests.
+- Each `WP_Theme_JSON` object holds a handle into the arena, cleared at the end of every request. <Ev source="ss:crates/speedyspec-wp-theme-json-php/src/lib.rs#L119-L129" hash="7a2ad6ce4aa9864b06c249ac7fa5e38f345bcc58a0fc7064fac36403efd49075"/>
+
+To replace one use case, bind its handler key again, from Rust or from PHP through the container. To replace a port, build `ThemeJsonDeps` with another adapter.
+
+### Patterns
+
+- **Facade:** `ThemeJsonApi`, and the PHP classes over it.
+- **Command and Query:** a message per method, bound in the container (**Registry**).
+- **Data Mapper:** `ThemeJsonCodec`, between WordPress's arrays and the typed model, keeping unknown keys.
+- **Chain of Responsibility:** schema migration, one `MigrationStep` per version.
+- **Specification:** the sanitizer's schema, built per document.
+- **Strategy:** preset rules applied while merging, and fluid font sizes.
+- **Builder:** the stylesheet, appended part by part in WordPress's order.
+- **Repository per origin, behind a Facade:** `ThemeJsonResolver` reads the core, blocks, theme and user layers; `GlobalStylesApi` sits over it.
+- **Adapter** for the PHP and memory ports; **Null Object** for `NoFilters`, `NoThemeSupports`, `NoCapabilities` and `NoTranslation`.
+
+<Ev source="ss:crates/speedyspec-wp-theme-json/README.md#L38-L53" hash="af6c1f89c7f425f615bd1ec50c1e1b41d6efc7a2ba5e364b039b6aecfeef6ae5"/>
+
+### Calling it from Rust
+
+```rust
+use speedyspec_hooks::{Key, Value};
+use speedyspec_wp_theme_json::ThemeJsonApi;
+
+/// The preset CSS variables of a theme's theme.json data, for a page cache to inline.
+fn preset_variables(api: &ThemeJsonApi, theme_json: Value) -> Vec<u8> {
+    let doc = api.construct(theme_json, b"theme");
+    let types = Value::Array(vec![(Key::Int(0), Value::Str("variables".into()))]);
+    api.get_stylesheet(&doc, &types, &Value::Null, &Value::Array(Vec::new()))
+        .unwrap_or_default()
+}
+```
+
+### How to change this
+
+- **What must pass:** the engine's tests, whose expected values WordPress 7.1.5 produced; the recorded scenarios in `compat/theme-json`, replayed by `speedyspec-wp-theme-json-php`'s `compat` test; and WordPress's theme.json tests, run by its `wordpress` test, except the documented breaks. <Ev test="speedyspec-wp-theme-json-php::wordpress::wordpress_theme_json_tests_pass"/>
+- **Recording a new scenario:** add it to `compat/theme-json/scenarios.json` and run `cargo run -p speedyspec-compat -- record theme-json --wordpress 7.1.5`; a difference the port can't match goes in `breaks.json` with its reason.
+- **Linking it into the runtime** means adding `ThemeJsonArea` to the worker and serving WordPress's files through `prepare_release()`. <Ev source="ss:crates/speedyspec-wp-theme-json/README.md#L101-L103" hash="67bfdcd9955266fb5c1444fca27ae3b3eb8ecb89145ed55ca3509428bd7e493d"/>

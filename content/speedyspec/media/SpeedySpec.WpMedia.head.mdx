@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\head"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+Reads a file's first bytes as PHP opens it, stream wrappers included, or an empty string when it can't; the image functions sniff a file's type from them. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L56-L70" hash="6bd528aef6eada7ceb1501033f0eadeb416042ee6a50e3c4c2862e4dd2f7bcea"/> <Ev test="speedyspec-wp-media-php::php::mislabelled_png_is_png"/> Not for plugins.

@@ -1,0 +1,12 @@
+---
+symbol: "function:SpeedySpec\\WpCron\\run_due_events"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+Runs this site's due events, in order, for up to `$budget` seconds (default 30; a string is read as a number), and returns `ran`, `claimed_by_others`, `unclaimed` and `next` (the next due time, or `null`). <Ev source="ss:crates/speedyspec-wp-cron-php/src/natives.rs#L176-L206" hash="5bacca4b914f3124f8c4d56edf6a82c3e933bc4e9be3d4cecc19d99f6e745acd"/> It replaces `wp-cron.php`'s loop: SpeedySpec's cron endpoint calls it when the server's scheduler wakes. <Ev source="ss:crates/speedyspec-wp-cron-php/src/endpoint.php#L49-L54" hash="be0fc773359c242d3d0fc70b154c4ad52259bfdbae37335ddd8b3b32673ab0a8"/>
+
+Each event is claimed with one compare-and-swap write that adds its next occurrence and removes this one, so two runners never run the same event. <Ev test="speedyspec-wp-cron::run::two_runners_run_each_event_once"/> The hooks fire in WordPress's order, except that the `cron` option's update hooks (`pre_update_option_cron`, `update_option_cron`) fire once per event; `wp-cron.php` writes twice for a recurring one. <Ev area="cron" break="run_cron_single_and_recurring"/> <Ev area="cron" scenario="run_cron_reschedule_error"/> A failed reschedule or unschedule is logged and fires its error action as in `wp-cron.php`. <Ev test="speedyspec-wp-cron::run::reschedule_error_logs_and_fires_action"/>
+
+Called by the endpoint, not by plugins.

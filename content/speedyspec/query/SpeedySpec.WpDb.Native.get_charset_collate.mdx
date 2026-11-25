@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\get_charset_collate"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::get_charset_collate()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L949-L949" hash="d491e7bd7cf0d6d8eb1d46851a4444784ae83c63b68244aed5b4b66a4d4481d0"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

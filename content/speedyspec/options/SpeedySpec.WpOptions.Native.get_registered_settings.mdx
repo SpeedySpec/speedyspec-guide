@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\get_registered_settings"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `get_registered_settings()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L211-L214" hash="cc4213daa8b154a141c634ea3c6a4b0486144e7fea4b6d7658da37011dd6030b"/>
+
+It sends the `GetRegisteredSettings` query through the handler bound under `SpeedySpec\WpOptions\GetRegisteredSettingsHandler`. <Ev scenario="register_setting_defaults" area="options"/>

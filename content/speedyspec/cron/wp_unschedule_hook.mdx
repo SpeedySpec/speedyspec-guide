@@ -1,0 +1,18 @@
+---
+symbol: "function:wp_unschedule_hook"
+verdict: works-with-differences
+differences:
+  - summary: "A write that conflicts with another process is retried instead of overwriting it; after five conflicting attempts it returns could_not_set (a WP_Error, or false), where WordPress overwrites."
+---
+
+## Behaviour
+
+Native. Unschedules every event of a hook, whatever its arguments, and returns how many. Every recorded scenario replays as in WordPress, and WordPress's own cron tests pass. <Ev area="cron" scenario="unschedule_and_clear"/> <Ev area="cron" scenario="could_not_set_True"/> <Ev area="cron" scenario="pre_unschedule_hook_wp_unschedule_hook___return_false_True"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
+
+## Concurrent writes
+
+Every write is a compare-and-swap on the `cron` option. <Ev source="ss:crates/speedyspec-wp-cron/src/write.rs#L123-L126" hash="129f2627ffbf81e1aa07d784664e9dba48adb2c4451e3ca1b54ba0bffe46569f"/> When another process wrote first, the write is retried on the new value, so both changes survive. <Ev test="speedyspec-wp-cron::write::conflict_retries_and_keeps_both"/> <Ev test="speedyspec-wp-cron-options::cross_process::two_processes_schedule_and_both_survive"/> After five conflicting attempts it gives up with `could_not_set`; WordPress has no such case, because it overwrites. <Ev test="speedyspec-wp-cron::write::five_conflicts_give_could_not_set"/>
+
+## Override
+
+The `cron` option is read and written through the `CronStore` port. To keep events somewhere else, build `CronApi` with another store; see the architecture page.

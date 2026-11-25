@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_fast_hash"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. The global function calls WordPress's rules (a keyed BLAKE2b, prefixed `$generic$`) over libsodium, never PHP's `sodium_*` functions. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/crypto.php#L61-L66" hash="81c46450d967358db602b935008d3ecee92dc98367ade1a6f470c11ac62be997"/> Every fast hash recorded from WordPress 7.1.5 (`compat/crypto/cases.json`) matches, and WordPress's own `wpVerifyFastHash.php` tests pass against it except the phpass one. <Ev test="speedyspec-wp-crypto-sodium::recorded::fast_hashes_match"/> <Ev test="speedyspec-wp-crypto-php::php::replays_wordpress"/> <Ev test="speedyspec-wp-crypto-php::wordpress::wordpress_crypto_tests_pass_but_phpass"/> A non-string argument is PHP's `TypeError`, as in WordPress. <Ev test="speedyspec-wp-crypto-php::php::fast_hash_type_error"/>
+
+## Replacing it
+
+The sodium functions have no container port; the [Passwords and crypto architecture](/speedyspec/architecture/password/) page says how to build other crypto from the crypto contracts.

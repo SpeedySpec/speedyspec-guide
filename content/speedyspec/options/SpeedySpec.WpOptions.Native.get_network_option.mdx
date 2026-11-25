@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\get_network_option"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `get_network_option()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L165-L168" hash="53e53a10bd902051028be7b926cd80993d99ae9bc23efab70c9fa00f1638d4e9"/>
+
+It sends the `GetNetworkOption` query through the handler bound under `SpeedySpec\WpOptions\GetNetworkOptionHandler`. <Ev scenario="network_option_bad_network_id" area="options"/>

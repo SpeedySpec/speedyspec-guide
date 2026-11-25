@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\replace"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::replace()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L779-L779" hash="86f02c15d3b1cbedf38a5d63f7f2de5032dcbb740bd59ded793dee1e14fb012b"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

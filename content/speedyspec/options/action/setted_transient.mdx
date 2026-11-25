@@ -1,0 +1,6 @@
+---
+symbol: "action:setted_transient"
+verdict: works-as-wordpress
+---
+
+Fired by the native [set_transient()](/speedyspec/options/set_transient/) through `do_action_deprecated()` (deprecated in 6.8.0 for `set_transient`), with WordPress's arguments and in WordPress's order. <Ev scenario="transient_hooks_order" area="options"/>

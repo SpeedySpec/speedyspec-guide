@@ -1,0 +1,12 @@
+---
+symbol: "function:get_site_transient"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `GetSiteTransient` query. `update_core`, `update_plugins` and `update_themes` never time out on read, as in WordPress. <Ev scenario="site_transient_single_site" area="options"/> <Ev scenario="site_transient_multisite" area="options"/> <Ev scenario="site_transient_core_no_timeout" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+
+## Override
+
+Transients go through the options API, or the object cache when it is persistent; the `ExternalObjectCache` and `Clock` ports decide which and when. See the architecture page.

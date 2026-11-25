@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\delete"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::delete()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L794-L794" hash="d58c8080ccc92d992540dfa42097da87bc90f6aa0b4f12dfb78a1d2da157f56a"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

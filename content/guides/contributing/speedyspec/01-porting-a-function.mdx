@@ -75,13 +75,13 @@ returns `false`, which is exactly what the "missing" example checks.
 **The ports it uses.** The plan calls two repository methods, each the counterpart of one `$wpdb` call in the PHP:
 `autoload_of` for the `SELECT autoload` and `remove` for `$wpdb->delete()`.
 <Ev source="ss:crates/speedyspec-wp-options/src/ports.rs#L23-L24" hash="9200440a9dd0dee1f84a4eaffbe493ef4a8975676fa56d53d4b443f63e08b5dc"/>
-<Ev source="ss:crates/speedyspec-wp-options/src/ports.rs#L56-L57" hash="2e5435cff71aa70c3592e44b09446c583d7e7de3d7200e117d41fcb5fc878cbb"/>
+<Ev source="ss:crates/speedyspec-wp-options/src/ports.rs#L70-L71" hash="2e5435cff71aa70c3592e44b09446c583d7e7de3d7200e117d41fcb5fc878cbb"/>
 
 **The command.** One line binds the `DeleteOption` command to the API.
 <Ev source="ss:crates/speedyspec-wp-options/src/messages.rs#L73-L73" hash="3a06644bfc8f7663a78a88b7b9b82dc99d8e61f8c463ee2e8ec32a59618e15e1"/>
 
 **The database adapter.** `remove` builds the `DELETE` and returns the affected-row count, which tells the API whether
-to fire the two later actions. <Ev source="ss:crates/speedyspec-wp-options-sql/src/repository.rs#L320-L334" hash="593620918d344120b6747585edc9c02b488f0f8bd6559c0e26f2999095fa40bb"/>
+to fire the two later actions. <Ev source="ss:crates/speedyspec-wp-options-sql/src/repository.rs#L384-L398" hash="593620918d344120b6747585edc9c02b488f0f8bd6559c0e26f2999095fa40bb"/>
 
 **The PHP adapter.** The native `delete_option()` turns PHP's argument into a name (an empty name returns `false`
 before anything else happens, as in WordPress) and sends the command.

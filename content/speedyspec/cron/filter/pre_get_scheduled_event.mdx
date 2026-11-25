@@ -1,0 +1,6 @@
+---
+symbol: "filter:pre_get_scheduled_event"
+verdict: works-as-wordpress
+---
+
+Run by the native cron functions through the native Hook API. Runs before an event is looked up; a non-null value is the answer. <Ev area="cron" scenario="pre_get_scheduled_event_answers"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>

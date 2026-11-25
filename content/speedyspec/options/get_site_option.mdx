@@ -1,0 +1,12 @@
+---
+symbol: "function:get_site_option"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `GetNetworkOption` query for the current network. SpeedySpec's PHP function drops `$deprecated`, which WordPress ignores too. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L145-L148" hash="c5204d34745976f75dc427529cc3fba77b2b4ffc15f09eee253e39ca06d9a4db"/> <Ev scenario="site_option_fallback" area="options"/> <Ev scenario="network_option_per_network" area="options"/> <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+
+## Override
+
+Network options live in `wp_sitemeta` behind the `SitemetaRepository` port on multisite, and in the options API on a single site. See the architecture page.

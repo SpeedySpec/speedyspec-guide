@@ -1,0 +1,29 @@
+---
+symbol: "class:WP_Object_Cache"
+verdict: works-with-differences
+differences:
+  - summary: "The protected methods is_valid_key() and _exists() don't exist: a subclass that calls them gets an Error (found by the guide)."
+  - summary: "SpeedySpec's WP_Object_Cache has a destructor, which WordPress's class doesn't, and keeps its properties in Rust behind __get() and __set() (found by the guide)."
+---
+
+## Behaviour
+
+`WP_Object_Cache` is SpeedySpec's own class with WordPress's public methods, parameters and defaults. Each object is a handle on its own Rust cache, so two objects never share values; the counters, groups and the `cache` property read as in WordPress, and other properties are ordinary dynamic properties. <Ev scenario="instances_separate" area="object-cache"/> <Ev scenario="hit_miss_properties" area="object-cache"/> <Ev scenario="cache_property_shape" area="object-cache"/> <Ev scenario="dynamic_property" area="object-cache"/> <Ev test="speedyspec-wp-object-cache-php::php::replayed_scenarios_match_wordpress"/>
+
+## SpeedySpec's own members
+
+- `__construct()` creates the object's Rust cache. `__destruct()` drops it; WordPress's class has no destructor. <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L238-L249" hash="71fa9c11b13f959f4a7f4cd72f52b2d7a2a1bdb089618a663fa8d8796f4a3251"/>
+- `__get()`, `__set()`, `__isset()` and `__unset()` read and write `cache`, `cache_hits`, `cache_misses`, `global_groups`, `blog_prefix` and `multisite` in Rust; any other name is a dynamic property, as WordPress reads it. <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L251-L278" hash="eb77675d7a77f2f7735e6e14dfa76ef65f2c6ca2bde417a9edcb9bc1e4bc0f83"/>
+- `stats()` prints the same report, and calls `esc_html()` only when it exists. <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L374-L388" hash="84acdef714d58b729311c8eb8ecd94a885bb0308f293a72bd3f02237f87e2d5b"/>
+
+## Limits
+
+WordPress's class has two `protected` methods SpeedySpec's lacks: `is_valid_key()` and `_exists()`. <Ev source="wp:wp-includes/class-wp-object-cache.php#L142" hash="32d4e95e570855a6dc3d3cb2e23e503be66dd84436a5f5ed634a6036f9ed16b2"/> <Ev source="wp:wp-includes/class-wp-object-cache.php#L180" hash="57d1de4b60f4ddeaad7d71addcdd738c0ddce887e2d1dcc1d399ce7491218f56"/> A subclass that calls `$this->is_valid_key()` or `$this->_exists()` fails with `Error: Call to undefined method`. Invalid keys are still refused, with WordPress's notice. <Ev scenario="invalid_keys_doing_it_wrong" area="object-cache"/>
+
+## Override
+
+Put an object of a subclass in `$wp_object_cache`: each `wp_cache_*` function then calls its method, as WordPress does. <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L30-L33" hash="cd19e67b2a0cc2894fb39e2e383a4e9aac89492f120c6aff65d08946d2376896"/>
+
+## Porting
+
+In a subclass, check keys yourself instead of calling `is_valid_key()`, and test a key with the `$found` argument of `get()` instead of `_exists()`. <Ev scenario="found_flag" area="object-cache"/>

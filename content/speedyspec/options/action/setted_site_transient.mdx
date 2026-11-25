@@ -1,0 +1,6 @@
+---
+symbol: "action:setted_site_transient"
+verdict: works-as-wordpress
+---
+
+Fired by the native [set_site_transient()](/speedyspec/options/set_site_transient/) after `set_site_transient`, through `do_action_deprecated()` with WordPress's version and replacement. <Ev source="ss:crates/speedyspec-wp-options/src/transients.rs#L382-L392" hash="9351a4b71518641dcb28082a4065377708aea4036c67867c509d87410149eecf"/> <Ev source="wp:wp-includes/option.php#L2728" hash="8e5585e10cb82c7f0ce1076ff6cc91c9b5ca7b2ab8e1f5e268d26b3ad6760735"/> No recorded scenario or test hooks it; the scenarios for the hooks around it replay as in WordPress. <Ev scenario="site_transient_single_site" area="options"/>

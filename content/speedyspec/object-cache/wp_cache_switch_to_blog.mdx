@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_cache_switch_to_blog"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. Changes the site prefix on multisite and is ignored on a single site. Because SpeedySpec declares it, WordPress's `cache-compat.php` never defines its fallback. <Ev scenario="switch_to_blog_multisite" area="object-cache"/> <Ev scenario="switch_to_blog_single_site_ignored" area="object-cache"/> <Ev test="speedyspec-wp-object-cache-php::php::replayed_scenarios_match_wordpress"/>
+
+## Override
+
+The function dispatches a use case through the container; bind another handler under its key, or put a `WP_Object_Cache` subclass in `$wp_object_cache`. See the architecture page.

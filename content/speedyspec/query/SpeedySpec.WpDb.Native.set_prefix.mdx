@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\set_prefix"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::set_prefix()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L641-L641" hash="47b51e261e1ee426ad32b47ab1d46ce39fc3950c0fd3b325e771e031f6ac0757"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

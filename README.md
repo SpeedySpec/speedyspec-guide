@@ -59,6 +59,13 @@ bun run runner:build
 
 `GUIDE_RUNNER` points the pipeline at another binary. With `--offline` and no binary, the runner stages are skipped.
 
+The runtime side boots every native area the runtime worker boots (`runner/src/sides.rs`; `tests/areas.rs` fails
+when they differ). As in the worker, the database areas (wpdb, object cache, options, cron) boot only when the
+environment names a database with the worker's variables: `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST` and
+`TABLE_PREFIX`. Run `bun run guide reflect` with them set, or `inventory-runtime.json` leaves that API out. Booting
+only connects (`SELECT 1`); it creates no tables. Media reads always fail in the runner: it has no media-probe
+children.
+
 On Linux, speedyspec-server builds its static PHP for musl, so build PHP and the runner in a musl container with
 `scripts/linux-runner.sh`, as CI does. The PHP build goes to `<server>/.php-build-linux` (`-arm64` on arm64), and the
 runner comes out fully static, ready to run on the host:

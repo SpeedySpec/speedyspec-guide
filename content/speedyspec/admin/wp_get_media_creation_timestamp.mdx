@@ -1,0 +1,10 @@
+---
+symbol: "function:wp_get_media_creation_timestamp"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native. The function reads the creation time from the places getID3 puts it for each format (QuickTime and MP4, Matroska, ASF) and returns WordPress's Unix timestamp, or `false`. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L192-L197" hash="7a913416d3939f209c16719ff6e23dcc707f203edfb508b44f06c58b048e27bb"/> <Ev test="speedyspec-wp-media::functions::creation_timestamp_per_format"/> <Ev test="speedyspec-wp-media::functions::unknown_format_has_no_timestamp"/> <Ev test="speedyspec-wp-media-php::php::creation_timestamp_matroska_string"/> WordPress's own `metadata.php` tests pass against it, and `created_timestamp` matches WordPress over the recorded video corpus, where no difference is listed for it. <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/> <Ev test="speedyspec-wp-media-corpus::corpus::corpus_matches_wordpress_except_listed_differences"/>
+
+See the [Media architecture](/speedyspec/architecture/media/) page.

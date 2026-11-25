@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\allowed_options"
+verdict: new-in-speedyspec
+---
+
+Used by the options API's PHP adapters; not for plugins. Reads `$new_allowed_options[ $group ]` for `wp_prime_option_caches_by_group()`, through the `OptionGroups` port. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L248-L251" hash="9f85d94b4927824e649ed22c0ce8ce8efd1664f01756f0ea9e1bfcf23660bf92"/> <Ev source="ss:crates/speedyspec-wp-options-php/src/adapters.rs#L223-L232" hash="d97bf995a64fff00c0cb74b7615bda4828ef21df1e836f411da62b3d1806e8e0"/> <Ev scenario="prime_by_group" area="options"/>

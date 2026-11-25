@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpCron\\network_sites"
+verdict: new-in-speedyspec
+---
+
+The current network's active sites (not spam, deleted or archived) through `get_sites()`, each as its id, domain and path, in id order. The `NetworkSites` port's adapter calls it. <Ev source="ss:crates/speedyspec-wp-cron-php/src/cron.php#L157-L180" hash="5a17a8932d19c8e65da0d9dce691260cce72cc09b06506b3b247d20e3e9d52f1"/> <Ev source="ss:crates/speedyspec-wp-cron-php/tests/network_php.rs#L189-L194" hash="d907c328fa10f4885939683b354efe263712da32615634ff7fd33fe3a6a32b7d"/> <Ev test="speedyspec-wp-cron::network::lists_due_sites_in_id_order"/> Used by SpeedySpec's cron wrapper; not for plugins.

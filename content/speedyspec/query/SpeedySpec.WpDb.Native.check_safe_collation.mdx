@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\check_safe_collation"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::check_safe_collation()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L883-L883" hash="2ea3ec7e1f5d4e07952d46ff9acfb4c7c9d9d6fdbbdab891be06420aea99fb63"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

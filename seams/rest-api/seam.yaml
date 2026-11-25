@@ -1,6 +1,7 @@
 name: "REST API"
 job: "Registers REST routes and serves them through the REST server and its controllers."
 ported: false
+crates: [speedyspec-rest, speedyspec-rest-contracts, speedyspec-rest-php]
 files:
   - 'wp-includes/rest-api/endpoints/class-wp-rest-entity-actions-controller.php'
   - 'wp-includes/rest-api/endpoints/class-wp-rest-entity-fields-controller.php'

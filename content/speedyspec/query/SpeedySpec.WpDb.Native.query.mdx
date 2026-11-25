@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\query"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::query()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L749-L749" hash="cb3237feba3abbcc208913acebb7f84ea21ce5fbd397fcc4150c48502f44f206"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

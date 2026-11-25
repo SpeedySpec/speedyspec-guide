@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\register_setting"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `register_setting()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L201-L204" hash="973003bab965dbb001bcbbf816bbe504a973de2ab5bc40bede5b283c51ec4233"/>
+
+It sends the `RegisterSetting` command through the handler bound under `SpeedySpec\WpOptions\RegisterSettingHandler`. <Ev scenario="filter_default_option_passed" area="options"/>

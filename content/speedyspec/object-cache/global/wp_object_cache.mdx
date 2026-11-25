@@ -1,0 +1,12 @@
+---
+symbol: "global:wp_object_cache"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+`wp_cache_init()` sets it to a new `WP_Object_Cache`, as WordPress does; it is a real object, not a proxy. The `wp_cache_*` functions use it. <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L14-L25" hash="3bf0bee5a774ee623bbea6a89ab3a1ac703dbb5beafc503193f249f90fd03c39"/> <Ev scenario="switch_to_blog_multisite" area="object-cache"/>
+
+## Override
+
+Replacing it with an object of a `WP_Object_Cache` subclass works: each function calls that object's method. <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L30-L33" hash="cd19e67b2a0cc2894fb39e2e383a4e9aac89492f120c6aff65d08946d2376896"/>

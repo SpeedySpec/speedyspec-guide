@@ -1,0 +1,57 @@
+---
+---
+
+The Abilities API is a transport of the [unified operation API](/speedyspec/architecture/operation/): every operation is an ability by default, and `WP_Ability::execute()` runs in Rust in WordPress's hook order. None of these crates is linked into the runtime worker yet. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The crates
+
+- **`speedyspec-abilities-contracts`**: `AbilityBinding`, the metadata an operation is published with as an ability (label, description, category, visibility, annotations, meta), and the ports. It depends only on the operation contracts. <Ev source="ss:crates/speedyspec-abilities-contracts/src/lib.rs#L1-L7" hash="55d4e882dd66d33ec909ba27642a8c4f94ee17f473d8cb3798511e1339b0b861"/>
+- **`speedyspec-abilities`**: `AbilitiesTransport`, installed as the `abilities` transport; `DefaultAbilityMapping`; `AbilitiesServer`, which runs `execute()`; and `OperationSteps`, an operation's steps. <Ev source="ss:crates/speedyspec-abilities/src/lib.rs#L1-L7" hash="4c6025aa01f0d23f10eda98a72bd3031abc8a2b6c2c213e01192b5d4c00060a7"/>
+- **`speedyspec-abilities-php`**: the PHP adapter. It fires WordPress's ability hooks, maps `WP_Error` to and from operation errors, declares the `WP_Ability` shim, and gives PHP `SpeedySpec\Abilities\Abilities::publish()`. <Ev source="ss:crates/speedyspec-abilities-php/src/lib.rs#L1-L11" hash="f74aa682688ebc3b22f05175913b544dadcff2257fc9e8f4baa00fd9851b4a64"/>
+
+## The contracts
+
+- **`AbilityMapping`** (Strategy): the metadata an operation is published with when it has no explicit binding, or `None` when it can't be an ability. <Ev source="ss:crates/speedyspec-abilities-contracts/src/ports.rs#L12-L16" hash="0e110a27b1e9f7a29095ac9a4ea61c94192e1c62974dd192325a0419c9ecd122"/>
+- **`AbilityHooks`**: one method per WordPress ability hook, from `wp_ability_invoked` to `wp_after_execute_ability`, plus `_doing_it_wrong()`. `NoAbilityHooks` is WordPress with no hooks added. <Ev source="ss:crates/speedyspec-abilities-contracts/src/ports.rs#L18-L20" hash="011a12f37d077a388aa7d2477cf79a697124b5ed11254bca52b936817778d62a"/>
+- **`AbilitySteps`** (Strategy): one ability's steps, mirroring `WP_Ability`'s methods: normalize, validate, check permissions, execute, validate the output. <Ev source="ss:crates/speedyspec-abilities-contracts/src/ports.rs#L160-L173" hash="f1939c3f3decf448eb462c5f94f41e19cbadda83c5d7c07e42b5b6f18b831a72"/>
+
+## The use cases
+
+- **Execute** an ability: `AbilitiesServer::execute` fires `wp_ability_invoked` and `wp_pre_execute_ability` (any value but its sentinel short-circuits), runs the steps, treats any permission result but `true` as `ability_invalid_permissions`, and fires the before and after hooks. A failing hook fails the call closed. <Ev source="ss:crates/speedyspec-abilities/src/server.rs#L10-L14" hash="29eb67687119bc213f75a449b20adf57e9da656c7fdb8edfd2ac850571bd974b"/> <Ev test="speedyspec-abilities::server::hooks_fire_in_wordpress_order"/> <Ev test="speedyspec-abilities::server::a_failing_hook_fails_closed"/>
+- **Publish** an operation as an ability with metadata of its own: `Abilities::publish( 'acme/get-report' )->category( 'reports' )`, stored as the operation's `abilities` binding. <Ev source="ss:crates/speedyspec-abilities-php/src/php/abilities.php#L10-L24" hash="78a95a860a3c452e074dddb61961d6794c2b982f5d8c241367319850dc5b2bbb"/> <Ev test="speedyspec-abilities-php::facade::publish_stores_the_binding"/>
+- **Register operations as abilities**: on `wp_abilities_api_init`, at the lowest priority, after the default categories register at the highest priority of `wp_abilities_api_categories_init`, so a plugin's own category wins. Restricted operations aren't abilities. <Ev source="ss:crates/speedyspec-abilities-php/src/php/abilities.php#L237-L258" hash="ac6a27d122763f2ec14c7e5746bf3d84237f0c912088f1e1a2de1c899459b122"/> <Ev test="speedyspec-abilities-php::operations::operations_are_registered_as_abilities"/> <Ev test="speedyspec-abilities-php::operations::restricted_operations_are_not_abilities"/>
+
+## Adapters
+
+- **`WP_Ability`** is a shim over `SpeedySpec_TrunkAbility`, WordPress's class renamed: its `execute()` calls the native Abilities server, and its own steps (and a subclass's overrides) run through `speedyspec_step()`. It adds no properties, so abilities compare as WordPress's do. <Ev source="ss:crates/speedyspec-abilities-php/src/php/wp-ability.php#L3-L24" hash="73d0de9c95e465e45e98288f1c02b27299ad471f496e2e43415b33bbfac07e2a"/> <Ev test="speedyspec-abilities-php::legacy::a_subclass_s_overrides_run"/> <Ev test="speedyspec-abilities-php::legacy::abilities_compare_equal"/>
+- **The legacy adapter**: an ability that is not an operation (`wp_register_ability()`, a subclass, one built directly) becomes, when it first executes, an operation `legacy-abilities/{slug}-{hash}` restricted to `abilities`, whose handler runs the ability's `do_execute`. <Ev source="ss:crates/speedyspec-abilities-php/src/legacy.rs#L1-L8" hash="0d651df3e831ca2f2fa54040230cfde57f1f1d90caefc3303be594e60b341307"/> <Ev test="speedyspec-abilities-php::legacy::a_legacy_ability_is_an_abilities_only_operation"/>
+- **`PhpAbilityHooks`** fires the hooks with WordPress's arguments and coercions. <Ev test="speedyspec-abilities-php::hooks::hook_arguments_are_wordpress_s"/> <Ev test="speedyspec-abilities-php::hooks::permission_result_coerces_as_wordpress_does"/>
+- The handler an operation ability runs is the one bound under `operation:<name>`; see the operation API's [container keys](/speedyspec/architecture/operation/).
+
+## Patterns
+
+- **Ports and Adapters**: the transport and server in Rust, the hooks and the `WP_Ability` shim as PHP adapters.
+- **Strategy** for the default mapping and for each ability's steps.
+- **Template Method** for `execute()`, in WordPress's order.
+- **Adapter** for legacy abilities (the design's `LegacyHandlerAdapter`) and for `WP_Ability::execute()` reaching any operation (`LegacyCallerAdapter`). <Ev source="ss:crates/speedyspec-abilities-php/src/area.rs#L35-L36" hash="b6e06531758c0390811da9bf48007ba1beda08b747ae665a89eeca4343059ca3"/>
+
+## Executing an ability from Rust
+
+```rust
+use std::rc::Rc;
+use speedyspec_abilities::AbilitiesServer;
+use speedyspec_abilities_contracts::{AbilityHooks, AbilityOutcome, AbilitySteps};
+use speedyspec_operation_contracts::Value;
+
+fn run_report(hooks: Rc<dyn AbilityHooks>, steps: &dyn AbilitySteps, handle: u64) -> AbilityOutcome {
+    let server = AbilitiesServer::new(hooks);
+    server.execute("acme/get-report", Some(Value::map([("id", Value::from(7_i64))])), steps, handle)
+}
+```
+
+`steps` is an operation's `OperationSteps`, or a PHP ability's own; `handle` identifies the `WP_Ability` object the hooks receive.
+
+## How to change this
+
+- **Change an ability's metadata** with `Abilities::publish()`, or replace the default mapping with `AbilitiesTransport::with_mapping`.
+- **What must still pass:** the crates' tests and WordPress's own Abilities tests run against the shim (`speedyspec-abilities-php`'s `tests/wordpress.rs`), which lists no expected failures.

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\unserialize_value"
+verdict: new-in-speedyspec
+---
+
+Used by the options API's PHP adapters; not for plugins. Unserializes a stored value that holds an object, so that PHP builds the object; everything else is unserialized in Rust. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L259-L262" hash="fae585dc098928e77ae8953a5206484e3677523d67fb7b2a493964e1e0630721"/> <Ev source="ss:crates/speedyspec-wp-options-php/src/codec.rs#L38-L51" hash="01f0ec0fc1f00128e44d31269f9a8115adb6eccc7a18352bf307a8386c25f0a0"/> <Ev scenario="value_stdclass" area="options"/> <Ev scenario="value_array_holding_object" area="options"/>

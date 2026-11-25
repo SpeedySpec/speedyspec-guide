@@ -1,0 +1,26 @@
+---
+---
+
+Not native yet. SpeedySpec has a REST transport in Rust (`speedyspec-rest`, `speedyspec-rest-contracts`, `speedyspec-rest-php`), but the runtime worker doesn't link it, so PHP code on SpeedySpec still gets WordPress's own REST API: `WP_REST_Server`, `WP_REST_Request`, `WP_REST_Response`, `register_rest_route()`, `rest_do_request()` and the `wp/v2` controllers. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/> How the port is built is on [the architecture page](/speedyspec/architecture/rest-api/).
+
+## What the port covers
+
+Of this seam's 89 functions and 62 classes, the port replaces one class, `WP_REST_Server`, with a shim over the Rust REST server. The shim extends a renamed, unchanged copy of WordPress 7.1.5's class and overrides route registration and dispatch, so `register_rest_route()`, `WP_REST_Server::dispatch()` and `rest_do_request()` reach the Rust server. <Ev source="ss:crates/speedyspec-rest-php/src/php/wp-rest-server.php#L3-L8" hash="e709b25a407de8516dfce3193d20326eb0802006858dfacecfda61b28238f04b"/> <Ev source="ss:crates/speedyspec-rest-php/src/php/trunk-rest-server.php#L1-L3" hash="dd584336f7a06db38287bb09b9e16a1dfdb795c7ac83c8bc0dc69a606a44ce9d"/> `WP_REST_Request`, `WP_REST_Response`, `rest-api.php`'s functions and every controller stay WordPress's: hooks see proxies that extend WordPress's two classes. <Ev test="speedyspec-rest-php::hooks::proxy_is_a_wp_rest_request"/>
+
+- Legacy routes registered on `rest_api_init` become operations served only over REST. Permission callbacks answer 401 or 403 as WordPress does, a `WP_Error` keeps its status, `args` validate in WordPress's words, and defaults and sanitizers reach the callback. <Ev test="speedyspec-rest-php::legacy::rest_api_init_registers_through_the_shim"/> <Ev test="speedyspec-rest-php::legacy::permission_false_is_401_or_403"/> <Ev test="speedyspec-rest-php::legacy::permission_wp_error_keeps_its_status"/> <Ev test="speedyspec-rest-php::legacy::args_validate_in_wordpress_words"/> <Ev test="speedyspec-rest-php::legacy::defaults_and_sanitize_reach_the_callback"/>
+- `rest_do_request()` reaches both legacy routes and operations declared once for every transport. <Ev test="speedyspec-rest-php::caller::rest_do_request_reaches_a_legacy_route"/> <Ev test="speedyspec-rest-php::caller::rest_do_request_reaches_a_new_style_operation"/>
+- The REST hooks fire in WordPress trunk's order, and a hook's `set_param()` reaches the handler. <Ev test="speedyspec-rest::server::hooks_fire_in_trunk_order"/> <Ev test="speedyspec-rest-php::end_to_end::before_callbacks_set_param_reaches_handler"/>
+- `_fields`, `_links` and `?_embed` work over HTTP, and errors carry WordPress's statuses and bodies (`rest_no_route`, `rest_forbidden`, `rest_invalid_param`). <Ev test="speedyspec-rest::server::fields_limit_the_response"/> <Ev test="speedyspec-rest-php::end_to_end::embed_over_http"/> <Ev test="speedyspec-rest::encode::plain_errors_have_wordpress_bodies"/> <Ev test="speedyspec-rest::server::unknown_path_and_wrong_method_are_rest_no_route_404"/>
+
+## How it is checked against WordPress
+
+The REST area has no recorded compat scenarios. WordPress's own `rest-server.php` tests, copied from the 7.1 branch without those that need a database, run with the pinned PHPUnit against the shim and the Rust server: 119 tests, every one run, and exactly the listed ones failing. <Ev source="ss:crates/speedyspec-rest-php/tests/wordpress.rs#L162-L169" hash="155d52a8fd306704aa6743cdb977741a33ed679647caf35c9ea5708d855234ec"/> The 14 listed failures are:
+
+- the `Allow` header on an `OPTIONS` request answered from `rest_pre_dispatch`, because the Rust response carries no matched route (deferred);
+- batch requests (`/batch/v1`, seven tests), not served yet;
+- five tests that need WordPress's own `wp/v2` and `oembed/1.0` routes, attachments or a user in the database, which the suite doesn't load;
+- one test that mocks with a PHPUnit method version 11 removed. <Ev source="ss:crates/speedyspec-rest-php/tests/wordpress.rs#L21-L49" hash="1eebbef434b737accb7fd53cfb2a4bcc50cbe156eff5ef1735b0ee23755f2c42"/>
+
+## What isn't ported
+
+The `wp/v2` controllers, the meta fields and search handlers, `WP_REST_Request`, `WP_REST_Response` and the functions in `rest-api.php` have no Rust port. Converting the controllers to operations is follow-up work of the unified operation API.

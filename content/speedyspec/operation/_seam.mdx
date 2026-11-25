@@ -1,0 +1,14 @@
+---
+---
+
+SpeedySpec's unified operation API: an operation is declared once, one handler is bound to it, and every transport (REST, XML-RPC, Abilities) can expose it. It has no WordPress counterpart, so it appears only in the SpeedySpec API. See [its architecture](/speedyspec/architecture/operation/).
+
+It is not in the runtime yet. The runtime worker doesn't link its crates, so its PHP facade, `wp_register_operation()`, `wp_operation_transports()` and the `SpeedySpec\Operation\*` classes, isn't declared there and has no reflected symbols. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/> <Ev source="ss:crates/speedyspec-operation-php/src/php/operation.php#L334-L347" hash="e094942ddf3565776ef0e5bd75930fd0d309463199a3b9c1e01b427a99eea53a"/>
+
+What the crates' own tests show:
+
+- Registering checks every reference and relation when the registries close, and the specification exports as a document. A plugin's broken reference can drop only its own definitions. <Ev test="speedyspec-operation::registry::closes_with_relation_cycles_and_exports_a_document"/> <Ev test="speedyspec-operation::registry::close_lenient_drops_what_errors_name"/>
+- A call validates its input, checks permission before the handler, and never returns output that breaks the output schema. <Ev test="speedyspec-operation-dispatch::dispatch::invalid_input_reports_violations"/> <Ev test="speedyspec-operation-dispatch::dispatch::permission_runs_before_the_handler"/> <Ev test="speedyspec-operation-dispatch::dispatch::output_that_breaks_its_schema_is_internal_and_never_returned"/>
+- An operation restricted to some transports isn't found on the others; one that isn't restricted is exposed on every transport. <Ev test="speedyspec-operation-dispatch::dispatch::unknown_and_restricted_operations_are_not_found"/> <Ev test="speedyspec-transport::exposure::unrestricted_operations_are_exposed_on_every_transport_by_default"/>
+- From PHP, an operation registers with the same schema the Rust builder exports, `wp_operation_transports()` restricts it, and a PHP handler can replace a Rust one for the request. <Ev test="speedyspec-operation-php::registration::php_schema_matches_rust_export"/> <Ev test="speedyspec-operation-php::registration::wp_operation_transports_restricts"/> <Ev test="speedyspec-operation-php::dispatch::php_handler_replaces_a_rust_contract_handler"/>
+- A transport's hooks run between the permission check and the handler, and may short-circuit the call. <Ev test="speedyspec-transport::stage::a_stage_hook_can_short_circuit_after_the_permission_check"/>

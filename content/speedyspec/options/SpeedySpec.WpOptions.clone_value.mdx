@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\clone_value"
+verdict: new-in-speedyspec
+---
+
+Used by the options API's PHP adapters; not for plugins. Copies an object, as `add_option()` and `update_option()` do before they sanitize. The PHP value codec calls it for a value that holds a PHP object. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L237-L240" hash="112d64bdb5134d89cc983a954da686a69878d254532d1502fd48a4ffa344db69"/> <Ev source="ss:crates/speedyspec-wp-options-php/src/codec.rs#L53-L62" hash="ec05ed7d918b6a4baffc834616e170a6ef50b6252b2d9bbd4639bd1e67e34a0b"/> <Ev scenario="value_stdclass" area="options"/> <Ev scenario="value_declared_class" area="options"/>

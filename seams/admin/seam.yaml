@@ -65,6 +65,9 @@ wordpress:
   - wp-includes/version.php
 setup: setup.php
 mysql: true
+# SpeedySpec answers wp_read_audio_metadata(), wp_read_video_metadata(), wp_add_id3_tag_data() and
+# wp_get_media_creation_timestamp() natively, from the Media seam's crates (speedyspec-wp-media*), which that seam
+# lists; the rest of wp-admin is WordPress's PHP, so this seam stays unported.
 # Symbols whose file belongs to another seam.
 symbols:
   - "action:customize_controls_enqueue_scripts"

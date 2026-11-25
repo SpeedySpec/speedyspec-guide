@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Native\\set_transient"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP `set_transient()` to reach the native options API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L114-L117" hash="7bf5535e21ffc1e6a5be55dab18fba351b2fae2b9c97bf505eeba56f4505f54f"/>
+
+It sends the `SetTransient` command through the handler bound under `SpeedySpec\WpOptions\SetTransientHandler`. <Ev scenario="delete_expired_transients_multisite" area="options"/>

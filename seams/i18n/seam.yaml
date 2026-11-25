@@ -1,6 +1,7 @@
 name: "Internationalization"
 job: "Loads translation files, translates strings, switches locales and holds locale data."
 ported: false
+crates: [speedyspec-wp-i18n, speedyspec-wp-i18n-contracts, speedyspec-wp-i18n-files, speedyspec-wp-i18n-memory, speedyspec-wp-i18n-php, speedyspec-wp-i18n-tests, speedyspec-wp-utf8, speedyspec-wp-utf8-php, speedyspec-wp-token-map, speedyspec-wp-token-map-php]
 files:
   - 'wp-includes/pomo/**'
   - 'wp-includes/l10n/**'

@@ -1,0 +1,12 @@
+---
+symbol: "function:form_option"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+SpeedySpec declares it in PHP with WordPress's body: it echoes `esc_attr( get_option( $option ) )`. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L100-L106" hash="528739ffdf44240927a6f022b645c1e8db735e76620061433d9c82b0415c58a2"/> <Ev scenario="form_option_escapes" area="options"/>
+
+## Override
+
+Options live in `wp_options` behind the `OptionRepository` port; the use case is a handler in the container. See the architecture page.

@@ -1,0 +1,12 @@
+---
+symbol: "function:filter_default_option"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `FilterDefaultOption` query. <Ev scenario="filter_default_option_passed" area="options"/> <Ev test="speedyspec-wp-options-memory::settings::filter_default_option_rules"/>
+
+## Override
+
+The registry's state lives behind the `SettingsStore` port; in PHP it is `$wp_registered_settings` and `$new_allowed_options`. See the architecture page.

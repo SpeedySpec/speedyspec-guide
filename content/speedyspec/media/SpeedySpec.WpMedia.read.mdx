@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpMedia\\read"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+Reads a file's audio or video metadata for `wp_read_audio_metadata()` and `wp_read_video_metadata()`: `false` when the file doesn't exist; a local path (or `file://`) is resolved as PHP resolves it and read natively; a stream-wrapper path is copied to a temporary file first, at most the reader's byte limit, and a larger file reads as unreadable. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L6-L51" hash="1b597493c296efd5dbcff383de2ab9aaa44a4dbc516bc184e1121c2de88d047f"/> <Ev test="speedyspec-wp-media-php::php::false_for_missing_file"/> <Ev test="speedyspec-wp-media-php::php::relative_paths_are_read"/> <Ev test="speedyspec-wp-media-php::php::file_url_paths_are_read"/> <Ev test="speedyspec-wp-media-php::php::stream_wrapper_path_is_copied"/> Not for plugins.

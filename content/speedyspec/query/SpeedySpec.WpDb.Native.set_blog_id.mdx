@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\set_blog_id"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::set_blog_id()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L646-L646" hash="852ab96debc05374bbb50493ebb8759e502a677c7d84b73cded66ce901c1a1d2"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

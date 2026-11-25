@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpOptions\\Php\\settings_disallow"
+verdict: new-in-speedyspec
+---
+
+Used by `PhpSettingsStore`, the PHP adapter of the `SettingsStore` port; not for plugins. Removes a name from `$new_allowed_options[ $group ]` as `unregister_setting()` does; PHP's index holes stay. <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L302-L315" hash="b1ece6db834e4f79db204310d8f4981de84ef232478604da6b5327c4601fc2ea"/> <Ev source="ss:crates/speedyspec-wp-options-php/src/settings_store.rs#L74-L95" hash="b5053ad5ca3b7e362c469dca9c23a9c9bcd58f58cdb2d51e650cfacbe883931c"/> <Ev scenario="unregister_setting_removes_default" area="options"/>

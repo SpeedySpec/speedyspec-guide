@@ -1,0 +1,24 @@
+---
+---
+
+Not in SpeedySpec yet: this seam's classes, Horde's `Text_Diff` with its engines, edits and renderers, and WordPress's `WP_Text_Diff_Renderer_Table` and `WP_Text_Diff_Renderer_inline`, are WordPress's PHP. The runtime loads them as WordPress does, from `wp-diff.php`, when they are first needed. <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/text-diff.php#L57-L68" hash="80988c91d176b0ca19eac2db686570fd242f4681f0821ba9275d13aebc302d63"/> <Ev test="speedyspec-wp-text-diff-php::php::classes_load_as_in_wordpress"/>
+
+What the runtime does answer natively is [`wp_text_diff()`](/speedyspec/support/wp_text_diff/), the pluggable function in `pluggable.php` (another seam) that this seam's classes serve. It is a container port: WordPress's implementation is a Rust port of Horde's native engine and of `WP_Text_Diff_Renderer_Table`, written so the output is WordPress's byte for byte. <Ev source="ss:crates/speedyspec-wp-text-diff/src/lib.rs#L1-L10" hash="f5b8164a72bbcf1b87d851c1ffd09abb66c4d0359509c9711d39b63484ff9054"/> The runtime worker boots it. <Ev source="ss:crates/speedyspec-php-runtime/src/worker.rs#L98-L102" hash="e976e3d15c5ad1539fb7412dce776f9326c0408d8e0ac6d9b9fe37962503f1e4"/>
+
+## How it is verified
+
+- **WordPress's own tests.** WordPress's diff tests (`textDiff.php`, `wpTextDiffRendererTable.php`, `Text_Diff_Check_Test.php`) pass with the native `wp_text_diff()` loaded. They test the `Text_Diff` classes, which stay PHP; the test bootstrap also checks that the native and the legacy paths of `wp_text_diff()` give one table. <Ev test="speedyspec-wp-text-diff-php::wordpress::wordpress_diff_tests_pass"/>
+- **Recorded cases.** `compat/text-diff` holds what WordPress 7.1.5's classes answered: whole `wp_text_diff()` tables, engine edit scripts, inline word diffs and their building blocks. The Rust port replays them, and so does the PHP function. <Ev test="speedyspec-wp-text-diff::recorded::wp_text_diff_cases"/> <Ev test="speedyspec-wp-text-diff::recorded::engine_op_scripts"/> <Ev test="speedyspec-wp-text-diff::recorded::inline_word_diffs"/> <Ev test="speedyspec-wp-text-diff-php::php::recorded_cases_replay"/>
+- **PHP's behaviour.** The signature matches the pluggable function, query-string arguments parse as in WordPress, a filter's exception propagates, and texts that aren't valid UTF-8 throw WordPress's `TypeError`. <Ev test="speedyspec-wp-text-diff-php::php::signature_matches_pluggable"/> <Ev test="speedyspec-wp-text-diff-php::php::query_string_args_parse_as_wordpress"/> <Ev test="speedyspec-wp-text-diff-php::php::filter_exceptions_propagate"/> <Ev test="speedyspec-wp-text-diff-php::php::invalid_utf8_throws_type_error"/>
+
+The server keeps no `breaks.json` for this area, and WordPress's diff tests have no expected failures.
+
+## Differences
+
+- **Calls the native table doesn't cover go to WordPress's classes:** texts or titles that aren't strings, renderer properties passed as arguments, and arguments Rust can't read. Their output is WordPress's own. <Ev source="ss:crates/speedyspec-wp-text-diff/src/port.rs#L90-L95" hash="c7a13eb707e152b1dd3218643f69989ea84835d036df23662130a1ad24cfe5ef"/> <Ev test="speedyspec-wp-text-diff-php::php::renderer_arguments_use_wordpress_classes"/> <Ev test="speedyspec-wp-text-diff-php::php::unreadable_argument_keys_use_wordpress_classes"/>
+- **The hidden row labels** ("Added:", "Deleted:", "Unchanged:") are translated once per call, not once per row, so `gettext` filters on them run three times per call instead of once per row. <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/text-diff.php#L70-L88" hash="5bdf3535152321cc62e705384bdaa0a6fd7f7decb3e34917b80610c454cbefd7"/>
+- **A changed block too large to pair line by line** (more than 4,000,000 line pairs) throws an `Error` from `wp_text_diff()`; WordPress runs out of memory there. <Ev source="ss:crates/speedyspec-wp-text-diff/src/table.rs#L21-L26" hash="b8ae212958e48c692772c9a1086a1bf5b57ea399cfeaae4736b380387054fba8"/> <Ev source="ss:crates/speedyspec-wp-text-diff/src/port.rs#L74" hash="64ebca12c6c555d7e1d816f845a6846ee103070d8ac960f72b729c883018cef7"/>
+
+## Replacing it
+
+Where WordPress lets a plugin declare `wp_text_diff()` first, SpeedySpec lets PHP bind its own object under `SpeedySpec\WpTextDiff\TextDiffer` for the request; Rust callers then get it too. <Ev test="speedyspec-wp-text-diff-php::php::bound_twin_answers_wp_text_diff"/> <Ev test="speedyspec-wp-text-diff-php::php::rust_callers_get_the_php_binding"/> <Ev test="speedyspec-wp-text-diff-php::php::binding_ends_with_the_request"/>

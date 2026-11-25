@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_prime_option_caches"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: the `PrimeOptionCaches` command. Its `IN` query has WordPress's text, so a `query` filter sees the same statement. <Ev scenario="prime_mixed_names" area="options"/> <Ev test="speedyspec-wp-options-sql::mysql::prime_query_text_is_wordpress"/>
+
+## Override
+
+Options live in `wp_options` behind the `OptionRepository` port; the use case is a handler in the container. See the architecture page.

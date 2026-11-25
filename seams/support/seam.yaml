@@ -19,6 +19,10 @@ wordpress:
   - wp-includes/version.php
 setup: setup.php
 mysql: true
+# SpeedySpec answers 16 of this seam's functions natively: the pluggable password functions and wp_rand(), and
+# wp_fast_hash()/wp_verify_fast_hash() (Passwords and crypto seam's crates), wp_text_diff() (Text diff seam's crates),
+# and wp_get_image_mime() with the MIME list and filetype functions (Media seam's crates). Their crates are listed by
+# those seams; the rest of this seam is WordPress's PHP, so it stays unported.
 # Symbols whose file belongs to another seam.
 symbols:
   - "constant:WP_CONTENT_DIR"
