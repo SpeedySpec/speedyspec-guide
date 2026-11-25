@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\get_blog_prefix"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::get_blog_prefix()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L651-L651" hash="fa1a4e05e20e6c4bf9b79161e14a61d452caa2bf5070260d4a85a9e1e9cedd74"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\close"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::close()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L933-L933" hash="93bc96df89faf3dbcaee7b52a1888f25d00c440da60fd4e80de68c1acc7a757b"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

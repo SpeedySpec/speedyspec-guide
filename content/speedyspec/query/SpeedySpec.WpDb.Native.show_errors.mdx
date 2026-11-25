@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\show_errors"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::show_errors()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L714-L714" hash="9c5d2d3c3471252183fb892fa8938ca3bb6661e4a5dc58efff88bbb772040ef3"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\strip_invalid_text_for_column"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::strip_invalid_text_for_column()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L898-L898" hash="ead6188a03284ba1110a770c296c1e1e99d120870ebb9ca677004623d3d64e9b"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

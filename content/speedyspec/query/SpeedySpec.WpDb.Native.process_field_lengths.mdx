@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\process_field_lengths"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::process_field_lengths()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L814-L814" hash="5bea573ca61fbfe2d535fe6e058cb92c5970400c7d80b26b1b5cfb006502ee87"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\strip_invalid_text_from_query"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::strip_invalid_text_from_query()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L893-L893" hash="f8750722d6bf6e66d852720f19be9a415c3dc2d3cd905aacd94249bdf5c3ae87"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

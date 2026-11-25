@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\set_allow_unsafe"
+verdict: new-in-speedyspec
+---
+
+Writes `wpdb`'s private `allow_unsafe_unquoted_parameters` property to the port. Used by SpeedySpec's `wpdb` class; not for plugins. Use the `wpdb` property instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L464-L464" hash="b7bdd2ce4e545c0d89e7e4ed9b212335fc5b09252269faad08254c47f468b4a2"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\has_cap"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::has_cap()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L954-L954" hash="52e1bd864c6cf17a96344737ff5cb9bc2cf58a2764172d03a0c981d3f81133cd"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

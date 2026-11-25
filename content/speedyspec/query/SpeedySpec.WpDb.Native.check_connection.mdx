@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\check_connection"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::check_connection()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L744-L744" hash="85ea8393ee680f1933e99390551dea6c3a244488671856a2b6d335cc88bb08a5"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

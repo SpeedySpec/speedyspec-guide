@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\db_server_info"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::db_server_info()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L969-L969" hash="007090108c9398a1119873530e0fcdb77702892fd502a2b3c51af80a8443233f"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\timer_start"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::timer_start()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L918-L918" hash="c917265e6308b67948e3f2b40db03e2a10f1a1cc21255e6d2f95205586d55fb4"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

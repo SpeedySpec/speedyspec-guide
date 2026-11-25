@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\check_database_version"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::check_database_version()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L939-L939" hash="cd7df8f62a8add22092d06ad5ab302fe2e0c9013fe636ba016c5e1157c331474"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

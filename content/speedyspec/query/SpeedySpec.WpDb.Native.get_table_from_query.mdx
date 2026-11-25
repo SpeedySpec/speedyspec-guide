@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\get_table_from_query"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::get_table_from_query()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L903-L903" hash="c018c6524f177dd774b724bf7662074b9994866b8172dc48655c950bfc0ca200"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

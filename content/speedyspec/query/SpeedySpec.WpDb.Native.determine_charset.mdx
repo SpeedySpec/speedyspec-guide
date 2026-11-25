@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\determine_charset"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::determine_charset()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L626-L626" hash="526449a95b342267d98003b1bb6cc8d38ad14b3e470c62af3655c8459fa5c12c"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

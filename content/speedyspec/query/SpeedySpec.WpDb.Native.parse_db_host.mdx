@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\parse_db_host"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::parse_db_host()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L739-L739" hash="44395178fcbcf802384e3b07d5ba76afef18cb415c3d21fee32734e8c8537f79"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

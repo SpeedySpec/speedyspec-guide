@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\add_placeholder_escape"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::add_placeholder_escape()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L764-L764" hash="c2c36ea206cb9ab7560a93ecfce90de5a22184e012bb5135c7d08280432f5ab4"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

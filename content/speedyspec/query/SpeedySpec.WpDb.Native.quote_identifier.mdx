@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\quote_identifier"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::quote_identifier()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L694-L694" hash="2db14c91a1047b8f5975ec4f8c0d6544a0f2b8689588792115f100a98ad7eabf"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

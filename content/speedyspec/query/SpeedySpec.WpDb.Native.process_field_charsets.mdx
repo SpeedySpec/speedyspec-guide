@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\process_field_charsets"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::process_field_charsets()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L809-L809" hash="12e180407f5e34de836ec43b81abf5bbbaaf94da0be3d887559a23fd7b7524b6"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

@@ -1,0 +1,164 @@
+---
+---
+
+This seam's only native part is `wpdb`. Posts, comments, `WP_Query` and the rest of the seam aren't ported yet, so this page covers `wpdb` and the data layer under it.
+
+## wpdb
+
+### The domain and its ports
+
+`speedyspec-wp-db` is `class-wpdb.php` in Rust. `WpDb` is the port's API (a Gateway) and the handler of every command and query; pure domain services hold WordPress's rules (`prepare()`'s placeholders, escaping, table names and prefixes, charsets, the field formats of `insert()` and `update()`). It has two outbound ports. <Ev source="ss:crates/speedyspec-wp-db/src/lib.rs#L1-L4" hash="c5eb908b10c27e252b84628608387819a74c1f470b9540f8228c00aad9fc1441"/>
+
+- **`WpdbState`**: what `wpdb` keeps between calls in one request (`last_query`, `last_result`, `num_rows`, `insert_id`, `last_error`, the query log, and the rest), read and changed only through it. <Ev source="ss:crates/speedyspec-wp-db/src/state.rs#L83-L91" hash="4d2acdbf104fa8655257601e75b598160e78d69e14e233e9278bf6a8a64037f0"/>
+- **`WpdbHost`**: what only WordPress's PHP can do for `wpdb`: `_doing_it_wrong()`, `__()`, constants, `is_multisite()`, `error_log()`, output, `wp_die()`, `dead_db()`, `$EZSQL_ERROR` and the caller summary. <Ev source="ss:crates/speedyspec-wp-db/src/host.rs#L8-L22" hash="2968b0eb93623ab1f9424735e372724d3dd7387840e98f5cfbcba4ae0b9a51f0"/>
+
+`WpDb` is built from a `SqlStore` (the data layer's contract below), the Hook API, a state, a host and the database settings (`WpDbConfig`). It wraps the store in `TimedSqlStore`, which times each statement for `$wpdb->queries`. <Ev source="ss:crates/speedyspec-wp-db/src/timed.rs#L1-L1" hash="5d1192632de4974c91504aaec7e81a051995896bf57bbacd406083db14989faa"/>
+
+### The use cases
+
+Every `wpdb` method is a command or a query, bound in the container under `SpeedySpec\WpDb\<Name>Handler`. The readers take no SQL: `get_var( $sql )` is the `Query` command followed by the `GetVar` query. <Ev source="ss:crates/speedyspec-wp-db/src/messages.rs#L1-L4" hash="3b98ad64564edf3edab53aa0a3e3ec5ae4d55f4c5556791b9d0ac729489e00c6"/> <Ev test="speedyspec-wp-db::messages::every_key_is_bound"/>
+
+- **Commands (13):** `Query`, `Insert`, `Replace`, `Update`, `Delete`, `SetPrefix`, `SetBlogId`, `SetCharset`, `SetSqlMode`, `Select`, `Flush`, `Close`, `CheckConnection`.
+- **Queries (18):** `PrepareSql`, `EscLike`, `Escape`, `GetVar`, `GetRow`, `GetCol`, `GetResults`, `GetColInfo`, `GetTableCharset`, `GetColCharset`, `GetColLength`, `GetBlogPrefix`, `Tables`, `HasCap`, `DbVersion`, `DbServerInfo`, `SupportsCollation`, `GetCharsetCollate`.
+
+`register_wpdb_handlers()` binds one `WpDb` as the handler of all 31. <Ev source="ss:crates/speedyspec-wp-db/src/messages.rs#L134-L141" hash="76a798bd25bce959aa14547b90b83e4774e3bc7f73c3ed1351f3aca9cb4866ee"/> <Ev test="speedyspec-wp-db::messages::dispatch_reaches_wpdb"/>
+
+### Two ways in: SQL text and statements
+
+- **`WpDb::query()`** takes SQL text, as `$wpdb->query()` does. The placeholder escape is removed, the `query` filter runs, and the text is parsed into a statement. Text the parser rejects still counts as a query and sets `last_error`. <Ev test="speedyspec-wp-db::helpers::parse_failure_counts_as_a_query"/>
+- **`WpDb::query_statement()`** takes a statement a ported API built. When nothing is hooked on `query`, the statement goes to the store as built, with no text in between; when a callback is, the statement is rendered as text, filtered and parsed again, so a PHP `query` callback still sees every statement. <Ev source="ss:crates/speedyspec-wp-db/src/api.rs#L303-L305" hash="7bcdc56fdb206ae0e1ab12b24e998fadb1314896ea0215fb83ccd87802d6cd23"/> <Ev test="speedyspec-wp-db::query::query_statement_fast_path"/> <Ev test="speedyspec-wp-db::query::query_statement_reparses_with_callback"/>
+
+Both then run the Rust-only filter `speedyspec_query_statement`, whose callbacks receive and return the statement itself, before it is executed. <Ev source="ss:crates/speedyspec-wp-db/src/api.rs#L406-L407" hash="42567cd6ddcefece76ff9621cac1ae3fbcc23db8f683a43549504aacbc5a6ea2"/> <Ev test="speedyspec-wp-db::query::statement_hook_replaces_tree"/>
+
+### Its adapters
+
+- **The PHP area** (`WpDbArea`, in `speedyspec-wp-db-php`): at the start of every request it declares `wpdb`'s constants and the `wpdb` class, each method one line calling a native function under `SpeedySpec\WpDb\Native\` with the instance's handle, then makes the global `$wpdb` (handle 0) and connects it. The class converts values and holds no rules. <Ev source="ss:crates/speedyspec-wp-db-php/src/lib.rs#L1-L15" hash="e871e9ecb3d93e3fd8ebcea405ecac568e06b2f31402ce0aac262290e2a57fe8"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>
+- **The global's state** is the worker's memory state (`MemoryWpdbState`), bound under `SpeedySpec\WpDb\WpdbState` and read through the container on every access, so a state bound under that key replaces it. <Ev source="ss:crates/speedyspec-wp-db-php/src/lib.rs#L76-L92" hash="6c66223fdea945424a3366f7a4829ab63894f6826f65c17ceed9cae265985f99"/>
+- **`PhpWpdbState`** adapts a PHP object implementing `SpeedySpec\WpDb\WpdbState` to the state port. <Ev source="ss:crates/speedyspec-wp-db-php/src/state.rs#L45-L47" hash="12988c198090decc6eaded3801b2383d291fab570cd41dd257bda1d6bda80000"/> <Ev test="speedyspec-wp-db-php::php::php_state_twin_replaces_memory"/>
+- **`PhpWpdbHost`** is the host port over WordPress's PHP functions, with WordPress's own fallbacks when one isn't defined; `MemoryWpdbHost` records every call, for tests and hosts without WordPress. <Ev source="ss:crates/speedyspec-wp-db-php/src/host.rs#L1-L1" hash="e0f7d3820aaf79e8a653c3283924c2f2439ce3222bb7b692329ba385f415f492"/>
+- **Another `new wpdb(...)`** gets its own `WpDb`, with a memory state, on an engine configured once per worker for its credentials. <Ev source="ss:crates/speedyspec-wp-db-php/src/lib.rs#L131-L132" hash="db7db62cc811e077d7f49ce3c97f28e783e0715f5707c1483521d9cecd8e3f83"/>
+
+The worker builds the `default` engine from its database settings with the MySQL factory, checks it with `SELECT 1`, then registers `WpDbArea` before the object cache, options and cron areas; options is given its `WpDb`. <Ev source="ss:crates/speedyspec-php-runtime/src/database.rs#L55-L69" hash="a1fea6536a88fbf3850374be82ffec558e8ac3943802eb7cdcb60a361b002aab"/>
+
+## The data layer
+
+`wpdb`'s store is the data layer's `SqlStore`, and every runtime feature that keeps data reaches its engine through the same contracts.
+
+### Contracts
+
+`speedyspec-data` holds only contracts: values and rows, the statement model (a Query Object over `sqlparser`'s tree), the SQL, NoSQL and Direct store contracts, dialects, engines, and the Repository and Unit of Work contracts. <Ev source="ss:crates/speedyspec-data/src/lib.rs#L1-L5" hash="cf4681992d0ea65f1e2a7734854c7bf989e847c7c87a223ebb03800a469f8f78"/> <Ev test="speedyspec-data::contracts::contracts_are_object_safe"/>
+
+- **`SqlStore`**: a relational store that takes statements only (a caller with SQL text parses it first), with transactions, savepoints, an `Introspector` that answers in MySQL's terms, and `reset()`, which the runtime calls at the end of every request. <Ev source="ss:crates/speedyspec-data/src/store.rs#L44-L63" hash="fc943fa1d5ae00f75d6589fe8cf5bf8c888e9c2416e344449d34120b6e17a456"/>
+- **`NoSqlStore`**: byte keys and values in named keyspaces, with expiry, atomic `put_if_absent`, counters and ranges. <Ev source="ss:crates/speedyspec-data/src/store.rs#L68-L69" hash="1b011551e49ab37fb246e142168897df09a5549e3a30b8f7b2289b9f0911cd90"/>
+- **`DirectStore`**: any other storage system, reached through its own client, which a repository gets with `as_any()`. <Ev source="ss:crates/speedyspec-data/src/store.rs#L118-L119" hash="5143496a61ec74feb7965595409b7264dd8f7cde2ad51573f663db429672e028"/>
+- **`EngineFactory`, `Engine` and `EngineLookup`**: a factory per URL scheme builds an engine from its configuration; opening it gives a SQL, NoSQL or Direct handle. <Ev source="ss:crates/speedyspec-data/src/engine.rs#L59-L76" hash="0f79e106166e8858cf63f2497905aedea7a0efa7a1e5112bca16058deabdb441"/>
+
+### Building and routing statements
+
+`speedyspec-data-query` parses every statement with MySQL's dialect; there is no pass-through path. <Ev source="ss:crates/speedyspec-data-query/src/lib.rs#L1-L3" hash="fc4de0c75313d31a9ed5c63dd90c167687fed54274332e53dd1b694ded0d0e34"/> It holds:
+
+- **`Query`**, the query builder: `Query::table()`, `insert_into()`, `replace_into()`, `update()` and `delete_from()`, with `select()`, `where_eq()`, `where_in()`, `order_by()`, `limit()`, `offset()`, `values()`, `set()` and `on_duplicate_update()`. Values become statement parameters, never text. `build()` gives the statement, or the first error a modifier met. <Ev test="speedyspec-data-query::builder::select_with_where_in"/> <Ev test="speedyspec-data-query::builder::misuse_is_reported_at_build"/>
+- **`EngineRegistry`**, the worker's engines. A use (such as `object-cache`) goes to the engine it is routed to, else to `default`; each engine opens once and lives for the worker. <Ev source="ss:crates/speedyspec-data-query/src/registry.rs#L71-L84" hash="45c345d78c15fdb24dbe24fb7f0fb5e47b8fa8d47ee2ae43cca3234c4d63a3de"/> <Ev test="speedyspec-data-query::registry::registry_routes_and_opens_once"/>
+- **`PassChain`**, the rewrite passes an engine runs on a statement before it sends it. <Ev test="speedyspec-data-query::passes::passes_run_in_order_and_split"/>
+
+### Engines
+
+| Crate | Scheme | Store | What it is |
+|---|---|---|---|
+| `speedyspec-data-mysql` | `mysql` | SQL | The blocking `mysql` driver; statements emitted as parsed. Never sets `CLIENT_FOUND_ROWS`, so `rows_affected` counts changed rows, as mysqli does. The only engine the worker registers. <Ev source="ss:crates/speedyspec-data-mysql/src/lib.rs#L1-L5" hash="de087e64bb2b84003b35c3839d43abab67bd43927da7d394a06cb5cd87aa9663"/> <Ev test="speedyspec-data-mysql::conformance::mysql_conformance"/> |
+| `speedyspec-data-postgres` | `postgres` | SQL | WordPress's MySQL statements translated for PostgreSQL, answered with MySQL's results. <Ev source="ss:crates/speedyspec-data-postgres/src/lib.rs#L1-L1" hash="128ffc3792c37c5c186bba4b60e65cab319d24deed573944a687e45982fa9d0b"/> <Ev test="speedyspec-data-postgres::conformance::postgres_conformance"/> |
+| `speedyspec-data-sqlite` | `sqlite` | SQL | The same for SQLite, with MySQL's collation and functions. <Ev source="ss:crates/speedyspec-data-sqlite/src/lib.rs#L1-L2" hash="46167c94c15b91262999a16c53b7561ece1df911eb26da80d9ac0a25c562137a"/> <Ev test="speedyspec-data-sqlite::conformance::sqlite_conformance_in_memory"/> |
+| `speedyspec-data-memory` | `memory` | NoSQL, Direct | In memory, for tests and single-process sites. <Ev source="ss:crates/speedyspec-data-memory/src/lib.rs#L1-L1" hash="0ac54221772c4b3d1d3f691f95eb013eb8a16241c299d58ea5030b1a37706662"/> <Ev test="speedyspec-data-memory::conformance::memory_nosql_conformance"/> |
+| `speedyspec-data-redb` | `redb` | NoSQL | ReDB, served by one owner process per site over a private socket. <Ev source="ss:crates/speedyspec-data-redb/src/lib.rs#L1-L2" hash="e3adba9b8aa21e087ad33b165ef92913a2fe6ef2eeabc7c2ca643ee26398514a"/> <Ev test="speedyspec-data-redb::store::redb_store_conformance"/> |
+| `speedyspec-data-valkey` | `valkey` | NoSQL | Valkey; a keyspace is a key prefix. <Ev source="ss:crates/speedyspec-data-valkey/src/lib.rs#L1-L1" hash="da3e69d29f454200936b534f26b3c04e44780fdbb321621b34131ea793cfb52d"/> |
+| `speedyspec-data-file` | `file` | Direct | A directory of files, written atomically, with exclusive locks. <Ev source="ss:crates/speedyspec-data-file/src/lib.rs#L1-L2" hash="0578484e1d84f62f681704ecc12e1afd178475585c785157a9a4d23c936ebe11"/> <Ev test="speedyspec-data-file::file::file_direct_conformance"/> |
+
+Shared by the engines:
+
+- **`speedyspec-data-translate`**: the MySQL-to-portable rewrite passes the SQLite and PostgreSQL engines share, each a Visitor over the statement tree, run as links of a `PassChain`. <Ev source="ss:crates/speedyspec-data-translate/src/lib.rs#L1-L4" hash="385b404b59ae9bd8a309d9347a5ab8c1d6dedcf7df0d8968fdadfc61c298bfbd"/>
+- **`speedyspec-data-uow`**: the Unit of Work and Identity Map. Changes commit in one transaction per engine, in the registry's commit order; there is no two-phase commit, so a failure after one engine committed is reported as partial. <Ev source="ss:crates/speedyspec-data-uow/src/lib.rs#L1-L4" hash="251f3d83e98321df0eafe17c6dc9fca19ad086993506d377a46075a7aceeee03"/> <Ev test="speedyspec-data-uow::unit_of_work::one_transaction_per_engine_in_commit_order"/>
+- **`speedyspec-data-counter`**: Valkey's `INCRBY` rules, for the key-value stores that emulate them. <Ev source="ss:crates/speedyspec-data-counter/src/lib.rs#L1-L2" hash="e4812420cb673df327e178ceb1c6051ee489dab2f0f6df042021cffc7c5e466e"/>
+- **`speedyspec-data-corpus`**: the statements WordPress and popular plugins send, by shape, and the check that an engine plans each one or refuses it in a documented way. <Ev source="ss:crates/speedyspec-data-corpus/src/lib.rs#L1-L2" hash="32cf681ebe47f4f78ac48e5ac03cbf300fcd1f6bb96156f7566ffcf404a7da51"/> <Ev test="speedyspec-data-sqlite::corpus::corpus_translates_for_sqlite"/> <Ev test="speedyspec-data-postgres::corpus::corpus_translates_for_postgres"/>
+- **`speedyspec-data-conformance`**: the suites every store must pass, by store kind. <Ev source="ss:crates/speedyspec-data-conformance/src/lib.rs#L1-L2" hash="f5c8c1f512f83842d03db62038ed8e9044254ae65a87be8114961544f0cea71b"/>
+
+## Patterns
+
+- **Gateway** for `WpDb`, the one entry to the database for PHP and Rust.
+- **Command and query handlers** (CQRS) for each `wpdb` method, registered in the container (**Registry**).
+- **Ports and Adapters** for the request state (`WpdbState`: memory and PHP) and for the host (`WpdbHost`, a **Strategy**: PHP and memory).
+- **Facade** for the PHP `wpdb` class over the native functions; its public properties are PHP property hooks over the port.
+- **Decorator** for `TimedSqlStore` over the engine's store.
+- **Query Object** for `Statement`, **Builder** for `Query`, and **Interpreter** for parsing every statement.
+- **Abstract Factory** for engines, **Strategy** for dialects, and **Chain of Responsibility** with **Visitor** for the rewrite passes.
+- **Unit of Work** and **Identity Map** for multi-engine writes; **Repository** for the features that store entities (options' `SqlOptionRepository`, for one).
+
+<Diagram label="A ported API's statement through wpdb and the data layer" code={`sequenceDiagram
+  participant R as Runtime feature (Rust)
+  participant Q as Query builder
+  participant W as WpDb
+  participant H as Hook API
+  participant S as SqlStore (engine)
+  R->>Q: Query::table(..).where_eq(..).build()
+  Q-->>R: Statement (values as params)
+  R->>W: query_statement(statement)
+  W->>H: anything on 'query'?
+  alt no callback
+    W->>W: keep the statement as built
+  else a callback
+    W->>H: apply_filters('query', text)
+    H-->>W: filtered text, parsed again
+  end
+  W->>H: speedyspec_query_statement (Rust callbacks)
+  W->>S: query() or execute()
+  S-->>W: rows or counts
+  W-->>R: QueryOutcome`} />
+
+## A runtime feature calling it
+
+A feature gets the global `WpDb` when the worker boots it (options gets it from `WpDbArea::api()`), builds its statement with the query builder, and runs it with `query_statement()`, as `SqlOptionRepository` does. <Ev source="ss:crates/speedyspec-wp-options-sql/src/repository.rs#L134-L150" hash="7adcdc1ac78889faa40edbaa3e87d29b82eeaaefe8931e6930df46d176ccb5ec"/>
+
+```rust
+use std::rc::Rc;
+
+use speedyspec_data_query::Query;
+use speedyspec_wp_db::{QueryOutcome, WpDb, WpDbError};
+
+/// Reads one setting from a table the feature owns.
+pub struct GuideSettings {
+    wpdb: Rc<WpDb>,
+}
+
+impl GuideSettings {
+    pub fn new(wpdb: Rc<WpDb>) -> GuideSettings {
+        GuideSettings { wpdb }
+    }
+
+    pub fn value(&self, name: &str) -> Result<Option<Vec<u8>>, WpDbError> {
+        // The current site's prefix, so switch_to_blog() is followed.
+        let table = format!("{}guide_settings", self.wpdb.get_blog_prefix(None));
+        let statement = Query::table(&table)
+            .select(&["value"])
+            .where_eq("name", name)
+            .limit(1)
+            .build()?;
+        Ok(match self.wpdb.query_statement(statement)? {
+            QueryOutcome::Rows(rows) => rows
+                .first()
+                .and_then(|row| row.fields.iter().find(|(column, _)| column == "value"))
+                .and_then(|(_, value)| value.clone()),
+            _ => None,
+        })
+    }
+}
+```
+
+`name` goes to the database as a parameter, never as text, and a PHP callback on `query` still sees the statement. For WordPress's own tables, `wpdb.table_name("options")` gives the name `wpdb` uses now. A feature that needs a key-value or direct store asks the `EngineRegistry` for it by use, with `nosql()` or `direct()`.
+
+## How to change this
+
+- **Send the queries somewhere else:** register an `EngineFactory` for another scheme with the `EngineRegistry` and configure `default` with its URL, or build a `WpDb` over any `SqlStore` (`WpDbParts`). The store must pass `speedyspec-data-conformance`'s SQL suite.
+- **Change what one method does:** bind another handler under its key, such as `SpeedySpec\WpDb\QueryHandler` with `bind_command_handler::<Query>()`. The global `$wpdb` resolves each handler once and again only when its binding changes. This is a Rust binding: PHP has no adapter for the handlers. <Ev test="speedyspec-wp-db::messages::php_can_override"/>
+- **Keep the request state somewhere else:** implement `WpdbState` in Rust, or `SpeedySpec\WpDb\WpdbState` in PHP wrapped in `PhpWpdbState`, and bind it under `SpeedySpec\WpDb\WpdbState`. The worker doesn't yet declare that key as a port PHP may bind, so for now the binding is made from Rust. <Ev test="speedyspec-wp-db-php::php::php_state_twin_replaces_memory"/>
+- **Rewrite statements:** add a PHP or Rust callback to `query`, as in WordPress (it turns off the fast path), or a Rust callback to `speedyspec_query_statement`, which keeps it.
+- **What must still pass:** the recorded scenarios (`compat/wp-db/scenarios.json`, replayed on MySQL, SQLite and PostgreSQL by `speedyspec-wp-db-php`'s replay tests) and WordPress's own database tests, except the breaks in `compat/wp-db/breaks.json` and the engine lists `compat/phpunit-sqlite.json` and `compat/phpunit-postgres.json`. <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/> <Ev test="speedyspec-wp-db-php::wordpress::documented_breaks_are_listed"/>
+- **Recording a new scenario:** add it to `compat/wp-db/scenarios.json` in speedyspec-server and run `cargo run -p speedyspec-compat -- record wp-db --wordpress 7.1.5`; a difference the port can't match goes in `breaks.json` with its reason.

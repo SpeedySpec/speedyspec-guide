@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\open"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::__construct()` for a `new wpdb(...)`: opens a separate `wpdb` on an engine for the given credentials and returns its handle. The global `$wpdb` is handle 0 and never calls it. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L493-L493" hash="34e9e12b8672982c590991fae74ad5ea18f0e8189e8a9d1de5fb1eb8d9c84741"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

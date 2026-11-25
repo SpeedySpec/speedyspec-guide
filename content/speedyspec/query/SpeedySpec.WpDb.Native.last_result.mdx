@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\last_result"
+verdict: new-in-speedyspec
+---
+
+Gives the facade the current result's rows and their generation, so `get_results()` and `$wpdb->last_result` hand out the same `stdClass` objects until the next query. Used by SpeedySpec's `wpdb` class; not for plugins. Use the `wpdb` property instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L477-L477" hash="ca62b08901a2cab465e71a1ab69e64639c594bcb3ed14633d2164dfd873908aa"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>

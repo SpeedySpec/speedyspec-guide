@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpDb\\Native\\bail"
+verdict: new-in-speedyspec
+---
+
+Called by `wpdb::bail()` with the instance's handle; the Rust port does the work. Used by SpeedySpec's `wpdb` class; not for plugins. Call the `wpdb` method instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L928-L928" hash="b983c101cc0307b00bdece2be2c981b49c308175acbbb528978cf8d2ca47f7f6"/> <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/>
