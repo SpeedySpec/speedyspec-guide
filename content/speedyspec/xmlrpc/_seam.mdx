@@ -1,0 +1,19 @@
+---
+---
+
+Not native yet. SpeedySpec has an XML-RPC transport in Rust (`speedyspec-xmlrpc`, `speedyspec-xmlrpc-contracts`, `speedyspec-xmlrpc-php`), but the runtime worker doesn't link it, so PHP code on SpeedySpec still gets WordPress's own `wp_xmlrpc_server` and IXR classes. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/> How the port is built is on [the architecture page](/speedyspec/architecture/xmlrpc/).
+
+## What the port covers
+
+Of this seam's 11 classes, the port replaces one, `wp_xmlrpc_server`, with a shim over the Rust XML-RPC server. The shim extends a renamed, unchanged copy of WordPress 7.1.5's class and overrides construction, `login()`, `call()` and `serve_request()`; WordPress's method bodies are the copied ones, and every entry of the method table runs as an operation. <Ev source="ss:crates/speedyspec-xmlrpc-php/src/php/wp-xmlrpc-server.php#L6-L14" hash="9b47ff8b0bcc3eccde8996e9ee09d95ca4ca67615177f1937d6bf4f8477f8811"/> The Rust codec takes the place of `IXR_Message` and `IXR_Server` when the server reads and writes a request, but the ten IXR classes themselves stay WordPress's PHP.
+
+- WordPress's own methods and plugins' `xmlrpc_methods` entries are served, an `IXR_Error` keeps its fault code, and new-style operations join the table. <Ev test="speedyspec-xmlrpc-php::legacy::wordpress_core_methods_are_served"/> <Ev test="speedyspec-xmlrpc-php::legacy::a_plugin_method_is_served_and_restricted_to_xmlrpc"/> <Ev test="speedyspec-xmlrpc-php::legacy::an_ixr_error_keeps_its_fault_code"/> <Ev test="speedyspec-xmlrpc-php::legacy::operations_appear_in_the_filtered_table_as_operation_methods"/>
+- `xmlrpc_enabled` and the options before it, `xmlrpc_element_limit`, `xmlrpc_call` and `xmlrpc_login_error` apply as in WordPress. <Ev test="speedyspec-xmlrpc-php::hooks::enabled_follows_wordpress_filter_order"/> <Ev test="speedyspec-xmlrpc-php::hooks::element_limit_filter_applies"/> <Ev test="speedyspec-xmlrpc-php::hooks::call_fires_xmlrpc_call"/> <Ev test="speedyspec-xmlrpc-php::hooks::login_error_filter_changes_the_fault"/>
+- `system.listMethods` and `system.getCapabilities` match IXR, multicall wraps results and faults, and one failed login fails every later login in the request, as `auth_failed` does. <Ev test="speedyspec-xmlrpc::server::list_methods_matches_ixr_order"/> <Ev test="speedyspec-xmlrpc::server::get_capabilities_matches_ixr"/> <Ev test="speedyspec-xmlrpc::server::multicall_wraps_results_and_faults"/> <Ev test="speedyspec-xmlrpc-php::legacy::a_failed_login_in_a_legacy_method_blocks_an_operation_login_later_in_the_multicall"/>
+- The codec refuses a DOCTYPE, undeclared entities, too many elements and deep nesting as parse faults. <Ev test="speedyspec-xmlrpc::codec::doctype_is_a_parse_fault"/> <Ev test="speedyspec-xmlrpc::codec::too_many_elements_is_a_parse_fault"/> <Ev test="speedyspec-xmlrpc::codec::deep_nesting_is_a_parse_fault"/>
+
+## How it is checked against WordPress
+
+The XML-RPC area has no recorded compat scenarios. WordPress's own tests from `tests/phpunit/tests/xmlrpc/` that need no database (`basic`, `client`, `message` and `demo/addTwoNumbers`), copied from the 7.1 branch, run with the pinned PHPUnit against the shim: 36 tests, data sets counted, every one run and none failing. <Ev source="ss:crates/speedyspec-xmlrpc-php/tests/wordpress.rs#L21-L25" hash="54b9185bd5178b02cbf41927ebc2b2345be5577990e7970333b1275907d42ed2"/> <Ev source="ss:crates/speedyspec-xmlrpc-php/tests/wordpress.rs#L137-L145" hash="bc181868415c57faa8c64c96b4d2e17853ea79ddc58d89873fedecf28d8aa754"/>
+
+That suite leaves out WordPress's tests of the `wp.*`, `mw.*`, `mt.*` and `blogger.*` methods, which need a database, so the port's results for those methods are not checked against WordPress.

@@ -1,0 +1,74 @@
+---
+---
+
+The runtime worker doesn't link these crates yet; this page describes their Rust API as it stands. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L14-L56" hash="15469f5e81760359fbc6d9c95f23dbf8b434a97c14f3ee6cd8b46219234e6c7f"/>
+
+## The crates
+
+- **`speedyspec-wp-i18n-contracts`** holds the ports and plain values: `TranslationFileReader`, `FileProbe` and `TranslationFileCache`, which the translation controller reads files through, and `LocaleStrings`, `SwitchEffects` and `ScriptSources`, which the locale code asks of WordPress code that isn't ported. <Ev source="ss:crates/speedyspec-wp-i18n-contracts/src/ports.rs#L30-L60" hash="7d3db238aad012c2a08439be92db8414c873fa863fcab7c0c4caad0ce4501fac"/> <Ev source="ss:crates/speedyspec-wp-i18n-contracts/src/locale.rs#L59-L81" hash="7da846f2673f29d30143ed0b216d5a4fe7ab08b39ef2c66748b255163edd2408"/>
+- **`speedyspec-wp-i18n`** is the domain: `TranslationController` (`WP_Translation_Controller`), `TranslationFile`, `PluralRule` (`Plural_Forms`), `LocaleSwitcher` (`WP_Locale_Switcher`), script translation file names, schema translation, and `I18nApi`, the gettext family over the controller and the Hook API. <Ev source="ss:crates/speedyspec-wp-i18n/src/lib.rs#L12-L22" hash="d13838009a3fe32d1c8a4829bda79935fddbc3a8ebe7e6dc7620207334cff7f4"/>
+- **`speedyspec-wp-i18n-files`** reads `.mo` and `.l10n.php` files (`MoReader`, `L10nPhpReader`, `ByExtension`, which picks by extension as `WP_Translation_File::create()` does) and asks the file system through `StdFileProbe`. <Ev test="speedyspec-wp-i18n-tests::readers::every_fixture_reads_as_wordpress_reads_it"/>
+- **`speedyspec-wp-i18n-memory`** is `MemoryTranslationFileCache`, the per-worker cache of parsed files, keyed by a file's identity so a rewritten file is read again. <Ev test="speedyspec-wp-i18n-tests::cache::rewritten_file_is_reread"/>
+- **`speedyspec-wp-i18n-php`** is the PHP area, `I18nArea`. **`speedyspec-wp-i18n-tests`** holds the integration tests of the domain with its adapters.
+- **`speedyspec-wp-utf8`** is `utf8.php` and `compat-utf8.php` over bytes: `scan_utf8`, `is_valid_utf8`, `scrub_utf8`, `has_noncharacters`, code point counting, and `mb_substr`/`mb_strlen` as WordPress's fallbacks compute them. **`speedyspec-wp-utf8-php`** declares them in PHP (`Utf8Area`). <Ev source="ss:crates/speedyspec-wp-utf8/src/lib.rs#L14-L19" hash="5241c138a6f1a0498295b15272d95942e25f52be50569eab559c26a9d668d417"/>
+- **`speedyspec-wp-token-map`** is `WP_Token_Map` in WordPress's own layout, with the HTML5 named character references as a table built at compile time; **`speedyspec-wp-token-map-php`** declares the class (`TokenMapArea`). <Ev source="ss:crates/speedyspec-wp-token-map/src/lib.rs#L10-L13" hash="3070711f4835e0ab68a76318c7d2395193dd73027363c3646a48e35d35811fa9"/>
+
+## Use cases
+
+`I18nApi` holds the calls: `translate()` (`translate()` and `translate_with_gettext_context()`) and `translate_plural()` (`_n()` and `_nx()`) look the text up in the controller, then run the `gettext` filters through `speedyspec-wp-hooks`, skipping a filter nothing is hooked to. The result is lent to the caller as `Translated`, so an unfiltered translation is copied straight out of the file. <Ev source="ss:crates/speedyspec-wp-i18n/src/gettext.rs#L362-L369" hash="e69974fbf765b62f030329f7b02c04d48a79bcb1138189963b715e341ae56968"/> <Ev test="speedyspec-wp-i18n-tests::gettext::filters_fire_in_order_with_wordpress_args"/> The controller's commands are `load_file()`, `unload_file()` and `unload_textdomain()`; its queries are `translate()`, `translate_plural()`, `is_textdomain_loaded()`, `get_headers()` and `get_entries()`. <Ev test="speedyspec-wp-i18n-tests::controller::load_and_translate"/>
+
+UTF-8 and the token map are pure functions with no state and no ports.
+
+## Adapters
+
+- **Files:** `ByExtension` and `StdFileProbe` in Rust. On the PHP side, `PhpFallbackReader` adds PHP's `include` for a `.l10n.php` file the Rust reader can't parse, as WordPress loads every such file. <Ev source="ss:crates/speedyspec-wp-i18n-php/src/reader.rs#L1-L14" hash="082ecf0b3720a7445dc60146ce01f4e5f7331549088d25f60e9a296088a9476f"/>
+- **Cache:** `MemoryTranslationFileCache`, kept for the worker's life; the controller forgets what a request loaded, not the parsed files. <Ev test="speedyspec-wp-i18n-tests::controller::files_are_reused_across_requests"/>
+- **Locale effects:** PHP adapters of `SwitchEffects` run WordPress's loaders and fire its actions. <Ev source="ss:crates/speedyspec-wp-i18n-php/src/effects.rs#L1-L2" hash="1b9493ce84fb599ff39d5de62276880278cdd89d4d0f226cb1314c4284a68be7"/>
+- **The PHP areas:** `I18nArea` declares the native `translate()`, `__()`, `_x()`, `_n()`, `_nx()` and the rest, and the controller and file classes as shells over the Rust controller. A call the fast path can't serve goes to WordPress's own function, kept under `SpeedySpec\WpI18n\Legacy\`. <Ev source="ss:crates/speedyspec-wp-i18n-php/src/lib.rs#L1-L11" hash="0517940261f0d4666eef452c17808c6abb69ac3a2996f54a7aaae6d3fef4d215"/> <Ev test="speedyspec-wp-i18n-php::php::plain_calls_take_the_fast_path"/>
+
+The translation port has no container key of its own: its ports are passed to `TranslationController::new()`, and `I18nArea` resolves the Hook API's store from the container under the hook-store key once per request. <Ev source="ss:crates/speedyspec-wp-i18n-php/src/lib.rs#L82-L91" hash="9bdc6eeaea2e365c3acc77082f7ab0455c1b40aa81c25e399100ad5a6dd06cfd"/> To replace the file reader, probe or cache, construct the controller with another adapter of the port. From PHP, the translation classes can't be rebound yet; a plugin still changes translations through the `gettext` filters, which the native functions run.
+
+## Patterns
+
+- **Ports and Adapters** for file reading, the file system and the file cache, and for the locale's calls into unported WordPress code.
+- **Facade**: `I18nApi` over the controller and the Hook API; the PHP areas over the Rust functions.
+- **Identity Map**: the per-worker file cache, one parsed file per file identity.
+- **Proxy**: the PHP `WP_Translation_Controller` and `WP_Translation_File` classes are shells over Rust objects.
+
+## In Rust
+
+```rust
+use std::cell::RefCell;
+use std::rc::Rc;
+
+use speedyspec_wp_hooks::{HookApi, HookValue};
+use speedyspec_wp_i18n::{I18nApi, I18nError, Translated, TranslationController};
+use speedyspec_wp_i18n_files::{ByExtension, StdFileProbe};
+use speedyspec_wp_i18n_memory::MemoryTranslationFileCache;
+
+fn translations(hooks: Rc<HookApi>) -> I18nApi {
+    let controller = TranslationController::new(
+        Rc::new(ByExtension::default()),
+        Rc::new(StdFileProbe),
+        Rc::new(MemoryTranslationFileCache::default()),
+    );
+    I18nApi::new(hooks, Rc::new(RefCell::new(controller)))
+}
+
+/// `__( 'Read more', 'acme' )`, filters included. A filter may return a non-string, as in WordPress.
+fn read_more(api: &I18nApi) -> Result<HookValue, I18nError> {
+    api.translate(b"Read more", None, "acme", |t| match t {
+        Translated::Bytes(b) => speedyspec_wp_i18n::bytes_value(b),
+        Translated::Arg(_) => HookValue::Str("Read more".to_owned()),
+        Translated::Value(v) => v,
+    })
+}
+```
+
+Load the domain's file first with `api.controller().borrow_mut().load_file(path, "acme", None)`.
+
+## How to change this
+
+- **What must still pass:** WordPress 7.1.5's own l10n and POMO tests, its UTF-8 tests and its token map test, each run by the pinned PHPUnit against the native area, with no documented breaks today (`compat/i18n`, `compat/utf8` and `compat/token-map` `breaks.json`). <Ev test="speedyspec-wp-i18n-php::wordpress::wordpress_i18n_tests_pass"/> <Ev test="speedyspec-wp-utf8-php::wordpress::wordpress_utf8_tests_pass"/> <Ev test="speedyspec-wp-token-map-php::wordpress::wordpress_token_map_tests_pass"/>
+- **Recorded cases:** each area records calls to stock WordPress in `compat/<area>/cases.json` (with `record.php`), and the PHP crates replay them. <Ev test="speedyspec-wp-i18n-php::php::recorded_calls_replay"/> <Ev test="speedyspec-wp-utf8-php::php::recorded_cases_replay"/> <Ev test="speedyspec-wp-token-map-php::php::recorded_calls_replay"/>
+- A WordPress test the port can't pass is marked `@group documented-break` and listed in the area's `breaks.json`, or the run fails. <Ev test="speedyspec-wp-i18n-php::wordpress::documented_breaks_are_listed"/>

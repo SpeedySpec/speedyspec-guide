@@ -1,0 +1,36 @@
+---
+---
+
+## The crate
+
+**`speedyspec-wp-html-syntax`** holds the pieces of WordPress's HTML API that kses needs, ported from WordPress 7.1.5: `WP_HTML_Decoder` (`decode`, `decode_attribute`, `decode_text_node`, `read_character_reference`, `code_point_to_utf8`), the lookup of the HTML5 named character references (`named_reference`, re-exported from `speedyspec-wp-token-map`, which holds the table), and `start_tag_attributes`, which reads a start tag's attributes as `WP_HTML_Tag_Processor` does. The Tag Processor and the HTML Processor themselves are a later port. <Ev source="ss:crates/speedyspec-wp-html-syntax/src/lib.rs#L1-L10" hash="666eb36f30387d25b8db803146d9b5f4ff644b59356ce3b559bf6e4577beb0fc"/>
+
+Its only dependencies are `memchr` and `speedyspec-wp-token-map`. <Ev source="ss:crates/speedyspec-wp-html-syntax/Cargo.toml#L10-L12" hash="15ee618f0ade886b9371225f77f76c88126775689fa5f21ad1cbc36577ffdabf"/> It has no PHP crate: nothing declares these functions in PHP, and the runtime worker doesn't link it. Its users are the kses crates (`speedyspec-wp-kses`, `-lexical` and `-security`), so it would reach the runtime with them. <Ev source="ss:crates/speedyspec-wp-kses/Cargo.toml#L18" hash="08263408652975b639e56f3f0cf663578c32647554c94ede79970fec73fccf3d"/>
+
+## Contracts and use cases
+
+None yet. The functions are pure: bytes in, bytes out, borrowing the input when nothing changes (`Cow`). There is no state, no hook and no outside fact to read, so there is no port and nothing is bound in the container. A port and use cases come with the Tag Processor, whose objects hold state.
+
+## Patterns
+
+- **Value Object**: `TagAttribute` (a comparable name and a decoded value, `None` for an attribute with no value) and `DecodeContext`. <Ev source="ss:crates/speedyspec-wp-html-syntax/src/attributes.rs#L7-L11" hash="0afa5760b23f7f35dd319babe83835104f3e21ebd8358bf3552bb7ec5d0748b8"/>
+- Plain functions otherwise. kses's lexical functions, its scanner and its security oracle all call the same decoder and attribute reader, so no HTML syntax rule is written twice.
+
+## Calling it from Rust
+
+A runtime feature that reads one attribute of a start tag gets it as `WP_HTML_Tag_Processor::get_attribute()` would, already decoded; text outside tags is decoded with `decode_text_node`:
+
+```rust
+use speedyspec_wp_html_syntax::start_tag_attributes;
+
+/// The decoded value of `name` (lowercase) in a start tag's attribute text; `None` when it is missing or has no value.
+fn attribute(tag_attributes: &[u8], name: &str) -> Option<Vec<u8>> {
+    let attributes = start_tag_attributes(tag_attributes)?;
+    let found = attributes.into_iter().find(|a| a.name.as_ref() == name.as_bytes())?;
+    found.value.map(|v| v.into_owned())
+}
+```
+
+## How to change this
+
+Keep the crate's tests passing: they compare `decode()` in both contexts, the whole named-reference table and the attribute reader with WordPress's own `WP_HTML_Decoder` and `WP_HTML_Tag_Processor`, run in PHP by the kses test kit. <Ev test="speedyspec-wp-html-syntax::decoder::decode_matches_php"/> <Ev test="speedyspec-wp-html-syntax::decoder::table_matches_php"/> <Ev test="speedyspec-wp-html-syntax::attributes::matches_php"/> kses's tests run over it too. There is no compat area for the HTML API yet.

@@ -1,0 +1,24 @@
+---
+---
+
+Not native yet. speedyspec-server has the Shortcode API in Rust, but the runtime worker doesn't link it: its dependency list names no shortcode crate. PHP on SpeedySpec still gets WordPress's own `shortcodes.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/> <Ev source="ss:crates/speedyspec-wp-theme-json/README.md#L101-L103" hash="67bfdcd9955266fb5c1444fca27ae3b3eb8ecb89145ed55ca3509428bd7e493d"/>
+
+## What the port covers
+
+The port declares all 18 functions of `shortcodes.php` with WordPress's signatures, and keeps `$shortcode_tags` as the real global, which it uses as its registry. <Ev source="ss:crates/speedyspec-wp-shortcode-php/src/shortcodes.php#L44-L50" hash="a56cd6a08026455fe107dfe5a26c4dfe95afdd0c57cea094aefb93a6a0fd5fcd"/> <Ev test="speedyspec-wp-shortcode-php::php::case_functions_declared"/> <Ev test="speedyspec-wp-shortcode-php::php::case_global_is_registry"/> The seam's four filters (`pre_do_shortcode_tag`, `do_shortcode_tag`, `shortcode_atts_{$shortcode}`, `strip_shortcodes_tagnames`) fire through the Rust Hook API with WordPress's arguments. <Ev test="speedyspec-wp-shortcode::api::pre_do_shortcode_tag_short_circuits_with_wordpress_arguments"/> <Ev test="speedyspec-wp-shortcode::filters::shortcode_atts_uses_the_dynamic_hook_name"/> <Ev test="speedyspec-wp-shortcode-php::php::case_php_filters_apply"/>
+
+How each group is checked:
+
+- **Recorded scenarios.** `compat/shortcode` holds 206 scenarios recorded from WordPress 7.1.5: running shortcodes, parsing attributes, stripping, registration, overlapping tags, `has_shortcode()`, the tags in content, the filters, handlers that return arrays, throw or re-enter, and direct calls of `do_shortcode_tag()` and `strip_shortcode_tag()`. The port's `compat` test replays every one through all four combinations of its scanners and attribute parsers. <Ev area="shortcode" scenario="do_000_test_shortcode_tag"/> <Ev area="shortcode" scenario="parse_atts_000_a_1_b_2_c_3_d_e_f"/> <Ev area="shortcode" scenario="strip_000_before_gallery"/> <Ev area="shortcode" scenario="overlap_00_a_a_b_a_b_a"/> <Ev area="shortcode" scenario="filter_shortcode_atts"/> <Ev area="shortcode" scenario="handler_reenters"/> <Ev area="shortcode" scenario="direct_do_shortcode_tag"/> <Ev source="ss:crates/speedyspec-wp-shortcode-php/tests/compat.rs#L81-L89" hash="37a82f88ff33813a6db1f8fbfb8cee31b4c0e924a344f36df1800c0a31b79e95"/>
+- **WordPress's PHPUnit tests.** WordPress's `tests/phpunit/tests/shortcode.php` runs against the native functions with the native kses, WordPress's own `shortcodes.php` never loaded. It must run at least 80 tests with no failure. One test is left out, `test_smilies_arent_converted`, because it needs a booted WordPress (`needs-wordpress-core`); none is a documented break. <Ev test="speedyspec-wp-shortcode-php::wordpress::wordpress_shortcode_tests_pass"/>
+
+## Documented differences
+
+Two, both recorded as breaks:
+
+- WordPress's PCRE can run out of backtracking or JIT stack on pathological content, and then `do_shortcode()` returns `""`. The port's scanners can't fail that way and return the real result. <Ev area="shortcode" break="break_backtrack_limit"/>
+- The port matches with the C locale's character classes. After a plugin calls `setlocale( LC_CTYPE, … )`, WordPress's `\w` can match bytes above 0x7F and the port's doesn't. <Ev area="shortcode" break="break_c_locale"/>
+
+## Not covered
+
+WordPress's shortcode tests in `media.php`, `post/output.php` and `widgets/wpWidgetText.php` need a database, posts and a booted WordPress, so they don't run against the port yet. <Ev source="ss:crates/speedyspec-wp-shortcode/README.md#L73-L75" hash="97dea5f79115dea41e3ffe1d9641beaabbd60d77809a2582a28fe907846d6e86"/>

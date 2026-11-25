@@ -1,6 +1,7 @@
 name: "Shortcodes"
 job: "Registers shortcodes and replaces them in content."
 ported: false
+crates: [speedyspec-wp-shortcode, speedyspec-wp-shortcode-contracts, speedyspec-wp-shortcode-php]
 files:
   - 'wp-includes/shortcodes.php'
 # Loaded in this order before each example on the WordPress side; basic-setup.php defines the constants and

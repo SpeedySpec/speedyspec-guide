@@ -1,6 +1,7 @@
 name: "Abilities"
 job: "Registers abilities and ability categories, and looks them up from their registries."
 ported: false
+crates: [speedyspec-abilities, speedyspec-abilities-contracts, speedyspec-abilities-php]
 files:
   - 'wp-includes/abilities/**'
   - 'wp-includes/abilities-api.php'

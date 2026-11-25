@@ -1,0 +1,93 @@
+---
+---
+
+WordPress exposes the same features three times: the REST API, XML-RPC and the Abilities API, each with its own registration, arguments, permission checks and errors. The unified operation API declares an operation once, as a specification; binds one handler to it; and lets each transport expose it. REST, XML-RPC and Abilities are transports. None of these crates is linked into the runtime worker yet. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The crates
+
+- **`speedyspec-operation-contracts`**: plain value objects and ports, with no dependency on any SpeedySpec crate: the neutral `Value` every transport decodes to, `Schema`, named types (`TypeSpec`) and their relations, `OperationSpec`, errors and their `Category`, the `Caller`, and the `RawInput`/`RawOutput` contracts. <Ev source="ss:crates/speedyspec-operation-contracts/src/lib.rs#L1-L7" hash="0bd7ff48961d9487f13022c90eb076b8aa5d03c65b2d5529fc4ae3628bcf1625"/>
+- **`speedyspec-operation`**: the specification. The `S` schema builder, the `Type` and `Operation` builders, the schema validator, the `Registries` with their registration checks, and document export. <Ev source="ss:crates/speedyspec-operation/src/lib.rs#L1-L6" hash="76eadf773ad8d5d2646389b10517833678a55b34398129a3b5a30499f81f11e7"/>
+- **`speedyspec-operation-dispatch`**: binds handlers in the service container by operation name, and runs calls by name through middleware, permission first. <Ev source="ss:crates/speedyspec-operation-dispatch/src/lib.rs#L1-L11" hash="92b5a04fed460df80cc185fc65162f717230ea5f0487ab2e509fb773af0ebb49"/>
+- **`speedyspec-transport-contracts`**: the ports a transport implements or uses. It depends only on the operation contracts. <Ev source="ss:crates/speedyspec-transport-contracts/src/lib.rs#L1-L9" hash="b9d41e5d98053b5de4b5df4eb105d8e972d449bb478d377e9da784cdcff6b5c4"/>
+- **`speedyspec-transport`**: the binding store, the transport registry and its exposure, stage middleware for each transport's hooks, and the serve pipeline. <Ev source="ss:crates/speedyspec-transport/src/lib.rs#L1-L8" hash="c19fabbb19ea95cfa2c9d32a48af6e47fd21db40fb9c172bdeca78141726a957"/>
+- **`speedyspec-transport-hooks-wp`**: transport hooks over the Hooks seam's `HookApi`, so `rest_pre_dispatch` or `xmlrpc_call` reach the callbacks PHP plugins add. <Ev source="ss:crates/speedyspec-transport-hooks-wp/src/lib.rs#L1-L7" hash="d6eda6004f88e082c9c18e31d147582accdd2407760580cb04c1772c9abda1ac"/>
+- **`speedyspec-operation-php`**: the PHP facade `SpeedySpec\Operation\*` and the functions `wp_register_operation` and `wp_operation_transports`, over native functions that register into the site's Rust registries. <Ev source="ss:crates/speedyspec-operation-php/src/lib.rs#L1-L5" hash="ce27ad64d75f2e0e775df6f098da2f11467ebaa30ca140654f33fbfaec2ce295"/>
+
+The transports have their own crates and seams: [REST](/speedyspec/architecture/rest-api/), [XML-RPC](/speedyspec/architecture/xmlrpc/) and [Abilities](/speedyspec/architecture/ability/).
+
+## The contracts
+
+- **`Transport`**: a protocol's name, its default binding for an operation with none (`None` when it can't expose it), and a check of explicit bindings. <Ev source="ss:crates/speedyspec-transport-contracts/src/ports.rs#L7-L15" hash="bbe79392f2dcf2f5e74ff2916eaaa70ca274d4fb229808fe4c0d8d5d95f17c01"/>
+- **`Authenticator<R>`** turns a request's credentials into a `Caller`; **`Codec<R, S>`** decodes a request into a call and encodes an output or error into a response. <Ev source="ss:crates/speedyspec-transport-contracts/src/ports.rs#L34-L48" hash="faa0ad97ed0a5ba7027e7033d79c30a440ad7ec1d204af170f74cee6e058c114"/>
+- **`TransportHooks`** (WordPress-style actions and filters over neutral values) and **`StageHooks`** (a transport's hooks between the permission check and the handler, which may short-circuit the call). <Ev source="ss:crates/speedyspec-transport-contracts/src/ports.rs#L50-L66" hash="0d1305d8f0dd5e41f70ed35f7970d7d2b1fe6f4326c60af1754cbdcc5d911255"/>
+- **`BindingStore`**: per-operation, per-transport bindings, opaque to all but the named transport. <Ev source="ss:crates/speedyspec-transport-contracts/src/ports.rs#L17-L24" hash="910d97ce4da4be4dcffd11fb39298b83220c92fa4c1a5c70e676fa499227f45b"/>
+- **`Identity`**: the driven port for capability checks. A PHP adapter (`current_user_can`) comes first. <Ev source="ss:crates/speedyspec-operation-contracts/src/caller.rs#L11-L15" hash="bf32d52d14dc8e48f604be6915714ff4f8ec4db4dddaa2298a29600dec80d203"/>
+- **`OperationHandler`**: takes the input value object and returns the output one. A neutral handler takes and returns neutral values instead, so a PHP handler can replace a Rust one without knowing its contracts. <Ev source="ss:crates/speedyspec-operation-dispatch/src/handler.rs#L9-L29" hash="a811b2ef3297dd2c5250626e9469d06c5336653f9790c2450318a4cd3f672bca"/>
+
+## The use cases
+
+- **Register** a type or an operation; **restrict** an operation to named transports; **close** the registries, which checks every reference and relation. <Ev source="ss:crates/speedyspec-operation/src/registry.rs#L91-L94" hash="d04096cfaa52a4dfe59138799822bb32515bb779fe96407ac4ea65b71c2b5b42"/> <Ev test="speedyspec-operation::registry::closes_with_relation_cycles_and_exports_a_document"/> <Ev test="speedyspec-operation::registry::restrict_limits_an_open_registry"/>
+- **Call** an operation by name: `Dispatcher::call` validates the neutral input, hydrates the input value object, runs the middleware around the handler, and extracts and validates the output. Invalid input reports its violations, and output that breaks its schema is never returned. <Ev test="speedyspec-operation-dispatch::dispatch::calls_a_handler_by_name_with_neutral_values"/> <Ev test="speedyspec-operation-dispatch::dispatch::invalid_input_reports_violations"/> <Ev test="speedyspec-operation-dispatch::dispatch::output_that_breaks_its_schema_is_internal_and_never_returned"/>
+- **Authorize** separately, then **call authorized**, for a transport that decides permission itself, as Abilities does with `wp_ability_permission_result`. <Ev source="ss:crates/speedyspec-operation-dispatch/src/dispatcher.rs#L111-L122" hash="296499b499c3e03b91f3a0a0789ea6c9e8c4fa63bef1ce6a8698a0685006c499"/> <Ev test="speedyspec-operation-dispatch::dispatch::call_authorized_skips_only_the_permission_check"/>
+- **Expose**: an operation that isn't restricted is exposed on every installed transport, including one installed later. <Ev test="speedyspec-transport::exposure::unrestricted_operations_are_exposed_on_every_transport_by_default"/> <Ev test="speedyspec-transport::exposure::a_transport_installed_later_exposes_unrestricted_operations"/>
+- **Serve** a request: the pipeline authenticates, decodes, checks the transport exposes the operation, dispatches and encodes; any failure is encoded as the transport's error. <Ev source="ss:crates/speedyspec-transport/src/pipeline.rs#L48-L71" hash="ea07bb0561f98bf37c19aba50412a1de3e3bdc0a40eb1706c098e76b076c0faa"/> <Ev test="speedyspec-transport::pipeline::serves_a_request_end_to_end"/> <Ev test="speedyspec-transport::pipeline::every_stage_failure_is_encoded_as_an_error"/>
+
+## Adapters and container keys
+
+- A handler is bound in the container under `operation:<name>` (`handler_key`). Binding the same name again replaces it, from Rust or PHP. <Ev source="ss:crates/speedyspec-operation-dispatch/src/handler.rs#L31-L43" hash="a535d718a74372129677c46eb51273e8edb8202c4546c3bc5f771ac751f78ddc"/> <Ev test="speedyspec-operation-dispatch::dispatch::rebinding_replaces_the_handler_and_missing_handler_is_internal"/>
+- From PHP, `SpeedySpec\Operation\Handler::for( $operation, $handler )` binds a handler for the request; it can replace a Rust handler, and the override ends with the request. <Ev source="ss:crates/speedyspec-operation-php/src/php/operation.php#L123-L136" hash="47a749a07cb79098ee62c7de4b6309a65108b86a3ae26233075a0adf5883c9c9"/> <Ev test="speedyspec-operation-php::dispatch::php_handler_replaces_a_rust_contract_handler"/> <Ev test="speedyspec-operation-php::lifetime::php_override_ends_with_the_request"/>
+- Specifications live for the worker, PHP callables for one request. The area fires `wp_operations_init` once per request, the first time the request needs operations: the first run fills and closes the site's registries, and later runs re-bind that request's callables. <Ev source="ss:crates/speedyspec-operation-php/src/lib.rs#L14-L17" hash="50f8fbdd0d05cc268cb482bc067334c5b566317de02b7e04d7301ed179d42ab2"/> <Ev test="speedyspec-operation-php::lifetime::registries_survive_requests"/> <Ev test="speedyspec-operation-php::lifetime::second_request_uses_its_own_callables"/>
+- `PhpIdentity` answers `Identity` with PHP's `user_can`. <Ev test="speedyspec-operation-php::identity::php_identity_calls_user_can"/>
+- `MemoryBindingStore` is the binding store; `WpTransportHooks` adapts `TransportHooks` to the Rust `HookApi`. <Ev test="speedyspec-transport-hooks-wp::hooks::filters_and_actions_run_through_the_hook_api"/>
+
+## Patterns
+
+- **Ports and Adapters**: the specification and handlers inside; transports as driving adapters; `Identity` and `BindingStore` as driven ports.
+- **Builder** for schemas (`S`), types and operations, producing **Value Objects**.
+- **Registry** for operations, types and transports.
+- **Command and query dispatch by key**: each handler bound in the container under its operation's name.
+- **Chain of Responsibility** for middleware, permission always first. The design builds this on `speedyspec-cqrs`; the code has its own `OperationMiddleware` of the same shape, because `speedyspec-cqrs`'s middleware can't be driven from another crate. <Ev source="ss:crates/speedyspec-operation-dispatch/src/lib.rs#L8-L9" hash="4434ad663f575e6af0412a266c50e137f5feb1f90f902b542213598c21294e0b"/> <Ev test="speedyspec-operation-dispatch::dispatch::permission_runs_before_the_handler"/>
+- **Data Mapper** for hydration (neutral value to input object) and extraction (output object to neutral value).
+- **Strategy** for each transport's default mapping, and **Template Method** for the serve pipeline.
+
+## Calling an operation from Rust
+
+```rust
+use std::rc::Rc;
+use speedyspec_container::Container;
+use speedyspec_operation::{Operation, Registries, S, Type};
+use speedyspec_operation_contracts::{Action, Caller, Category, Identity, OperationError, Value};
+use speedyspec_operation_dispatch::{Dispatcher, bind_handler, handler_fn};
+
+// GetPost implements Hydrate; Post implements Extract.
+fn get_title(container: Rc<Container>, registries: Rc<Registries>, identity: Rc<dyn Identity>) -> Result<Value, OperationError> {
+    registries.register_operation(
+        Operation::query("acme/get-post")
+            .resource("post", Action::Get, &["id"])
+            .input::<GetPost>(S::object([("id", S::integer().required())]))
+            .output::<Post>(Type::reference("post"))
+            .error("post_not_found", Category::NotFound)
+            .permission(|c: &Caller, i: &GetPost| c.can("read_post", &[Value::Int(i.id)]))
+            .build()
+            .expect("a valid operation"),
+    ).expect("registers");
+    registries.close().expect("every reference resolves");
+
+    bind_handler(&container, "acme/get-post", |_, _| Ok(handler_fn(find_post)));
+    let dispatcher = Dispatcher::new(container, registries);
+    let caller = Caller::new(Some(1), "internal", identity);
+    dispatcher.call("acme/get-post", Value::map([("id", Value::from(7_i64))]), &caller)
+}
+
+fn find_post(input: GetPost, _: &Caller) -> Result<Post, OperationError> {
+    Ok(Post { title: format!("Post {}", input.id) })
+}
+```
+
+This follows `speedyspec-operation-dispatch`'s own test fixtures, which register `core/get-post` the same way. <Ev test="speedyspec-operation-dispatch::dispatch::calls_a_handler_by_name_with_neutral_values"/>
+
+## How to change this
+
+- **Replace a handler:** bind another under `operation:<name>`, from Rust with `bind_handler` or from PHP with `Handler::for`. The contract stays.
+- **Add a transport:** implement `Transport`, `Authenticator` and `Codec` in a crate of its own, install it in the `TransportRegistry`, and serve it through `Pipeline`. Neither the specification nor any operation changes.
+- **What must still pass:** the tests of `speedyspec-operation`, `speedyspec-operation-dispatch`, `speedyspec-transport` and `speedyspec-operation-php`, and each transport's WordPress PHPUnit run.
