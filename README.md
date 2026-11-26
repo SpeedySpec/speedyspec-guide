@@ -258,7 +258,7 @@ WordPress pin (`sources.json`, wordpress-develop `1ccce2133e92`) already is.
 
 ## The meta seam, native (2026-11-26)
 
-speedyspec-server `c0dd4543` (draft PR #131) wires WordPress's metadata API into the runtime, and the guide now pins
+speedyspec-server `8ecc1c64` (draft PR #131, with #134 merged in) wires WordPress's metadata API into the runtime, and the guide now pins
 speedyspec-platform too (`fe3bb527`), where the shared crates and the hooks compat area moved.
 
 - **Meta is a ported seam:** 23 of `meta.php`'s 24 functions and `WP_Metadata_Lazyloader` are native; `get_meta_sql()`
@@ -267,8 +267,7 @@ speedyspec-platform too (`fe3bb527`), where the shared crates and the hooks comp
   and 343). The runtime's own meta API (the natives, the PHP helpers and the repository twins) is listed in the seam.
 - **Differences:** `update_meta_cache()`'s query also selects the meta id; on a single site `site` meta maps to
   `wp_sitemeta`; objects in meta values reach hooks as copies; `default_{$meta_type}_metadata` gets an `absint()`ed
-  id. Two replay scenarios are documented breaks from native wpdb's MySQL literal escaping, fixed by
-  speedyspec-server#134.
+  id. Every recorded scenario replays exactly (101 single site, 5 multisite); no break is recorded.
 - **The platform split:** citations into crates that moved resolve in the platform checkout, 15 tests that moved to
   other crates are re-cited, and the runner takes the platform crates from crates.io and boots `MetaArea` as the
   worker does.

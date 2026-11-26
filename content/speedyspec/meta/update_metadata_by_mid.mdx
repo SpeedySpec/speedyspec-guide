@@ -1,14 +1,8 @@
 ---
 symbol: "function:update_metadata_by_mid"
-verdict: works-with-differences
-differences:
-  - summary: "Until speedyspec-server#134 merges, a value with a backslash before a quote (`k\\'`) fails to write: native wpdb's MySQL literal escaping, an SQL injection risk, makes the statement fail and the function returns false. Not a meta difference; it goes with the fix."
+verdict: works-as-wordpress
 ---
 
 ## Behaviour
 
-Native: the `UpdateMetadataByMid` command. It reads the row, unslashes, runs the `update_{$meta_type}_metadata_by_mid` short-circuit, sanitizes, renames the key when `$meta_key` is given, writes, clears the cache, and fires `update_{$meta_type}_meta` with the value before sanitizing and `updated_{$meta_type}_meta` after, plus the old post hooks. <Ev scenario="mid-post" area="metadata"/> <Ev scenario="mid-comment" area="metadata"/> <Ev scenario="mid-term" area="metadata"/> <Ev scenario="mid-invalid" area="metadata"/> <Ev scenario="mid-short-circuit" area="metadata"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
-
-## Differences
-
-- **A backslash before a quote.** The recorded `mid-update-slashed-and-sanitized` scenario is a documented break: its sanitized value `B\'C` reaches MySQL with its quote undoubled, so the UPDATE fails. That is native wpdb's literal escaping, an SQL injection risk fixed by speedyspec-server#134; the break goes when it merges. <Ev break="mid-update-slashed-and-sanitized" area="metadata"/>
+Native: the `UpdateMetadataByMid` command. It reads the row, unslashes, runs the `update_{$meta_type}_metadata_by_mid` short-circuit, sanitizes, renames the key when `$meta_key` is given, writes, clears the cache, and fires `update_{$meta_type}_meta` with the value before sanitizing and `updated_{$meta_type}_meta` after, plus the old post hooks. <Ev scenario="mid-post" area="metadata"/> <Ev scenario="mid-comment" area="metadata"/> <Ev scenario="mid-term" area="metadata"/> <Ev scenario="mid-invalid" area="metadata"/> <Ev scenario="mid-short-circuit" area="metadata"/> <Ev scenario="mid-update-slashed-and-sanitized" area="metadata"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>

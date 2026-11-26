@@ -171,7 +171,7 @@ dependencies:
     cite: { source: "ss:crates/speedyspec-wp-meta/src/api.rs#L237-L240", hash: "dc47a86eacffc778fbdfa31131b59b5126689f5cdfca9114636e21dcc95f1d6d" }
   function:maybe_unserialize:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-meta/src/by_mid.rs#L150", hash: "75bfc389824c419c6321b3e294b4205b1f35fdded94a133f281b21f9d85cf740" }
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/by_mid.rs#L89-L90", hash: "f286ecf92a88bfda8722cb0e8e3eeea172e002a5f184d20e0a744113e2153a2f" }
   # The RevisionSupport port's PHP adapter.
   function:post_type_supports:
     state: port

@@ -11,4 +11,4 @@ Native: the `UpdateMetaCache` command. After the `update_{$meta_type}_metadata_c
 
 ## Differences
 
-- **The query text.** The repository returns `Meta` entities, which carry their id, so the statement adds the id column. A plugin that matches `update_meta_cache()`'s exact SQL in a `query` filter misses it. <Ev source="ss:crates/speedyspec-wp-meta-sql/src/repository.rs#L324-L326" hash="fb932a37a03b40268c4645836488874618bd4145070eb1d1ef45eb2037765e49"/>
+- **The query text.** The repository returns `Meta` entities, which carry their id, so the statement adds the id column. A plugin that matches `update_meta_cache()`'s exact SQL in a `query` filter misses it. <Ev source="ss:crates/speedyspec-wp-meta-sql/src/repository.rs#L356-L358" hash="fb932a37a03b40268c4645836488874618bd4145070eb1d1ef45eb2037765e49"/>
