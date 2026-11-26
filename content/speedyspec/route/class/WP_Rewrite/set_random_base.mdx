@@ -1,0 +1,14 @@
+---
+symbol: "method:WP_Rewrite::set_random_base"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP: the runtime worker doesn't link the rewrite port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`RewriteService::set_random_base`, the `SetRandomBase` command: when the `wp_random_base` option isn't already that string, it saves the new base and re-runs `init()`, which reads the option back into `RewriteState.random_base`. The comparison is strict, as in WordPress, so an option that isn't a string is always replaced. <Ev source="ss:crates/speedyspec-wp-rewrite/src/structures.rs#L244-L255" hash="57b534261add2b22361f93fb60097969c628c223a33832c7f8e48664598344af"/> <Ev test="speedyspec-wp-rewrite::structures::set_random_base_updates_and_reinitialises"/> <Ev test="speedyspec-wp-rewrite::structures::init_reads_the_random_base"/>
+
+Through PHP, `->set_random_base( 'surprise' )` sets `->random_base` and moves the random rules to the new base. <Ev source="ss:crates/speedyspec-wp-rewrite-php/tests/php.rs#L172-L181" hash="f8dfb365464997ae68543f18a7a1fe461ad39fda0cdeebc89a23644e0fcdb19e"/>

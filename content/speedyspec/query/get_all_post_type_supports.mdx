@@ -1,0 +1,18 @@
+---
+symbol: "function:get_all_post_type_supports"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`PostTypeRegistry::all_supports` gives a type's features in insertion order, each `true` or its arguments list; a missing type gives none. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L345-L346" hash="26008f26ae3fd3bf73fd03b1682da0f15c3c74f628577587591d435a3755737b"/>
+
+Its 3 recorded calls replay as in WordPress 7.2-RC2. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>
+
+## Limits
+
+- Recorded from WordPress 7.2-RC2 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>

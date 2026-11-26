@@ -5,6 +5,6 @@ Mostly not in SpeedySpec yet. Of this seam's 169 functions, the runtime answers 
 
 ## How they are verified
 
-WordPress's own `fileSignature.php` tests pass against the natives, and every signature check recorded from WordPress 7.1.5 (`compat/crypto/cases.json`) matches. <Ev test="speedyspec-wp-crypto-php::wordpress::wordpress_crypto_tests_pass_but_phpass"/> <Ev test="speedyspec-wp-crypto-sodium::recorded::signatures_match"/>
+WordPress's own `fileSignature.php` tests pass against the natives, and every signature check recorded from WordPress 7.2-RC2 (`compat/crypto/cases.json`) matches. <Ev test="speedyspec-wp-crypto-php::wordpress::wordpress_crypto_tests_pass_but_phpass"/> <Ev test="speedyspec-wp-crypto-sodium::recorded::signatures_match"/>
 
 Verdicts: `wp_trusted_keys()` works as in WordPress; `verify_file_signature()` works with one difference: it never returns `signature_verification_unsupported`, because the runtime always has ext-sodium and sha384. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/lib.rs#L13-L14" hash="1ddd9359643835ccc764343a75efb0d00056a6c0971af16516df295bce64bb78"/>

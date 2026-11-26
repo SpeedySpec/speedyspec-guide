@@ -1,0 +1,19 @@
+---
+symbol: "function:get_post_status_object"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`PostStatuses::status` gives one registered status, a `stdClass` object as `PostStatusObject`. The registry answers it from memory; phase 4's adapter reads `$wp_post_statuses` live. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L41-L50" hash="08b57de5460ff44c7aa7b6742d1e9949a95010fdf8c673d6f866d38037cb112f"/> <Ev source="ss:crates/speedyspec-wp-posts/src/status.rs#L137-L141" hash="27590068f5c93d66143d061797f4763ae9da6cd35ede516cbb897610ea9abc69"/>
+
+The recorded `get-object` scenario replays as in WordPress 7.2-RC2. <Ev test="speedyspec-wp-posts::recorded::status_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts-contracts::values::post_status_to_php_is_stdclass"/>
+
+## Limits
+
+- Recorded from WordPress 7.2-RC2 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
+- The `! is_string()` check is the adapter's, as is mapping a name that is not UTF-8; no stored status has one, since `sanitize_key()` keeps only ASCII.

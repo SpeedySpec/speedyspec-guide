@@ -237,3 +237,16 @@ speedyspec-server's worker boots its Options port.
   it is Rust in the runtime, Rust in a server port the runtime doesn't load yet, or PHP (stage `conversion`, from the
   runtime's Reflection and the ports' PHP facades). At the pinned server: Hooks 42 in the runtime; Options 38,
   Object Cache 44 and wpdb 77 ported but not loaded.
+
+## Compat on WordPress 7.2-RC2 (2026-11-25)
+
+speedyspec-server `786dc5febc75` (#117) records every compat area from WordPress 7.2-RC2, the release the guide's
+WordPress pin (`sources.json`, wordpress-develop `1ccce2133e92`) already is.
+
+- **The compat pin is one table:** speedyspec-server's `compat/wordpress.json` names the pinned release and each
+  release's tarball and SHA-256. An area's `compat/<area>/source.json` is `{}`, or overrides only the version. The
+  evidence source reads the override, else the table's pin, so `generated/compat.json` lists every seam with a compat
+  area of its name (cron, hooks, i18n, media, meta, object cache, options, password, shortcode, text diff), each at
+  7.2-RC2. Claims verified by a scenario now say *verified against WordPress 7.2-RC2*.
+- **Trunk against 7.1.5 is closed:** the three Options differences the guide found are ported, so those pages say
+  works as WordPress.

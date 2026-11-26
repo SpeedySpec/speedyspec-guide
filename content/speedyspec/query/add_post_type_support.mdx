@@ -1,0 +1,19 @@
+---
+symbol: "function:add_post_type_support"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`PostTypeRegistry::add_support` sets each feature to `true`, or to the extra arguments as a list when there are any; no features leaves the registry as it was. `add_supports()` hands it its calls as `SupportToAdd` values, so phase 4's adapter can make them against `$_wp_post_type_features` instead. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L316-L318" hash="1061d87f16fd3acd77bb31080dbc5e40bfb5a4733f0603a63bb8a2857a943947"/> <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L86-L96" hash="ec41c27d03fae97906a9066ebbe82b92d9a5c4c0f29922ad0bf529d6a80cc4da"/>
+
+The recorded `supports-api` scenario and the `lists` scenario replay as in WordPress 7.2-RC2, comparing `$_wp_post_type_features` in order. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::recorded::list_scenarios_match_wordpress"/>
+
+## Limits
+
+- Recorded from WordPress 7.2-RC2 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
+- The feature names are UTF-8 strings: the adapter converts `(array) $feature` as PHP does.

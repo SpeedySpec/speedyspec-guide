@@ -7,7 +7,7 @@ differences:
 
 ## Behaviour
 
-Native. Schedules a one-off event, with WordPress's checks (timestamp, duplicates within ten minutes), filters and `WP_Error`s. Every recorded scenario replays as in WordPress, and WordPress's own cron tests pass. <Ev area="cron" scenario="single_event"/> <Ev area="cron" scenario="duplicates_False"/> <Ev area="cron" scenario="invalid_timestamp_0_True"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
+Native. Schedules a one-off event, with WordPress's checks (timestamp, duplicates within ten minutes), filters and `WP_Error`s. Every recorded scenario replays as in WordPress, and WordPress's own cron tests pass. The cron array is then sorted as WordPress 7.2's `ksort()` sorts it; see the architecture page. <Ev area="cron" scenario="single_event"/> <Ev area="cron" scenario="duplicates_False"/> <Ev area="cron" scenario="invalid_timestamp_0_True"/> <Ev test="speedyspec-wp-cron-php::wordpress::wordpress_cron_tests_pass"/>
 
 ## Concurrent writes
 

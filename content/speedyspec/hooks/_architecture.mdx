@@ -40,4 +40,4 @@ The store is bound in the container under `SpeedySpec\WpHooks\HookStore`. <Ev so
 
 - **Keep hooks somewhere else:** write a `HookStore` adapter in Rust, or implement `SpeedySpec\WpHooks\HookStorage` in PHP, and bind it under the hook-store key.
 - **What must still pass:** the recorded scenarios (`compat/hooks/scenarios.json`, replayed by `speedyspec-wp-hooks-php`'s tests) and WordPress's own hook tests run against the port, except the breaks listed in `compat/hooks/breaks.json`. <Ev test="speedyspec-wp-hooks-php::wordpress::wordpress_hook_tests_pass"/> <Ev test="speedyspec-wp-hooks-php::wordpress::documented_breaks_are_listed"/>
-- **Recording a new scenario:** add it to `compat/hooks/scenarios.json` in speedyspec-server and run `cargo run -p speedyspec-compat -- record hooks --wordpress 7.1.5`; a difference the port can't match goes in `breaks.json` with its reason.
+- **Recording a new scenario:** add it to `compat/hooks/scenarios.json` in speedyspec-server and run `cargo run -p speedyspec-compat -- record hooks --wordpress 7.2-RC2` (the pin in `compat/wordpress.json`); a difference the port can't match goes in `breaks.json` with its reason.

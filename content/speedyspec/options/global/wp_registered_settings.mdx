@@ -1,14 +1,10 @@
 ---
 symbol: "global:wp_registered_settings"
-verdict: works-with-differences
-differences:
-  - summary: "Entries lack WordPress 7.2's show_in_abilities key (found by the guide)."
+verdict: works-as-wordpress
 ---
 
 ## Behaviour
 
 A real array, as in WordPress: `PhpSettingsStore` keeps the registry's state in it, so code that reads or writes it directly sees what `register_setting()` stored. <Ev scenario="register_setting_defaults" area="options"/> <Ev scenario="register_setting_callable" area="options"/> <Ev source="ss:crates/speedyspec-wp-options-php/src/options.php#L270-L278" hash="05a44e5786a3ae0a9fc6add0bdff9a1c132f8857331a7ad7d8bb6c9f921df492"/>
 
-## Differences
-
-Entries lack WordPress 7.2's `show_in_abilities`; see [register_setting](/speedyspec/options/register_setting/).
+Each entry has WordPress 7.2's `show_in_abilities`; see [register_setting](/speedyspec/options/register_setting/).

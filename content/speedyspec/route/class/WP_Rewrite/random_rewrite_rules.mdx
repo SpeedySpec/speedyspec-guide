@@ -1,0 +1,22 @@
+---
+symbol: "method:WP_Rewrite::random_rewrite_rules"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP: the runtime worker doesn't link the rewrite port, so PHP on SpeedySpec runs WordPress's own `class-wp-rewrite.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`RewriteService::random_rewrite_rules`, the `GenerateRandomRewriteRules` query, is WordPress 7.2's method. When random content redirects are on, it builds an archive path under the random base, each adding `random=1` to the archive's query: `/random/`, `/random/author/{author}/`, `/random/{taxonomy-slug}/{term}/` for each publicly queryable taxonomy with pretty permalinks that a randomable post type uses, and `/random/{post-type-slug}/` for each randomable post type with rewrites (its `has_archive` string, else its rewrite slug). A viewable page at the base, or a viewable post when posts can sit there, drops the `/random/` rule. <Ev source="ss:crates/speedyspec-wp-rewrite/src/generate.rs#L78-L98" hash="adc398c3878befe739fe431950caebcd9c359065343082aeb61c9d2539224734"/>
+
+It reads the rest of WordPress through outbound ports that PHP answers until those areas are ported: `RandomContentRedirects` (query.php's `wp_is_random_content_redirect_enabled()`), `PostTypes::randomable_post_types`, `Taxonomies`, `ViewablePosts` and `SiteTranslations`. Each returns a `Result`; what the PHP side throws comes back out of the method as the same object. <Ev source="ss:crates/speedyspec-wp-rewrite/src/ports.rs#L47-L106" hash="1708502276c0908cfa9a0ee461f5b9a9f4f86245746a8ec33162fad6cdcc9363"/> <Ev source="ss:crates/speedyspec-wp-rewrite-php/tests/php.rs#L365-L381" hash="90d949db01c6ed9c9b98cfc1780f6c5d56bf41779e5090495244ddb0b092e0a7"/>
+
+`rewrite_rules()` takes these rules, drops any regex the top rules already have, runs the `random_rewrite_rules` filter, and merges them after the registration rules. <Ev source="ss:crates/speedyspec-wp-rewrite/src/generate.rs#L264-L283" hash="059fec00940aa9969569248528f99e4c7efa3f15487deec37491a3d2f6e5192e"/>
+
+Five generation cases recorded from WordPress 7.2-RC2 replay: authors, taxonomies and post types; a post or a page at the base; a post elsewhere; and the feature turned off. Through PHP, the rules for a translated base come out as WordPress's, ahead of the feed rules. <Ev test="speedyspec-wp-rewrite::generate::random_content_rules_for_authors_taxonomies_and_post_types"/> <Ev test="speedyspec-wp-rewrite::generate::a_post_at_a_custom_random_base_drops_the_random_rule"/> <Ev test="speedyspec-wp-rewrite::generate::a_page_at_the_random_base_drops_the_random_rule"/> <Ev test="speedyspec-wp-rewrite::generate::a_post_elsewhere_leaves_the_random_rule"/> <Ev test="speedyspec-wp-rewrite::generate::disabled_random_content_adds_no_rules"/> <Ev source="ss:crates/speedyspec-wp-rewrite-php/tests/php.rs#L154-L171" hash="1b3632e7e3f7c0c05c1ee2507e2fdbf89474648a554dc697455d74e9a28a861f"/>
+
+## Limits
+
+- The redirect itself, `WP::handle_random()`, and the random content query filters in `query.php` stay WordPress's PHP; they belong to the Query seam.

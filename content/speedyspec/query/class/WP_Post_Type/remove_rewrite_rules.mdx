@@ -1,0 +1,6 @@
+---
+symbol: "method:WP_Post_Type::remove_rewrite_rules"
+verdict: works-as-wordpress
+---
+
+Served by WordPress's PHP, as the whole class is until phase 4. In WordPress 7.2 it removes only the query var, the rewrite tag, the permastruct and the type's top rules, which belong to the rewrite seam; none of it is in Rust. It no longer touches `$post_type_meta_caps`: `unregister_post_type()` rebuilds that map afterwards, and its page says how the Rust rule does the same. <Ev source="wp:wp-includes/class-wp-post-type.php#L822-L840" hash="018db407e8e6847d9339f061b62982303aa9eb3373948ce92b5ef907bd027c73"/>

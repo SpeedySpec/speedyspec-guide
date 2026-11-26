@@ -1,0 +1,6 @@
+---
+symbol: "method:WP_Post_Type::register_taxonomies"
+verdict: works-as-wordpress
+---
+
+Served by WordPress's PHP, as the whole class is until phase 4. In Rust, registering returns each value of an array `taxonomies` instead of calling `register_taxonomy_for_object_type()`; phase 4's adapter calls it, in the taxonomy seam. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L66-L69" hash="8ae55d212b83deffa5c7eceb817182966597d018e4cca219b67b4f31cd2fc97b"/> The recorded `taxonomies` scenario's calls match WordPress 7.2-RC2's. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>

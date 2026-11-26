@@ -1,19 +1,15 @@
 ---
 symbol: "function:get_option"
-verdict: works-with-differences
-differences:
-  - summary: "WordPress 7.2 strips the trailing slash from wp_random_base too; SpeedySpec, like 7.1.5, doesn't (found by the guide)."
+verdict: works-as-wordpress
 ---
 
 ## Behaviour
 
-Native: the `GetOption` query, answered in Rust from the `alloptions` and `options` caches and `wp_options`. Every recorded scenario of `get_option()` replays as in WordPress 7.1.5: the hook order, the `notoptions` cache, short-circuits, odd names and every kind of stored value. <Ev scenario="get_from_alloptions" area="options"/> <Ev scenario="get_from_database" area="options"/> <Ev scenario="get_missing_notoptions" area="options"/> <Ev scenario="pre_option_short_circuits" area="options"/> <Ev scenario="value_stdclass" area="options"/> WordPress's own option tests pass against it. <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
+Native: the `GetOption` query, answered in Rust from the `alloptions` and `options` caches and `wp_options`. Every recorded scenario of `get_option()` replays as in WordPress 7.2-RC2: the hook order, the `notoptions` cache, short-circuits, odd names and every kind of stored value. <Ev scenario="get_from_alloptions" area="options"/> <Ev scenario="get_from_database" area="options"/> <Ev scenario="get_missing_notoptions" area="options"/> <Ev scenario="pre_option_short_circuits" area="options"/> <Ev scenario="value_stdclass" area="options"/> WordPress's own option tests pass against it. <Ev test="speedyspec-wp-options-php::wordpress::wordpress_option_runs_pass"/>
 
 A read with no PHP callback on its hooks never enters PHP. <Ev test="speedyspec-wp-options-php::php::no_crossing_without_php_callbacks"/>
 
-## Differences
-
-WordPress 7.2 also strips the trailing slash from `wp_random_base`; SpeedySpec, like WordPress 7.1.5, strips it only from `siteurl`, `home`, `category_base` and `tag_base` (found by the guide). <Ev source="wp:wp-includes/option.php#L239-L241" hash="5a00413326e716a198c19a36084b2ac036b5a59dc64c79dcd245f0bf667894bb"/> <Ev source="ss:crates/speedyspec-wp-options/src/read.rs#L92-L96" hash="e70cbc2bf6ac996401077cde7c44624c79fb46ce34687b580c7af1434c362780"/>
+`siteurl`, `home`, `category_base`, `tag_base` and, as in WordPress 7.2, `wp_random_base` lose their trailing slash. <Ev source="wp:wp-includes/option.php#L239-L241" hash="5a00413326e716a198c19a36084b2ac036b5a59dc64c79dcd245f0bf667894bb"/> <Ev source="ss:crates/speedyspec-wp-options/src/read.rs#L92-L102" hash="17d2410a38d17302956ff2cb875365dd3cf714658820f5b68a2b473b9ab63da7"/> <Ev test="speedyspec-wp-options-tests::read::random_base_is_untrailingslashed"/>
 
 ## Override
 

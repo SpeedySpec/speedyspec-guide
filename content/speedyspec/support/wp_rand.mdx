@@ -5,7 +5,7 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Native. The global function resolves the `SpeedySpec\WpPassword\RandomNumber` port on every call; the default draws from libsodium's random bytes without bias. <Ev source="ss:crates/speedyspec-wp-password-php/src/password.php#L176-L187" hash="9e1d6f2fb679ef5141ca0856f87180648794b9a5378b84f21dbcc8e9a5d69a90"/> <Ev test="speedyspec-wp-password::random::uniform_rejects_biased_draws"/> The ranges WordPress 7.1.5 answered for recorded arguments (swapped, negative and full-range bounds) are replayed, and WordPress's own `wpRand.php` tests pass against it. <Ev test="speedyspec-wp-password::random::rand_replays_recorded_ranges"/> <Ev test="speedyspec-wp-password-php::php::rand_and_generate_follow_wordpress"/> <Ev test="speedyspec-wp-password-php::wordpress::wordpress_password_tests_pass_but_divergences"/>
+Native. The global function resolves the `SpeedySpec\WpPassword\RandomNumber` port on every call; the default draws from libsodium's random bytes without bias. <Ev source="ss:crates/speedyspec-wp-password-php/src/password.php#L176-L187" hash="9e1d6f2fb679ef5141ca0856f87180648794b9a5378b84f21dbcc8e9a5d69a90"/> <Ev test="speedyspec-wp-password::random::uniform_rejects_biased_draws"/> The ranges WordPress 7.2-RC2 answered for recorded arguments (swapped, negative and full-range bounds) are replayed, and WordPress's own `wpRand.php` tests pass against it. <Ev test="speedyspec-wp-password::random::rand_replays_recorded_ranges"/> <Ev test="speedyspec-wp-password-php::php::rand_and_generate_follow_wordpress"/> <Ev test="speedyspec-wp-password-php::wordpress::wordpress_password_tests_pass_but_divergences"/>
 
 ## Replacing it
 

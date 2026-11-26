@@ -1,0 +1,18 @@
+---
+symbol: "function:remove_post_type_support"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`PostTypeRegistry::remove_support` unsets one feature. The type's entry stays, empty, after its last feature goes, as in WordPress. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L338-L339" hash="c0318824e311ad8c2181f110efa4ac3adb32c8c1df4a576a5f7dc30bd3a22d1a"/> <Ev test="speedyspec-wp-posts::registry::remove_last_feature_keeps_the_type_entry"/>
+
+The recorded `supports-api` scenario replays as in WordPress 7.2-RC2. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>
+
+## Limits
+
+- Recorded from WordPress 7.2-RC2 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>

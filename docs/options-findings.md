@@ -6,8 +6,13 @@ server's source next to WordPress trunk `1ccce2133e92` (7.2-RC2), and next to 7.
 the local clone to the recorded 7.1.5. They haven't been run with the guide's runner. The guide documents each one as it
 is today. When the server records or fixes one, update the page it names.
 
-The port follows WordPress 7.1.5, and its scenarios and PHPUnit runs are recorded against that release. Findings 1 to 3
-are changes 7.2 made to functions the port reimplements.
+The port followed WordPress 7.1.5 then, and its scenarios and PHPUnit runs were recorded against that release. Findings
+1 to 3 were changes 7.2 made to functions the port reimplements.
+
+**Fixed at `786dc5febc75` (speedyspec-server #117):** the server now pins WordPress 7.2-RC2 and follows all three.
+`get_option()` untrailingslashes `wp_random_base` (`read.rs` L97), `wp_load_core_site_options()` primes nine names
+without `can_compress_scripts` (`network.rs` L16), and `register_setting()`'s defaults end with `show_in_abilities`
+(`settings.rs` L189). The pages named below now say works-as-wordpress. Findings 4 to 7 stand.
 
 ## 1. `get_option()` doesn't untrailingslash `wp_random_base`
 

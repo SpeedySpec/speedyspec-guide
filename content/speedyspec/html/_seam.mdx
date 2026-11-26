@@ -5,11 +5,11 @@ Partly ported in Rust, not in the runtime. Only the syntax pieces kses needs hav
 
 ## What the port covers
 
-The seam has 13 classes and 183 methods. The port covers five of `WP_HTML_Decoder`'s six static methods (`decode`, `decode_attribute`, `decode_text_node`, `read_character_reference` and `code_point_to_utf8_bytes`, as `code_point_to_utf8`), and the way `WP_HTML_Tag_Processor` reads a start tag's attributes, as kses's `wp_kses_hair()` uses it. <Ev source="ss:crates/speedyspec-wp-html-syntax/src/lib.rs#L1-L10" hash="666eb36f30387d25b8db803146d9b5f4ff644b59356ce3b559bf6e4577beb0fc"/> `WP_HTML_Decoder::attribute_starts_with()`, the Tag Processor, the HTML Processor and their supporting classes are not ported.
+The seam has 13 classes and 183 methods. The port covers five of `WP_HTML_Decoder`'s six static methods (`decode`, `decode_attribute`, `decode_text_node`, `read_character_reference` and `code_point_to_utf8_bytes`, as `code_point_to_utf8`), and the way `WP_HTML_Tag_Processor` reads a start tag's attributes, as kses's `wp_kses_hair()` uses it. <Ev source="ss:crates/speedyspec-wp-html-syntax/src/lib.rs#L1-L10" hash="ec3877330e3cd9435c09dc22da08e3161a9a16619536ef624055dc03c5b7c679"/> `WP_HTML_Decoder::attribute_starts_with()`, the Tag Processor, the HTML Processor and their supporting classes are not ported.
 
 ## The evidence
 
-There is no compat area for the HTML API. The evidence is the crate's tests, which run WordPress 7.1.5's own classes in PHP and compare:
+There is no compat area for the HTML API. The evidence is the crate's tests, which run the pinned release's own classes (WordPress 7.2-RC2) in PHP and compare:
 
 - `decode()` in the attribute and data contexts, over subjects that include numeric references out of range, surrogates, C1 controls and named references with and without `;`. <Ev test="speedyspec-wp-html-syntax::decoder::decode_matches_php"/>
 - every entry of the HTML5 named character reference table, and that the longest name wins. <Ev test="speedyspec-wp-html-syntax::decoder::table_matches_php"/> <Ev test="speedyspec-wp-html-syntax::decoder::named_references_take_the_longest"/>
