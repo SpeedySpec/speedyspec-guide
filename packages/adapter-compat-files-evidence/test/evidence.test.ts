@@ -63,7 +63,9 @@ describe('the recorders that fired', () => {
 
 describe('compatVersion', () => {
   test("the WordPress release an area's scenarios were recorded against, or null", async () => {
-    expect(await ev.compatVersion('hooks')).toBe('7.1.5');
+    // hooks' source.json is {}, so the repository's pin (compat/wordpress.json) answers; options overrides it.
+    expect(await ev.compatVersion('hooks')).toBe('7.2-RC2');
+    expect(await ev.compatVersion('options')).toBe('7.1.5');
     expect(await ev.compatVersion('nope')).toBeNull();
   });
 });

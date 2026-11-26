@@ -5,7 +5,7 @@ Mostly not in SpeedySpec yet. Of this seam's 694 functions, the runtime answers 
 
 ## How they are verified
 
-WordPress's own `metadata.php` and `wpAddId3TagData.php` tests pass against the natives. <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/> `compat/media` records WordPress 7.1.5 with its bundled getID3 over a corpus of audio and video files; the natives match it except where a difference is listed with its reason, and a listed difference that stops differing fails the test. <Ev test="speedyspec-wp-media-corpus::corpus::corpus_matches_wordpress_except_listed_differences"/> <Ev test="speedyspec-wp-media-corpus::uploads::uploads_match_wordpress_except_listed_differences"/>
+WordPress's own `metadata.php` and `wpAddId3TagData.php` tests pass against the natives. <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/> `compat/media` records WordPress 7.2-RC2 with its bundled getID3 1.9.28 over a corpus of audio and video files; the natives match it except where a difference is listed with its reason, and a listed difference that stops differing fails the test. <Ev test="speedyspec-wp-media-corpus::corpus::corpus_matches_wordpress_except_listed_differences"/> <Ev test="speedyspec-wp-media-corpus::uploads::uploads_match_wordpress_except_listed_differences"/>
 
 Verdicts: `wp_get_media_creation_timestamp()` works as in WordPress; the other three work with differences.
 

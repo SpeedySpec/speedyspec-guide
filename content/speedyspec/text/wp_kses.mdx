@@ -1,0 +1,29 @@
+---
+symbol: "function:wp_kses"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP: the runtime worker doesn't link the kses port, so PHP on SpeedySpec runs WordPress's own `kses.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/> The rest of this page is the port, which follows WordPress 7.2-RC2.
+
+## Two paths: one native, one WordPress's PHP
+
+WordPress 7.2's `wp_kses()` first asks the `wp_kses_force_legacy_parser` filter, which defaults to `true`. When the answer is false it hands the call to `wp_sanitize_html_kses()`, the new sanitizer built on the HTML API. Stock 7.2 hooks `__return_false` to that filter, so on a booted site the HTML API path is the default. <Ev source="wp:wp-includes/kses.php#L979-L992" hash="79b62cb4932ae30c7540cf702c5c88c6b0d8b757dcf46e3b6924bec89d9d92f1"/> <Ev source="wp:wp-includes/default-filters.php#L309" hash="3afd5859a532625abacaf2c9ac91609821ef80bed6c17ca077929d83af89754a"/>
+
+The port makes the same switch, on every call, nested passes included. <Ev source="ss:crates/speedyspec-wp-kses/src/scanner.rs#L216-L226" hash="b46af9873c6d1b3b64009a8ff6b9b00226a0472fa2729644a83b7da35f0b93b0"/>
+
+- **The HTML API path is WordPress's PHP.** The `HtmlApiSanitizer` port's PHP adapter, `PhpHtmlApiSanitizer`, calls the release's own `wp_sanitize_html_kses()` with the caller's arguments. The port keeps that function as WordPress's: it is not in the list the PHP area declares. So on a default 7.2 site, every `wp_kses()` call through the port ends in WordPress's PHP. <Ev source="ss:crates/speedyspec-wp-kses-php/src/adapters.rs#L427-L450" hash="771b65b246552b57a2e34be33f35f92492083375f32e025c39efc0a29e8d8928"/> <Ev source="ss:crates/speedyspec-wp-kses-php/src/release.rs#L8-L12" hash="ab42954e72fd70949ce0b4e1a7ec5718a833ca65682ad71513f6dc962de3bed0"/>
+- **The legacy path is native.** When the filter answers true (a plugin removed 7.2's `__return_false`, or added its own), the fused Rust scanner runs. `$wp_kses_operating_mode` is `legacy` around `wp_kses_hook()` and is restored afterwards, even on error, through the `OperatingMode` port. <Ev source="ss:crates/speedyspec-wp-kses/src/scanner.rs#L270-L272" hash="c12e486dc948e5d51be91e2a66fbc6a93d72cb64a33ee410cd57b455fddb211a"/> <Ev test="speedyspec-wp-kses::parser_switch::pre_kses_runs_in_legacy_mode_and_the_mode_is_restored"/>
+
+## Evidence
+
+- **Both paths are recorded from stock 7.2-RC2.** The 26 legacy scenarios replay through the native functions with the same results and hook invocations. 20 `html_api_*` scenarios each add `__return_false` to the filter first, and replay too, so the dispatch and the PHP sanitizer's answers match stock 7.2 step by step. <Ev area="kses" scenario="kses_every_context"/> <Ev area="kses" scenario="html_api_kses_every_context"/> <Ev area="kses" scenario="html_api_directives"/> <Ev area="kses" scenario="html_api_pre_kses_less_than"/>
+- **The switch itself:** the filter fires once by default, a false answer hands the caller's arguments to the sanitizer, and `pre_kses` sees `legacy`. <Ev test="speedyspec-wp-kses::parser_switch::legacy_parser_runs_by_default_and_fires_the_filter"/> <Ev test="speedyspec-wp-kses::parser_switch::a_false_filter_hands_the_call_to_the_html_api"/> <Ev test="speedyspec-wp-kses::parser_switch::kses_hook_alone_leaves_the_mode"/>
+- **WordPress's own kses tests** (395) pass against the native functions. They assert the legacy parser's output, so they prove the native path, not the HTML API path. <Ev test="speedyspec-wp-kses-php::wordpress::wordpress_kses_tests_pass"/>
+
+## Limits
+
+- No recording covers block-delimiter comments on the HTML API path: they need `filter_block_kses_value()` from `blocks.php`, which the kses setup doesn't load.
+- A Rust caller with no PHP gets `NoHtmlApiSanitizer`, which has no HTML API: the legacy parser runs whatever the filter answers. <Ev source="ss:crates/speedyspec-wp-kses/src/ports.rs#L37-L51" hash="f7e7369dbfcf6904e58cd55d8b7fc6c764084abe6842f8214bc824bccedd6c31"/> <Ev test="speedyspec-wp-kses::parser_switch::without_an_html_api_the_legacy_parser_runs"/>
+- Making the default path native again means porting `wp_sanitize_html_kses()`, and the HTML API's tag and block processors under it, to Rust. That is a server follow-up.

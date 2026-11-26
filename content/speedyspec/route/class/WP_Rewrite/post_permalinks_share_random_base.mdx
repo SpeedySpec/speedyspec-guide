@@ -1,0 +1,12 @@
+---
+symbol: "method:WP_Rewrite::post_permalinks_share_random_base"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP: the runtime worker doesn't link the rewrite port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`RewriteService::post_permalinks_share_random_base`: true only when permalinks are on and the structure is the post name at the root (`/%postname%/`, with or without the trailing slash), so a post can sit at the random base. The pattern is PCRE's, where `$` also matches before a final newline. <Ev source="ss:crates/speedyspec-wp-rewrite/src/structures.rs#L271-L283" hash="231aaa474b59c5b8faab2632003777c249b9649bd486367835a3b00b9eb88113"/> <Ev test="speedyspec-wp-rewrite::structures::post_permalinks_share_the_random_base_only_at_the_root"/> <Ev source="ss:crates/speedyspec-wp-rewrite-php/tests/php.rs#L145-L153" hash="0541ffaeca59e339cd24b9370690fada3fd6207d4bfb63432db353cc3441888a"/>

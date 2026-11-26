@@ -15,5 +15,5 @@ No recording calls `get_post_type_object()` itself. Every post type scenario com
 
 ## Limits
 
-- Recorded from WordPress 7.1.5 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L49-L62" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
+- Recorded from WordPress 7.2-RC2 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
 - The `! is_scalar()` check on the name is the adapter's: the port takes a UTF-8 name.

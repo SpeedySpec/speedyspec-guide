@@ -33,7 +33,7 @@ Rust code also gets three things PHP doesn't: `Options`, a typed reader (`get::<
 - **Replace one use case from Rust:** bind another handler under its key; the native functions and the buses then call it.
 - **From PHP:** options are not replaceable yet. The worker declares PHP ports only for the hook store and a few other areas, so a PHP object bound under an options key isn't used. Hook the options filters instead, as in WordPress. <Ev source="ss:crates/speedyspec-php-runtime/src/worker.rs#L305-L311" hash="7fbab70c0a2dd82e41c3c88572705a9db3e7d738e819ea1925482d7a427d3d03"/>
 - **What must still pass:** the recorded scenarios (`compat/options/scenarios.json`, single site and multisite) and WordPress's option tests. A test the port can't match is marked `@group documented-break` and listed in `compat/options/breaks.json`; none is. <Ev test="speedyspec-wp-options-php::wordpress::documented_breaks_are_listed"/>
-- **Recording a new scenario:** add it to `compat/options/scenarios.json` in speedyspec-server and record it on MySQL against WordPress 7.1.5.
+- **Recording a new scenario:** add it to `compat/options/scenarios.json` in speedyspec-server and record it on MySQL against the pinned release, WordPress 7.2-RC2 (`compat/wordpress.json`).
 
 ## Patterns
 

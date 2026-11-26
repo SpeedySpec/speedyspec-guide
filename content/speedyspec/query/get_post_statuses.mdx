@@ -11,7 +11,7 @@ Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime w
 
 `post_statuses` gives the `draft`, `pending`, `private` and `publish` labels, each label through the `Translator` port. <Ev source="ss:crates/speedyspec-wp-posts/src/status.rs#L148-L157" hash="d849d880fe2212f94c8d742dbb66963a99604edd71140f4801f7d6a7dc23fbec"/>
 
-The recorded table matches WordPress 7.1.5's, in order. <Ev test="speedyspec-wp-posts::recorded::status_label_tables_match_wordpress"/>
+The recorded table matches WordPress 7.2-RC2's, in order. <Ev test="speedyspec-wp-posts::recorded::status_label_tables_match_wordpress"/>
 
 ## Limits
 

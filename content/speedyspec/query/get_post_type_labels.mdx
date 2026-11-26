@@ -11,7 +11,7 @@ Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime w
 
 `post_type_labels` is `get_post_type_labels()` before its `post_type_labels_{$post_type}` filter: `WP_Post_Type::get_default_labels()` through the `Translator` port, `menu_name` added, `_get_custom_object_labels()`, then `template_name` from "Single item: %s". `merge_filtered_labels` is the `array_merge()` after the filter. <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L1-L3" hash="4e54162cefc927e84a6636cff1a0f94810960651d09ae8245f59e65643e9aa33"/> <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L284-L285" hash="771ca04eb0ac24de9a30ce2982baf2ce110db377f985556ff01228f7047b3ce5"/> <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L337-L343" hash="b06c1806a92692488c3d15e6059320bbb586dfada9a57471a25ac86edac446ce"/>
 
-All 12 recorded cases replay as in WordPress 7.1.5: no labels, a `label` only, `name` or `singular_name` alone, a given `template_name`, hierarchical types, `labels` as a string, an extra key, an empty name, a given `name_admin_bar` and a null `singular_name`. <Ev test="speedyspec-wp-posts::recorded::labels_match_wordpress"/>
+All 12 recorded cases replay as in WordPress 7.2-RC2: no labels, a `label` only, `name` or `singular_name` alone, a given `template_name`, hierarchical types, `labels` as a string, an extra key, an empty name, a given `name_admin_bar` and a null `singular_name`. <Ev test="speedyspec-wp-posts::recorded::labels_match_wordpress"/>
 
 ## Limits
 

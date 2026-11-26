@@ -7,10 +7,10 @@ differences:
 
 ## Behaviour
 
-Native. The function runs the `ext2type` filter over a list built in Rust. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L207-L212" hash="bf3ba5f51b54d5a533475aae3c0c765761586a2f2eb91c7f908ce0b1e95d2c23"/> <Ev test="speedyspec-wp-media-php::php::mime_types_and_ext2type_filters_run"/> With the added extensions taken out, every kind holds WordPress 7.1.5's extensions in its order; an extension WordPress already files keeps its place. WordPress's own `mimeFunctions.php` tests pass against it. <Ev test="speedyspec-wp-media-php::mime::wordpress_lists_are_kept"/> <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/>
+Native. The function runs the `ext2type` filter over a list built in Rust. <Ev source="ss:crates/speedyspec-wp-media-php/src/media.php#L207-L212" hash="bf3ba5f51b54d5a533475aae3c0c765761586a2f2eb91c7f908ce0b1e95d2c23"/> <Ev test="speedyspec-wp-media-php::php::mime_types_and_ext2type_filters_run"/> With the added extensions taken out, every kind holds WordPress 7.2-RC2's extensions in its order; an extension WordPress already files keeps its place. WordPress's own `mimeFunctions.php` tests pass against it. <Ev test="speedyspec-wp-media-php::mime::wordpress_lists_are_kept"/> <Ev test="speedyspec-wp-media-php::wordpress::wordpress_media_tests_pass"/>
 
 ## Differences
 
-Each extension `wp_get_mime_types()` adds is filed under its kind, so `wp_ext2type()` knows it. <Ev source="ss:compat/media/DIFFERENCES.md#L59-L66" hash="dfa8345b5217bd15fc49cf7474ffc5bae6e68a73ba8fde5db26352b022791ecf"/>
+Each extension `wp_get_mime_types()` adds is filed under its kind, so `wp_ext2type()` knows it. <Ev source="ss:compat/media/DIFFERENCES.md#L59-L66" hash="5fa550f0d720b383cfa18ad15f467e68981dd19c98a6fdd7bee6eb9ab9a2b094"/>
 
 See the [Media architecture](/speedyspec/architecture/media/) page.

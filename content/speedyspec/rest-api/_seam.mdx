@@ -14,7 +14,7 @@ Of this seam's 89 functions and 62 classes, the port replaces one class, `WP_RES
 
 ## How it is checked against WordPress
 
-The REST area has no recorded compat scenarios. WordPress's own `rest-server.php` tests, copied from the 7.1 branch without those that need a database, run with the pinned PHPUnit against the shim and the Rust server: 119 tests, every one run, and exactly the listed ones failing. <Ev source="ss:crates/speedyspec-rest-php/tests/wordpress.rs#L162-L169" hash="155d52a8fd306704aa6743cdb977741a33ed679647caf35c9ea5708d855234ec"/> The 14 listed failures are:
+The REST area has no recorded compat scenarios. WordPress's own `rest-server.php` tests, copied from the 7.1 branch without those that need a database, run with the pinned PHPUnit against the shim and the Rust server: 119 tests, every one run, and exactly the listed ones failing. <Ev source="ss:crates/speedyspec-rest-php/tests/wordpress.rs#L163-L170" hash="155d52a8fd306704aa6743cdb977741a33ed679647caf35c9ea5708d855234ec"/> The 14 listed failures are:
 
 - the `Allow` header on an `OPTIONS` request answered from `rest_pre_dispatch`, because the Rust response carries no matched route (deferred);
 - batch requests (`/batch/v1`, seven tests), not served yet;

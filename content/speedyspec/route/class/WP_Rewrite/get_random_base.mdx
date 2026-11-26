@@ -1,0 +1,14 @@
+---
+symbol: "method:WP_Rewrite::get_random_base"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP: the runtime worker doesn't link the rewrite port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`RewriteService::get_random_base`: the custom base when `random_base` is set; else the default, `_x( 'random', 'random content permalink base' )` in the site language, through the `SiteTranslations` port; else `random` when that translation is empty. It returns a `Result`, so what translating throws in PHP reaches the caller. <Ev source="ss:crates/speedyspec-wp-rewrite/src/structures.rs#L257-L269" hash="8b107c648d0be018d0c938ab8f7af5a05097c6efcf6abd4f8658e35bdbbcf7e1"/> <Ev test="speedyspec-wp-rewrite::structures::the_random_base_defaults_to_its_translation"/>
+
+`PhpSiteTranslations` switches to the site's locale around the translation and restores the previous one after, as WordPress does: with a German site, the base is `zufall`. <Ev source="ss:crates/speedyspec-wp-rewrite-php/tests/php.rs#L145-L153" hash="0541ffaeca59e339cd24b9370690fada3fd6207d4bfb63432db353cc3441888a"/>

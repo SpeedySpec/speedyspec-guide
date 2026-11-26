@@ -49,11 +49,16 @@ export class CompatFilesEvidence implements EvidenceSource {
     return lines.slice(from - 1, to).join('\n');
   }
 
+  /**
+   * `compat/<area>/source.json`'s `wordpress` override, else the repository's pin, `compat/wordpress.json`'s
+   * `wordpress`; null when the area has no compat folder or neither names a release.
+   */
   async compatVersion(area: string): Promise<string | null> {
-    const file = join(this.serverDir, 'compat', area, 'source.json');
-    if (!existsSync(file)) return null;
-    const v = ((await Bun.file(file).json()) as { wordpress?: unknown }).wordpress;
-    return typeof v === 'string' ? v : null;
+    if (!existsSync(join(this.serverDir, 'compat', area))) return null;
+    const override = (await this.read<{ wordpress?: unknown }>(join('compat', area, 'source.json')))?.wordpress;
+    if (typeof override === 'string') return override;
+    const pin = (await this.read<{ wordpress?: unknown }>(join('compat', 'wordpress.json')))?.wordpress;
+    return typeof pin === 'string' ? pin : null;
   }
 
   async catalogue(area: string): Promise<{ scenarios: Catalogue['scenarios']; breaks: Breaks['breaks']; fired?: Record<string, string[]> } | null> {

@@ -1,17 +1,13 @@
 ---
 symbol: "function:wp_load_core_site_options"
-verdict: works-with-differences
-differences:
-  - summary: "WordPress 7.2 no longer primes can_compress_scripts; SpeedySpec, like 7.1.5, still does (found by the guide)."
+verdict: works-as-wordpress
 ---
 
 ## Behaviour
 
 Native: the `LoadCoreSiteOptions` command. It does nothing on a single site or while installing, and on multisite primes the core network options. <Ev test="speedyspec-wp-options-memory::network_options::load_core_site_options_only_on_multisite"/> No recorded scenario or WordPress test covers it.
 
-## Differences
-
-WordPress 7.2 dropped `can_compress_scripts` from the list; SpeedySpec, like WordPress 7.1.5, still primes it (found by the guide). <Ev source="wp:wp-includes/option.php#L805" hash="28730a6e7fe3723e953914761cd4079efb8d9225d7c42afc90363a475de70713"/> <Ev source="ss:crates/speedyspec-wp-options/src/network.rs#L23" hash="be17919ae935bb6f53d8cb57b3485f21438a15abc6155a1d920a7c9f0cddb188"/>
+The list is WordPress 7.2's nine names, without `can_compress_scripts`, which 7.1.5 also primed. <Ev source="wp:wp-includes/option.php#L805" hash="28730a6e7fe3723e953914761cd4079efb8d9225d7c42afc90363a475de70713"/> <Ev source="ss:crates/speedyspec-wp-options/src/network.rs#L16-L26" hash="a2e2ca7200ae843726ed02bdf6e5be312343e3702d0abe322e4523958ef4ec4b"/>
 
 ## Override
 

@@ -11,9 +11,9 @@ Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime w
 
 `meta_capabilities` gives the `(custom, core)` pairs for `read_post`, `delete_post` and `edit_post`, in the capabilities' order. A custom capability named twice keeps its first place and its last core capability, as `$post_type_meta_caps[ $custom ] = $core` does, and the custom capability becomes an array key as PHP converts one (`false` is `"0"`). `PostTypeRegistry` keeps `$post_type_meta_caps`, which only grows when a type is registered again. <Ev source="ss:crates/speedyspec-wp-posts/src/caps.rs#L85-L89" hash="0ae39d408cfeaff8e71bd22acea5ffaf0369e1508e4d7bc4c5cf66d93c58dcec"/>
 
-The 9 capability cases and every post type call compare `$post_type_meta_caps` with WordPress 7.1.5's. <Ev test="speedyspec-wp-posts::recorded::capabilities_match_wordpress"/> <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::registry::re_register_accumulates_meta_caps"/>
+The 9 capability cases and every post type call compare `$post_type_meta_caps` with WordPress 7.2-RC2's. <Ev test="speedyspec-wp-posts::recorded::capabilities_match_wordpress"/> <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::registry::re_register_accumulates_meta_caps"/>
 
 ## Limits
 
-- Recorded from WordPress 7.1.5 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L49-L62" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
+- Recorded from WordPress 7.2-RC2 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
 - An array or object custom capability is skipped, where PHP throws "Illegal offset type". No recording covers it.
