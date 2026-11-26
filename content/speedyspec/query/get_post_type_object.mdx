@@ -9,7 +9,7 @@ Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime w
 
 ## The Rust rule
 
-`PostTypes::post_type` is the lookup: one registered post type, as an owned `PostType` whose properties are the object's `get_object_vars()`, in order. `PostTypeRegistry` answers it from memory; phase 4's adapter reads `$wp_post_types` live. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L25-L31" hash="c1960a37a7fc775ee14b766a1f30198cb356e6e115af07b588eb082cd54b7c45"/> <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/values.rs#L105-L111" hash="933246bb03fd9df9d5e260fbeddaeeac4ad6d9546a90914d34dbdbed12b2a085"/>
+`PostTypes::post_type` is the lookup: one registered post type, as an owned `PostType` whose properties are the object's `get_object_vars()`, in order. `PostTypeRegistry` answers it from memory; phase 4's adapter reads `$wp_post_types` live. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L103-L109" hash="c1960a37a7fc775ee14b766a1f30198cb356e6e115af07b588eb082cd54b7c45"/> <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/values.rs#L215-L221" hash="933246bb03fd9df9d5e260fbeddaeeac4ad6d9546a90914d34dbdbed12b2a085"/>
 
 No recording calls `get_post_type_object()` itself. Every post type scenario compares the whole `$wp_post_types` it reads from, object by object and property by property. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts-contracts::values::post_type_to_php_is_a_wp_post_type_object"/>
 

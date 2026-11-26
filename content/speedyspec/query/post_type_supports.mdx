@@ -9,7 +9,7 @@ Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime w
 
 ## The Rust rule
 
-`PostTypeSupports::supports` is `isset()` on `$_wp_post_type_features[ $post_type ][ $feature ]`; a stored feature is never null. The registry answers it from memory; phase 4's adapter reads the global live. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L33-L39" hash="bf048c1607f275c0844bce9a454134462a637e6774e1c8b37ae053bb70a16141"/> <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L381-L387" hash="28ef2c3dd1409e3c7b9d4f7f882e71bb3564d35e09a56d0510b092c41c5c1649"/>
+`PostTypeSupports::supports` is `isset()` on `$_wp_post_type_features[ $post_type ][ $feature ]`; a stored feature is never null. The registry answers it from memory; phase 4's adapter reads the global live. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L111-L117" hash="bf048c1607f275c0844bce9a454134462a637e6774e1c8b37ae053bb70a16141"/> <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L381-L387" hash="28ef2c3dd1409e3c7b9d4f7f882e71bb3564d35e09a56d0510b092c41c5c1649"/>
 
 Its 3 recorded calls replay as in WordPress 7.2-RC2, and `add_supports()` asks it for the `editor`-implies-`autosave` rule. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::registry::editor_implies_autosave_unless_present"/>
 
