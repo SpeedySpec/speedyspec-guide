@@ -14,7 +14,7 @@ differences:
 
 ## Behaviour
 
-Native: SpeedySpec answers `wpdb` in Rust. The class keeps every public and protected method of WordPress's, with the same names, parameters and defaults, and each one hands the call to the Rust port. `load_col_info()` does nothing, because the column info comes with each result; WordPress's two private methods aren't declared. The global `$wpdb` is made at the start of every request over the worker's `default` engine. <Ev source="ss:crates/speedyspec-wp-db-php/src/lib.rs#L1-L15" hash="e871e9ecb3d93e3fd8ebcea405ecac568e06b2f31402ce0aac262290e2a57fe8"/>
+Native: SpeedySpec answers `wpdb` in Rust. The class keeps every public and protected method of WordPress's, with the same names, parameters and defaults, and each one hands the call to the Rust port. `load_col_info()` does nothing, because the column info comes with each result; WordPress's two private methods aren't declared. The global `$wpdb` is made at the start of every request over the worker's `default` engine. <Ev source="ss:crates/speedyspec-wp-db-php/src/lib.rs#L1-L15" hash="d5b7dc5a9da17bb3e83c07dbf4b6ee97e96ea41c938c7295d6a4528fe8861fc0"/>
 
 WordPress's `wpdb` was recorded on MySQL (`compat/wp-db`, 106 scenarios), and the recording replays through the native class: `query()`'s return values, the readers' output shapes, `prepare()`'s placeholders, escaping, `insert()`, `replace()`, `update()` and `delete()`, errors, charsets, properties and table prefixes. <Ev area="wp-db" scenario="query_returns"/> <Ev area="wp-db" scenario="readers_shapes"/> <Ev area="wp-db" scenario="prepare_placeholders_00"/> <Ev area="wp-db" scenario="escaping"/> <Ev area="wp-db" scenario="helpers_insert"/> <Ev area="wp-db" scenario="helpers_update_delete"/> <Ev area="wp-db" scenario="errors_missing_table"/> <Ev area="wp-db" scenario="charset_too_long"/> <Ev area="wp-db" scenario="properties"/> <Ev area="wp-db" scenario="prefixes_and_tables"/>
 
@@ -28,7 +28,7 @@ WordPress's own database tests (`db.php`, `db/charset.php`, `db/realEscape.php` 
 - The placeholder escape is removed before the `query` filter runs, as WordPress's priority-0 `remove_placeholder_escape` callback would, but no callback is registered: `has_filter( 'query' )` is false. <Ev area="wp-db" break="placeholder_escape_filter"/>
 - Every statement is parsed before it reaches the database. SQL the parser rejects still counts as a query and still prints its error, but the message is the parser's. A statement it can't parse never runs. <Ev area="wp-db" break="errors_syntax"/>
 - A `wp-content/db.php` drop-in is refused: the native class replaces it. <Ev test="speedyspec-wp-db-php::php::drop_in_refused"/> <Ev source="ss:crates/speedyspec-wp-db-php/src/lib.rs#L119-L128" hash="f8a33304e5a85a13f4ef03c15c42bb2f8bf3ecaef39e70d6a080d6a3b8aac147"/>
-- The declared public properties are PHP property hooks over the port, so `unset( $wpdb->show_errors )` throws `Error: Cannot unset hooked property`. Assign a value instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/lib.rs#L1-L15" hash="e871e9ecb3d93e3fd8ebcea405ecac568e06b2f31402ce0aac262290e2a57fe8"/>
+- The declared public properties are PHP property hooks over the port, so `unset( $wpdb->show_errors )` throws `Error: Cannot unset hooked property`. Assign a value instead. <Ev source="ss:crates/speedyspec-wp-db-php/src/lib.rs#L1-L15" hash="d5b7dc5a9da17bb3e83c07dbf4b6ee97e96ea41c938c7295d6a4528fe8861fc0"/>
 
 ## Override
 

@@ -5,10 +5,10 @@ verdict: new-in-speedyspec
 
 ## Behaviour
 
-An interface: the PHP side of `wpdb`'s request-state port, `WpdbState` in Rust. An object implementing it receives `wpdb`'s whole per-request state after each change (`store()`), hands it back on each read (`load()`), and empties it at the start of a request (`reset()`). Rows travel as lists of `[name, value]` pairs; the query log, column info and column metadata stay in Rust. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L14-L27" hash="2431f5c4a456378b158b9d9ec3add66c14eb59991546d3d5a9a8cfb26a73ec1f"/> <Ev source="ss:crates/speedyspec-wp-db-php/src/state.rs#L45-L47" hash="12988c198090decc6eaded3801b2383d291fab570cd41dd257bda1d6bda80000"/>
+An interface: the PHP side of `wpdb`'s request-state port, `WpdbState` in Rust. An object implementing it receives `wpdb`'s whole per-request state after each change (`store()`), hands it back on each read (`load()`), and empties it at the start of a request (`reset()`). Rows travel as lists of `[name, value]` pairs; the query log, column info and column metadata stay in Rust. <Ev source="ss:crates/speedyspec-wp-db-php/src/wpdb.php#L14-L27" hash="2431f5c4a456378b158b9d9ec3add66c14eb59991546d3d5a9a8cfb26a73ec1f"/> <Ev source="ss:crates/speedyspec-wp-db-php/src/state.rs#L46-L48" hash="12988c198090decc6eaded3801b2383d291fab570cd41dd257bda1d6bda80000"/>
 
 Bound under `SpeedySpec\WpDb\WpdbState`, it replaces the worker's memory state for the global `$wpdb`. <Ev test="speedyspec-wp-db-php::php::php_state_twin_replaces_memory"/>
 
 ## Limits
 
-The runtime worker doesn't yet declare this key as a port PHP may bind (it declares only the hook store), so a binding made from PHP is not used, and `wpdb` keeps its memory state. Today a Rust host binds the object, wrapped in `PhpWpdbState`, as the test does. Objects made with `new wpdb(...)` always keep their state in memory. <Ev source="ss:crates/speedyspec-wp-db-php/src/lib.rs#L76-L92" hash="6c66223fdea945424a3366f7a4829ab63894f6826f65c17ceed9cae265985f99"/>
+The runtime worker doesn't yet declare this key as a port PHP may bind (it declares only the hook store), so a binding made from PHP is not used, and `wpdb` keeps its memory state. Today a Rust host binds the object, wrapped in `PhpWpdbState`, as the test does. Objects made with `new wpdb(...)` always keep their state in memory. <Ev source="ss:crates/speedyspec-wp-db-php/src/lib.rs#L76-L92" hash="3eb4cc0b90504bb6ebb686a2907f0e510533ee2d312188d724968118e3796e39"/>

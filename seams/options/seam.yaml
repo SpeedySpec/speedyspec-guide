@@ -184,33 +184,33 @@ dependencies:
   # Reimplemented in Rust for siteurl, home, category_base and tag_base.
   function:untrailingslashit:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-options/src/read.rs#L285-L296", hash: "b3551e8a5ca4ceead6199282babbe552c94a804899186d7c5bddfd741417393b" }
+    cite: { source: "ss:crates/speedyspec-wp-options/src/read.rs#L289-L300", hash: "b3551e8a5ca4ceead6199282babbe552c94a804899186d7c5bddfd741417393b" }
   # The user settings functions stay WordPress's PHP.
   function:update_user_option:
     state: php
     cite: { source: "wp:wp-includes/option.php#L1916", hash: "30a177bf251a58465f93a7e158ccc4ccdb22b6f46e609c4f60b5146f6ad23cfd" }
-  # The options API calls the request's current Rust object cache directly.
+  # The options API calls the request's current Rust object cache through the ObjectCache port.
   function:wp_cache_add:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "f197c3e776f619a1d653578dd4cc9ed56b4cc37c39b96465e18c9913bc4359f4" }
   function:wp_cache_delete:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "f197c3e776f619a1d653578dd4cc9ed56b4cc37c39b96465e18c9913bc4359f4" }
   function:wp_cache_delete_multiple:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "f197c3e776f619a1d653578dd4cc9ed56b4cc37c39b96465e18c9913bc4359f4" }
   function:wp_cache_get:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "f197c3e776f619a1d653578dd4cc9ed56b4cc37c39b96465e18c9913bc4359f4" }
   function:wp_cache_get_multiple:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "f197c3e776f619a1d653578dd4cc9ed56b4cc37c39b96465e18c9913bc4359f4" }
   function:wp_cache_set:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "f197c3e776f619a1d653578dd4cc9ed56b4cc37c39b96465e18c9913bc4359f4" }
   function:wp_cache_set_multiple:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "864a10f5a8ffa3cd45a8e5800dba90eb37066a903d323b2ebd2e9abd640a9d8b" }
+    cite: { source: "ss:crates/speedyspec-wp-options/src/api.rs#L101-L104", hash: "f197c3e776f619a1d653578dd4cc9ed56b4cc37c39b96465e18c9913bc4359f4" }
   function:wp_die:
     state: port
     cite: { source: "ss:crates/speedyspec-wp-options-php/src/adapters.rs#L214-L219", hash: "74fecfe8aad30c7dbc490f9d5492c5772d522656dd35d7ae71abb58efc4c972b" }

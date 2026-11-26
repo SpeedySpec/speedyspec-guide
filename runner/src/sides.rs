@@ -13,7 +13,7 @@ use speedyspec_container_php::ContainerArea;
 use speedyspec_php::{BootOptions, NativeArea, Output, Php};
 use speedyspec_wp_crypto_php::CryptoArea;
 use speedyspec_wp_crypto_sodium::Sodium;
-use speedyspec_wp_hooks::{HookApi, HookStore};
+use speedyspec_wp_hooks::{HookStore, WpHookApi};
 use speedyspec_wp_hooks_memory::MemoryHookStore;
 use speedyspec_wp_hooks_php::{HOOK_STORE, PhpHookStore, WpHooksArea};
 use speedyspec_wp_media_contracts::{MediaInfo, MediaReader, MediaSource, ProbeLimits, ReadError};
@@ -69,14 +69,14 @@ pub fn boot(side: Side) -> Result<Booted, String> {
 }
 
 /// WordPress's password functions, with WordPress's rules bound in `container` under their pluggable ports.
-fn password_area(hooks: Rc<HookApi>, container: &Rc<Container>, sodium: Sodium) -> PasswordArea {
+fn password_area(hooks: Rc<WpHookApi>, container: &Rc<Container>, sodium: Sodium) -> PasswordArea {
     let area = PasswordArea::new(hooks, container.clone(), Rc::new(sodium));
     area.bind_defaults();
     area
 }
 
 /// `wp_text_diff()`, with WordPress's implementation bound in `container` under its pluggable port.
-fn text_diff_area(hooks: Rc<HookApi>, container: &Rc<Container>) -> TextDiffArea {
+fn text_diff_area(hooks: Rc<WpHookApi>, container: &Rc<Container>) -> TextDiffArea {
     let area = TextDiffArea::new(hooks, container.clone());
     area.bind_defaults();
     area
@@ -96,7 +96,7 @@ impl MediaReader for MediaUnavailable {
 }
 
 /// WordPress's media functions, over [`MediaUnavailable`].
-fn media_area(hooks: Rc<HookApi>, container: &Rc<Container>) -> MediaArea {
+fn media_area(hooks: Rc<WpHookApi>, container: &Rc<Container>) -> MediaArea {
     let limits = ProbeLimits::default();
     let area = MediaArea::new(hooks, container.clone(), limits);
     area.bind_defaults(Rc::new(MediaUnavailable));

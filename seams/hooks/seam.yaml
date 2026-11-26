@@ -16,7 +16,7 @@ exclude:
 # Loaded before each example on the WordPress side (plugin.php loads class-wp-hook.php itself).
 wordpress:
   - wp-includes/plugin.php
-crates: [speedyspec-wp-hooks, speedyspec-wp-hooks-memory, speedyspec-wp-hooks-php, speedyspec-container, speedyspec-container-php, speedyspec-php-ext]
+crates: [speedyspec-wp-hooks, speedyspec-wp-hooks-contracts, speedyspec-wp-hooks-memory, speedyspec-wp-hooks-php, speedyspec-container, speedyspec-container-php, speedyspec-php-ext]
 symbols:
   - "method:SpeedySpec\\WpHooks\\CountGlobal::__construct"
   - "method:SpeedySpec\\WpHooks\\CountGlobal::count"
@@ -125,4 +125,4 @@ dependencies:
   function:_deprecated_hook:
     # The DeprecatedHooks port (speedyspec-wp-hooks api.rs) has this PHP adapter, which calls WordPress's function.
     state: port
-    cite: { source: "ss:crates/speedyspec-wp-hooks-php/src/stores.rs#L218-L244", hash: "f532f2bafc30203060f595a2c327675288ae5947c0e891ffa3964d207bcea8df" }
+    cite: { source: "ss:crates/speedyspec-wp-hooks-php/src/stores.rs#L217-L243", hash: "f532f2bafc30203060f595a2c327675288ae5947c0e891ffa3964d207bcea8df" }

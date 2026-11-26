@@ -21,7 +21,7 @@ Each method is a message on `speedyspec-cqrs`'s buses: one command, `SetSpacingS
 
 ### The adapters
 
-- **PHP** (`speedyspec-wp-theme-json-php`): `PhpBlockRegistry`, `PhpTextFunctions`, `PhpGettext`, `PhpDiagnostics`, `PhpSafeCss`, `PhpActiveTheme`, `PhpCapabilities`, `PhpLayerFilters`, `PhpGlobalStylesPost`, `PhpVariationRegistrar` and `PhpWpCache` call WordPress's PHP; filters go through the Rust Hook API (`HookApiFilters`). `ThemeJsonArea::new()` wires them together. <Ev source="ss:crates/speedyspec-wp-theme-json-php/src/lib.rs#L67-L104" hash="f3810f32b9a01bbc4877fb17e015114c2282a90217c7e2a5ec701fce88d89507"/>
+- **PHP** (`speedyspec-wp-theme-json-php`): `PhpBlockRegistry`, `PhpTextFunctions`, `PhpGettext`, `PhpDiagnostics`, `PhpSafeCss`, `PhpActiveTheme`, `PhpCapabilities`, `PhpLayerFilters`, `PhpGlobalStylesPost`, `PhpVariationRegistrar` and `PhpWpCache` call WordPress's PHP; filters go through the Rust Hook API (`HookApiFilters`). `ThemeJsonArea::new()` wires them together. <Ev source="ss:crates/speedyspec-wp-theme-json-php/src/lib.rs#L67-L104" hash="64a7389dd418edb46e42df8afed36830722ffb26b7d8a086a4ec0e2c388f3dde"/>
 - **Memory** (`speedyspec-wp-theme-json`): `MemoryBlockMetadata`, `MemoryGlobalSettings`, `MemoryThemeSupports`, `MemoryActiveTheme`, `MemoryWpCache` and the null objects, for Rust-only use and tests.
 - Each `WP_Theme_JSON` object holds a handle into the arena, cleared at the end of every request. <Ev source="ss:crates/speedyspec-wp-theme-json-php/src/lib.rs#L119-L129" hash="7a2ad6ce4aa9864b06c249ac7fa5e38f345bcc58a0fc7064fac36403efd49075"/>
 

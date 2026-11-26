@@ -2937,6 +2937,7 @@ dependencies = [
  "speedyspec-php-serialize",
  "speedyspec-wp-cron-contracts",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
 ]
 
@@ -2958,6 +2959,7 @@ dependencies = [
  "speedyspec-wp-cron-contracts",
  "speedyspec-wp-db",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-object-cache",
  "speedyspec-wp-options",
@@ -2987,6 +2989,7 @@ dependencies = [
  "speedyspec-wp-db",
  "speedyspec-wp-db-php",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-hooks-php",
  "speedyspec-wp-object-cache-php",
@@ -3024,6 +3027,7 @@ dependencies = [
  "speedyspec-wp-crypto-contracts",
  "speedyspec-wp-crypto-sodium",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-hooks-php",
  "speedyspec-wp-text-contracts",
@@ -3060,8 +3064,19 @@ dependencies = [
  "speedyspec-data-mysql",
  "speedyspec-data-query",
  "speedyspec-hooks",
+ "speedyspec-wp-db-contracts",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
+]
+
+[[package]]
+name = "speedyspec-wp-db-contracts"
+version = "0.1.0"
+dependencies = [
+ "speedyspec-data",
+ "speedyspec-hooks",
+ "speedyspec-wp-hooks-contracts",
 ]
 
 [[package]]
@@ -3085,6 +3100,7 @@ dependencies = [
  "speedyspec-php",
  "speedyspec-php-ext",
  "speedyspec-wp-db",
+ "speedyspec-wp-db-contracts",
  "speedyspec-wp-hooks",
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-hooks-php",
@@ -3099,6 +3115,14 @@ dependencies = [
  "speedyspec-container",
  "speedyspec-cqrs",
  "speedyspec-hooks",
+ "speedyspec-wp-hooks-contracts",
+]
+
+[[package]]
+name = "speedyspec-wp-hooks-contracts"
+version = "0.1.0"
+dependencies = [
+ "speedyspec-hooks",
 ]
 
 [[package]]
@@ -3110,6 +3134,7 @@ dependencies = [
  "speedyspec-container",
  "speedyspec-cqrs",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
 ]
 
 [[package]]
@@ -3126,6 +3151,7 @@ dependencies = [
  "speedyspec-php",
  "speedyspec-php-ext",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
  "ureq",
 ]
@@ -3225,6 +3251,7 @@ dependencies = [
  "speedyspec-php",
  "speedyspec-php-ext",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-hooks-php",
  "speedyspec-wp-media",
@@ -3254,6 +3281,14 @@ dependencies = [
  "speedyspec-cqrs",
  "speedyspec-hooks",
  "speedyspec-php-serialize",
+ "speedyspec-wp-object-cache-contracts",
+]
+
+[[package]]
+name = "speedyspec-wp-object-cache-contracts"
+version = "0.1.0"
+dependencies = [
+ "speedyspec-hooks",
 ]
 
 [[package]]
@@ -3276,6 +3311,7 @@ dependencies = [
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-hooks-php",
  "speedyspec-wp-object-cache",
+ "speedyspec-wp-object-cache-contracts",
  "tempfile",
  "ureq",
 ]
@@ -3291,8 +3327,10 @@ dependencies = [
  "speedyspec-data-uow",
  "speedyspec-php-serialize",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-object-cache",
+ "speedyspec-wp-object-cache-contracts",
  "tracing",
 ]
 
@@ -3305,6 +3343,7 @@ dependencies = [
  "speedyspec-cache-memory",
  "speedyspec-data",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-object-cache",
  "speedyspec-wp-options",
@@ -3334,6 +3373,7 @@ dependencies = [
  "speedyspec-wp-db",
  "speedyspec-wp-db-php",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-hooks-php",
  "speedyspec-wp-object-cache",
@@ -3363,7 +3403,9 @@ dependencies = [
  "speedyspec-data-valkey",
  "speedyspec-hooks",
  "speedyspec-wp-db",
+ "speedyspec-wp-db-contracts",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-object-cache",
  "speedyspec-wp-options",
@@ -3420,6 +3462,7 @@ dependencies = [
  "speedyspec-wp-crypto-contracts",
  "speedyspec-wp-crypto-sodium",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-hooks-php",
  "speedyspec-wp-password",
@@ -3490,6 +3533,7 @@ dependencies = [
  "speedyspec-php",
  "speedyspec-php-ext",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-hooks-php",
  "speedyspec-wp-text-diff",
@@ -3510,6 +3554,7 @@ dependencies = [
  "speedyspec-cqrs",
  "speedyspec-hooks",
  "speedyspec-wp-hooks",
+ "speedyspec-wp-hooks-contracts",
  "speedyspec-wp-hooks-memory",
  "speedyspec-wp-kses-contracts",
  "speedyspec-wp-kses-lexical",

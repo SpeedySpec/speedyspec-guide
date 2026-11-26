@@ -19,7 +19,7 @@ Each expected order in the tests was produced by PHP 8.5.12's own `ksort()`: tim
 
 ## The ports
 
-`CronApi` is built from `CronParts`: the Rust Hook API and one port for each thing it needs from outside. <Ev source="ss:crates/speedyspec-wp-cron/src/api.rs#L11-L26" hash="736310a0b0f2bff86114b33e199e00bb26d2120822b8d64ac53227440dce1d50"/>
+`CronApi` is built from `CronParts`: the Rust Hook API and one port for each thing it needs from outside. <Ev source="ss:crates/speedyspec-wp-cron/src/api.rs#L11-L26" hash="aa53756e5c0d2219ac529e2512963edb5dbcb1c98949891adf62888ed157be61"/>
 
 - `CronStore`: the `cron` option (Repository), with `load`, `reload`, `save_if` (compare-and-swap) and `save`. <Ev source="ss:crates/speedyspec-wp-cron-contracts/src/ports.rs#L7-L21" hash="64c69d6269618abd0bec480b0528cc083f295de36a2231990759f3ca353bf0b8"/>
 - `ArgsKeyer` (`md5( serialize( $args ) )`), `Clock`, `Translator` (`__()`), `PhpObjects` (the `stdClass` events and `WP_Error` checks), `DoingCron` (the `doing_cron` transient), `ErrorReporter` (`wp-cron.php`'s error log), `NetworkSites` and `SiteSwitcher` (a network's sites).
@@ -34,7 +34,7 @@ Each expected order in the tests was produced by PHP 8.5.12's own `ksort()`: tim
 
 ## The adapters and how they are wired
 
-The worker builds `CronArea` over its Hook API and options API, with the request's wake slot, after the database, object cache and options areas. <Ev source="ss:crates/speedyspec-php-runtime/src/database.rs#L76-L78" hash="fd1f161366a7849207bad48598960e3b73c8dda6cd3356df0f21fcdef892d629"/> `CronArea` fills `CronParts` with `OptionCronStore` and the PHP adapters (`PhpArgsKeyer`, `PhpTranslator`, `PhpEventObjects`, `PhpDoingCron`, `PhpErrorReporter`, `PhpNetworkSites`, `PhpSiteSwitcher`, `SystemClock`). <Ev source="ss:crates/speedyspec-wp-cron-php/src/lib.rs#L60-L116" hash="1ee56b7b8e6442967f4b35bd8e7ea1c2490b09390c418c047c2af5326ebda51b"/>
+The worker builds `CronArea` over its Hook API and options API, with the request's wake slot, after the database, object cache and options areas. <Ev source="ss:crates/speedyspec-php-runtime/src/database.rs#L76-L78" hash="fd1f161366a7849207bad48598960e3b73c8dda6cd3356df0f21fcdef892d629"/> `CronArea` fills `CronParts` with `OptionCronStore` and the PHP adapters (`PhpArgsKeyer`, `PhpTranslator`, `PhpEventObjects`, `PhpDoingCron`, `PhpErrorReporter`, `PhpNetworkSites`, `PhpSiteSwitcher`, `SystemClock`). <Ev source="ss:crates/speedyspec-wp-cron-php/src/lib.rs#L60-L116" hash="f41ef26a4b7ba3c040c276feb9885c8215753094a3b520e6d54a3c8d7bfbaff1"/>
 
 Cron registers nothing in the service container: there is no container key, and no PHP port. To replace a part:
 

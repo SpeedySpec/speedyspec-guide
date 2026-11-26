@@ -3,15 +3,15 @@
 
 ## The domain and its port
 
-`speedyspec-wp-hooks` is `plugin.php` and `WP_Hook` in Rust: `HookApi` holds every function, `WpHook` is `WP_Hook` ported literally (with how running iterations follow changes, and PHP's priority ordering), and `CallbackIdentity` is `_wp_filter_build_unique_id()`. Each function is a use case, a command or query, whose handler is registered in the service container. Its state is behind the outbound port `HookStore`: the four globals, read and written only through it. <Ev source="ss:crates/speedyspec-wp-hooks/src/store.rs#L12-L14" hash="8177cb03af5fe456b329ebda2a94732537263fbbd06a54bf4d6cc9cae0b4c518"/> <Ev scenario="add_during_run_at_later_priority"/> <Ev test="speedyspec-wp-hooks-php::php::replayed_scenarios_match_wordpress"/>
+`speedyspec-wp-hooks` is `plugin.php` and `WP_Hook` in Rust: `HookApi` holds every function, `WpHook` is `WP_Hook` ported literally (with how running iterations follow changes, and PHP's priority ordering), and `CallbackIdentity` is `_wp_filter_build_unique_id()`. Each function is a use case, a command or query, whose handler is registered in the service container. Its state is behind the outbound port `HookStore`: the four globals, read and written only through it. <Ev source="ss:crates/speedyspec-wp-hooks/src/store.rs#L6-L8" hash="8177cb03af5fe456b329ebda2a94732537263fbbd06a54bf4d6cc9cae0b4c518"/> <Ev scenario="add_during_run_at_later_priority"/> <Ev test="speedyspec-wp-hooks-php::php::replayed_scenarios_match_wordpress"/>
 
 ## Its adapters
 
 - **Memory** (`speedyspec-wp-hooks-memory`): the store the runtime worker binds by default. <Ev source="ss:crates/speedyspec-php-runtime/src/worker.rs#L303-L307" hash="fbd4028d96f113c9616ae25ef31a11558260d2148ca7680c16506e632be0c1b8"/>
-- **PHP** (`PhpHookStore`, in `speedyspec-wp-hooks-php`): a PHP object implementing `SpeedySpec\WpHooks\HookStorage`, the store port's twin, generated from the Rust trait by `#[php_port]` so the two can't drift. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/stores.rs#L93-L93" hash="0c5e7de2e36720b9227a1c310497ba19922c675136437a4eac08a1ad97a45456"/> <Ev test="speedyspec-wp-hooks-php::php_store::php_hook_store_binding_takes_every_registration"/>
+- **PHP** (`PhpHookStore`, in `speedyspec-wp-hooks-php`): a PHP object implementing `SpeedySpec\WpHooks\HookStorage`, the store port's twin, generated from the Rust trait by `#[php_port]` so the two can't drift. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/stores.rs#L92" hash="0c5e7de2e36720b9227a1c310497ba19922c675136437a4eac08a1ad97a45456"/> <Ev test="speedyspec-wp-hooks-php::php_store::php_hook_store_binding_takes_every_registration"/>
 - **The PHP area** (`WpHooksArea`): declares WordPress's hook functions with their exact signatures, `WP_Hook`, and the proxies for the globals at the start of every request. Each is thin: a native function dispatches the use case. A PHP callback is one crossing into PHP; a hook with only Rust callbacks never enters PHP. <Ev test="speedyspec-wp-hooks-php::php::a_php_callback_is_one_crossing"/> <Ev test="speedyspec-wp-hooks-php::php::rust_caller_with_rust_callbacks_never_enters_php"/>
 
-The store is bound in the container under `SpeedySpec\WpHooks\HookStore`. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/stores.rs#L15-L15" hash="f74a671f2e70d8a1c4979dff0957c3b2508befdf433b7574eb856a13bbb27801"/>
+The store is bound in the container under `SpeedySpec\WpHooks\HookStore`. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/stores.rs#L14" hash="f74a671f2e70d8a1c4979dff0957c3b2508befdf433b7574eb856a13bbb27801"/>
 
 ## Patterns
 
