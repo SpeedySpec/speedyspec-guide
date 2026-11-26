@@ -1,0 +1,18 @@
+---
+symbol: "function:_truncate_post_slug"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+Deprecated in WordPress 7.2: `_truncate_post_slug()` now lives in `deprecated.php`, calls `_deprecated_function()`, and returns `wp_truncate_slug( $slug, $length )`. <Ev source="wp:wp-includes/deprecated.php#L6598-L6602" hash="cd215f3b556ff88ecb59855f1dcc7eb987938e4e118ef09e7e2435368e4b21b8"/>
+
+The rule is the text seam's [wp_truncate_slug](/speedyspec/text/wp_truncate_slug/), which `speedyspec-wp-text` ports and the post slug rule reaches through the `SlugTruncation` port. The deprecated wrapper, with its `_deprecated_function()` notice, is phase 4's.
+
+## Limits
+
+- No recording calls `_truncate_post_slug()` itself: the proof is `wp_truncate_slug()`'s. WordPress's own `truncatePostSlug` tests are not among the tests speedyspec-server copies.

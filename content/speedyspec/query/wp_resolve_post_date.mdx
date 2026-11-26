@@ -1,0 +1,20 @@
+---
+symbol: "function:wp_resolve_post_date"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`resolve_post_date` is `wp_resolve_post_date()` up to its `wp_checkdate` filter. An empty local date (`""`, `"0"` or the zero date) becomes now when the GMT date is empty too, else the GMT date in local time, both through the `Clock` port. Then `/^(\d{4})-(\d{1,2})-(\d{1,2})/`, anchored at the start only, and `checkdate()`, which is `gregorian_date_valid`. It answers `NoDate` when the pattern fails (false before any filter), else the whole date and whether `checkdate()` accepts it; `unfiltered()` is the answer with no `wp_checkdate` callback. <Ev source="ss:crates/speedyspec-wp-posts/src/dates.rs#L45-L70" hash="5044e409843fb5b591238772d02355b294074a69b49ab503b521cdc61550603b"/> <Ev source="ss:crates/speedyspec-wp-posts/src/dates.rs#L102-L115" hash="546a0bf57395dfc807a8945f52791fc43a8e729dd9f44595fdb7f5ebd6c605b7"/>
+
+The 15 recorded cases replay as in WordPress 7.2-RC2: empty and zero dates, dates from GMT under a timezone and an offset, a leap day and a non-leap 29 February, `2024-1-5 garbage` (kept whole, as the pattern is anchored only at its start), a two-digit year, month 13, year 0, 30 February, a leading space and letters. The replay's clock answers only what WordPress read, and fails if the rule asks for now where WordPress didn't. <Ev test="speedyspec-wp-posts::entity::dates_match_wordpress"/> <Ev test="speedyspec-wp-posts::entity::clock_refuses_now_where_none_was_recorded"/> <Ev source="ss:compat/posts-entity/record.php#L488-L505" hash="996185af4f61dd541247a7fc2d1a57d00663f14b3cb880451e4db254945674ec"/>
+
+## Limits
+
+- The `wp_checkdate` filter is phase 4's: the rule returns the date and `checkdate()`'s verdict so the filter can change it.
+- The time functions are the `Clock` port. The replay answers from the recorded table, so the proof is of the rule given WordPress's clock and timezone answers, not of a Rust clock; phase 5 adds the Rust and PHP clocks.
+- Dates are bytes here, while `PostDateTime` holds a `String`; phase 5 converts between them, lossily for bytes that are not UTF-8.

@@ -4,7 +4,7 @@ symbol: "function:_truncate_post_slug"
 
 ## Behaviour
 
-Truncates a slug to a length, keeping percent-encoded characters whole; deprecated in 3.9.0 for utf8_uri_encode(). <Ev source="wp:wp-includes/deprecated.php#L6598-L6602" hash="cd215f3b556ff88ecb59855f1dcc7eb987938e4e118ef09e7e2435368e4b21b8"/>
+Truncates a post slug. Deprecated in 7.2.0: it calls `_deprecated_function()` and returns `wp_truncate_slug()`'s answer. <Ev source="wp:wp-includes/deprecated.php#L6598-L6602" hash="cd215f3b556ff88ecb59855f1dcc7eb987938e4e118ef09e7e2435368e4b21b8"/>
 
 ## Override
 

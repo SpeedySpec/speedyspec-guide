@@ -1,0 +1,20 @@
+---
+symbol: "function:wp_find_hierarchy_loop"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `functions.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`find_hierarchy_loop` is `wp_find_hierarchy_loop( 'wp_get_post_parent_id', $start, $start_parent )`: the members of the loop reached from `start`, in WordPress's key order, or none. `start_parent` stands in for `start`'s own parent, as WordPress's override array does. It runs the tortoise and hare twice, as WordPress does: once to find a member, then from that member to collect the loop. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L74-L90" hash="cc4539fc71beb6b3afa3e260f56acf9dc812baded4ef64c16b0e5b02fa3e7fbe"/>
+
+The 4 recorded calls replay as in WordPress 7.2-RC2, comparing the members and the posts read: an override that ends the chain (no loop), an override that closes a loop through the start, a missing start whose override leads into a loop of two other pages, and a page under that loop. <Ev test="speedyspec-wp-posts::entity::hierarchy_matches_wordpress"/> <Ev source="ss:compat/posts-entity/record.php#L634-L671" hash="6f47b85147282bdf090f33ec9af0e325f028a7ac61bc8eb02647a03f03402cde"/>
+
+## Limits
+
+- The rule is for posts only: its callback is always `wp_get_post_parent_id()`, read through the `PostReader` port. WordPress's function takes any callback and its extra arguments; other hierarchies keep WordPress's PHP.
+- `Uncached` reads every post through `find`, as WordPress does with no object cache; phase 4's reader reads the `posts` cache group first. <Ev source="ss:crates/speedyspec-wp-posts/src/reader.rs#L5-L19" hash="09da15425c05c61578f330c352c0763b5ac7394e30c22dffec7fbfac1012ace4"/>
+- Recorded from WordPress 7.2-RC2 behind the recorder's stub `$wpdb`, which answers only the statements `PostRepository` mirrors and compares strings byte for byte. MySQL's `_ci` collations ignore case and trailing spaces, so rows that differ only so are not proven; the SQL repository (phase 4) decides. <Ev source="ss:compat/posts-entity/record.php#L133-L137" hash="582625381c482b18c1cd564398a320d093d272f1212981bd5dec09dfd0828f01"/>

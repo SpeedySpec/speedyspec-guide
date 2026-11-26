@@ -21,6 +21,14 @@ Not native yet. speedyspec-server has `post.php`'s post type and post status rul
 - **Proven against WordPress 7.2-RC2, not wired:** labels (12 cases), capabilities (9), `new WP_Post_Type()` (27), 12 post type and 14 status scenarios, the three status label tables, 87 list and predicate calls, and both runs of `create_initial_post_types()` with 68 queries after them, all from `compat/posts/cases.json`. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::recorded::list_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::recorded::initial_post_types_match_wordpress"/>
 - **Not proven:** the hooks these functions fire, rewrite rules, taxonomy removal and the REST controllers, which the rules leave to phase 4 or to other seams, and WordPress's post PHPUnit tests. See the architecture page.
 
-### Still WordPress's PHP
+## The post entity, dates, slugs and hierarchy
+
+Not native yet. speedyspec-server has the `Post` entity, its repository and mapper, and 11 of this seam's `post.php` functions in Rust: `wp_resolve_post_date()`, `wp_unique_post_slug()`, `_truncate_post_slug()` (through the text seam's `wp_truncate_slug()`), `wp_get_post_parent_id()`, `wp_check_post_hierarchy_for_loops()`, `get_post_ancestors()`, `get_page_uri()`, `get_page_hierarchy()`, `_page_traverse_name()`, `get_page_children()` and `get_extended()`, with the Support seam's `wp_find_hierarchy_loop()` and its tortoise and hare. The runtime worker links no posts crate, so all of them work as in WordPress. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+- **Proven against WordPress 7.2-RC2, not wired:** 15 date cases, 8 slug scenarios (40 calls), 21 hierarchy calls, 16 page tree calls and 10 `get_extended()` cases from `compat/posts-entity/cases.json`, each replay comparing the result and, where WordPress reads the database, its statements in order; and the rows and cache entries the mapper reads. <Ev test="speedyspec-wp-posts::entity::slug_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::entity::hierarchy_matches_wordpress"/> <Ev test="speedyspec-wp-posts-sql::mapper::cache_reads_match_wordpress"/>
+- **Not proven:** the filters these functions run, which phase 4 adds; MySQL's case-insensitive collation, since the recorder's stub `$wpdb` compares bytes; the page trees over a cycle, where PHP never ends and the port stops at the first revisit; and WordPress's post PHPUnit tests.
+- **Not composed:** `wp_insert_post()`. Phase 5 runs its steps in WordPress's order, from these rules: the date, the hierarchy check with its `wp_update_post()` calls, the slug, the `import_id` check, then the insert. See the architecture page.
+
+## Still WordPress's PHP
 
 The `wp-db` scenarios and tests cover `wpdb` only. Everything else in this seam, and every query it builds, is WordPress's PHP calling the native `$wpdb`.

@@ -1,0 +1,26 @@
+---
+symbol: "function:wp_truncate_slug"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP: the runtime worker doesn't link the text port, so PHP on SpeedySpec runs WordPress's own `formatting.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/> The rest of this page is the port, which follows WordPress 7.2-RC2, where the function is new.
+
+## The port
+
+`speedyspec_wp_text::helpers::wp_truncate_slug` cuts a slug to a length in bytes without splitting a percent-encoded character, then removes trailing `-`, whether or not it was cut. A slug longer than the length that `urldecode()` leaves unchanged is cut at that many raw bytes. One that `urldecode()` changes (a `%XX` sequence or a `+`) is re-encoded by `utf8_uri_encode( $decoded, $length, true )`: ASCII `rawurlencode`d in uppercase hex, multibyte characters in lowercase hex, whole characters only. A negative length is PHP's: `substr()` drops that many bytes from the end, and a slug that decodes differently comes back empty. <Ev source="ss:crates/speedyspec-wp-text/src/helpers.rs#L223-L258" hash="6d82f7cc96ea3c1bead9fe576e03e5d3bdf6e7dc78700e263fdc0677d53f6275"/>
+
+The text PHP area declares it natively under WordPress's name, with WordPress's default length of 200, and leaves it out of the `formatting.php` it loads. <Ev source="ss:crates/speedyspec-wp-text-php/src/native.rs#L479-L481" hash="520fcc488d587b45a70b313b04785d1daab3f280360d5f9f7a718aeca61aba11"/> <Ev source="ss:crates/speedyspec-wp-text-php/src/release.rs#L60" hash="e58a9fbb6612ce933023a1b73d154333f4b34dceba3a79b7d5961c83445921e8"/>
+
+The posts port reaches it only through the `SlugTruncation` port, for `wp_unique_post_slug()`'s numbered suffixes. See [wp_unique_post_slug](/speedyspec/query/wp_unique_post_slug/). `_truncate_post_slug()`, deprecated in 7.2, returns this function's answer.
+
+## Evidence
+
+- **18 recorded one-call scenarios** from WordPress 7.2-RC2 replay through the native function, and the Rust function is checked against the same corpus byte for byte: short, exact and long slugs, trailing dashes, encoded characters at the cut, `+`, the default length, negative lengths, upper- and lowercase hex, and invalid UTF-8 cut or dropped. <Ev area="formatting" scenario="wp_truncate_slug/literal/truncate_encoded_198"/> <Ev area="formatting" scenario="wp_truncate_slug/literal/truncate_plus"/> <Ev area="formatting" scenario="wp_truncate_slug/literal/truncate_negative_encoded"/> <Ev area="formatting" scenario="wp_truncate_slug/literal/truncate_invalid_utf8_dropped"/> <Ev source="ss:compat/formatting/literals.json#L2606-L2748" hash="a82fe34f23d6b592b73ee60646f1aea3fd88a6ec22679b6ff5cac6c61bb8ea81"/> <Ev test="speedyspec-wp-text::helpers::wp_truncate_slug_corpus"/>
+- **Unit tests** cover the dash trim on short slugs, `+` and the hex case, and negative lengths. <Ev test="speedyspec-wp-text::helpers::wp_truncate_slug_trims_dashes_even_when_short"/> <Ev test="speedyspec-wp-text::helpers::wp_truncate_slug_plus_reencodes"/> <Ev test="speedyspec-wp-text::helpers::wp_truncate_slug_negative_length"/>
+
+## Limits
+
+- WordPress's own `wpTruncateSlug` tests aren't among the formatting tests speedyspec-server copies, so they don't run against the port.
+- The native reads the length as PHP's `(int)` reads it. WordPress uses the value as given, in `strlen( $slug ) > $length` and `substr()`, so a length that isn't an integer (a float, a numeric string, null) is not proven to match.

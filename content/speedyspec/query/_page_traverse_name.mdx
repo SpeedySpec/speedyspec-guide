@@ -1,0 +1,19 @@
+---
+symbol: "function:_page_traverse_name"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`_page_traverse_name()` has no Rust function of its own: its recursion is the walk inside `page_hierarchy`, which answers what `get_page_hierarchy()` builds with it. See [get_page_hierarchy](/speedyspec/query/get_page_hierarchy/). <Ev source="ss:crates/speedyspec-wp-posts/src/pages.rs#L23-L52" hash="a3d03f96a96fd963ee542ce8c1adb6797a5e332f9670c0d61189244c47e42be7"/>
+
+The 8 recorded `get_page_hierarchy()` calls cover it. <Ev test="speedyspec-wp-posts::entity::pages_match_wordpress"/>
+
+## Limits
+
+- WordPress's function fills `$result` by reference; the Rust walk returns the list instead.
+- Where a cycle makes PHP recurse forever, the walk stops at the first revisit.

@@ -1,0 +1,20 @@
+---
+symbol: "function:wp_find_hierarchy_loop_tortoise_hare"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `functions.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+The tortoise and hare is private in Rust, inside `find_hierarchy_loop`. It reads parents in PHP's order (the tortoise, then the hare's two steps), ends at a parent of 0 or a missing post, and answers some member of a loop when the tortoise is lapped. Collecting members, it records each ID at its first position, as PHP's `$return[ $id ] = true` does. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L36-L72" hash="a1587e7ff9edeb16b611df204523c57a8d1ade5bf4fa93f73765dad9730adbb5"/>
+
+No recording calls it directly; the 4 recorded `wp_find_hierarchy_loop()` calls and the 6 `wp_check_post_hierarchy_for_loops()` calls go through it, with their reads compared in order. <Ev test="speedyspec-wp-posts::entity::hierarchy_matches_wordpress"/>
+
+## Limits
+
+- Posts only, with `wp_get_post_parent_id()` as the callback; see [wp_find_hierarchy_loop](/speedyspec/support/wp_find_hierarchy_loop/).
+- `$_return_loop` is a flag in WordPress; Rust collects the members only on the second walk.
+- `Uncached` reads every post through `find`, as WordPress does with no object cache; phase 4's reader reads the `posts` cache group first. <Ev source="ss:crates/speedyspec-wp-posts/src/reader.rs#L5-L19" hash="09da15425c05c61578f330c352c0763b5ac7394e30c22dffec7fbfac1012ace4"/>
