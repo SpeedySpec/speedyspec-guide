@@ -17,7 +17,7 @@ wordpress:
   - wp-includes/cache.php
   - wp-includes/cache-compat.php
 setup: setup.php
-crates: [speedyspec-wp-object-cache, speedyspec-wp-object-cache-php, speedyspec-cache, speedyspec-cache-memory, speedyspec-cache-sql, speedyspec-cache-kv, speedyspec-cache-file, speedyspec-cache-routing, speedyspec-cache-conformance]
+crates: [speedyspec-wp-object-cache, speedyspec-wp-object-cache-contracts, speedyspec-wp-object-cache-php, speedyspec-cache, speedyspec-cache-memory, speedyspec-cache-sql, speedyspec-cache-kv, speedyspec-cache-file, speedyspec-cache-routing, speedyspec-cache-conformance]
 symbols:
   - "method:WP_Object_Cache::__destruct"
   - "function:SpeedySpec\\WpObjectCache\\clone_objects"

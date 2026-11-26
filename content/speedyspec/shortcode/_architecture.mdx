@@ -30,7 +30,7 @@ Every function is a message on `speedyspec-cqrs`'s buses: three commands (`AddSh
 - **HTML and kses:** `RustHtmlSplitter` and `RustKsesAttributes`, so `wp_html_split()` is never a PHP call. <Ev test="speedyspec-wp-shortcode-php::php::case_html_split_is_rust"/>
 - **Notices and string conversion** still go to WordPress's PHP (`legacy`). <Ev test="speedyspec-wp-shortcode-php::php::case_doing_it_wrong"/>
 
-`ShortcodeArea::new()` wires these together; `with_strategies()` takes another scanner and parser. <Ev source="ss:crates/speedyspec-wp-shortcode-php/src/lib.rs#L65-L93" hash="b81762409399ed552a060a07b00a154e2d642a3a555ebe85284c86bfa6852db9"/> To replace one use case, bind its handler key again, from Rust or from PHP through the container.
+`ShortcodeArea::new()` wires these together; `with_strategies()` takes another scanner and parser. <Ev source="ss:crates/speedyspec-wp-shortcode-php/src/lib.rs#L65-L93" hash="4b03bdff6a3b9f8d2cfd606b9c4cb88300a6213018a3b909ce8a02c6e40848be"/> To replace one use case, bind its handler key again, from Rust or from PHP through the container.
 
 ## Patterns
 

@@ -5,4 +5,4 @@ verdict: new-in-speedyspec
 
 ## Behaviour
 
-Reads a file with the runtime's default reader (the isolated, cached one), whatever PHP has bound under `SpeedySpec\WpMedia\MediaReader`, and returns the neutral array, or `false` when the read fails. It is for a PHP reader that wraps the default: call it, then add to what it returns. <Ev source="ss:crates/speedyspec-wp-media-php/src/natives.rs#L234-L248" hash="bd6f0a96658bd91f8504972e5ef47126a75561000f5e8fefea59c7afbe0d33f5"/> <Ev test="speedyspec-wp-media-php::php::php_reader_can_delegate_to_read_media"/>
+Reads a file with the runtime's default reader (the isolated, cached one), whatever PHP has bound under `SpeedySpec\WpMedia\MediaReader`, and returns the neutral array, or `false` when the read fails. It is for a PHP reader that wraps the default: call it, then add to what it returns. <Ev source="ss:crates/speedyspec-wp-media-php/src/natives.rs#L235-L249" hash="bd6f0a96658bd91f8504972e5ef47126a75561000f5e8fefea59c7afbe0d33f5"/> <Ev test="speedyspec-wp-media-php::php::php_reader_can_delegate_to_read_media"/>
