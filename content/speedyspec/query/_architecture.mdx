@@ -309,3 +309,180 @@ fn public_post_types() -> Vec<String> {
 - **What must still pass:** the eight replay tests over `compat/posts/cases.json`, and the registry tests.
 - **Recording more cases:** add them to `compat/posts/record.php` in speedyspec-server and run it with the runtime's static PHP against the pinned release, `compat/wordpress.json`'s `wordpress`, as its header says. It stops unless the release's `$wp_version` is that release. <Ev source="ss:compat/posts/record.php#L1-L11" hash="7a2eb15c90202a78a0719223bf2a37bc9bf5b5969bb94fe01ceee63bd4b51853"/>
 - **Carried to phase 4:** the PHP adapter over the read ports; the hooks; `is_post_type_hierarchical()`'s raw property; the string conversion in `get_post_types_by_support()`; unregistering's taxonomy removal; and `wp_parse_args()`' query strings.
+
+## The post entity (Rust, not wired yet)
+
+Phase 2b of the posts and meta port: the `Post` entity, its repository and mapper, and the post rules of WordPress 7.2-RC2 that need nothing but posts: dates, slugs, the hierarchy and `get_extended()`. They are proven against recordings of WordPress. Nothing here is wired into PHP either: the runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4, and phase 5 composes `wp_insert_post()`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+### The crates
+
+- **`speedyspec-wp-posts-contracts`** (contracts) adds the entity and its values, `PostError`, the new ports and the conformance suites (behind its `conformance` feature). It still depends only on `speedyspec-php-serialize`. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/lib.rs#L1-L21" hash="1faceffb1882fe4a4d63619b5ea5119838aca8ad97e4110b66293b0650117510"/>
+- **`speedyspec-wp-posts-memory`** (adapter, new): `MemoryPostRepository`, `wp_posts` in memory, for tests and for callers with no database. <Ev source="ss:crates/speedyspec-wp-posts-memory/Cargo.toml#L1-L12" hash="0969e909e38858549371ce288c15fd6f8864febb1e5d931a008b497bfc0ab5e5"/>
+- **`speedyspec-wp-posts-sql`** (adapter, new): `PostMapper`. There is no SQL repository yet; phase 4 adds it. <Ev source="ss:crates/speedyspec-wp-posts-sql/Cargo.toml#L1-L12" hash="09eafc6f1b26c019c24947b8318a0dc425b48207b5895e196e0db085a0c782de"/>
+- **`speedyspec-wp-posts`** (implementation) adds the date, slug, hierarchy, page tree and `get_extended()` rules, and `Uncached`. <Ev source="ss:crates/speedyspec-wp-posts/src/lib.rs#L1-L5" hash="9faa705a703f50825dc4a2f0a55a85772e438cc3b25f67bbeb89fcb026565ce2"/>
+
+`speedyspec-wp-text` gains `wp_truncate_slug()`, in the text seam that owns `formatting.php`; the posts crates reach it only through the `SlugTruncation` port. `speedyspec-php-serialize` gains `to_php_int` (PHP 8's `(int)`) and `bytes_truthy` (PHP truth of a string), which the rules share. <Ev source="ss:crates/speedyspec-php-serialize/src/semantics.rs#L19-L22" hash="10529d8dffe5a8770a000e4501e125c64595fa144f1752719cbe561c2185a604"/> <Ev source="ss:crates/speedyspec-php-serialize/src/semantics.rs#L176-L184" hash="5ce594df9ec95b730dfe30de66e797b91defe6edc732e72aae8acea6f05d2a06"/>
+
+### The entity and its values
+
+`Post` is one `wp_posts` row as a plain value: the 23 columns in table order, with each date pair as one `PostDate` (local and GMT). Its defaults are `WP_Post`'s property defaults. It never loads or saves itself. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/entity.rs#L7-L12" hash="1e4d6c22fb93c73643caae37f5489ab9aae826e72c6e968ba283f41ea614416b"/>
+
+The values are typed: `PostId` (0 is "no post"), `PostDateTime` (`Y-m-d H:i:s`, unchecked, with `ZERO`), and `Slug` and `MimeType`, which hold bytes, since PHP strings are bytes and a slug may be percent-encoded or not. `CommentStatus` and `PingStatus` are names, like `PostTypeName`. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/values.rs#L67-L79" hash="a4e997ab45b413af57dd46e746e082b7f645e388f64041433c0fe0b576855474"/> <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/values.rs#L144-L151" hash="b832b0ca77d8f029218a404649feb12ea91bb54a60ae1472cc53ba94fb4617bf"/>
+
+### The ports
+
+- **`PostRepository`**: `wp_posts`. Each method is one `$wpdb` statement that `post.php` makes, so query counts match WordPress: `find` (`WP_Post::get_instance()`'s `SELECT *`), `insert` (`wp_insert_post()`'s `$wpdb->insert`) and the three slug-owner queries of `wp_unique_post_slug()`, one per branch. A failure `$wpdb` hides is `Ok` with the empty answer; `Err` is only for failures it wouldn't hide. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L1-L45" hash="32cb8cba3d14f360afc07326a89d9106b305ca132e4abdd44df149979bf5f495"/>
+- **`PostReader`**: `get_post()`, through whatever cache the binding keeps. The rules read posts through it exactly where WordPress calls `get_post()`. `Uncached` is phase 2b's binding: it reads through `find`, and a zero ID is `None` with no statement, as `WP_Post::get_instance()` returns false before it queries. Phase 4's binding reads the `posts` cache group first. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L47-L52" hash="d01f51bc5993f12860182616236aeb5dbe6b9f91d62a57535dc59676cfaeeea5"/> <Ev source="ss:crates/speedyspec-wp-posts/src/reader.rs#L5-L19" hash="09da15425c05c61578f330c352c0763b5ac7394e30c22dffec7fbfac1012ace4"/>
+- **`Clock`**: `current_time()`, `get_date_from_gmt()`, `get_gmt_from_date()` and `strtotime()`, so the date rules read no global clock or timezone. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L54-L66" hash="9f8da984cc5bb352957e1e065de47773d9b72150378e76c547b5598862804680"/>
+- **`SlugTruncation`**: the text seam's `wp_truncate_slug()`. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L68-L73" hash="e638b6879f443de0b25da820c3e28f61edde28f9b0d459771c93f171e396c53b"/>
+- **`BadSlugs`**: the three `wp_unique_post_slug_is_bad_*_slug` filters. `NoBadSlugs` answers false, as WordPress does with no callback. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L75-L83" hash="9bcc74d52787ae48e18d0c11445cd1c0aa2c01e9a990979384fc6712ad4cd38c"/>
+
+Why both `PostRepository` and `PostReader`: the repository is the table and its statements; the reader is `get_post()`, which in WordPress sits in front of the object cache. The rules that call `get_post()` take a reader, and the slug rule's owner queries, which WordPress never caches, take the repository. So phase 4 adds the cache by binding another reader, and the statements the rules make stay WordPress's.
+
+### The mapper
+
+`PostMapper` maps the entity from two sources and back. From a `wp_posts` row as mysqli's text protocol gives it (a `NULL` text column is `""`; a bad number is a `Db` error, as the columns are unsigned and `NOT NULL`), and to `wp_insert_post()`'s column values in its `compact()` order, with `ID` only for an import ID. From the `posts` cache group's `stdClass` or `WP_Post`, read with PHP's `(string)` and `(int)` casts, and back to the `stdClass` that `get_instance()` caches after a miss. <Ev source="ss:crates/speedyspec-wp-posts-sql/src/mapper.rs#L1-L13" hash="925adcc2a12745bd525303576a0c358fe3d49a08ce0b19247a6c9db380976142"/> <Ev source="ss:crates/speedyspec-wp-posts-sql/src/mapper.rs#L147-L169" hash="0f00ceadab299d65d76ef78baa553b7ec82d6f65ec90ede10063ab97591ddbcc"/> <Ev source="ss:crates/speedyspec-wp-posts-sql/src/mapper.rs#L205-L238" hash="5719c66f1fd5be4b0fde56bbefd8fc3cc79f5010ed04f24e7cf3cc4a667746d4"/>
+
+### Use cases
+
+There are still no commands or queries in the container; phase 4 binds them. Each rule is a function over the ports, and each stops where WordPress runs a filter, so phase 4 can place the filter there.
+
+- `resolve_post_date`: `wp_resolve_post_date()` up to the `wp_checkdate` filter, with `checkdate()` as `gregorian_date_valid`. <Ev source="ss:crates/speedyspec-wp-posts/src/dates.rs#L45-L70" hash="5044e409843fb5b591238772d02355b294074a69b49ab503b521cdc61550603b"/>
+- `insert_post_dates`: `wp_insert_post()`'s date block after the resolved date: the GMT date, the modified dates, and the `publish`/`future` swap. <Ev source="ss:crates/speedyspec-wp-posts/src/dates.rs#L144-L190" hash="3ad110204c1693b5579c530f54aa770936987be00364c285c7194ac7ec244fae"/>
+- `slug_needs_no_check` and `unique_post_slug`: `wp_unique_post_slug()` between `pre_wp_unique_post_slug` and `wp_unique_post_slug`. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L1-L8" hash="c63bf5fc48423f71102420d27eac080134afcd20800ee15d10a2cf6ad3866c4b"/>
+- `post_parent_id`, `find_hierarchy_loop`, `check_post_hierarchy_for_loops`, `post_ancestors` and `page_uri`: `wp_get_post_parent_id()`, `wp_find_hierarchy_loop()`, `wp_check_post_hierarchy_for_loops()`, `get_post_ancestors()` and `get_page_uri()` before its filter. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L1-L7" hash="aee55a0732c4666600d48ae5ac05dd91c3a5f7575c15dcc8ca887feac734d67a"/>
+- `page_hierarchy` and `page_children`: `get_page_hierarchy()` and `get_page_children()`, over a list of posts with no reads. <Ev source="ss:crates/speedyspec-wp-posts/src/pages.rs#L1-L7" hash="dd1882ecd0e8a7351d700af6109b877be3813d96457fd5c53315f877b2b8b9e5"/>
+- `extended`: `get_extended()`. <Ev source="ss:crates/speedyspec-wp-posts/src/content.rs#L17-L32" hash="e53ceac46f104fdb687f322a1d53065c0db38728c15df9eec977e7783689d56a"/>
+
+No hook is called. To replace an implementation today, implement `PostRepository` or `PostReader` in Rust and pass it in; the rules take every port as `&dyn`. Replacing one from PHP comes with phase 4's PHP crate.
+
+### Patterns
+
+- **Repository**, one statement per method: `PostRepository`, so a replay can compare statement sequences and an adapter can't merge or skip reads WordPress makes. `MemoryPostRepository` and phase 4's SQL repository implement it (**Strategy** per engine). <Ev source="ss:crates/speedyspec-wp-posts-memory/src/lib.rs#L1-L13" hash="cc57656a7e63120dffac0a92cefb38e5b219681d3fad0c0026bd90750978d935"/>
+- **Data Mapper**: `PostMapper`, so the entity knows nothing of rows or cache entries. <Ev test="speedyspec-wp-posts-sql::mapper::rows_map_to_the_cached_object"/>
+- **Strategy ports**: `Clock`, `SlugTruncation`, `BadSlugs` and `PostReader`, each a place where phase 4 or 5 binds WordPress's PHP or a Rust adapter.
+- **Adapter**: `Uncached`, from repository to reader. <Ev source="ss:crates/speedyspec-wp-posts/src/reader.rs#L5-L19" hash="09da15425c05c61578f330c352c0763b5ac7394e30c22dffec7fbfac1012ace4"/>
+- **Value Object**: `Post`, `PostId`, `PostDateTime`, `PostDate`, `Slug` and the rest.
+- **Conformance suite**: `post_repository_suite` holds the checks every post repository must pass, so the memory and SQL repositories answer alike; `binary_safe_suite` adds the checks only a binary-safe table passes, which a faithful SQL repository over stock `utf8mb4` tables fails by design. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/conformance.rs#L1" hash="e8bd2a14ab77edf93a6ce0a672d36bf1643c4c314f3db11c0c900a09a1719da1"/> <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/conformance.rs#L238-L245" hash="01f8386052222c57692baf735e407edca386e3787f54a886d07663e81543c3e6"/> <Ev test="speedyspec-wp-posts-memory::conformance::memory_repository_passes_the_suite"/> <Ev test="speedyspec-wp-posts-memory::conformance::memory_repository_passes_the_binary_safe_suite"/>
+
+### Review focus
+
+**Statements are part of the answer.** Each replay compares the result and the `$wpdb` statements in order, so a rule that reads a post once more or once less than WordPress fails. `get_page_uri()` reads every ancestor, then each one again for its name, because WordPress does. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L157-L171" hash="9580e160ea1319a8723ac2909f28debb657df6f121321ba350f8604abfa13701"/> <Ev test="speedyspec-wp-posts::entity::hierarchy_matches_wordpress"/>
+
+**PHP truth of a slug owner.** The owner queries answer a name, and an owner named `""` or `"0"` is false in PHP, so it never forces a suffix. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L92-L96" hash="225bf09dd80cfbaff5903a3bab161af7184503ad22e76f4ac47e4fbefd7194d6"/> <Ev test="speedyspec-wp-posts::entity::slug_scenarios_match_wordpress"/>
+
+**PCRE's `$`.** `/^[0-9]+$/` and the pagination pattern match before one final newline, so `"5\n"` counts as a number and `"2\n"` as a page number. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L127-L152" hash="58aa3c6b10b4dc4a44d103c50c03f63afc56c5c969dd7d47a186977912fa2477"/> <Ev test="speedyspec-wp-posts::entity::slug_scenarios_match_wordpress"/>
+
+**The date-archive test.** In the flat branch, a `post` slug that is a non-zero number conflicts when `%postname%` comes first in the permalink structure, or after `%year%` (below 13) or `%monthnum%` (below 32), unless it is the post's own name. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L159-L192" hash="cf971bc8bac6f407f966b2d60da82db5a4846e13a40362bb831d05fb79739e0b"/>
+
+**The clock.** `wp_resolve_post_date()` reads now only when both dates are empty. The replay's clock fails if a rule asks for now where WordPress didn't. <Ev test="speedyspec-wp-posts::entity::clock_refuses_now_where_none_was_recorded"/> <Ev test="speedyspec-wp-posts::entity::dates_match_wordpress"/>
+
+**Loops.** `wp_find_hierarchy_loop()`'s tortoise and hare reads parents in PHP's order, and the members come back in WordPress's key order. `check_post_hierarchy_for_loops` returns the members it would detach (`break_loop`) and writes nothing. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L36-L134" hash="65cbd06c5e1fa7f7a58c04bb3229f7a8f583f1d56832bc82d5f79bedfd74f785"/>
+
+### The recorded proof
+
+`compat/posts-entity/record.php` loads WordPress 7.2-RC2's `class-wp-post.php` and `post.php` behind a stub `$wpdb` that answers exactly the four statements `PostRepository` mirrors, logs each one, and fails on any other. <Ev source="ss:compat/posts-entity/record.php#L133-L137" hash="582625381c482b18c1cd564398a320d093d272f1212981bd5dec09dfd0828f01"/> It writes `compat/posts-entity/cases.json`, recorded on PHP 8.5.12. <Ev source="ss:compat/posts-entity/cases.json#L1-L3" hash="95c151eda2ec0c47f8cc871276c9eb6fdcaf414ed5cebef1db14c0bc0f88444f"/>
+
+- `rows` (3) and `cache_reads` (8): the row a `get_instance()` miss reads, what it caches, and `get_post()` over cache entries of each shape, replayed through the mapper. <Ev test="speedyspec-wp-posts-sql::mapper::rows_map_to_the_cached_object"/> <Ev test="speedyspec-wp-posts-sql::mapper::cache_reads_match_wordpress"/>
+- `dates`: 15 `wp_resolve_post_date()` cases, with the clock's answers recorded. <Ev test="speedyspec-wp-posts::entity::dates_match_wordpress"/>
+- `slugs`: 8 scenarios, 40 `wp_unique_post_slug()` calls, with the statements of each. <Ev test="speedyspec-wp-posts::entity::slug_scenarios_match_wordpress"/>
+- `hierarchy`: 21 calls of the parent, ancestor, page URI and loop functions, with their statements. <Ev test="speedyspec-wp-posts::entity::hierarchy_matches_wordpress"/>
+- `pages`: 16 `get_page_hierarchy()` and `get_page_children()` calls over four lists, which read no database. <Ev test="speedyspec-wp-posts::entity::pages_match_wordpress"/>
+- `extended`: 10 `get_extended()` cases. <Ev test="speedyspec-wp-posts::entity::extended_matches_wordpress"/>
+
+The stub compares strings byte for byte, where MySQL's `_ci` collations ignore case and trailing spaces, so the proof is of the rules over byte-equal rows. The recorded calls never meet a loop that leaves the post out, so `break_loop` is proven by unit tests only.
+
+### Left out, and what phase 5 composes
+
+- Every hook: `wp_checkdate`, `pre_wp_unique_post_slug`, `wp_unique_post_slug`, the `wp_unique_post_slug_is_bad_*` filters (taken through `BadSlugs`), `get_page_uri` and `wp_insert_post_parent`. Phase 4 runs them.
+- The SQL repository, with `wpdb::set_sql_mode`'s mode so zero dates insert and read back, and a decision on collation.
+- `get_post(0)`'s fallback to the global `$post`, which changes the flat branch's date-archive test for a new post.
+- Negative `post_parent` values, which WordPress keeps and `PostId` can't hold.
+- WordPress's post PHPUnit tests, which run against the port from phase 4.
+
+`wp_insert_post()` is not composed yet. Phase 5 runs its steps in WordPress's order: `resolve_post_date`, then `insert_post_dates`, then `check_post_hierarchy_for_loops`, running `wp_update_post( array( 'ID' => $member, 'post_parent' => 0 ) )` for each `break_loop` member, then `slug_needs_no_check`, `pre_wp_unique_post_slug` and `unique_post_slug`, then `import_id`'s `SELECT ID` pre-check (its own repository method), then `PostRepository::insert`. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L17-L23" hash="d3341f8f49b03fc4f54559f256af05ca3dfb4b78891e132351b7a5269d923173"/>
+
+### Calling it from Rust
+
+A runtime feature seeds an in-memory `wp_posts`, asks for a free slug as `wp_unique_post_slug()` does, and builds a page's URI as `get_page_uri()` does. Truncation is the text seam's Rust `wp_truncate_slug()`; no post type is registered, so `post` and `page` both take the flat branch.
+
+```rust
+use speedyspec_wp_posts::{
+    NoBadSlugs, PostTypeRegistry, SlugContext, SlugPorts, SlugRequest, Uncached, page_uri,
+    unique_post_slug,
+};
+use speedyspec_wp_posts_contracts::{
+    Post, PostError, PostId, PostReader, PostRepository, PostTypeName, Slug, SlugTruncation,
+};
+use speedyspec_wp_posts_memory::MemoryPostRepository;
+use speedyspec_wp_text::helpers::wp_truncate_slug;
+
+/// `wp_truncate_slug()`, from the text seam's Rust port.
+struct TextTruncation;
+
+impl SlugTruncation for TextTruncation {
+    fn truncate(&self, slug: &[u8], length: usize) -> Vec<u8> {
+        wp_truncate_slug(slug, i64::try_from(length).unwrap_or(i64::MAX))
+    }
+}
+
+/// A page row with an explicit ID.
+fn page(id: u64, parent: u64, name: &str) -> Post {
+    Post {
+        id: PostId(id),
+        parent: PostId(parent),
+        name: Slug::from(name),
+        post_type: PostTypeName::new("page"),
+        ..Post::default()
+    }
+}
+
+/// `hello-world-2` for a new post, and `about/team` for page 11.
+fn slug_and_uri() -> Result<(Vec<u8>, Vec<u8>), PostError> {
+    let posts = MemoryPostRepository::new();
+    posts.insert(&Post {
+        id: PostId(1),
+        name: Slug::from("hello-world"),
+        ..Post::default()
+    })?;
+    posts.insert(&page(10, 0, "about"))?;
+    posts.insert(&page(11, 10, "team"))?;
+    let reader = Uncached(&posts);
+
+    // wp_unique_post_slug( 'hello-world', 0, 'publish', 'post', 0 ), with no filters.
+    let types = PostTypeRegistry::new();
+    let ports = SlugPorts {
+        repository: &posts,
+        posts: &reader,
+        types: &types,
+        truncation: &TextTruncation,
+        bad: &NoBadSlugs,
+    };
+    let context = SlugContext {
+        feeds: vec![b"feed".to_vec(), b"rss2".to_vec()],
+        pagination_base: b"page".to_vec(),
+        permalink_structure: b"/%postname%/".to_vec(),
+    };
+    let request = SlugRequest {
+        slug: b"hello-world",
+        post_id: PostId(0),
+        status: "publish",
+        post_type: "post",
+        parent: PostId(0),
+    };
+    let slug = unique_post_slug(&request, &context, &ports)?;
+
+    // get_page_uri( 11 ), before its filter.
+    let uri = match reader.post(PostId(11))? {
+        Some(team) => page_uri(&reader, &team)?,
+        None => Vec::new(),
+    };
+    Ok((slug, uri))
+}
+```
+
+### How to change this
+
+- **What must still pass:** the six replay tests over `compat/posts-entity/cases.json`, the mapper's tests, and both conformance suites for every repository.
+- **Adding a repository:** implement `PostRepository` with one statement per method, and run `post_repository_suite` against an empty table (and `binary_safe_suite` when its columns are binary-safe).
+- **Recording more cases:** add them to `compat/posts-entity/record.php` and run it with the runtime's static PHP against the pinned release, as its header says. A new statement needs its template in the stub `$wpdb` and a repository method. <Ev source="ss:compat/posts-entity/record.php#L1-L12" hash="846c04aa254dece19fefe9695becd120dc08a1edcf75f98c596b65def5b70e40"/>

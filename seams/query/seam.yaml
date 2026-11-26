@@ -23,9 +23,10 @@ wordpress:
 setup: setup.php
 mysql: true
 # wpdb (class-wpdb.php) is native: speedyspec-wp-db and its PHP facade, over the data layer's engines. The post type
-# and post status rules (speedyspec-wp-posts-contracts, speedyspec-wp-posts) are in Rust but not wired into PHP yet.
+# and post status rules, and the post entity with its date, slug and hierarchy rules (speedyspec-wp-posts-contracts,
+# speedyspec-wp-posts, speedyspec-wp-posts-memory, speedyspec-wp-posts-sql), are in Rust but not wired into PHP yet.
 # The rest of the seam (posts, comments, WP_Query, WP) is still WordPress's PHP, so the seam is not ported.
-crates: [speedyspec-wp-db, speedyspec-wp-posts-contracts, speedyspec-wp-posts, speedyspec-wp-db-php, speedyspec-data, speedyspec-data-query, speedyspec-data-uow, speedyspec-data-translate, speedyspec-data-mysql, speedyspec-data-postgres, speedyspec-data-sqlite, speedyspec-data-memory, speedyspec-data-file, speedyspec-data-redb, speedyspec-data-valkey, speedyspec-data-counter, speedyspec-data-corpus, speedyspec-data-conformance]
+crates: [speedyspec-wp-db, speedyspec-wp-posts-contracts, speedyspec-wp-posts, speedyspec-wp-posts-memory, speedyspec-wp-posts-sql, speedyspec-wp-db-php, speedyspec-data, speedyspec-data-query, speedyspec-data-uow, speedyspec-data-translate, speedyspec-data-mysql, speedyspec-data-postgres, speedyspec-data-sqlite, speedyspec-data-memory, speedyspec-data-file, speedyspec-data-redb, speedyspec-data-valkey, speedyspec-data-counter, speedyspec-data-corpus, speedyspec-data-conformance]
 # Symbols whose file belongs to another seam, then SpeedySpec's wpdb API.
 symbols:
   - "function:_truncate_post_slug"
