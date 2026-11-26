@@ -3,10 +3,21 @@
 
 ## The crates
 
-- **`speedyspec-wp-object-cache`** is `WP_Object_Cache` in Rust. `ObjectCache` is one instance: the first level holds values as they are, and an optional second level keeps them in a Caching Store in PHP's serialize format. `CurrentObjectCache` is the request's current instance and makes the others. It holds no PHP. <Ev source="ss:crates/speedyspec-wp-object-cache/src/lib.rs#L1-L7" hash="dd347dbd3ba57adf2e80e2c4ae343468e1b3852abb389bd3ffeb533bf608b5aa"/> <Ev source="ss:crates/speedyspec-wp-object-cache/src/current.rs#L12-L18" hash="4d4656ac58fda98fb48571e1504fca6177634245bed7aabe9b4730b29ca47d04"/>
+- **`speedyspec-wp-object-cache`** is `WP_Object_Cache` in Rust. `WpObjectCache` is one instance: the first level holds values as they are, and an optional second level keeps them in a Caching Store in PHP's serialize format. `CurrentObjectCache` is the request's current instance and makes the others. It holds no PHP. <Ev source="ss:crates/speedyspec-wp-object-cache/src/lib.rs#L1-L7" hash="dd347dbd3ba57adf2e80e2c4ae343468e1b3852abb389bd3ffeb533bf608b5aa"/> <Ev source="ss:crates/speedyspec-wp-object-cache/src/current.rs#L12-L18" hash="4d4656ac58fda98fb48571e1504fca6177634245bed7aabe9b4730b29ca47d04"/>
 - **`speedyspec-wp-object-cache-php`** is the PHP area, `ObjectCacheArea`: at the start of every request it declares `cache.php`'s functions and `WP_Object_Cache`, thin PHP over the `SpeedySpec\WpObjectCache\Native` functions, and at the end it drops every cache. <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/lib.rs#L1-L7" hash="4f06425d166a30a7122b3d9b01c1c894976c0660ca6d10df5394fac564e583a1"/> <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/lib.rs#L491-L501" hash="35694022c0396ce1ea42d6b6033852f6170359d46e10d6f6326aa0ac6a0d5cc6"/>
 - **`speedyspec-cache`** holds the Caching Store contract, `CachingStore`: byte values by group and key, with expiry. Its implementations are separate crates: `speedyspec-cache-memory`, `-cache-sql`, `-cache-kv` and `-cache-file`. Each runs the shared suite in `speedyspec-cache-conformance`. <Ev source="ss:crates/speedyspec-cache/src/lib.rs#L11-L20" hash="c918a0cebd392427cbcb7d9aff6aa2cc41f6c0d2a3a03e7defc91afbf9f79a48"/> <Ev test="speedyspec-cache-memory::conformance::memory_cache_conformance"/> <Ev test="speedyspec-cache-sql::conformance::sql_cache_conformance"/> <Ev test="speedyspec-cache-file::file_cache::file_cache_conformance"/> <Ev test="speedyspec-cache-kv::kv::kv_cache_on_memory"/>
 - **`speedyspec-cache-routing`** chooses the second level from the engine the `object-cache` use is routed to. Unrouted, the cache lives for the request. <Ev source="ss:crates/speedyspec-cache-routing/src/lib.rs#L1-L2" hash="d43817f3fa0f480a4790403a879c292c1d77bb291bd400fe7739a4cfbcedda16"/>
+
+## The contracts
+
+`speedyspec-wp-object-cache-contracts` holds `ObjectCache`, the port other seams call. Its 12 methods are the `wp_cache_*` calls options makes, plus `add_multiple()` for metadata: `get()`, `read_with()`, `get_multiple()`, `peek()`, `add()`, `add_multiple()`, `set()`, `set_multiple()`, `delete()`, `delete_multiple()`, `add_global_groups()` and `is_persistent()`. A read returns `None` for a miss. <Ev source="ss:crates/speedyspec-wp-object-cache-contracts/src/api.rs#L7-L11" hash="87f4eaa79113de829ae5a6e7d1719b4fc939ab5f3fdc568596e0cfa73d932d9f"/> `read_with()` lends the cached value to a reader instead of copying it. `get_with()`, a free function, is its generic form, kept out of the trait so the trait stays object safe. <Ev source="ss:crates/speedyspec-wp-object-cache-contracts/src/api.rs#L84-L91" hash="7d6f8c549c07511dfbe6bb7b8aa74a784f175583b33aad5b206d4c4b533a5189"/> <Ev test="speedyspec-wp-object-cache-contracts::object_safe::get_with_runs_once"/> `ObjectCacheError` moved there from `speedyspec-wp-object-cache`'s `error.rs`.
+
+Two structs implement the port:
+
+- **`WpObjectCache`** answers each call with its own method, named by its full path so none calls itself. <Ev source="ss:crates/speedyspec-wp-object-cache/src/cache.rs#L612-L613" hash="e101f0f4bf3b9bf47accb0f0d4599d83e476b34bc383039ef51742b6e142f350"/> <Ev test="speedyspec-wp-object-cache::contract::every_method_reaches_wp_object_cache_through_dyn"/>
+- **`CurrentObjectCache`** sends each call to whichever cache is current at that moment, as WordPress reads `$wp_object_cache` each time. A `select()` or the end of a request between two calls is seen by the second. <Ev source="ss:crates/speedyspec-wp-object-cache/src/current.rs#L62-L64" hash="dd3c0cc2cbd0c4ccb338a5bce414994097c4d0b84f59e5a8561351b5d56db862"/> <Ev test="speedyspec-wp-object-cache::contract::current_forwards_to_the_selected_cache"/>
+
+Options holds `Rc<dyn ObjectCache>`, and the worker gives it the `CurrentObjectCache`. `speedyspec-wp-options` depends on `speedyspec-wp-object-cache` only for its tests. <Ev source="ss:crates/speedyspec-wp-options/src/api.rs#L19-L20" hash="5eebb5e55660d4f1952cb4b687b471faee249a1a3fe923f2da1f20d4e3479008"/> Cron reaches the cache through options.
 
 ## Ports
 
@@ -22,13 +33,16 @@ Every `wp_cache_*` function is a command or a query: `CacheAdd`, `CacheAddMultip
 
 - **Replace one use case from Rust:** bind another handler under its key. The buses then call it. <Ev test="speedyspec-wp-object-cache::messages::override_by_key"/>
 - **Replace the cache from PHP:** put an object of a `WP_Object_Cache` subclass in `$wp_object_cache`. Each `wp_cache_*` function then calls that object's method, as WordPress does. <Ev source="ss:crates/speedyspec-wp-object-cache-php/src/wp-object-cache.php#L30-L33" hash="cd19e67b2a0cc2894fb39e2e383a4e9aac89492f120c6aff65d08946d2376896"/> An `object-cache.php` drop-in isn't loaded. <Ev test="speedyspec-wp-object-cache-php::php::drop_in_refused"/>
+- **Give a Rust feature another object cache:** implement `ObjectCache` and pass it where the feature takes `Rc<dyn ObjectCache>`. PHP's `wp_cache_*` functions still use the request's current `WpObjectCache`. <Ev test="speedyspec-wp-object-cache-contracts::object_safe::object_cache_is_object_safe"/>
 - **Keep values across requests:** give the cache a `CachingStore`, or route the `object-cache` use to an engine. The worker doesn't do this yet. <Ev source="ss:crates/speedyspec-php-runtime/src/database.rs#L76-L77" hash="0c1f0f38e5a5d11361ec47ef760adf9d0209f0336a8de3de6f0bd60ad590b1d5"/> <Ev test="speedyspec-wp-object-cache-php::php_persistent::flush_runtime_keeps_second_level"/>
 - **Add a Caching Store:** implement `CachingStore` and run `speedyspec-cache-conformance`'s suite against it.
 - **What must still pass:** the recorded scenarios (`compat/object-cache/scenarios.json`) and WordPress's own cache tests, on a single site and on multisite. A test the port can't match is marked `@group documented-break` and listed in `compat/object-cache/breaks.json`; none is. <Ev test="speedyspec-wp-object-cache-php::php::replayed_scenarios_match_wordpress"/> <Ev source="ss:crates/speedyspec-wp-object-cache-php/tests/common/mod.rs#L61" hash="440768da1e50a58c820493cb93ae5cd34a2ca670e753d503ba347b0d21cef329"/>
 
 ## Patterns
 
-- **Ports and Adapters** for what the host knows (`ObjectCachePorts`) and for the second level (`CachingStore`).
+- **Ports and Adapters** for the `ObjectCache` port other seams call, for what the host knows (`ObjectCachePorts`) and for the second level (`CachingStore`).
+- **Strategy**: `CurrentObjectCache` picks the selected cache on every call.
+- **Template Method**: `get_with()` runs a reader through `read_with()`, so the trait has no generic method.
 - **Strategy** for the Caching Store implementations and for `ValueCodec`.
 - **Decorator**: the second level wraps the first.
 - **Command and query handlers** for each function, bound in the container (**Registry**).

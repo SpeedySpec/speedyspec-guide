@@ -41,12 +41,13 @@ The translation port has no container key of its own: its ports are passed to `T
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use speedyspec_wp_hooks::{HookApi, HookValue};
+use speedyspec_wp_hooks::WpHookApi;
+use speedyspec_wp_hooks_contracts::HookValue;
 use speedyspec_wp_i18n::{I18nApi, I18nError, Translated, TranslationController};
 use speedyspec_wp_i18n_files::{ByExtension, StdFileProbe};
 use speedyspec_wp_i18n_memory::MemoryTranslationFileCache;
 
-fn translations(hooks: Rc<HookApi>) -> I18nApi {
+fn translations(hooks: Rc<WpHookApi>) -> I18nApi {
     let controller = TranslationController::new(
         Rc::new(ByExtension::default()),
         Rc::new(StdFileProbe),

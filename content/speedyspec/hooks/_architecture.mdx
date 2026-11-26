@@ -3,7 +3,15 @@
 
 ## The domain and its port
 
-`speedyspec-wp-hooks` is `plugin.php` and `WP_Hook` in Rust: `HookApi` holds every function, `WpHook` is `WP_Hook` ported literally (with how running iterations follow changes, and PHP's priority ordering), and `CallbackIdentity` is `_wp_filter_build_unique_id()`. Each function is a use case, a command or query, whose handler is registered in the service container. Its state is behind the outbound port `HookStore`: the four globals, read and written only through it. <Ev source="ss:crates/speedyspec-wp-hooks/src/store.rs#L6-L8" hash="8177cb03af5fe456b329ebda2a94732537263fbbd06a54bf4d6cc9cae0b4c518"/> <Ev scenario="add_during_run_at_later_priority"/> <Ev test="speedyspec-wp-hooks-php::php::replayed_scenarios_match_wordpress"/>
+`speedyspec-wp-hooks` is `plugin.php` and `WP_Hook` in Rust: `WpHookApi` holds every function, `WpHook` is `WP_Hook` ported literally (with how running iterations follow changes, and PHP's priority ordering), and `CallbackIdentity` is `_wp_filter_build_unique_id()`. Each function is a use case, a command or query, whose handler is registered in the service container. Its state is behind the outbound port `HookStore`: the four globals, read and written only through it. <Ev source="ss:crates/speedyspec-wp-hooks/src/store.rs#L6-L8" hash="8177cb03af5fe456b329ebda2a94732537263fbbd06a54bf4d6cc9cae0b4c518"/> <Ev scenario="add_during_run_at_later_priority"/> <Ev test="speedyspec-wp-hooks-php::php::replayed_scenarios_match_wordpress"/>
+
+## The contracts
+
+`speedyspec-wp-hooks-contracts` holds `HookApi`, the port other seams call. It is the part of `plugin.php` they use: `apply_filters()`, `do_action()`, `do_action_ref_array()`, `do_action_deprecated()`, `add_filter()`, `has_filter()`, `remove_filter()`, and `skip_if_empty()`, which counts a run and says whether no callback would run. <Ev source="ss:crates/speedyspec-wp-hooks-contracts/src/api.rs#L20-L22" hash="d4f1a273a4cb8ea5c67ec39cc5b0f704f3d4df2c45bac6887ef234f12e3bc4c1"/> The values passed through it moved there from `speedyspec-wp-hooks`: `HookName`, `HookKey` and `ArrayKey` (from `key.rs`), `Callback`, `CallbackId` and `HookError` (from `callback.rs`), `Count` (from `store.rs`), `HasFilterResult` (from `hook.rs`), and `HookValue`, PHP's value as hooks carry it. <Ev source="ss:crates/speedyspec-wp-hooks-contracts/src/lib.rs#L1-L5" hash="cd579d4e636765e22681600fbfe279d35758123149dc1fbb3538353199bd407b"/>
+
+`WpHookApi` implements the port. Each method calls `WpHookApi`'s own by its full path, so none can call itself. <Ev source="ss:crates/speedyspec-wp-hooks/src/api.rs#L345-L347" hash="7a82e4a7e6c78a5234f49144d23543412e315c4055a9651d79ad566ad8a77847"/> <Ev test="speedyspec-wp-hooks-memory::hook_api::every_method_reaches_wp_hook_api_through_dyn"/> `speedyspec-wp-options` and `speedyspec-wp-cron` hold `Rc<dyn HookApi>`, and depend on `speedyspec-wp-hooks` only for their tests; their PHP areas pass in the `WpHookApi`. <Ev source="ss:crates/speedyspec-wp-options/src/api.rs#L15-L18" hash="e540cb1f9b72ac6e821dc09b95096013b341eded4fa53250115e5f54c3513c79"/> <Ev source="ss:crates/speedyspec-wp-cron/src/api.rs#L11-L13" hash="757f1aeb31783d119d9058d63cc9c150d7e32550f300592f50c6d90c05b9e4b7"/> The worker gives them the same `WpHookApi` PHP uses, so a callback PHP adds runs when they fire a hook.
+
+`HookStore`, the store port, stays in `speedyspec-wp-hooks` until the hooks seam migration. A `Callback` holds Rust closures, so only Rust can implement `HookApi`; PHP replaces the store behind it instead.
 
 ## Its adapters
 
@@ -15,7 +23,7 @@ The store is bound in the container under `SpeedySpec\WpHooks\HookStore`. <Ev so
 
 ## Patterns
 
-- **Ports and Adapters** for the store: `HookStore`, with the memory and PHP adapters.
+- **Ports and Adapters** for the store (`HookStore`, with the memory and PHP adapters) and for the Hook API other seams call (`HookApi`, which `WpHookApi` implements).
 - **Command and query handlers** for each function, registered in the container (**Registry**).
 - **Proxy** for three of the globals (`FilterGlobal` for `$wp_filter`, `CountGlobal` for `$wp_actions` and `$wp_filters`) and for `WP_Hook` objects, which are handles to Rust hooks. `$wp_current_filter` is a real array kept equal to the store's stack. <Ev source="ss:crates/speedyspec-wp-hooks-php/src/hooks.php#L118-L131" hash="d6926b1d27bda0cf7d16eb5967e975f9a793f3eb379e5fbedf268fcfd3b74098"/>
 
@@ -23,7 +31,7 @@ The store is bound in the container under `SpeedySpec\WpHooks\HookStore`. <Ev so
   participant P as PHP code
   participant F as apply_filters() (PHP shim)
   participant N as Native\\apply_filters
-  participant A as HookApi (Rust)
+  participant A as WpHookApi (Rust)
   participant S as HookStore
   P->>F: apply_filters('the_title', $title)
   F->>N: native call, arguments unconverted
@@ -38,6 +46,7 @@ The store is bound in the container under `SpeedySpec\WpHooks\HookStore`. <Ev so
 
 ## How to change this
 
+- **Give a Rust feature another Hook API:** implement `HookApi` and pass it where the feature takes `Rc<dyn HookApi>`. PHP's hook functions still use `WpHookApi`. <Ev test="speedyspec-wp-hooks-contracts::object_safe::hook_api_is_object_safe"/>
 - **Keep hooks somewhere else:** write a `HookStore` adapter in Rust, or implement `SpeedySpec\WpHooks\HookStorage` in PHP, and bind it under the hook-store key.
 - **What must still pass:** the recorded scenarios (`compat/hooks/scenarios.json`, replayed by `speedyspec-wp-hooks-php`'s tests) and WordPress's own hook tests run against the port, except the breaks listed in `compat/hooks/breaks.json`. <Ev test="speedyspec-wp-hooks-php::wordpress::wordpress_hook_tests_pass"/> <Ev test="speedyspec-wp-hooks-php::wordpress::documented_breaks_are_listed"/>
 - **Recording a new scenario:** add it to `compat/hooks/scenarios.json` in speedyspec-server and run `cargo run -p speedyspec-compat -- record hooks --wordpress 7.2-RC2` (the pin in `compat/wordpress.json`); a difference the port can't match goes in `breaks.json` with its reason.
