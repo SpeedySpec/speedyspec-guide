@@ -3,6 +3,7 @@ symbol: "function:update_meta_cache"
 verdict: works-with-differences
 differences:
   - summary: "The query selects the meta id too, so a `query` filter sees `SELECT meta_id, post_id, meta_key, meta_value …` where WordPress sends `SELECT post_id, meta_key, meta_value …`. The rows and the cache are the same."
+  - summary: "On a single site the `site` meta type maps to `wp_sitemeta`, where WordPress has no table for it and the function returns false."
 ---
 
 ## Behaviour
@@ -12,3 +13,4 @@ Native: the `UpdateMetaCache` command. After the `update_{$meta_type}_metadata_c
 ## Differences
 
 - **The query text.** The repository returns `Meta` entities, which carry their id, so the statement adds the id column. A plugin that matches `update_meta_cache()`'s exact SQL in a `query` filter misses it. <Ev source="ss:crates/speedyspec-wp-meta-sql/src/repository.rs#L356-L358" hash="fb932a37a03b40268c4645836488874618bd4145070eb1d1ef45eb2037765e49"/>
+- **`site` on a single site** reads or writes `wp_sitemeta`, where WordPress has no table and returns false; see [_get_meta_table()](/speedyspec/meta/_get_meta_table/). <Ev source="ss:crates/speedyspec-wp-meta-sql/src/repository.rs#L398-L401" hash="29a136921eb9b816414883ee9065616182ae0208fb47091146cd9f6e5179566a"/>

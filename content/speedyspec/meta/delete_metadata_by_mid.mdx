@@ -1,8 +1,14 @@
 ---
 symbol: "function:delete_metadata_by_mid"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "On a single site the `site` meta type maps to `wp_sitemeta`, where WordPress has no table for it and the function returns false."
 ---
 
 ## Behaviour
 
 Native: the `DeleteMetadataByMid` command. After the `delete_{$meta_type}_metadata_by_mid` short-circuit it reads the row, fires `delete_{$meta_type}_meta` (and `delete_{$meta_type}meta` for posts and comments), deletes, clears the cache, and fires the matching `deleted_` actions. <Ev scenario="mid-post" area="metadata"/> <Ev scenario="mid-comment" area="metadata"/> <Ev scenario="mid-invalid" area="metadata"/> <Ev scenario="mid-short-circuit" area="metadata"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
+
+## Differences
+
+- **`site` on a single site** reads or writes `wp_sitemeta`, where WordPress has no table and returns false; see [_get_meta_table()](/speedyspec/meta/_get_meta_table/). <Ev source="ss:crates/speedyspec-wp-meta-sql/src/repository.rs#L398-L401" hash="29a136921eb9b816414883ee9065616182ae0208fb47091146cd9f6e5179566a"/>

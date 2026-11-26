@@ -1,8 +1,14 @@
 ---
 symbol: "function:get_metadata"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "On a single site the `site` meta type maps to `wp_sitemeta`, where WordPress has no table for it and the function returns false."
 ---
 
 ## Behaviour
 
 Native: the `GetMetadata` query. It is [get_metadata_raw()](/speedyspec/meta/get_metadata_raw/), then the registered default when nothing is stored. A first read of an object loads all of its meta in one query and caches it; later reads come from the cache. <Ev scenario="get-single-and-multiple-post" area="metadata"/> <Ev scenario="get-single-and-multiple-term" area="metadata"/> <Ev scenario="get-missing-key" area="metadata"/> <Ev scenario="get-registered-default" area="metadata"/> <Ev scenario="get-short-circuit-single" area="metadata"/> <Ev scenario="get-short-circuit-array" area="metadata"/> <Ev scenario="get-cache-miss-string" area="metadata"/> <Ev scenario="get-reads-cache-entry" area="metadata"/> <Ev scenario="get-key-zero-and-numeric" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::get_miss_loads_every_key_once"/> <Ev test="speedyspec-wp-meta-tests::use_cases::reads_php_shaped_cache_entry"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
+
+## Differences
+
+- **`site` on a single site** reads or writes `wp_sitemeta`, where WordPress has no table and returns false; see [_get_meta_table()](/speedyspec/meta/_get_meta_table/). <Ev source="ss:crates/speedyspec-wp-meta-sql/src/repository.rs#L398-L401" hash="29a136921eb9b816414883ee9065616182ae0208fb47091146cd9f6e5179566a"/>

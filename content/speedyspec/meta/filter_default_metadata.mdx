@@ -1,8 +1,14 @@
 ---
 symbol: "function:filter_default_metadata"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "An object in a meta value reaches the hooks as a copy (serialized, then unserialized), not as the object passed."
 ---
 
 ## Behaviour
 
 Native: the `FilterDefaultMetadata` query, hooked on `default_{$meta_type}_metadata` by [register_meta()](/speedyspec/meta/register_meta/). While WordPress is installing, or when the value is already set, it returns the value. Otherwise it gathers the key's defaults across the registered subtypes, takes a `''` subtype's default without asking for the object's subtype, and asks only when it must. A registered `null` default counts, as WordPress's `array_key_exists()` does. <Ev scenario="get-registered-default" area="metadata"/> <Ev scenario="get-registered-default-thing" area="metadata"/> <Ev scenario="get-default-while-installing" area="metadata"/> <Ev test="speedyspec-wp-meta::recorded::defaults_match_wordpress"/> <Ev test="speedyspec-wp-meta::registry::null_default_is_a_default"/> <Ev test="speedyspec-wp-meta::registry::unregistered_key_never_asks_for_the_subtype"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
+
+## Differences
+
+- **Objects:** an object `$value` comes back as a copy, not as the object passed. <Ev source="ss:crates/speedyspec-wp-meta-php/src/codec.rs#L3-L13" hash="9ad5f408eef9d41cda7cf40d1d761ed16a0c161faacd2753523b3e445c4bb0b4"/>

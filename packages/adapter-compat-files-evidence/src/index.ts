@@ -12,7 +12,9 @@ interface Breaks { breaks: { scenario: string; step?: number; why: string }[] }
  *
  * speedyspec-server's shared crates and compat areas moved to speedyspec-platform, which it now takes from crates.io.
  * `ss:` names one code base, SpeedySpec's: a path is looked up in the server first, then in each further checkout
- * (the platform), so a citation stays valid when its crate moves. A path is in one repository only.
+ * (the platform), so a citation stays valid when its crate moves. A path is in one repository only: a crate or compat
+ * area moves, it is never copied. Only `compat/wordpress.json` is in both, and the server's copy wins. Nothing checks
+ * this, so if a crate is ever in both, the server's copy is the one cited.
  */
 export class CompatFilesEvidence implements EvidenceSource {
   private readonly json = new Map<string, unknown>();
