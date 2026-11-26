@@ -1,10 +1,14 @@
 ---
 symbol: "function:get_metadata_default"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "The `default_{$meta_type}_metadata` filter gets the object id as a non-negative integer (`absint()`), where WordPress passes `$object_id` as the caller gave it."
 ---
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+Native: the `GetMetadataDefault` query. It runs `default_{$meta_type}_metadata` over `''` (single) or an empty array, and wraps an answer that isn't a list for `$single` false. The registered default comes from [filter_default_metadata()](/speedyspec/meta/filter_default_metadata/), hooked on that filter by [register_meta()](/speedyspec/meta/register_meta/). <Ev scenario="get-missing-key" area="metadata"/> <Ev scenario="get-registered-default" area="metadata"/> <Ev scenario="get-default-filter" area="metadata"/> <Ev scenario="get-default-while-installing" area="metadata"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
 
-Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts.
+## Differences
+
+- The filter's `$object_id` is `absint()`ed first, so `'5'` arrives as `5`. <Ev source="ss:crates/speedyspec-wp-meta-php/src/native.rs#L275-L280" hash="57109ac53d4d08266c2915a0d1d308063d547024e2afa260b60cd19feb6762c0"/>

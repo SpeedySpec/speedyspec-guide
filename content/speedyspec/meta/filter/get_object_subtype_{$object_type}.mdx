@@ -1,0 +1,6 @@
+---
+symbol: "filter:get_object_subtype_{$object_type}"
+verdict: works-as-wordpress
+---
+
+Run by the native [get_object_subtype()](/speedyspec/meta/get_object_subtype/) over the subtype it found, and so by every function that asks for one. <Ev scenario="subtype-filter" area="metadata"/> <Ev scenario="subtype-blog" area="metadata"/> <Ev scenario="subtype-blog-multisite" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::object_subtype_runs_its_filter"/>

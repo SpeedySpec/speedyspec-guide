@@ -1,10 +1,16 @@
 ---
 symbol: "function:update_metadata"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "An object in a meta value reaches the hooks as a copy (serialized, then unserialized), not as the object passed."
 ---
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+Native: the `UpdateMetadata` command. With no row for the key it adds one and returns the new id. Otherwise it compares with PHP's `===` when `$prev_value` is empty, so the same value is `false` with no write, then updates and fires `update_{$meta_type}_meta` and `updated_{$meta_type}_meta` for every id, plus the old `update_postmeta` and `updated_postmeta` for posts only. <Ev scenario="update-missing-adds-post" area="metadata"/> <Ev scenario="update-changes-comment" area="metadata"/> <Ev scenario="update-same-value" area="metadata"/> <Ev scenario="update-int-for-stored-string" area="metadata"/> <Ev scenario="update-prev-value" area="metadata"/> <Ev scenario="update-several-rows" area="metadata"/> <Ev scenario="update-legacy-postmeta" area="metadata"/> <Ev scenario="update-short-circuit" area="metadata"/> <Ev scenario="update-invalid" area="metadata"/> <Ev scenario="update-slashed" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::update_same_value_is_unchanged"/> <Ev test="speedyspec-wp-meta-tests::use_cases::update_with_prev_value_fires_for_every_id"/> <Ev test="speedyspec-wp-meta-tests::use_cases::legacy_postmeta_actions_only_for_posts"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
 
-Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts. The `$wpdb` statements it makes are already the `MetaRepository` port's `ids_for` and `update_by_key`. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L27-L36" hash="60783f22ca67086334f9c2969ce9c5bffcc83dc15d24048a2c90db0ecee763f0"/>
+If `get_object_subtype()` throws, the exception reaches the caller and the old value stays. <Ev source="ss:crates/speedyspec-wp-meta-php/tests/errors.rs#L156-L170" hash="7962032c143ccc451b49157ac29b14b086e6f905048eda6451216848825cad5d"/>
+
+## Differences
+
+- **Objects** in the value reach the hooks as copies. <Ev source="ss:crates/speedyspec-wp-meta-php/src/codec.rs#L3-L13" hash="9ad5f408eef9d41cda7cf40d1d761ed16a0c161faacd2753523b3e445c4bb0b4"/>

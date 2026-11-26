@@ -1,10 +1,20 @@
 ---
 symbol: "function:add_metadata"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "Until speedyspec-server#134 merges, a value with a backslash before a quote (`k\\'`) fails to write: native wpdb's MySQL literal escaping, an SQL injection risk, makes the statement fail and the function returns false. Not a meta difference; it goes with the fix."
+  - summary: "On a single site the `site` meta type maps to `wp_sitemeta`, where WordPress has no table for it and the function returns false."
+  - summary: "An object in a meta value reaches the hooks as a copy (serialized, then unserialized), not as the object passed."
 ---
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+Native: the `AddMetadata` command. It makes WordPress's checks, asks `get_object_subtype()`, unslashes and sanitizes the key and value, runs the `add_{$meta_type}_metadata` short-circuit and returns its answer unchanged, refuses a `$unique` key that has a value, inserts, clears the object's cache entry, and fires `add_{$meta_type}_meta` and `added_{$meta_type}_meta` in WordPress's order, for every meta type with a table. <Ev scenario="add-unique-post" area="metadata"/> <Ev scenario="add-non-unique-user" area="metadata"/> <Ev scenario="add-unique-thing" area="metadata"/> <Ev scenario="add-short-circuit" area="metadata"/> <Ev scenario="add-order-of-actions" area="metadata"/> <Ev scenario="add-invalid-utf8" area="metadata"/> <Ev scenario="add-clears-cache" area="metadata"/> <Ev scenario="add-serialized-array" area="metadata"/> <Ev scenario="add-blog-meta-multisite" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::add_fires_add_then_added_with_mid"/> <Ev test="speedyspec-wp-meta-tests::use_cases::add_unslashes_sanitizes_and_serializes"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
 
-Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts. The `$wpdb` statements it makes are already the `MetaRepository` port's `count_for` and `add`. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L18-L26" hash="ecbcf720f0b553a2d95b0c1b964cad595d72898ccbbf2828c6e89010657a8998"/>
+A callback's exception, or one a `query` filter throws during the insert, reaches the caller as the same object, and nothing is written after it. <Ev source="ss:crates/speedyspec-wp-meta-php/tests/errors.rs#L37-L60" hash="872add3a15ecc3819adf7920a6d7d8fd0b1dcb6c8828d82147290a769d87e1fa"/>
+
+## Differences
+
+- **A backslash before a quote.** The recorded `add-slashed` scenario is a documented break: native wpdb's MySQL literal escaping leaves the quote in `k\'` undoubled, so the INSERT fails and `add_metadata()` returns false. That is an SQL injection risk in native wpdb, fixed by speedyspec-server#134; the break goes when it merges. <Ev break="add-slashed" area="metadata"/>
+- **`site` on a single site** writes `wp_sitemeta`; see [_get_meta_table()](/speedyspec/meta/_get_meta_table/).
+- **Objects** in the value reach `add_{$meta_type}_metadata`, the sanitize filters and the actions as copies. <Ev source="ss:crates/speedyspec-wp-meta-php/src/codec.rs#L3-L13" hash="9ad5f408eef9d41cda7cf40d1d761ed16a0c161faacd2753523b3e445c4bb0b4"/>

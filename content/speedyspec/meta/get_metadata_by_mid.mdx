@@ -5,6 +5,4 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
-
-Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts. The `$wpdb` statements it makes are already the `MetaRepository` port's `by_mid`. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L52-L53" hash="68a4bc5599e50ba693d62980c44ae6e3729028e3045e5c0781c1d670e0ef9b7a"/>
+Native: the `GetMetadataByMid` query. After the `get_{$meta_type}_metadata_by_mid` short-circuit it reads the row and returns it as `$wpdb->get_row()` would: an object with the id and object columns as strings, `meta_key`, and `meta_value` unserialized. <Ev scenario="mid-post" area="metadata"/> <Ev scenario="mid-user" area="metadata"/> <Ev scenario="mid-thing" area="metadata"/> <Ev scenario="mid-invalid" area="metadata"/> <Ev scenario="mid-short-circuit" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::by_mid_round_trip"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/> <Ev source="ss:crates/speedyspec-wp-meta-php/tests/errors.rs#L81-L88" hash="c57843c19af753592545f9a2ae552b88bef6d7b93abfd229c80c0b7afad34967"/>

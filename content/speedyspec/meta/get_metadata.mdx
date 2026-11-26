@@ -5,6 +5,4 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
-
-Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts.
+Native: the `GetMetadata` query. It is [get_metadata_raw()](/speedyspec/meta/get_metadata_raw/), then the registered default when nothing is stored. A first read of an object loads all of its meta in one query and caches it; later reads come from the cache. <Ev scenario="get-single-and-multiple-post" area="metadata"/> <Ev scenario="get-single-and-multiple-term" area="metadata"/> <Ev scenario="get-missing-key" area="metadata"/> <Ev scenario="get-registered-default" area="metadata"/> <Ev scenario="get-short-circuit-single" area="metadata"/> <Ev scenario="get-short-circuit-array" area="metadata"/> <Ev scenario="get-cache-miss-string" area="metadata"/> <Ev scenario="get-reads-cache-entry" area="metadata"/> <Ev scenario="get-key-zero-and-numeric" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::get_miss_loads_every_key_once"/> <Ev test="speedyspec-wp-meta-tests::use_cases::reads_php_shaped_cache_entry"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>

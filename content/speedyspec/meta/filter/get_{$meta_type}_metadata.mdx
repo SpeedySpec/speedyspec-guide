@@ -1,0 +1,6 @@
+---
+symbol: "filter:get_{$meta_type}_metadata"
+verdict: works-as-wordpress
+---
+
+Run by the native [get_metadata_raw()](/speedyspec/meta/get_metadata_raw/) and [metadata_exists()](/speedyspec/meta/metadata_exists/), and through them `get_metadata()`. With `$single` true an array answer gives its first element. The lazy loader hooks its callback here. <Ev scenario="get-short-circuit-single" area="metadata"/> <Ev scenario="get-short-circuit-array" area="metadata"/> <Ev scenario="lazy-term" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::get_short_circuit_single_reads_index_zero"/>

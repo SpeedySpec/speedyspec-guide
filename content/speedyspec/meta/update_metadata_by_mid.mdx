@@ -1,10 +1,14 @@
 ---
 symbol: "function:update_metadata_by_mid"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "Until speedyspec-server#134 merges, a value with a backslash before a quote (`k\\'`) fails to write: native wpdb's MySQL literal escaping, an SQL injection risk, makes the statement fail and the function returns false. Not a meta difference; it goes with the fix."
 ---
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+Native: the `UpdateMetadataByMid` command. It reads the row, unslashes, runs the `update_{$meta_type}_metadata_by_mid` short-circuit, sanitizes, renames the key when `$meta_key` is given, writes, clears the cache, and fires `update_{$meta_type}_meta` with the value before sanitizing and `updated_{$meta_type}_meta` after, plus the old post hooks. <Ev scenario="mid-post" area="metadata"/> <Ev scenario="mid-comment" area="metadata"/> <Ev scenario="mid-term" area="metadata"/> <Ev scenario="mid-invalid" area="metadata"/> <Ev scenario="mid-short-circuit" area="metadata"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
 
-Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts. The `$wpdb` statements it makes are already the `MetaRepository` port's `update_by_mid`. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L54-L60" hash="4585cbf0ee7830ee05c68de0bdb1c5ecd0f72f2095532edc360b53ad77459725"/>
+## Differences
+
+- **A backslash before a quote.** The recorded `mid-update-slashed-and-sanitized` scenario is a documented break: its sanitized value `B\'C` reaches MySQL with its quote undoubled, so the UPDATE fails. That is native wpdb's literal escaping, an SQL injection risk fixed by speedyspec-server#134; the break goes when it merges. <Ev break="mid-update-slashed-and-sanitized" area="metadata"/>

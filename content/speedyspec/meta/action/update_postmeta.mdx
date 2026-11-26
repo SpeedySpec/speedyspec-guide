@@ -1,0 +1,6 @@
+---
+symbol: "action:update_postmeta"
+verdict: works-as-wordpress
+---
+
+Fired by the native [update_metadata()](/speedyspec/meta/update_metadata/) and [update_metadata_by_mid()](/speedyspec/meta/update_metadata_by_mid/) for posts only, beside `update_post_meta`. <Ev scenario="update-legacy-postmeta" area="metadata"/> <Ev scenario="mid-post" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::legacy_postmeta_actions_only_for_posts"/>

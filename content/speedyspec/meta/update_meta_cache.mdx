@@ -1,10 +1,14 @@
 ---
 symbol: "function:update_meta_cache"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "The query selects the meta id too, so a `query` filter sees `SELECT meta_id, post_id, meta_key, meta_value …` where WordPress sends `SELECT post_id, meta_key, meta_value …`. The rows and the cache are the same."
 ---
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+Native: the `UpdateMetaCache` command. After the `update_{$meta_type}_metadata_cache` short-circuit it skips ids already cached, drops entries that aren't arrays, loads the rest in one query in id order, and adds an entry for every id, an empty array when it has no meta. <Ev scenario="cache-several-ids" area="metadata"/> <Ev scenario="cache-partly-cached" area="metadata"/> <Ev scenario="cache-invalid" area="metadata"/> <Ev scenario="cache-short-circuit" area="metadata"/> <Ev scenario="cache-post" area="metadata"/> <Ev scenario="cache-user" area="metadata"/> <Ev scenario="cache-thing" area="metadata"/> <Ev scenario="cache-switch-to-blog-multisite" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::update_meta_cache_queries_only_the_uncached"/> <Ev test="speedyspec-wp-meta-tests::use_cases::update_meta_cache_collapses_duplicate_ids"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
 
-Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts. The `$wpdb` statements it makes are already the `MetaRepository` port's `for_objects`. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L63-L65" hash="df2460b087bcff773eaf075b1ce219a8587d32ba9856e64a4619dfb532cb687c"/>
+## Differences
+
+- **The query text.** The repository returns `Meta` entities, which carry their id, so the statement adds the id column. A plugin that matches `update_meta_cache()`'s exact SQL in a `query` filter misses it. <Ev source="ss:crates/speedyspec-wp-meta-sql/src/repository.rs#L324-L326" hash="fb932a37a03b40268c4645836488874618bd4145070eb1d1ef45eb2037765e49"/>

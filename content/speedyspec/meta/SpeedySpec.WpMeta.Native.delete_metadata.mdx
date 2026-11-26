@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpMeta\\Native\\delete_metadata"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [delete_metadata()](/speedyspec/meta/delete_metadata/) to reach the native metadata API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-meta-php/src/meta.php#L8-L11" hash="93de3b4e68a0fe11ddd2a574078fad4ffb350c066e72abfe73a11ec59d4cc57a"/>
+
+It sends the `DeleteMetadata` message through the handler bound under `SpeedySpec\WpMeta\DeleteMetadataHandler`. <Ev scenario="delete-key-post" area="metadata"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>

@@ -5,13 +5,4 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
-
-## The Rust rule
-
-`MetaKeyRegistry::default_for`: the registered default for a key, from the `""` subtype first, else from the object's subtype, which it asks the `ObjectSubtypes` port only when it needs to. Single gives the default, otherwise a one-element array; `None` leaves the value as it was. <Ev source="ss:crates/speedyspec-wp-meta/src/registry.rs#L81-L116" hash="87f1459143422f63f5ddf7a6c04fd749c738813d1237810ea5a43fbef3ed0068"/> All 14 recorded cases give WordPress 7.2-RC2's answer. <Ev test="speedyspec-wp-meta::recorded::defaults_match_wordpress"/>
-
-## Limits
-
-- `default_for` doesn't make `filter_default_metadata()`'s `wp_installing()` check; the phase 3 use case will. <Ev source="wp:wp-includes/meta.php#L1652-L1654" hash="f42f0fd323825be475f10211e443ca112ddcc3e4785eb8b650338bbb89e32272"/>
-- The subtypes in the recordings come from the recorder's stub of `get_post_type()`, not from real posts. <Ev source="ss:compat/meta/record.php#L40-L50" hash="15dcefe9533a32dcbf7c2c2f47c16192fd1dd0013fccea36df2804ff42359d62"/>
+Native: the `FilterDefaultMetadata` query, hooked on `default_{$meta_type}_metadata` by [register_meta()](/speedyspec/meta/register_meta/). While WordPress is installing, or when the value is already set, it returns the value. Otherwise it gathers the key's defaults across the registered subtypes, takes a `''` subtype's default without asking for the object's subtype, and asks only when it must. A registered `null` default counts, as WordPress's `array_key_exists()` does. <Ev scenario="get-registered-default" area="metadata"/> <Ev scenario="get-registered-default-thing" area="metadata"/> <Ev scenario="get-default-while-installing" area="metadata"/> <Ev test="speedyspec-wp-meta::recorded::defaults_match_wordpress"/> <Ev test="speedyspec-wp-meta::registry::null_default_is_a_default"/> <Ev test="speedyspec-wp-meta::registry::unregistered_key_never_asks_for_the_subtype"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>

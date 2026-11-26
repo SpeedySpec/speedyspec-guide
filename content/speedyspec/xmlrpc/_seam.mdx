@@ -1,7 +1,7 @@
 ---
 ---
 
-Not native yet. SpeedySpec has an XML-RPC transport in Rust (`speedyspec-xmlrpc`, `speedyspec-xmlrpc-contracts`, `speedyspec-xmlrpc-php`), but the runtime worker doesn't link it, so PHP code on SpeedySpec still gets WordPress's own `wp_xmlrpc_server` and IXR classes. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/> How the port is built is on [the architecture page](/speedyspec/architecture/xmlrpc/).
+Not native yet. SpeedySpec has an XML-RPC transport in Rust (`speedyspec-xmlrpc`, `speedyspec-xmlrpc-contracts`, `speedyspec-xmlrpc-php`), but the runtime worker doesn't link it, so PHP code on SpeedySpec still gets WordPress's own `wp_xmlrpc_server` and IXR classes. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/> How the port is built is on [the architecture page](/speedyspec/architecture/xmlrpc/).
 
 ## What the port covers
 
@@ -14,6 +14,6 @@ Of this seam's 11 classes, the port replaces one, `wp_xmlrpc_server`, with a shi
 
 ## How it is checked against WordPress
 
-The XML-RPC area has no recorded compat scenarios. WordPress's own tests from `tests/phpunit/tests/xmlrpc/` that need no database (`basic`, `client`, `message` and `demo/addTwoNumbers`), copied from the 7.1 branch, run with the pinned PHPUnit against the shim: 36 tests, data sets counted, every one run and none failing. <Ev source="ss:crates/speedyspec-xmlrpc-php/tests/wordpress.rs#L21-L25" hash="54b9185bd5178b02cbf41927ebc2b2345be5577990e7970333b1275907d42ed2"/> <Ev source="ss:crates/speedyspec-xmlrpc-php/tests/wordpress.rs#L138-L146" hash="bc181868415c57faa8c64c96b4d2e17853ea79ddc58d89873fedecf28d8aa754"/>
+The XML-RPC area has no recorded compat scenarios. WordPress's own tests from `tests/phpunit/tests/xmlrpc/` that need no database (`basic`, `client`, `message` and `demo/addTwoNumbers`), copied from the 7.1 branch, run with the pinned PHPUnit against the shim: 36 tests, data sets counted, every one run and none failing. <Ev source="ss:crates/speedyspec-xmlrpc-php/tests/wordpress.rs#L21-L25" hash="54b9185bd5178b02cbf41927ebc2b2345be5577990e7970333b1275907d42ed2"/> <Ev source="ss:crates/speedyspec-xmlrpc-php/tests/wordpress.rs#L141-L149" hash="bc181868415c57faa8c64c96b4d2e17853ea79ddc58d89873fedecf28d8aa754"/>
 
 That suite leaves out WordPress's tests of the `wp.*`, `mw.*`, `mt.*` and `blogger.*` methods, which need a database, so the port's results for those methods are not checked against WordPress.

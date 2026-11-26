@@ -1,0 +1,6 @@
+---
+symbol: "action:metadata_lazyloader_queued_objects"
+verdict: works-as-wordpress
+---
+
+Fired by the native [WP_Metadata_Lazyloader::queue_objects()](/speedyspec/meta/class/WP_Metadata_Lazyloader/queue_objects/) with the ids, the type and the loader, after the loader's callback is hooked. <Ev scenario="lazy-term" area="metadata"/> <Ev scenario="lazy-comment" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::lazy::queue_fires_metadata_lazyloader_queued_objects"/>

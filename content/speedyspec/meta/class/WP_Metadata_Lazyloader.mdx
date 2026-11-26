@@ -5,6 +5,8 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `class-wp-metadata-lazyloader.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+Native: SpeedySpec declares the class at the start of every request, with WordPress 7.2-RC2's methods and its `$settings` and `$pending_objects` properties, over a Rust `LazyLoader` per instance. It lazy-loads term, comment and blog meta. <Ev source="ss:crates/speedyspec-wp-meta-php/src/lazyloader.php#L7-L60" hash="2e86081a06318a4f381efeba9e860d336fea6838d4103370f67ac8cdcfc723d9"/> <Ev scenario="lazy-term" area="metadata"/> <Ev scenario="lazy-comment" area="metadata"/> <Ev scenario="lazy-term-wrapper-and-twice" area="metadata"/> <Ev scenario="lazy-reset-and-invalid" area="metadata"/> <Ev scenario="lazy-blog-multisite" area="metadata"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
 
-The lazy loader's Rust port is phase 3 of the posts and meta port, with the meta use cases. Each method below is WordPress's own until then.
+Queuing hooks `lazyload_meta_callback` on `get_{$type}_metadata` (priority 10, 5 arguments) before `metadata_lazyloader_queued_objects` fires. The first read of any queued object loads them all, and the read object too when it wasn't queued, in one query; then the callback is unhooked. <Ev source="ss:crates/speedyspec-wp-meta-php/tests/errors.rs#L120-L136" hash="007941a4fce5ff329ba25b4a584afa0703a5956af6567e50b61d5bcc6394568e"/> <Ev test="speedyspec-wp-meta-tests::lazy::queue_then_one_get_loads_all"/> <Ev test="speedyspec-wp-meta-tests::lazy::callback_adds_an_unqueued_object_and_skips_id_zero"/>
+
+`$pending_objects` mirrors the native queue for code that reads the property; the queue that loads is the native one. <Ev source="ss:crates/speedyspec-wp-meta-php/src/lazyloader.php#L24-L31" hash="ac94562ff518977b22154259889208723135ce431a1a7754a516e4a3885781d3"/>

@@ -3,7 +3,7 @@
 
 SpeedySpec's unified operation API: an operation is declared once, one handler is bound to it, and every transport (REST, XML-RPC, Abilities) can expose it. It has no WordPress counterpart, so it appears only in the SpeedySpec API. See [its architecture](/speedyspec/architecture/operation/).
 
-It is not in the runtime yet. The runtime worker doesn't link its crates, so its PHP facade, `wp_register_operation()`, `wp_operation_transports()` and the `SpeedySpec\Operation\*` classes, isn't declared there and has no reflected symbols. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/> <Ev source="ss:crates/speedyspec-operation-php/src/php/operation.php#L334-L347" hash="e094942ddf3565776ef0e5bd75930fd0d309463199a3b9c1e01b427a99eea53a"/>
+It is not in the runtime yet. The runtime worker doesn't link its crates, so its PHP facade, `wp_register_operation()`, `wp_operation_transports()` and the `SpeedySpec\Operation\*` classes, isn't declared there and has no reflected symbols. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/> <Ev source="ss:crates/speedyspec-operation-php/src/php/operation.php#L334-L347" hash="e094942ddf3565776ef0e5bd75930fd0d309463199a3b9c1e01b427a99eea53a"/>
 
 What the crates' own tests show:
 

@@ -1,11 +1,11 @@
 ---
 ---
 
-The Abilities API is a transport of the [unified operation API](/speedyspec/architecture/operation/): every operation is an ability by default, and `WP_Ability::execute()` runs in Rust in WordPress's hook order. None of these crates is linked into the runtime worker yet. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+The Abilities API is a transport of the [unified operation API](/speedyspec/architecture/operation/): every operation is an ability by default, and `WP_Ability::execute()` runs in Rust in WordPress's hook order. None of these crates is linked into the runtime worker yet. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
 
 ## The crates
 
-- **`speedyspec-abilities-contracts`**: `AbilityBinding`, the metadata an operation is published with as an ability (label, description, category, visibility, annotations, meta), and the ports. It depends only on the operation contracts. <Ev source="ss:crates/speedyspec-abilities-contracts/src/lib.rs#L1-L7" hash="55d4e882dd66d33ec909ba27642a8c4f94ee17f473d8cb3798511e1339b0b861"/>
+- **`speedyspec-abilities-contracts`**: `AbilityBinding`, the metadata an operation is published with as an ability (label, description, category, visibility, annotations, meta), and the ports. It depends only on the operation contracts. <Ev source="ss:crates/speedyspec-abilities-contracts/src/lib.rs#L5-L11" hash="55d4e882dd66d33ec909ba27642a8c4f94ee17f473d8cb3798511e1339b0b861"/>
 - **`speedyspec-abilities`**: `AbilitiesTransport`, installed as the `abilities` transport; `DefaultAbilityMapping`; `AbilitiesServer`, which runs `execute()`; and `OperationSteps`, an operation's steps. <Ev source="ss:crates/speedyspec-abilities/src/lib.rs#L1-L7" hash="4c6025aa01f0d23f10eda98a72bd3031abc8a2b6c2c213e01192b5d4c00060a7"/>
 - **`speedyspec-abilities-php`**: the PHP adapter. It fires WordPress's ability hooks, maps `WP_Error` to and from operation errors, declares the `WP_Ability` shim, and gives PHP `SpeedySpec\Abilities\Abilities::publish()`. <Ev source="ss:crates/speedyspec-abilities-php/src/lib.rs#L1-L11" hash="f74aa682688ebc3b22f05175913b544dadcff2257fc9e8f4baa00fd9851b4a64"/>
 

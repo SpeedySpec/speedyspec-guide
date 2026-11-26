@@ -1,0 +1,6 @@
+---
+symbol: "filter:get_{$meta_type}_metadata_by_mid"
+verdict: works-as-wordpress
+---
+
+Run by the native [get_metadata_by_mid()](/speedyspec/meta/get_metadata_by_mid/); also before the row read of `update_metadata_by_mid()` and `delete_metadata_by_mid()`. <Ev scenario="mid-short-circuit" area="metadata"/> <Ev scenario="mid-post" area="metadata"/>

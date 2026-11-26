@@ -14,7 +14,7 @@ describe('bun run guide all --offline', () => {
     await Bun.write(join(work, 'guide.config.json'), JSON.stringify({ requireAllAssigned: false, stubFiles: ['noop.php'] }));
     const p = Bun.spawnSync(['bun', join(repo, 'packages', 'cli', 'src', 'main.ts'), 'all', '--offline'], {
       cwd: work,
-      env: { ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server') },
+      env: { ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server'), GUIDE_PLATFORM_DIR: join(fixtures, 'platform') },
     });
     const out = p.stdout.toString() + p.stderr.toString();
     for (const f of ['inventory-wp', 'assignment', 'graph', 'cycles', 'compat', 'validation']) {
@@ -26,7 +26,8 @@ describe('bun run guide all --offline', () => {
     expect(graph.crossSeam).toContainEqual(expect.objectContaining({ from: 'function:update_option', to: 'function:apply_filters', fromSeam: 'options', toSeam: 'hooks' }));
     // An unported seam with a compat area of its name gets an evidence index and its compat release.
     const compat = JSON.parse(readFileSync(join(work, 'generated', 'compat.json'), 'utf8'));
-    expect(compat).toEqual({ areas: { hooks: '7.2-RC2', options: '7.1.5' } });
+    // What only the platform holds is listed, so its evidence links point there.
+    expect(compat).toEqual({ areas: { hooks: '7.2-RC2', options: '7.1.5' }, platform: { crates: ['speedyspec-shared'], compat: ['shared'] } });
     const index = JSON.parse(readFileSync(join(work, 'generated', 'evidence-index.json'), 'utf8'));
     expect(index.options['function:update_option'].scenarios).toEqual(['get_with_pre_option']);
     const validation = JSON.parse(readFileSync(join(work, 'generated', 'validation.json'), 'utf8'));
@@ -51,7 +52,7 @@ describe('the examples, reflect and runtime-history stages', () => {
     cpSync(join(fixtures, 'examples-seams', 'hooks', 'examples'), join(dir, 'seams', 'hooks', 'examples'), { recursive: true });
     return dir;
   }
-  const env = (extra: Record<string, string> = {}) => ({ ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server'), ...extra });
+  const env = (extra: Record<string, string> = {}) => ({ ...process.env, GUIDE_WORDPRESS_DIR: join(fixtures, 'php'), GUIDE_SERVER_DIR: join(fixtures, 'server'), GUIDE_PLATFORM_DIR: join(fixtures, 'platform'), ...extra });
   const guide = (dir: string, args: string[], e: Record<string, string | undefined>) => Bun.spawnSync(['bun', join(repo, 'packages', 'cli', 'src', 'main.ts'), ...args], { cwd: dir, env: e });
 
   test('offline without a runner binary, they are skipped', async () => {

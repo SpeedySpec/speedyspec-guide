@@ -5,14 +5,4 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
-
-## The Rust rule
-
-`is_protected_key` is the rule `is_protected_meta()` applies before its filter. WordPress strips the key with a pattern that has no `u` flag, so it works on bytes: bytes 0x20 to 0x7E survive, and of 0x80 to 0xFF only the Latin-1 letter bytes do. The key is protected when its first surviving byte is `_`. <Ev source="ss:crates/speedyspec-wp-meta/src/protected.rs#L5-L17" hash="a96496edb6ce5ca234b928a8f09889ecbdd2a7350379d579618bd48b31ee8819"/> All 28 recorded keys, under meta types `post` and `""`, give WordPress 7.2-RC2's answer with no filter added. <Ev test="speedyspec-wp-meta::recorded::protected_keys_match_wordpress"/>
-
-The `ProtectedMeta` port is where phase 3 applies the `is_protected_meta` filter; `UnfilteredProtection` answers with the rule alone. <Ev source="ss:crates/speedyspec-wp-meta/src/protected.rs#L19-L26" hash="8888e37ae44c2481f19e10b0b057be4cc7e47d8aab2e0a7f454b80bc56f7d329"/>
-
-## Limits
-
-The `is_protected_meta` filter isn't applied in Rust yet, so only the unfiltered answer is proven.
+Native: the `IsProtectedMeta` query. WordPress's byte rule (a key is protected when its first byte that survives `/[^\x20-\x7E\p{L}]/` is `_`), then the `is_protected_meta` filter once, whose answer is returned as it is. <Ev scenario="protected-rule" area="metadata"/> <Ev scenario="protected-filter" area="metadata"/> <Ev test="speedyspec-wp-meta::recorded::protected_keys_match_wordpress"/> <Ev test="speedyspec-wp-meta-tests::use_cases::protected_filter_overrides_rule"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/> <Ev source="ss:crates/speedyspec-wp-meta-php/tests/errors.rs#L61-L71" hash="211d93ebe8f7a29c1cdec06db9dc078fce4b5ab32f17150db11a8678b5f6bd5a"/>

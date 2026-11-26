@@ -1,11 +1,11 @@
 ---
 ---
 
-The Shortcode API is ported to Rust in speedyspec-server, but the runtime worker doesn't link these crates yet, so nothing below runs in a SpeedySpec request today. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+The Shortcode API is ported to Rust in speedyspec-server, but the runtime worker doesn't link these crates yet, so nothing below runs in a SpeedySpec request today. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
 
 ## The crates
 
-- **`speedyspec-wp-shortcode-contracts`** holds the plain values (`TagName`, `TagSet`, `ParsedAtts`, `ShortcodeMatch`), the ports and strategy traits, and WordPress's pattern strings (`get_shortcode_regex()`, `get_shortcode_atts_regex()`), which plugins and `wptexturize()` rely on byte for byte. <Ev source="ss:crates/speedyspec-wp-shortcode-contracts/src/lib.rs#L1-L9" hash="cba235c1e8863031f563c0ba944859681ea0bc195ca0002a252a318b0254e13b"/>
+- **`speedyspec-wp-shortcode-contracts`** holds the plain values (`TagName`, `TagSet`, `ParsedAtts`, `ShortcodeMatch`), the ports and strategy traits, and WordPress's pattern strings (`get_shortcode_regex()`, `get_shortcode_atts_regex()`), which plugins and `wptexturize()` rely on byte for byte. <Ev source="ss:crates/speedyspec-wp-shortcode-contracts/src/lib.rs#L5-L13" hash="cba235c1e8863031f563c0ba944859681ea0bc195ca0002a252a318b0254e13b"/>
 - **`speedyspec-wp-shortcode`** holds `ShortcodeApi`, one method per function in `shortcodes.php`, the scanners and attribute parsers, `MemoryRegistry`, `HookApiFilters`, `NoFilters` and the use-case messages. It has no PHP. <Ev source="ss:crates/speedyspec-wp-shortcode/src/api.rs#L13-L30" hash="0ab0143fba5300af0107b50b9da3eb588e8ee68c8edf9e887bfd451c84c6a26b"/>
 - **`speedyspec-wp-shortcode-php`** holds `ShortcodeArea`: the PHP functions as one-line shims over native functions, `PhpGlobalRegistry` over `$shortcode_tags`, `PhpShortcodeHandler` for PHP callables, and adapters onto `wp_html_split()`'s Rust port, the kses port and WordPress's `_doing_it_wrong()`. <Ev source="ss:crates/speedyspec-wp-shortcode-php/src/lib.rs#L1-L13" hash="30b54a35b663887df1ce94a5f858834971f5cd2e253e3479bae49dd22363f217"/>
 
@@ -13,10 +13,10 @@ The Shortcode API is ported to Rust in speedyspec-server, but the runtime worker
 
 `ShortcodeApi` works only through the ports in `ShortcodeDeps`: <Ev source="ss:crates/speedyspec-wp-shortcode/src/api.rs#L13-L23" hash="0c7ed35e1f4539f6a3cd2bf281946e94326bb5c135a3d35d58d4f40d72c2241a"/>
 
-- `ShortcodeRegistry`, which is `$shortcode_tags`. `ShortcodeTagNames` is its read-only view, the one `wpautop()`, `shortcode_unautop()` and `wptexturize()` need. <Ev source="ss:crates/speedyspec-wp-shortcode-contracts/src/ports.rs#L26-L50" hash="b2e37f52d5772b8e7ee5393500c94be2e33d6abbeacd224fdf65f8099e070d5e"/>
-- `ShortcodeHandler`, one tag's callback. <Ev source="ss:crates/speedyspec-wp-shortcode-contracts/src/ports.rs#L5-L24" hash="b98bfa0bfdb0341aff4b448aa86cb92f866df073926139f5473f161a8a32b0a1"/>
-- `ShortcodeScanner` and `AttsParser`, strategies for finding matches and parsing attributes. <Ev source="ss:crates/speedyspec-wp-shortcode-contracts/src/ports.rs#L55-L65" hash="4a3e43ac84029d2de66484f8b147767a8e21b91df0fa5f192fe2682c87675a66"/>
-- `ShortcodeFilters` (the seam's four filters and the image-context filter), `Diagnostics` (notices), `HtmlSplitter`, `KsesAttributes` and `PhpStrings` (PHP's string conversion). <Ev source="ss:crates/speedyspec-wp-shortcode-contracts/src/ports.rs#L85-L115" hash="bd4b9f7eb013d22acb3684118f279328df9da94c5a7546eb034d697320adba46"/>
+- `ShortcodeRegistry`, which is `$shortcode_tags`. `ShortcodeTagNames` is its read-only view, the one `wpautop()`, `shortcode_unautop()` and `wptexturize()` need. <Ev source="ss:crates/speedyspec-wp-shortcode-contracts/src/ports.rs#L33-L57" hash="b2e37f52d5772b8e7ee5393500c94be2e33d6abbeacd224fdf65f8099e070d5e"/>
+- `ShortcodeHandler`, one tag's callback. <Ev source="ss:crates/speedyspec-wp-shortcode-contracts/src/ports.rs#L7-L31" hash="9b3c72b84b04794deda200dad7f2e4b60a175f602a0a0d2fbd869096d9beb3b6"/>
+- `ShortcodeScanner` and `AttsParser`, strategies for finding matches and parsing attributes. <Ev source="ss:crates/speedyspec-wp-shortcode-contracts/src/ports.rs#L63-L73" hash="4a3e43ac84029d2de66484f8b147767a8e21b91df0fa5f192fe2682c87675a66"/>
+- `ShortcodeFilters` (the seam's four filters and the image-context filter), `Diagnostics` (notices), `HtmlSplitter`, `KsesAttributes` and `PhpStrings` (PHP's string conversion). <Ev source="ss:crates/speedyspec-wp-shortcode-contracts/src/ports.rs#L93-L186" hash="b26059386b5c288959d29ea6036cd8a2172dd99525a7f95a6cab6823f3a0b4e0"/>
 
 ## The use cases
 

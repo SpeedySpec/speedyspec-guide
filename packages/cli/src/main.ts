@@ -2,8 +2,8 @@
  * The guide's build: `bun run guide <stage> [--offline]`, run from the repository root.
  * Stages: extract, assign, graph, history, validate, or all of them in order.
  *
- * Inputs come from sources.json and checkouts under .cache/, or from GUIDE_WORDPRESS_GIT, GUIDE_WORDPRESS_DIR and
- * GUIDE_SERVER_DIR. Composition root.
+ * Inputs come from sources.json and checkouts under .cache/, or from GUIDE_WORDPRESS_GIT, GUIDE_WORDPRESS_DIR,
+ * GUIDE_SERVER_DIR and GUIDE_PLATFORM_DIR. Composition root.
  */
 import { CompatFilesEvidence } from '@speedyspec-guide/adapter-compat-files-evidence';
 import { ContentFiles, GuideFiles } from '@speedyspec-guide/adapter-content-files';
@@ -23,6 +23,8 @@ import { checkout } from './checkout.ts';
 interface Sources {
   wordpress: { repo: string; commit: string; version: string; path: string; tags: string };
   server: { repo: string; commit: string };
+  /** speedyspec-platform: the shared crates and compat areas speedyspec-server takes from crates.io. */
+  platform: { repo: string; commit: string };
 }
 
 class GeneratedFiles implements GeneratedStore {
@@ -59,6 +61,7 @@ async function main(argv: string[]): Promise<number> {
     env('GUIDE_WORDPRESS_DIR') ??
     new WordPressCommit(sources.wordpress, cache, givenGit ?? join(cache, 'wordpress-git'), undefined, { fetch: givenGit === undefined }).fetch(sources.wordpress.version);
   const serverDir = async () => env('GUIDE_SERVER_DIR') ?? checkout(cache, 'speedyspec-server', sources.server.repo, sources.server.commit);
+  const platformDir = async () => env('GUIDE_PLATFORM_DIR') ?? checkout(cache, 'speedyspec-platform', sources.platform.repo, sources.platform.commit);
 
   const seams = new SeamFiles(join(root, 'seams'));
   const runnerBinary = env('GUIDE_RUNNER') ?? join(root, 'runner', 'target', 'release', 'speedyspec-guide-examples');
@@ -86,14 +89,17 @@ async function main(argv: string[]): Promise<number> {
     history: new GitTagHistory(sources.wordpress.tags, join(cache, 'wordpress-tags')),
     wordpressDir,
     wordpressFile: async (rel: string) => Bun.file(join(await wordpressDir(), rel)).text(),
-    evidence: async () => new CompatFilesEvidence(await serverDir(), await wordpressDir()),
+    evidence: async () => new CompatFilesEvidence([await serverDir(), await platformDir()], await wordpressDir()),
     content: new ContentFiles(join(root, 'content')),
     guides: new GuideFiles(join(root, 'content')),
     crates: {
+      // The server's crates, then the platform's: a crate is in one of them.
       manifests: async () => {
-        const dir = join(await serverDir(), 'crates');
         const out: { path: string; text: string }[] = [];
-        for await (const file of new Bun.Glob('*/Cargo.toml').scan({ cwd: dir })) out.push({ path: file, text: await Bun.file(join(dir, file)).text() });
+        for (const root of [await serverDir(), await platformDir()]) {
+          const dir = join(root, 'crates');
+          for await (const file of new Bun.Glob('*/Cargo.toml').scan({ cwd: dir })) out.push({ path: file, text: await Bun.file(join(dir, file)).text() });
+        }
         return out;
       },
       facades: async () => {

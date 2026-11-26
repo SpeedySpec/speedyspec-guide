@@ -1,0 +1,6 @@
+---
+symbol: "action:deleted_{$meta_type}_meta"
+verdict: works-as-wordpress
+---
+
+Fired by the native [delete_metadata()](/speedyspec/meta/delete_metadata/) and [delete_metadata_by_mid()](/speedyspec/meta/delete_metadata_by_mid/) after the delete. <Ev scenario="delete-key-user" area="metadata"/> <Ev scenario="delete-by-value" area="metadata"/> <Ev scenario="mid-user" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::delete_all_clears_every_object_cache"/>

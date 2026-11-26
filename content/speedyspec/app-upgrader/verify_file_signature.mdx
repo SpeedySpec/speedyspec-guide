@@ -13,6 +13,6 @@ Every signature check recorded from WordPress 7.2-RC2 (`compat/crypto/cases.json
 
 ## Differences
 
-`signature_verification_unsupported` is never returned. On WordPress it means the server lacks sodium or sha384; the runtime refuses to start without libsodium. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/lib.rs#L13-L14" hash="1ddd9359643835ccc764343a75efb0d00056a6c0971af16516df295bce64bb78"/> <Ev source="ss:crates/speedyspec-php-runtime/src/worker.rs#L284-L291" hash="62f298ea41f256c0a614b3a13233ce88462866d1a1891e61de1d441977d7b3ce"/>
+`signature_verification_unsupported` is never returned. On WordPress it means the server lacks sodium or sha384; the runtime refuses to start without libsodium. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/lib.rs#L13-L14" hash="1ddd9359643835ccc764343a75efb0d00056a6c0971af16516df295bce64bb78"/> <Ev source="ss:crates/speedyspec-php-runtime/src/worker.rs#L285-L292" hash="62f298ea41f256c0a614b3a13233ce88462866d1a1891e61de1d441977d7b3ce"/>
 
 See the [Passwords and crypto architecture](/speedyspec/architecture/password/) page.

@@ -1,0 +1,6 @@
+---
+symbol: "filter:sanitize_{$object_type}_meta_{$meta_key}"
+verdict: works-as-wordpress
+---
+
+Run by the native [sanitize_meta()](/speedyspec/meta/sanitize_meta/), and so by every write; [register_meta()](/speedyspec/meta/register_meta/) hooks the `sanitize_callback` here. <Ev scenario="sanitize-unregistered" area="metadata"/> <Ev scenario="sanitize-registered" area="metadata"/> <Ev scenario="sanitize-filter-fixture" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::add_unslashes_sanitizes_and_serializes"/>

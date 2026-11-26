@@ -1,0 +1,6 @@
+---
+symbol: "filter:add_{$meta_type}_metadata"
+verdict: works-as-wordpress
+---
+
+Run by the native [add_metadata()](/speedyspec/meta/add_metadata/). A non-null answer is returned as it is, and nothing is written. <Ev scenario="add-short-circuit" area="metadata"/> <Ev scenario="add-unique-post" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::add_short_circuit_is_returned_as_is"/>

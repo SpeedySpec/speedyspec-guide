@@ -3,4 +3,4 @@ symbol: "method:WP_Metadata_Lazyloader::reset_queue"
 verdict: works-as-wordpress
 ---
 
-Served by WordPress's PHP, as the whole class is until phase 3.
+Empties the type's native queue and `$pending_objects`, and unhooks the callback; an unknown type is a `WP_Error`. <Ev scenario="lazy-reset-and-invalid" area="metadata"/> <Ev source="ss:crates/speedyspec-wp-meta-php/src/lazyloader.php#L90-L100" hash="776a9a6a1d7a366a46878b6fbfa60cb20d429857236d62163d688d5584604269"/>

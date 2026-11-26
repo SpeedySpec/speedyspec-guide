@@ -5,6 +5,4 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
-
-Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts.
+Native, over `$wp_meta_keys` itself: the registered keys' values for one object, read through [get_metadata()](/speedyspec/meta/get_metadata/). <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/> <Ev source="ss:crates/speedyspec-wp-meta-php/tests/errors.rs#L102-L113" hash="08503859afbac547e3e2a0f2f2818bbd0efd35ba2228995ff311f1b415aae23e"/>

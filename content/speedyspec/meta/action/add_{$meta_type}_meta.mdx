@@ -1,0 +1,6 @@
+---
+symbol: "action:add_{$meta_type}_meta"
+verdict: works-as-wordpress
+---
+
+Fired by the native [add_metadata()](/speedyspec/meta/add_metadata/) before the insert, with WordPress's arguments and in WordPress's order. <Ev scenario="add-order-of-actions" area="metadata"/> <Ev scenario="add-unique-post" area="metadata"/> <Ev scenario="add-unique-thing" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::add_fires_add_then_added_with_mid"/>

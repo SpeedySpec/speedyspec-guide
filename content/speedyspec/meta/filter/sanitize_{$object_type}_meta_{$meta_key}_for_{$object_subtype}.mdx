@@ -1,0 +1,6 @@
+---
+symbol: "filter:sanitize_{$object_type}_meta_{$meta_key}_for_{$object_subtype}"
+verdict: works-as-wordpress
+---
+
+Run by the native [sanitize_meta()](/speedyspec/meta/sanitize_meta/) in place of the subtype-less filter when the object has a subtype and this filter has callbacks. <Ev scenario="sanitize-by-subtype" area="metadata"/> <Ev scenario="sanitize-filter-fixture" area="metadata"/>

@@ -1,7 +1,7 @@
 name: "Metadata"
 job: "Adds, reads, updates and deletes the metadata of posts, comments, terms, users and sites, and registers meta keys."
-ported: false
-crates: [speedyspec-wp-meta-contracts, speedyspec-wp-meta, speedyspec-wp-meta-memory, speedyspec-wp-meta-sql]
+ported: true
+crates: [speedyspec-wp-meta-contracts, speedyspec-wp-meta, speedyspec-wp-meta-memory, speedyspec-wp-meta-sql, speedyspec-wp-meta-php, speedyspec-wp-meta-tests]
 files:
   - 'wp-includes/class-wp-metadata-lazyloader.php'
   - 'wp-includes/meta.php'
@@ -52,3 +52,171 @@ wordpress:
   - wp-includes/class-wp-navigation-fallback.php
 setup: setup.php
 mysql: true
+# The runtime's own meta API: the natives meta.php's one-line functions call, the PHP helpers beside them, and the
+# twins a PHP repository implements.
+symbols:
+  - "function:SpeedySpec\\WpMeta\\Native\\add_metadata"
+  - "function:SpeedySpec\\WpMeta\\Native\\update_metadata"
+  - "function:SpeedySpec\\WpMeta\\Native\\delete_metadata"
+  - "function:SpeedySpec\\WpMeta\\Native\\get_metadata"
+  - "function:SpeedySpec\\WpMeta\\Native\\get_metadata_raw"
+  - "function:SpeedySpec\\WpMeta\\Native\\get_metadata_default"
+  - "function:SpeedySpec\\WpMeta\\Native\\metadata_exists"
+  - "function:SpeedySpec\\WpMeta\\Native\\get_metadata_by_mid"
+  - "function:SpeedySpec\\WpMeta\\Native\\update_metadata_by_mid"
+  - "function:SpeedySpec\\WpMeta\\Native\\delete_metadata_by_mid"
+  - "function:SpeedySpec\\WpMeta\\Native\\update_meta_cache"
+  - "function:SpeedySpec\\WpMeta\\Native\\_get_meta_table"
+  - "function:SpeedySpec\\WpMeta\\Native\\is_protected_meta"
+  - "function:SpeedySpec\\WpMeta\\Native\\sanitize_meta"
+  - "function:SpeedySpec\\WpMeta\\Native\\register_meta"
+  - "function:SpeedySpec\\WpMeta\\Native\\filter_default_metadata"
+  - "function:SpeedySpec\\WpMeta\\Native\\registered_meta_key_exists"
+  - "function:SpeedySpec\\WpMeta\\Native\\unregister_meta_key"
+  - "function:SpeedySpec\\WpMeta\\Native\\get_registered_meta_keys"
+  - "function:SpeedySpec\\WpMeta\\Native\\get_registered_metadata"
+  - "function:SpeedySpec\\WpMeta\\Native\\_wp_register_meta_args_allowed_list"
+  - "function:SpeedySpec\\WpMeta\\Native\\get_object_subtype"
+  - "function:SpeedySpec\\WpMeta\\Native\\lazy_new"
+  - "function:SpeedySpec\\WpMeta\\Native\\lazy_queue"
+  - "function:SpeedySpec\\WpMeta\\Native\\lazy_reset"
+  - "function:SpeedySpec\\WpMeta\\Native\\lazy_pending"
+  - "function:SpeedySpec\\WpMeta\\Native\\lazy_load"
+  - "function:SpeedySpec\\WpMeta\\Php\\object_subtype"
+  - "function:SpeedySpec\\WpMeta\\Php\\table"
+  - "function:SpeedySpec\\WpMeta\\Php\\row"
+  - "function:SpeedySpec\\WpMeta\\Php\\keys_init"
+  - "function:SpeedySpec\\WpMeta\\Php\\keys_put"
+  - "function:SpeedySpec\\WpMeta\\Php\\keys_remove"
+  - "function:SpeedySpec\\WpMeta\\Php\\keys_get"
+  - "class:SpeedySpec\\WpMeta\\MetaRepositories"
+  - "method:SpeedySpec\\WpMeta\\MetaRepositories::for_type"
+  - "class:SpeedySpec\\WpMeta\\MetaRepository"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::add"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::by_mid"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::count_for"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::delete_by_mid"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::delete_ids"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::engine"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::for_objects"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::ids_for"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::ids_matching"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::objects_with"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::update_by_key"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::update_by_mid"
+# The state of every symbol meta.php and the lazy loader use from another seam, as the runtime serves them.
+dependencies:
+  # The lazy loader class builds WordPress's WP_Error for an unknown type.
+  class:WP_Error:
+    state: php
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/lazyloader.php#L70-L73", hash: "3f268f9fbf8a804586532ad289ee01bea8b0fde00eccf7450cc2b0a8b292f082" }
+  # Only get_meta_sql() uses it, and get_meta_sql() stays WordPress's PHP.
+  class:WP_Meta_Query:
+    state: php
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/release.rs#L9-L10", hash: "7abfe15425f59212735070a8107ed756ba290bc96c8ca900ea0a3d5a8262bb99" }
+  # The lazy loader class translates its error message with WordPress's __().
+  function:__:
+    state: php
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/lazyloader.php#L70-L73", hash: "3f268f9fbf8a804586532ad289ee01bea8b0fde00eccf7450cc2b0a8b292f082" }
+  function:_deprecated_function:
+    state: php
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/lazyloader.php#L110-L114", hash: "360034c60d4c577d19c67dd5aee819ebe0cef601e272efb62e7bb6cebaef82b9" }
+  # register_meta()'s native calls WordPress's _doing_it_wrong() and __() when they exist.
+  function:_doing_it_wrong:
+    state: php
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/native.rs#L540-L562", hash: "95f0b8b7c657e76f373e02a1b6aab0d6e2853ce19922b49680117f86b8d6c318" }
+  function:absint:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/args.rs#L113-L116", hash: "109e5397e3a7a21dc4fe6baec7bf816494e3b836fe082b196a23036e2b591846" }
+  # register_meta() adds its filters through the Rust Hook API.
+  function:add_filter:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/register.rs#L62-L76", hash: "e68679c6dc824d8080b4e3551b496df93061062ae3c27c75262f1e6d7b2ebc3f" }
+  function:apply_filters:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/api.rs#L58-L66", hash: "c771e09225e9f5f3659fcc214866493b38c7c70b70c1b58283f6dd234aaf0c06" }
+  function:do_action:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/api.rs#L68-L79", hash: "e6d12a828a447ed84abc956fe8d7ff52e8a96b1092d18dc0cf89693edae1b84e" }
+  # The ObjectSubtypes port's PHP adapter answers get_object_subtype()'s switch with WordPress's functions.
+  function:get_comment:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/meta.php#L146-L162", hash: "dbc4f9437080421b07d3b09e243d4dfc0037b72d61350f132e1bde1480dee653" }
+  function:get_post_type:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/meta.php#L146-L162", hash: "dbc4f9437080421b07d3b09e243d4dfc0037b72d61350f132e1bde1480dee653" }
+  function:get_term:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/meta.php#L146-L162", hash: "dbc4f9437080421b07d3b09e243d4dfc0037b72d61350f132e1bde1480dee653" }
+  # The adapter asks get_userdata(), which is get_user_by( 'id' ).
+  function:get_user_by:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/meta.php#L146-L162", hash: "dbc4f9437080421b07d3b09e243d4dfc0037b72d61350f132e1bde1480dee653" }
+  # The Sites port's PHP adapter, for the blog subtype.
+  function:get_site:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/adapters.rs#L141-L157", hash: "112a4eeaeb4f1f2a370486eaccc9efd8c7bc6b184225bef6eeb0e1fa5f318ff1" }
+  function:has_filter:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/register.rs#L78-L95", hash: "f44f9d8eabebb57d1936c0841ac73e9388bc53395820ed5751af23191e80cdca" }
+  function:is_multisite:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/adapters.rs#L141-L157", hash: "112a4eeaeb4f1f2a370486eaccc9efd8c7bc6b184225bef6eeb0e1fa5f318ff1" }
+  # The DefaultSchemaCheck port's PHP adapter.
+  function:is_wp_error:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/adapters.rs#L188-L208", hash: "5269178f8747161d1bff8688911295d9f931998cb4775b70692e0c6dfc3d5746" }
+  function:maybe_serialize:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/api.rs#L237-L240", hash: "dc47a86eacffc778fbdfa31131b59b5126689f5cdfca9114636e21dcc95f1d6d" }
+  function:maybe_unserialize:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/by_mid.rs#L150", hash: "75bfc389824c419c6321b3e294b4205b1f35fdded94a133f281b21f9d85cf740" }
+  # The RevisionSupport port's PHP adapter.
+  function:post_type_supports:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/adapters.rs#L159-L171", hash: "8adffc4d664438864e5d0bca7bc47743f9ff276c7077887a858da21959afe4dd" }
+  function:remove_filter:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/register.rs#L185-L195", hash: "689f0caaa21427e93130eeb5022ed8a6683c179f68fef0a767919381b116a1c2" }
+  function:rest_validate_value_from_schema:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/adapters.rs#L188-L208", hash: "5269178f8747161d1bff8688911295d9f931998cb4775b70692e0c6dfc3d5746" }
+  # MetaType names the object column itself (speedyspec-platform).
+  function:sanitize_key:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta-contracts/src/values.rs#L26-L29", hash: "d08b98295bd6c6040af028a48e7ae22b2ca9c515afe90a306e4e6334919cfcba" }
+  # The ObjectCache port, bound to the request's Rust object cache.
+  function:wp_cache_add_multiple:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/cache.rs#L206-L209", hash: "1c5bb1181a2a5968a28db69a66dd4739d46b5e319ad98478d73a40e3488b6ffe" }
+  function:wp_cache_delete:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/write.rs#L117", hash: "7460d6a5109a1b2a820d5a36dadcb6d8f36f93ee89b81aa439c595510b271a8c" }
+  function:wp_cache_delete_multiple:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/cache.rs#L145-L148", hash: "cee31cfed233e2821b33221302279905e7d2341231925104d04e231a89a636de" }
+  function:wp_cache_get:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/cache.rs#L225-L239", hash: "15d94ddb6236a34079f967de3ca346ae6591a2f5c6b9b7e31971f77b4d712694" }
+  function:wp_cache_get_multiple:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/cache.rs#L127-L129", hash: "de11ed568d2aeb2f9a2eb29a9d2e091492a52ad0225640cf545e6efaf3ed12a0" }
+  # The Installing port's PHP adapter.
+  function:wp_installing:
+    state: port
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/adapters.rs#L114-L121", hash: "70bfd9094a0d5952da004289c0b76ea787dedf7d1f59b2451ac6fba673479fa5" }
+  function:wp_is_numeric_array:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/read.rs#L212-L215", hash: "64dee4b36f5cefe5ec11f2e8fdb241c96426650c2a2f8dfcc6b78329a1a6a94c" }
+  function:wp_parse_args:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/register.rs#L178-L181", hash: "3ab456030e213c51e8f27d137af3ff0f60f169107c3dea49825dfd9c1cb0d3fd" }
+  # A copy in the meta crate until the formatting seam adopts it.
+  function:wp_unslash:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/unslash.rs#L28-L33", hash: "609d7a1781db01a2847415879aac12169f21b92b6155434e5c6c2daf502c4839" }
+  # Native wpdb, through the Wpdb port; PhpTableNames also reads a table a plugin sets as a dynamic property.
+  global:wpdb:
+    state: rust
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/lib.rs#L92-L94", hash: "35d54f9e7764994aaf2be78ac74f6263f3e87740678164382001b770afbedf47" }

@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpMeta\\Native\\_wp_register_meta_args_allowed_list"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [_wp_register_meta_args_allowed_list()](/speedyspec/meta/_wp_register_meta_args_allowed_list/) to reach the native metadata API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-meta-php/src/meta.php#L8-L11" hash="93de3b4e68a0fe11ddd2a574078fad4ffb350c066e72abfe73a11ec59d4cc57a"/>
+
+It works on `$wp_meta_keys` and the Hook API directly, as the registry functions do. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>

@@ -1,0 +1,6 @@
+---
+symbol: "filter:is_protected_meta"
+verdict: works-as-wordpress
+---
+
+Run once per call by the native [is_protected_meta()](/speedyspec/meta/is_protected_meta/), and by [register_meta()](/speedyspec/meta/register_meta/) when no `auth_callback` is given. Its answer is returned as it is. <Ev scenario="protected-filter" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::protected_filter_overrides_rule"/> <Ev test="speedyspec-wp-meta-tests::use_cases::is_protected_meta_filter_runs_once_per_path"/>

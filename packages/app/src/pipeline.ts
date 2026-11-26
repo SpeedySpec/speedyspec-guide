@@ -131,7 +131,8 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
       break;
     case 'evidence':
       await store.write('evidence-index', await evidenceIndexes(deps, store));
-      await store.write('compat', { areas: await compatAreas(deps) });
+      const evidence = await deps.evidence();
+      await store.write('compat', { areas: await compatAreas(deps), platform: (await evidence.platformPaths?.()) ?? { crates: [], compat: [] } });
       break;
     case 'validate': {
       const failures = await runRules(ALL_RULES, {

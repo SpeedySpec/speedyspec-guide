@@ -1,0 +1,6 @@
+---
+symbol: "filter:delete_{$meta_type}_metadata"
+verdict: works-as-wordpress
+---
+
+Run by the native [delete_metadata()](/speedyspec/meta/delete_metadata/). A non-null answer is returned as a boolean, and nothing is deleted. <Ev scenario="delete-short-circuit" area="metadata"/> <Ev scenario="delete-key-post" area="metadata"/>
