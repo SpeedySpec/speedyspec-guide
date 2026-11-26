@@ -1,0 +1,18 @@
+---
+symbol: "function:get_extended"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rule
+
+`extended` splits content at the first `<!--more-->` marker whose `-->` is on the same line, and returns `main`, `extended` and `more_text` (`<!--more Read on-->` gives `Read on`). Each part goes through `preg_replace( '/^[\s]*(.*)[\s]*$/', '\\1', … )`, which drops leading whitespace and, because `.*` is greedy, keeps trailing spaces. <Ev source="ss:crates/speedyspec-wp-posts/src/content.rs#L1-L32" hash="24b8c6ffcf8f6c8d69bc122324061af9090644bee7af0d6c640bf219c3af5568"/>
+
+The 10 recorded cases replay as in WordPress 7.2-RC2: no marker, a plain and a labelled marker, two markers, a marker across a newline (no split), whitespace around each part, content with newlines before the marker, trailing spaces and an empty string. <Ev test="speedyspec-wp-posts::entity::extended_matches_wordpress"/> <Ev source="ss:compat/posts-entity/record.php#L705-L717" hash="9f83e913d9c62583f15112363a9c743d274cf01391517f2ad2fa8c52b772fc0a"/>
+
+## Limits
+
+- The rule takes the content as bytes; the adapter reads `$post->post_content` when given a post, as WordPress does.

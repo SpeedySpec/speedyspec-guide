@@ -1,0 +1,24 @@
+---
+symbol: "function:wp_unique_post_slug"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+
+## The Rust rules
+
+`slug_needs_no_check` is the test before `pre_wp_unique_post_slug`: `draft`, `pending`, `auto-draft`, an `inherit` revision or a `user_request` keep their slug with no query. `unique_post_slug` is the function between its two filters. It takes the attachment, hierarchical or flat branch, runs that branch's owner query through `PostRepository`, then the `BadSlugs` port for the branch's `wp_unique_post_slug_is_bad_*_slug` filter. On a conflict it tries `<slug>-2`, `<slug>-3` and so on, each cut through `SlugTruncation` (the text seam's `wp_truncate_slug()`) so the whole stays within 200 bytes, and each checked with the same owner query. `nav_menu_item`, a hierarchical type, keeps its slug after the branch test. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L1-L8" hash="c63bf5fc48423f71102420d27eac080134afcd20800ee15d10a2cf6ad3866c4b"/> <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L194-L249" hash="20f98808921c0d516baedec80c103e1ede778a573bcdc3bda6e346eb7df89b7e"/>
+
+Each branch's conflicts are WordPress's. Attachments: an owner, a feed name or `embed`. Hierarchical types: an owner of the same type or an attachment, under the same parent, a feed name, `embed`, or a number or `<pagination_base><number>`. Flat types: an owner of the same type, a feed name, `embed`, or, for `post`, a number that would read as a date archive under the permalink structure, unless it is the post's own name, which the flat branch reads with `get_post()`. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L154-L192" hash="7ba56643545a36db37f45289c029155fa4e8075bf60ffe8a258a78d486c8eaa9"/>
+
+The 8 recorded scenarios, 40 calls, replay as in WordPress 7.2-RC2, comparing the result and the `$wpdb` statements in order: the skips (no statements), flat, hierarchical and attachment owners, feeds and `embed`, owners named `""` and `"0"` (false in PHP, so no suffix), a trailing dash, 200-byte slugs with suffixes up to `-10`, and the date-archive numbers under `/%postname%/`, `/%year%/%postname%/` and `/%year%/%monthnum%/%postname%/`, `"5\n"` among them. <Ev test="speedyspec-wp-posts::entity::slug_scenarios_match_wordpress"/> <Ev source="ss:compat/posts-entity/record.php#L545-L629" hash="9b6a3f6ae326195580a71bc43b78324a605532e56a4455ddbbead57c6ec8ec2a"/>
+
+## Limits
+
+- Recorded from WordPress 7.2-RC2 behind the recorder's stub `$wpdb`, which answers only the statements `PostRepository` mirrors and compares strings byte for byte. MySQL's `_ci` collations ignore case and trailing spaces, so rows that differ only so are not proven; the SQL repository (phase 4) decides. <Ev source="ss:compat/posts-entity/record.php#L133-L137" hash="582625381c482b18c1cd564398a320d093d272f1212981bd5dec09dfd0828f01"/>
+- The filters are phase 4's: `pre_wp_unique_post_slug` and `wp_unique_post_slug` around the rule, and the three `wp_unique_post_slug_is_bad_*_slug` filters through `BadSlugs`. The recordings run with no callback (`NoBadSlugs`).
+- A pagination base with PCRE metacharacters or `@` is matched literally. WordPress puts it into the pattern unescaped, so there it acts as a pattern, or, with `@`, makes `preg_match()` warn and fail. This port diverges for such bases; the default `page` is the same. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L144-L152" hash="ec5b1c9c7f990ad544f5cb121e042846a308ffce69276f341c7d2596832e4366"/>
+- `get_post()` given 0 or null falls back to the global `$post` in WordPress; `Uncached` answers none, and phase 5 decides where that fallback lives. In the flat branch that changes the date-archive test for a new post.
+- The suffix loop has no upper bound, as in WordPress.
