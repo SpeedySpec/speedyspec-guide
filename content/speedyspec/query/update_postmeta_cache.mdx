@@ -1,0 +1,18 @@
+---
+symbol: "function:update_postmeta_cache"
+verdict: works-with-differences
+differences:
+  - summary: "Through the native meta functions, `update_meta_cache()`'s statement selects `meta_id` too, so a `query` filter sees `SELECT meta_id, post_id, meta_key, meta_value …` where WordPress sends `SELECT post_id, meta_key, meta_value …`. The rows, the cache and the query count are the same."
+---
+
+## Behaviour
+
+Native: `post.php`'s `update_postmeta_cache()` is a line of PHP over `SpeedySpec\WpPosts\Native\update_postmeta_cache`, which dispatches the `UpdatePostmetaCache` message to the handler bound at `SpeedySpec\WpPosts\UpdatePostmetaCacheHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L155-L158" hash="aa32ca18228f8f195e11d98f33c00fbd77475f20817ebccda5082f54f98eb7ca"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/cache.rs#L410-L411" hash="39ab9ab9db2edc8da8a4791e014c4e378a9b74f593b30825e0b53898a73f0b34"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L856-L880" hash="0d572825626ad9582abc9532c74f6ab8b0ecbc40e967280545afaf00a949db20"/>
+
+It is the native `update_meta_cache( 'post', $post_ids )`, through the metadata API's `update_cache`. Its ids are read as `update_meta_cache()` reads them: a list through `intval`, or a string with everything but digits and commas removed. <Ev scenario="cache-prime-with-meta" area="posts-read"/> <Ev scenario="cache-prime-statement" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+WordPress's own `Tests_Post_PrimePostParentIdCaches` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+
+## Differences
+
+- **The meta statement.** This function reads post meta through the native meta functions, whose `update_meta_cache()` statement selects `meta_id` too (`SELECT meta_id, post_id, meta_key, meta_value …`, where WordPress sends `SELECT post_id, meta_key, meta_value …`), because the meta entity carries its id. A plugin that matches the exact text in a `query` filter misses it; the rows, the cache and the query count are WordPress's. It is the meta seam's documented difference, recorded here as a break on the scenarios that watch the statement. <Ev break="cache-prime-statement" step="1" area="posts-read"/> <Ev break="count-readable-statement" step="1" area="posts-read"/> <Ev source="ss:compat/posts-read/breaks.json#L1-L14" hash="c5f076b4794a20681d8b985e4d9fb2e12e1bda0c5f3b95a2ba59b4e080731c8d"/> See [update_meta_cache()](/speedyspec/meta/update_meta_cache/).

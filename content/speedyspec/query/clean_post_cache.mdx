@@ -1,0 +1,18 @@
+---
+symbol: "function:clean_post_cache"
+verdict: works-with-differences
+differences:
+  - summary: "An object a hook callback receives (a `WP_Post`, a `stdClass`) is a copy with the same class and properties, not the object WordPress would pass, so keeping it and changing it later changes nothing."
+---
+
+## Behaviour
+
+Native: `post.php`'s `clean_post_cache()` is a line of PHP over `SpeedySpec\WpPosts\Native\clean_post_cache`, which dispatches the `CleanPostCache` message to the handler bound at `SpeedySpec\WpPosts\CleanPostCacheHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L140-L143" hash="ab0154182c62d32bb03957ad722ca5f4420d507378ad86ccff7cbdcf86b30aae"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/cache.rs#L168-L173" hash="ca06b2427331750c842ebc54292eef0cc77aeaaa09254b4f0b0d4451d0d6e1f2"/>
+
+Unless `$_wp_suspend_cache_invalidation` is set, it reads the post, deletes its `posts` entry and its `post_meta`, cleans its terms through the `Taxonomy` port, deletes `wp_get_attachment_image_src`, fires `clean_post_cache` with `( $post->ID, $post )`, then for a page deletes `all_page_ids` and fires `clean_page_cache`, and finally bumps the `posts` group's `last_changed`, in WordPress's order. <Ev scenario="cache-clean-post" area="posts-read"/> <Ev scenario="cache-clean-page" area="posts-read"/> <Ev scenario="cache-clean-object" area="posts-read"/> <Ev scenario="cache-clean-missing" area="posts-read"/> <Ev scenario="cache-clean-suspended" area="posts-read"/> <Ev scenario="cache-clean-terms" area="posts-read"/> <Ev scenario="ms-cache-switch" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev test="speedyspec-wp-posts-tests::read::clean_post_cache_fires_actions_and_bumps_last_changed"/>
+
+WordPress's own `Tests_Post_PrimePostParentIdCaches` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+
+## Differences
+
+- **Objects in hook arguments are copies.** The use cases carry PHP values, and `PhpValueHooks` makes them PHP values on the way into a hook, so a callback gets an equal object of the same class, not the one WordPress would hand it. An object a callback returns crosses back as it is (a `stdClass` as an equal copy). Meta has the same limit. <Ev source="ss:crates/speedyspec-wp-posts-php/src/hooks.rs#L1-L12" hash="7b8ef1e169180452a8fca24ae7ada72bff898f2dbf6d0efc07fc98d66d328069"/> <Ev test="speedyspec-wp-posts-php::errors::main"/>

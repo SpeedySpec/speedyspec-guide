@@ -1,0 +1,12 @@
+---
+symbol: "function:_count_posts_cache_key"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `_count_posts_cache_key()` is a line of PHP over `SpeedySpec\WpPosts\Native\_count_posts_cache_key`, which dispatches the `CountPostsCacheKey` message to the handler bound at `SpeedySpec\WpPosts\CountPostsCacheKeyHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L55-L58" hash="50fd0047914070559062a6eb614fb86e5866bbbdc336135dd02f717de96a66e6"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/counts.rs#L98-L100" hash="18dcf3490e2b1789bf21ab5d4dd60459fa278350938b8b084a616de72fafb763"/>
+
+It answers `posts-{$type}`, plus `_readable_{$user_id}` when `$perm` is `readable`, someone is logged in, and they can't read the type's private posts, asking the `Users` port for each. <Ev scenario="count-readable-logged-out" area="posts-read"/> <Ev scenario="count-readable-author" area="posts-read"/> <Ev scenario="count-readable-admin" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+WordPress's own `Tests_Post_Types` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>

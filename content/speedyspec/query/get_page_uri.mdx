@@ -1,11 +1,21 @@
 ---
 symbol: "function:get_page_uri"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "An object a hook callback receives (a `WP_Post`, a `stdClass`) is a copy with the same class and properties, not the object WordPress would pass, so keeping it and changing it later changes nothing."
 ---
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Native: `post.php`'s `get_page_uri()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_page_uri`, which dispatches the `GetPageUri` message to the handler bound at `SpeedySpec\WpPosts\GetPageUriHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L115-L118" hash="862d1aa5a8699ff8cf6a41321eb35f748f68fb4c15c8dd8d97721f027a1e19f5"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/pages.rs#L235-L237" hash="d4408ab44b7caf5e851b3ed4055f5fe1f6d1a757f8dd8296e73705621c4f55a2"/>
+
+It reads the page with `get_post()` (false when there is none), builds the path of ancestor names with phase 2's `page_uri` rule over the cached reads, and runs the `get_page_uri` filter with `( $uri, $page )`. <Ev scenario="page-uri-nested" area="posts-read"/> <Ev scenario="page-uri-encoded" area="posts-read"/> <Ev scenario="page-uri-loop" area="posts-read"/> <Ev scenario="page-uri-missing" area="posts-read"/> <Ev scenario="page-uri-empty-name" area="posts-read"/> <Ev scenario="page-uri-object" area="posts-read"/> <Ev scenario="page-uri-global" area="posts-read"/> <Ev scenario="page-uri-filter" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+WordPress's own `Tests_Post_GetPageUri` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+
+## Differences
+
+- **Objects in hook arguments are copies.** The use cases carry PHP values, and `PhpValueHooks` makes them PHP values on the way into a hook, so a callback gets an equal object of the same class, not the one WordPress would hand it. An object a callback returns crosses back as it is (a `stdClass` as an equal copy). Meta has the same limit. <Ev source="ss:crates/speedyspec-wp-posts-php/src/hooks.rs#L1-L12" hash="7b8ef1e169180452a8fca24ae7ada72bff898f2dbf6d0efc07fc98d66d328069"/> <Ev test="speedyspec-wp-posts-php::errors::main"/>
 
 ## The Rust rule
 
@@ -15,7 +25,4 @@ The 4 recorded calls replay as in WordPress 7.2-RC2, comparing the URI and every
 
 ## Limits
 
-- The `get_page_uri` filter is phase 4's.
-- The rule takes the page; the adapter reads the argument with `get_post()` and answers false when there is none.
-- `Uncached` reads every post through `find`, as WordPress does with no object cache; phase 4's reader reads the `posts` cache group first. <Ev source="ss:crates/speedyspec-wp-posts/src/reader.rs#L5-L19" hash="09da15425c05c61578f330c352c0763b5ac7394e30c22dffec7fbfac1012ace4"/>
-- Recorded from WordPress 7.2-RC2 behind the recorder's stub `$wpdb`, which answers only the statements `PostRepository` mirrors and compares strings byte for byte. MySQL's `_ci` collations ignore case and trailing spaces, so rows that differ only so are not proven; the SQL repository (phase 4) decides. <Ev source="ss:compat/posts-entity/record.php#L133-L137" hash="582625381c482b18c1cd564398a320d093d272f1212981bd5dec09dfd0828f01"/>
+- **Not run:** WordPress's `test_get_page_uri_without_argument` is left out of the PHPUnit runs, because `go_to()` needs WordPress's whole request (`WP::main()` and the template loader), which isn't loaded. Untested, not different. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/wordpress.rs#L101-L166" hash="a72cd183bb0db176632c0d6eb538a55596678397fb6692875c10c885385f3601"/>

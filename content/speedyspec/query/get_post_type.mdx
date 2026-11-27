@@ -1,0 +1,12 @@
+---
+symbol: "function:get_post_type"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `get_post_type()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_post_type`, which dispatches the `GetPostType` message to the handler bound at `SpeedySpec\WpPosts\GetPostTypeHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L50-L53" hash="f0d97f3b792ba512bbdea504df9016b6edc9c56ad137271ddcda18127553f4f3"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/get.rs#L451-L452" hash="ca2380a2d912a5c2b434512c6bd5d72e12613a2136384fb6e1964b6672f2e60e"/>
+
+It reads the post and answers its `post_type`, or false when there is none. <Ev scenario="type-each" area="posts-read"/> <Ev scenario="type-global" area="posts-read"/> <Ev scenario="type-object" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+WordPress's own `Tests_Post_Types` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>

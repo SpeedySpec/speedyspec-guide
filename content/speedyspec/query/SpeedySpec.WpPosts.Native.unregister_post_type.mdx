@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\unregister_post_type"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [unregister_post_type()](/speedyspec/query/unregister_post_type/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L54-L57" hash="d135826de1f4001fb69e01581ead4de2474c64b2d52c4079caffd620c0eba485"/>
+
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L408-L455" hash="340ebc1ed971a244591a9ee134d68a5dfd20330cd088719f4b4b680578910239"/> <Ev scenario="types-unregister" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

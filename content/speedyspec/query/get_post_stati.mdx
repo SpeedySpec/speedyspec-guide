@@ -5,7 +5,13 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Native: `post.php`'s `get_post_stati()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_post_stati`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L24-L27" hash="423a99398b16011460a984457ffd2a5538c00fd345a84e63351f3ab41a9a43ce"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L656-L658" hash="2161d233a85208b7fae4935733e5bfa8b485d5a014fbc5a09bf1e9d1aea075e5"/>
+
+It filters the live `$wp_post_statuses` with phase 2's list rule. <Ev scenario="statuses-core" area="posts-read"/> <Ev scenario="statuses-object" area="posts-read"/> <Ev scenario="statuses-register" area="posts-read"/> <Ev scenario="statuses-mutated-after-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+
+The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
+
+WordPress's own `Tests_Post_Types` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rules
 

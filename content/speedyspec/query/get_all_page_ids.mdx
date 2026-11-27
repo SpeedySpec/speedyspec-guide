@@ -1,0 +1,16 @@
+---
+symbol: "function:get_all_page_ids"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `get_all_page_ids()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_all_page_ids`, which dispatches the `GetAllPageIds` message to the handler bound at `SpeedySpec\WpPosts\GetAllPageIdsHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L85-L88" hash="02b15bee29b253f623fe49bf3cd49c7a31c25612963ee551a59c880137e93483"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/pages.rs#L104-L107" hash="b51605ee573e405629f496967cbf2bc09256f1446e9480a169ecb0f1d3ebd7e3"/> <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L464" hash="6e30ad284e2d9423a291fce52d0681ed54edb8806350b773623b47a7fa98892c"/>
+
+It answers the `posts` group's `all_page_ids` entry when it is an array, else `SELECT ID FROM wp_posts WHERE post_type = 'page'`, as `$wpdb->get_col()` returns it (decimal strings), added to the cache with `wp_cache_add()`. <Ev scenario="all-page-ids-read" area="posts-read"/> <Ev scenario="all-page-ids-clean" area="posts-read"/> <Ev scenario="all-page-ids-not-an-array" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+WordPress's own `Tests_Post_Objects` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+
+## Known breaks and open cases
+
+- **Row order.** The statement has no `ORDER BY`, as in WordPress, so its rows come in the engine's order. The replay matches on MySQL 9.6; the run on CI's MySQL 8.4 is still to come (the server's CI last ran before the post functions were wired). If the order differs there, it becomes a documented break with its reason. <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L1-L15" hash="02cf4d46a7902a0e90e131e8bd763989cf66225c4a7982286bc643a1e7d3ba3c"/>

@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_post_type_labels"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_post_type_labels()](/speedyspec/query/get_post_type_labels/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L64-L67" hash="cc7f95ae0d6ae183e2caaca76cb58720a31883bc6a97c729700b96daf97c626a"/>
+
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L840-L859" hash="f18827b8d8b11c60d73870305f1d199eaafa4f882362381e957034256f1027fb"/> <Ev scenario="types-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-tests::filters::a_labels_filter_changes_a_label_and_keeps_the_defaults"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

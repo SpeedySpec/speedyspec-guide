@@ -1,0 +1,18 @@
+---
+symbol: "function:_prime_post_parent_id_caches"
+verdict: works-with-differences
+differences:
+  - summary: "A negative id, which WordPress's `_validate_cache_id()` accepts, is dropped before the statement, so `IN (…)` leaves it out. No row has a negative id, so the answer is the same. The Rust contract takes `&[PostId]`, which can hold neither `-1` nor `\"x\"`."
+---
+
+## Behaviour
+
+Native: `post.php`'s `_prime_post_parent_id_caches()` is a line of PHP over `SpeedySpec\WpPosts\Native\_prime_post_parent_id_caches`, which dispatches the `PrimePostParentIdCaches` message to the handler bound at `SpeedySpec\WpPosts\PrimePostParentIdCachesHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L170-L173" hash="1e08bfc31cd2cc4b3c085dbcc0f79e5f9c40f607962ab4ed82b63c398db80a38"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/cache.rs#L419-L427" hash="9dca600433e009634e879690bc7a63621ddc21e909558d1f1839e6c257d15d01"/> <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L406" hash="2d54647da046453885f03cadcf1356843171b8b09c24dbc5025d31009ef68472"/>
+
+It reads the parents of the ids not in the `post_parent` group in one `SELECT ID, post_parent … WHERE ID IN (…)` and caches each as an int under `post_parent:{$id}`. <Ev scenario="cache-prime-parent-ids" area="posts-read"/> <Ev scenario="cache-clean-post" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+WordPress's own `Tests_Post_PrimePostParentIdCaches` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+
+## Differences
+
+- **Typed ids.** The use case takes `&[PostId]`, which can hold neither WordPress's `-1` nor `"x"`. The PHP function runs WordPress's own `_validate_cache_id()` first, which drops `"x"` with `_doing_it_wrong()` as in WordPress, then also drops a negative id, which WordPress keeps: its `IN (…)` statement holds `-1`, and SpeedySpec's leaves it out. No row has a negative id, so the rows and the cache are the same; only the statement a `query` filter sees differs. The recorded `cache-prime-parent-ids` scenario passes `"x"` and `-1` and replays exactly. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L893-L906" hash="f1b45a5ee917a39d09b9342c54e6792b4d6567d360771e5552674ac9e70a7b50"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/cache.rs#L218-L228" hash="10663d285c1cccd689c288ae395e0c10580da9a463f26d2516eebe560810f63a"/> <Ev scenario="cache-prime-parent-ids" area="posts-read"/>

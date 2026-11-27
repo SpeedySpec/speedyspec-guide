@@ -1,0 +1,12 @@
+---
+symbol: "function:sanitize_post"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `sanitize_post()` is a line of PHP over `SpeedySpec\WpPosts\Native\sanitize_post`, which dispatches the `SanitizePost` message to the handler bound at `SpeedySpec\WpPosts\SanitizePostHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L15-L18" hash="61e09a0ad2e4b1b961893caa7d2b12ef9b1af448e0ed026416ab8117c18d835a"/> <Ev source="ss:crates/speedyspec-wp-posts/src/sanitize.rs#L283-L288" hash="59b9e774f22a75ec0d2682782ede89d0e3a1716979891e11970c31f820095cd5"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L758-L776" hash="aa625354c7d39bb7ec0f4e3069f56962d45eea91c5bbc34273289fcd4cfad4ae"/>
+
+It runs `sanitize_post_field()` on each property for `$context`, skipping an object already in that context, and sets `filter`. An object is sanitized in place, as WordPress does through the object's handle; an array is answered; a scalar comes back as it is. <Ev scenario="sanitize-post-raw" area="posts-read"/> <Ev scenario="sanitize-post-edit" area="posts-read"/> <Ev scenario="sanitize-post-db" area="posts-read"/> <Ev scenario="sanitize-post-display" area="posts-read"/> <Ev scenario="sanitize-post-attribute" area="posts-read"/> <Ev scenario="sanitize-post-js" area="posts-read"/> <Ev scenario="sanitize-post-unknown" area="posts-read"/> <Ev scenario="sanitize-post-default-context" area="posts-read"/> <Ev scenario="sanitize-post-same-filter" area="posts-read"/> <Ev scenario="sanitize-post-no-id" area="posts-read"/> <Ev scenario="sanitize-post-scalar" area="posts-read"/> <Ev scenario="sanitize-post-wp-post" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev test="speedyspec-wp-posts-tests::sanitize::sanitize_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts-tests::sanitize::properties_sanitize_once_per_context"/>
+
+WordPress's own `Tests_Post_Filtering` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>

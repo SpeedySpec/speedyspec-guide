@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\forget_post_type"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It removes a post type from `$wp_post_types` by the caller's key. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L189-L196" hash="5bafdcc98767ccbc58b55248438e60a577a8c57afc18cdac47af434bc53fdde2"/> <Ev scenario="types-unregister" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

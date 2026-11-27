@@ -1,0 +1,12 @@
+---
+symbol: "function:get_post_mime_type"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `get_post_mime_type()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_post_mime_type`, which dispatches the `GetPostMimeType` message to the handler bound at `SpeedySpec\WpPosts\GetPostMimeTypeHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L40-L43" hash="d4bdb9af8ebcbe7e6f62e1de1bef6219c5611c4f466c7515cd3bf96546fd3f9e"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/get.rs#L385-L386" hash="dffb3e43d796a451f92836f6cc7f2e31df2ff092e92f7d088e8d2d8264ae6023"/>
+
+It reads the post and answers its `post_mime_type`, or false when there is none. <Ev scenario="mime-each" area="posts-read"/> <Ev scenario="mime-global" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+WordPress's own `Tests_Post_Objects` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>

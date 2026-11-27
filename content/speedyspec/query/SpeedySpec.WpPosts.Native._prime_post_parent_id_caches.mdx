@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\_prime_post_parent_id_caches"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [_prime_post_parent_id_caches()](/speedyspec/query/_prime_post_parent_id_caches/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L170-L173" hash="1e08bfc31cd2cc4b3c085dbcc0f79e5f9c40f607962ab4ed82b63c398db80a38"/>
+
+It sends the `PrimePostParentIdCaches` message through the handler bound under `SpeedySpec\WpPosts\PrimePostParentIdCachesHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L922-L926" hash="7ca989defa33820ba9a2ea17dca6bb546556d0f2f8619b8079e28e085604a22b"/> <Ev scenario="cache-prime-parent-ids" area="posts-read"/> <Ev scenario="cache-clean-post" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

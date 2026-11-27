@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_post_mime_type"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_post_mime_type()](/speedyspec/query/get_post_mime_type/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L40-L43" hash="d4bdb9af8ebcbe7e6f62e1de1bef6219c5611c4f466c7515cd3bf96546fd3f9e"/>
+
+It sends the `GetPostMimeType` message through the handler bound under `SpeedySpec\WpPosts\GetPostMimeTypeHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L464-L472" hash="096b03844168703c54aad8dd7acdcbd3cd61c274056f804100f6cdad9fc3e47b"/> <Ev scenario="mime-each" area="posts-read"/> <Ev scenario="mime-global" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

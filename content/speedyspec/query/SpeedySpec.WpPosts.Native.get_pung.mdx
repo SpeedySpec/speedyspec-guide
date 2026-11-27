@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_pung"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_pung()](/speedyspec/query/get_pung/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L75-L78" hash="52da9740326deb469a3d5029c6fe8f22392a5a63d730a0d0949e7a10b8536bd1"/>
+
+It sends the `GetPung` message through the handler bound under `SpeedySpec\WpPosts\GetPungHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L933-L939" hash="ed20ec8bf48ecdc0150417327eccb557626c6669a433e9eefa2fd715568c1454"/>  <Ev test="speedyspec-wp-posts-php::compat::main"/>

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\error"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It makes the `WP_Error` a registry function returns. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L124-L130" hash="92af4d2f11d11fe49a3e4a22b7080abb03fa448d74dc3ac7937a0853ed9c4b31"/> <Ev scenario="types-register-invalid" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

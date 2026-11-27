@@ -1,0 +1,22 @@
+---
+symbol: "function:wp_count_attachments"
+verdict: works-with-differences
+differences:
+  - summary: "An object a hook callback receives (a `WP_Post`, a `stdClass`) is a copy with the same class and properties, not the object WordPress would pass, so keeping it and changing it later changes nothing."
+---
+
+## Behaviour
+
+Native: `post.php`'s `wp_count_attachments()` is a line of PHP over `SpeedySpec\WpPosts\Native\wp_count_attachments`, which dispatches the `WpCountAttachments` message to the handler bound at `SpeedySpec\WpPosts\WpCountAttachmentsHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L65-L68" hash="0252575e2e970b2de4af55ec948afefb0bdf7d1cd1448351cd4053a697c6f8b3"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/counts.rs#L182-L190" hash="32eb7a809de7474683309fe231748dd57bf42cce1fe937aa150156d5cbe3b940"/> <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L515" hash="61967887d798f67138597c82d1401247a89c45597b176f1c706cbaecad8c4742"/>
+
+It follows WordPress: a `stdClass` from `pre_wp_count_attachments`, with `trash` set to 0 when missing; else the `counts` entry `attachments` (plus `:` and the mime types joined with `-`, `/` as `_`); else one statement grouped by `post_mime_type` with `wp_post_mime_type_where()`'s clause, then `trash`, counts as numeric strings, cached. Then the `wp_count_attachments` filter with `( (object) $counts, $mime_type )`. A string and an array `$mime_type` stay different, as in PHP: they parse and key differently. <Ev scenario="count-attachments-all" area="posts-read"/> <Ev scenario="count-attachments-mime" area="posts-read"/> <Ev scenario="count-attachments-statement" area="posts-read"/> <Ev scenario="count-attachments-filter" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+WordPress's own `Tests_Post_wpCountAttachments` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+
+## Differences
+
+- **Objects in hook arguments are copies.** The use cases carry PHP values, and `PhpValueHooks` makes them PHP values on the way into a hook, so a callback gets an equal object of the same class, not the one WordPress would hand it. An object a callback returns crosses back as it is (a `stdClass` as an equal copy). Meta has the same limit. <Ev source="ss:crates/speedyspec-wp-posts-php/src/hooks.rs#L1-L12" hash="7b8ef1e169180452a8fca24ae7ada72bff898f2dbf6d0efc07fc98d66d328069"/> <Ev test="speedyspec-wp-posts-php::errors::main"/>
+
+## Known breaks and open cases
+
+- **Row order.** The statement has no `ORDER BY`, as in WordPress, so its rows come in the engine's order. The replay matches on MySQL 9.6; the run on CI's MySQL 8.4 is still to come (the server's CI last ran before the post functions were wired). If the order differs there, it becomes a documented break with its reason. <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L1-L15" hash="02cf4d46a7902a0e90e131e8bd763989cf66225c4a7982286bc643a1e7d3ba3c"/>

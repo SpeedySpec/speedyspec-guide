@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\statuses_init"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It makes `$wp_post_statuses` an array, as `register_post_status()` does first. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L144-L154" hash="d09ba5baf32aa4d5a0c09bf0a4fc111f3bf3b292f710cbc157225a96f1e9067a"/> <Ev scenario="statuses-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

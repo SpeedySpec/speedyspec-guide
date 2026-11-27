@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\post"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It makes the `WP_Post` a post read by id returns, `new WP_Post( $entry )`, as `WP_Post::get_instance()` does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L192-L198" hash="b41cfcdbcb1087cbd58e5c70e013648367edc2582db7eefb558fd03e4e879680"/> <Ev scenario="get-by-id" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

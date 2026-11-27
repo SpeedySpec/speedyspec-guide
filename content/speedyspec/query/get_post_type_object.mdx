@@ -5,15 +5,20 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Native: `post.php`'s `get_post_type_object()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_post_type_object`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L39-L42" hash="1d68e3a800469f1f1973718106ba0ce023b9c4842870a2d2a3d70becf8a949b1"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L467-L469" hash="d8e8b1a6d99b79734c9614143115055be4756ddb272ff4df607d1d07fd0028b0"/>
+
+It answers the object stored in the live `$wp_post_types`, so `===` holds against the global. <Ev scenario="types-object" area="posts-read"/> <Ev scenario="types-register" area="posts-read"/> <Ev scenario="types-capabilities" area="posts-read"/> <Ev scenario="types-mutated-after-register" area="posts-read"/> <Ev scenario="types-global-replaced" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+
+The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
+
+WordPress's own `Tests_Post_Types` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rule
 
-`PostTypes::post_type` is the lookup: one registered post type, as an owned `PostType` whose properties are the object's `get_object_vars()`, in order. `PostTypeRegistry` answers it from memory; phase 4's adapter reads `$wp_post_types` live. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L103-L109" hash="c1960a37a7fc775ee14b766a1f30198cb356e6e115af07b588eb082cd54b7c45"/> <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/values.rs#L215-L221" hash="933246bb03fd9df9d5e260fbeddaeeac4ad6d9546a90914d34dbdbed12b2a085"/>
+`PostTypes::post_type` is the lookup: one registered post type, as an owned `PostType` whose properties are the object's `get_object_vars()`, in order. `PostTypeRegistry` answers it from memory; phase 4's adapter reads `$wp_post_types` live. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L278-L284" hash="c1960a37a7fc775ee14b766a1f30198cb356e6e115af07b588eb082cd54b7c45"/> <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/values.rs#L215-L221" hash="933246bb03fd9df9d5e260fbeddaeeac4ad6d9546a90914d34dbdbed12b2a085"/>
 
 No recording calls `get_post_type_object()` itself. Every post type scenario compares the whole `$wp_post_types` it reads from, object by object and property by property. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts-contracts::values::post_type_to_php_is_a_wp_post_type_object"/>
 
 ## Limits
 
 - Recorded from WordPress 7.2-RC2 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
-- The `! is_scalar()` check on the name is the adapter's: the port takes a UTF-8 name.

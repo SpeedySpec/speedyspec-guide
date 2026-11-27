@@ -5,7 +5,11 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Native: `post.php`'s `get_page_hierarchy()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_page_hierarchy`, which dispatches the `GetPageHierarchy` message to the handler bound at `SpeedySpec\WpPosts\GetPageHierarchyHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L105-L108" hash="b0b23713c3df3caa6fb9d52e595d5036f4f10c440818ed27cc922f4b8ce7d66a"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L625-L646" hash="c0b64a9d56728f731380557dbb9af0df379282de971b3a97da3a0cd7a2007fb8"/>
+
+It reads each page's `ID`, `post_parent` (`(int)`) and `post_name` from the list it is given, objects or `stdClass`, and answers phase 2's `page_hierarchy` rule: id to name, parents before their children. <Ev scenario="page-hierarchy-tree" area="posts-read"/> <Ev scenario="page-hierarchy-orphans" area="posts-read"/> <Ev scenario="page-hierarchy-empty" area="posts-read"/> <Ev scenario="page-hierarchy-stdclass" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+WordPress's own `Tests_Post_GetPageChildren` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rule
 
@@ -16,4 +20,3 @@ The 8 recorded calls over four lists (a tree given out of order, orphans, a repe
 ## Limits
 
 - Over a list with a cycle reachable from the start, PHP never ends: `_page_traverse_name()` recurses until it runs out of stack. The rule stops at the first revisit: a page already on the path from the start is listed but not descended into. No recording can cover that case. <Ev source="ss:crates/speedyspec-wp-posts/src/pages.rs#L1-L7" hash="dd1882ecd0e8a7351d700af6109b877be3813d96457fd5c53315f877b2b8b9e5"/>
-- The rule takes posts; the adapter converts the `WP_Post` list, whose `post_parent` WordPress casts with `(int)`.

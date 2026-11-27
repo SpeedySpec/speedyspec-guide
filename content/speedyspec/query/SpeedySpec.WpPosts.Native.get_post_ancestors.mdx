@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_post_ancestors"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_post_ancestors()](/speedyspec/query/get_post_ancestors/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L30-L33" hash="a68b308571a94933c5cdda5845cd55c656c633e67e36ccd18227276c28ef57d9"/>
+
+It sends the `GetPostAncestors` message through the handler bound under `SpeedySpec\WpPosts\GetPostAncestorsHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L519-L524" hash="0a6b4c8acc2fb70c2b5177c995f2c1feab45c74d5bec607b9822158a70ede471"/> <Ev scenario="ancestors-nested" area="posts-read"/> <Ev scenario="ancestors-loop" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

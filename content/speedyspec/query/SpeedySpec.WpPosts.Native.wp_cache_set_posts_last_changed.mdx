@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\wp_cache_set_posts_last_changed"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [wp_cache_set_posts_last_changed()](/speedyspec/query/wp_cache_set_posts_last_changed/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L175-L178" hash="3d9b21b3a4af209aa9dabd877623420de60bf2c6e450b510564ce03fa427571d"/>
+
+It sends the `WpCacheSetPostsLastChanged` message through the handler bound under `SpeedySpec\WpPosts\WpCacheSetPostsLastChangedHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L928-L931" hash="e196ef7c29c37e1fbe6e42356c6eb99ea82dfc7756550ab729837088a46af504"/> <Ev scenario="page-path-cache" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

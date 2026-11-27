@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\_prime_post_caches"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [_prime_post_caches()](/speedyspec/query/_prime_post_caches/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L165-L168" hash="1bd066927bcc1d75dd45b33fdb2fae06456c46c0eeb8e4b7d7816570446092c1"/>
+
+It sends the `PrimePostCachesGiven` message through the handler bound under `SpeedySpec\WpPosts\PrimePostCachesGivenHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L908-L920" hash="c111a9dde4be1132617cfe697231eafe491756eb43dfbcc93b74fd68887ec7e2"/> <Ev scenario="cache-prime-with-meta" area="posts-read"/> <Ev scenario="cache-prime-without-meta" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

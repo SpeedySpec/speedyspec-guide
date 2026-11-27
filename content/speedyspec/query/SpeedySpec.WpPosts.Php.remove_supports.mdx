@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\remove_supports"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It is `WP_Post_Type::remove_supports()`' write, when a type is unregistered. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L238-L245" hash="d554d814cf98a231c38ba48b23db6f07bf88dde129a9eed0e231355fa1d7dada"/> <Ev scenario="types-unregister" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

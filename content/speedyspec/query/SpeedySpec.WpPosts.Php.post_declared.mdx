@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\post_declared"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It makes a warm `get_post()`'s `WP_Post` from a cached entry with exactly `WP_Post`'s declared properties, assigning each by name as the constructor does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L208-L223" hash="9c2cce6daf140e1362fe20590d627234082218bdb607b38efb8af06155460ed1"/> <Ev scenario="get-by-id" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

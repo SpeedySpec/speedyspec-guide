@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_page_children"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_page_children()](/speedyspec/query/get_page_children/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L100-L103" hash="34bff2631026c40b0f95636b1e575780a5460fa3d19bc100603be0782b25e7eb"/>
+
+It sends the `GetPageChildren` message through the handler bound under `SpeedySpec\WpPosts\GetPageChildrenHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L601-L623" hash="eb34d9bdf1d7cc63bf4bf8bb84496fca3f3dff4d70ba8ac2abca9294b1ea156e"/> <Ev scenario="page-children-tree" area="posts-read"/> <Ev scenario="page-children-orphans" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

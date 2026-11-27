@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\_page_traverse_name"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [_page_traverse_name()](/speedyspec/query/_page_traverse_name/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L110-L113" hash="86e3fb2eb4cfb1ae0434ee9677e6158fce9647830751da4f8e142851c899dd0d"/>
+
+It sends the `PageTraverseName` message through the handler bound under `SpeedySpec\WpPosts\PageTraverseNameHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L648-L655" hash="b7a322d41326f83be67f2c4fa43dd4321036a1bd9961d67ef270d8b893d08b29"/> <Ev scenario="page-hierarchy-tree" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

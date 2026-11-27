@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\register_post_type"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [register_post_type()](/speedyspec/query/register_post_type/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L49-L52" hash="c60da1861b33f0315ca403af925d5d1674d7b65c12770903604aa8ecb1f7bf69"/>
+
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L258-L337" hash="16b1902e58c51e7282942080a64ad7aae12efa6bf8c9c2b10543f900a6d28fa3"/> <Ev scenario="types-register" area="posts-read"/> <Ev scenario="types-register-invalid" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

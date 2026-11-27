@@ -6,7 +6,7 @@
 - **`speedyspec-hooks`** holds the contract, the `Hooks` trait, and stores nothing. <Ev source="ss:crates/speedyspec-hooks/src/contract.rs#L89-L104" hash="fb73297a3763dc1306e13100991127c0b8535caad6a902b87cab57431614e9ee"/>
 - **`speedyspec-hooks-memory`** is the in-memory implementation. It passes the contract's conformance suite. <Ev test="speedyspec-hooks-memory::conformance::memory_backend_conforms"/>
 - **`speedyspec-php`** declares `SpeedySpec\Hooks\Hook` in PHP over the registry it is given. <Ev test="speedyspec-php::php::case_hook_add_and_run"/>
-- The runtime worker gives it a per-request registry, which it replaces with an empty one at the end of each request. <Ev source="ss:crates/speedyspec-php-runtime/src/worker.rs#L189-L194" hash="9198e2cea8a80c537b746fe730e97f75eda1bbae0e415011242834f4d82acb46"/>
+- The runtime worker gives it a per-request registry, which it replaces with an empty one at the end of each request. <Ev source="ss:crates/speedyspec-php-runtime/src/worker.rs#L190-L195" hash="9198e2cea8a80c537b746fe730e97f75eda1bbae0e415011242834f4d82acb46"/>
 
 ## Patterns
 

@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\sanitize_post"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [sanitize_post()](/speedyspec/query/sanitize_post/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L15-L18" hash="61e09a0ad2e4b1b961893caa7d2b12ef9b1af448e0ed026416ab8117c18d835a"/>
+
+It sends the `SanitizePost` message through the handler bound under `SpeedySpec\WpPosts\SanitizePostHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L758-L776" hash="aa625354c7d39bb7ec0f4e3069f56962d45eea91c5bbc34273289fcd4cfad4ae"/> <Ev scenario="sanitize-post-raw" area="posts-read"/> <Ev scenario="sanitize-post-edit" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

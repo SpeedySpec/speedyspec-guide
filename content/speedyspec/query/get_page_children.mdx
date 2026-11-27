@@ -5,7 +5,11 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Native: `post.php`'s `get_page_children()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_page_children`, which dispatches the `GetPageChildren` message to the handler bound at `SpeedySpec\WpPosts\GetPageChildrenHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L100-L103" hash="34bff2631026c40b0f95636b1e575780a5460fa3d19bc100603be0782b25e7eb"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L601-L623" hash="eb34d9bdf1d7cc63bf4bf8bb84496fca3f3dff4d70ba8ac2abca9294b1ea156e"/>
+
+It orders the pages it is given with phase 2's `page_children` rule and answers the caller's own `WP_Post` objects in that order, not copies. <Ev scenario="page-children-tree" area="posts-read"/> <Ev scenario="page-children-orphans" area="posts-read"/> <Ev scenario="page-children-empty" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+WordPress's own `Tests_Post_GetPageChildren` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rule
 
@@ -16,4 +20,3 @@ The 8 recorded calls over four lists (a tree given out of order, orphans, a repe
 ## Limits
 
 - Over a list with a cycle reachable from the start, WordPress's stack never empties. The rule stops at the first revisit: a page already on the path from the start is listed but not descended into. <Ev source="ss:crates/speedyspec-wp-posts/src/pages.rs#L1-L7" hash="dd1882ecd0e8a7351d700af6109b877be3813d96457fd5c53315f877b2b8b9e5"/>
-- The rule returns copies of the posts; the adapter must hand back the `WP_Post` objects it was given.

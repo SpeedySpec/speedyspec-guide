@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\is_post_type_viewable"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [is_post_type_viewable()](/speedyspec/query/is_post_type_viewable/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L99-L102" hash="ad501fcc7912975bf0d067edf943401188811575dd59b3c035ca1e8ccc10faad"/>
+
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L746-L764" hash="55751e1126f4a480e02e4a40affbff4228da1817fe17416adcb0b35446425dcf"/> <Ev test="speedyspec-wp-posts-tests::filters::a_viewable_filter_can_make_a_type_unviewable"/> <Ev test="speedyspec-wp-posts-tests::filters::a_truthy_answer_other_than_true_is_not_viewable"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

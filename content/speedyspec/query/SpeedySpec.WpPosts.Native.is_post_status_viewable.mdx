@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\is_post_status_viewable"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [is_post_status_viewable()](/speedyspec/query/is_post_status_viewable/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L104-L107" hash="c71bbcdee8c04298f18a9444720e11f77343581a98b77d8f02e2889f65f49a7a"/>
+
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L766-L788" hash="1a840ab6b8effe3a929e267f7e1e994545751cd52c4b7b80678403927543c5fb"/> <Ev test="speedyspec-wp-posts-tests::filters::status_viewable_filter_runs_only_for_public_statuses"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

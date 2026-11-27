@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\clean_post_cache"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [clean_post_cache()](/speedyspec/query/clean_post_cache/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L140-L143" hash="ab0154182c62d32bb03957ad722ca5f4420d507378ad86ccff7cbdcf86b30aae"/>
+
+It sends the `CleanPostCache` message through the handler bound under `SpeedySpec\WpPosts\CleanPostCacheHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L1008-L1011" hash="5613e126f6ec22d646cf071fb7547f6619556ee2cb2bbac27fd02aa068669f6c"/> <Ev scenario="cache-clean-post" area="posts-read"/> <Ev scenario="cache-clean-page" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

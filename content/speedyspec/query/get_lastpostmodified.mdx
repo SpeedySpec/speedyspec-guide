@@ -1,0 +1,16 @@
+---
+symbol: "function:get_lastpostmodified"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `get_lastpostmodified()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_lastpostmodified`, which dispatches the `GetLastPostModified` message to the handler bound at `SpeedySpec\WpPosts\GetLastPostModifiedHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L125-L128" hash="313b4e03096dde623e26712dbf6c20b5dbd465066bc02fb54ae94bc79b5313bb"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/counts.rs#L323-L326" hash="41bd94960bafe44a2f79cbbba18d112b7d9aaf6fdfb3696d0c5e2972fa0072a2"/>
+
+A non-false `pre_get_lastpostmodified` answer is returned; otherwise the `modified` time, raised to `get_lastpostdate()`'s answer when that is greater by PHP's `>`, then the `get_lastpostmodified` filter. <Ev scenario="last-modified-blog" area="posts-read"/> <Ev scenario="last-modified-gmt" area="posts-read"/> <Ev scenario="last-modified-server" area="posts-read"/> <Ev scenario="last-filters" area="posts-read"/> <Ev scenario="last-modified-older-than-date" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+WordPress's own `Tests_Post_GetLastPostModified` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+
+## Known breaks and open cases
+
+- **`server` time and the 0.3.0 suite.** For `'server'` the statement reads the GMT column through `DATE_ADD( …, INTERVAL '0' SECOND )`, and MySQL answers with a fraction (`2024-03-01 20:00:00.000000`), which WordPress returns as it is and SpeedySpec does too. speedyspec-wp-posts-contracts 0.3.0's repository suite expects the text without it, so `speedyspec-wp-posts-sql`'s MySQL suite runs that one check as a known break until contracts 0.3.1 (speedyspec-platform PR #18) fixes the suite. It is the suite that is wrong, not the answer. <Ev test="speedyspec-wp-posts-sql::engines::server_time_keeps_mysql_fraction"/> <Ev test="speedyspec-wp-posts-sql::engines::suite_on_mysql"/>

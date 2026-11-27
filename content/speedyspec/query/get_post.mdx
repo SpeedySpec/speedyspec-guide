@@ -1,0 +1,18 @@
+---
+symbol: "function:get_post"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `get_post()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_post`, which dispatches the `GetPostObject` message to the handler bound at `SpeedySpec\WpPosts\GetPostObjectHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L25-L28" hash="0bd128e75cc399f6e1c08d3944948d36f7cbb43d7e2bcf4293923041d22665a6"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/get.rs#L258-L260" hash="63e67974ea2a1ea62fb077d86ddf78864370de2f27394af9fa88346d22d19b86"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L364-L434" hash="8d01b0d8b21cfef03b7c9cfefba5f85bfa21deb1f9a3ec61c622072425ffdb37"/>
+
+It reads the post as `WP_Post::get_instance()` does: the `posts` cache entry first (a `stdClass` or `WP_Post` with an `ID`; anything else is a miss and is replaced), else one `SELECT * … WHERE ID = %d LIMIT 1`, whose row is cached with `wp_cache_set()`. An empty `$post` (nothing, `null`, `0`) is the global `$post`; a numeric one is an id through `(int)`, and nothing below 1 is read. A `WP_Post` it is given, or the global, is the object it works on, so `get_post( 0, OBJECT, 'display' )` sanitizes the global in place, as WordPress does through `WP_Post::filter()`, which stays WordPress's method. A post read by id is a new `WP_Post` each call. `ARRAY_A` and `ARRAY_N` are `to_array()` as in WordPress. <Ev scenario="get-by-id" area="posts-read"/> <Ev scenario="get-by-numeric-string" area="posts-read"/> <Ev scenario="get-by-float" area="posts-read"/> <Ev scenario="get-by-object" area="posts-read"/> <Ev scenario="get-by-stdclass-raw" area="posts-read"/> <Ev scenario="get-by-stdclass-display" area="posts-read"/> <Ev scenario="get-array-a" area="posts-read"/> <Ev scenario="get-array-n" area="posts-read"/> <Ev scenario="get-filter-display" area="posts-read"/> <Ev scenario="get-filter-back-to-raw" area="posts-read"/> <Ev scenario="get-negative" area="posts-read"/> <Ev scenario="get-non-numeric" area="posts-read"/> <Ev scenario="get-global-zero" area="posts-read"/> <Ev scenario="get-global-display" area="posts-read"/> <Ev scenario="cache-non-object-entry" area="posts-read"/> <Ev scenario="cache-php-entry" area="posts-read"/> <Ev scenario="ms-get-switch" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev test="speedyspec-wp-posts-tests::read::get_post_zero_reads_current_post"/> <Ev test="speedyspec-wp-posts-tests::read::reads_php_shaped_post_entry"/> <Ev test="speedyspec-wp-posts-tests::read::non_object_entry_is_a_miss"/> <Ev test="speedyspec-wp-posts-tests::read::get_post_caches_on_miss_once"/> <Ev test="speedyspec-wp-posts-tests::read::warm_read_lends_the_cached_entry"/>
+
+A warm read is as fast as WordPress's: 0.94 µs against 0.92 µs for `get_post( 1 )` on a cached post, measured in the same embedded PHP over MySQL. A cold read ties, since MySQL decides it. <Ev source="ss:crates/speedyspec-wp-posts-php/benches/read.rs#L1-L18" hash="d5e4a5cc2f244e75f14fca0c9f669e61e397f8a926c6d3f909e8160fb07d6081"/>
+
+WordPress's own `Tests_Post_Objects`, `Tests_Post_wpPost`, `Tests_Post_UpdatePostCache` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+
+## Limits
+
+- **Not run:** WordPress's `test_query_caches_post_filter` is left out of the PHPUnit runs, because `go_to()` needs WordPress's whole request, which isn't loaded. Untested, not different. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/wordpress.rs#L101-L166" hash="a72cd183bb0db176632c0d6eb538a55596678397fb6692875c10c885385f3601"/>

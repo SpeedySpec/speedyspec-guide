@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\_get_custom_object_labels"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [_get_custom_object_labels()](/speedyspec/query/_get_custom_object_labels/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L69-L72" hash="4f73e34c0c8f2d495313f0359891e473616dfc332ca6b6c3f96ae43e1b1a39cd"/>
+
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L861-L885" hash="514e244dfcd7c7ecd442a4010b07a79aab8ca2314244611d1aa8963b81715e31"/>  <Ev test="speedyspec-wp-posts-php::registry::main"/>

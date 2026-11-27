@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_available_post_mime_types"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_available_post_mime_types()](/speedyspec/query/get_available_post_mime_types/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L180-L183" hash="1be774f7b2f7259995fb0f9415351ef2cfd32415bcf75dbe1829d205666099b6"/>
+
+It sends the `GetAvailablePostMimeTypes` message through the handler bound under `SpeedySpec\WpPosts\GetAvailablePostMimeTypesHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L709-L723" hash="554d8ec9fc3db284794a04406b3c5975da57536d2bc0c3df326970a26767eb10"/> <Ev scenario="mime-available" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

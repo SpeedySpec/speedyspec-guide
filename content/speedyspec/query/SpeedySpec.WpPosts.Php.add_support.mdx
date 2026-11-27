@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\add_support"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It writes `add_post_type_support()`'s features to `$_wp_post_type_features`, doing `(array) $feature` itself so an object argument keeps its identity. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L209-L219" hash="8dbe47228ad71d84364edcaf736ae75b3db2a1984b4910e1e4958cde4981ea25"/> <Ev scenario="types-supports" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

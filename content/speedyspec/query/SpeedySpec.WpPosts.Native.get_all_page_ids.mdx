@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_all_page_ids"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_all_page_ids()](/speedyspec/query/get_all_page_ids/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L85-L88" hash="02b15bee29b253f623fe49bf3cd49c7a31c25612963ee551a59c880137e93483"/>
+
+It sends the `GetAllPageIds` message through the handler bound under `SpeedySpec\WpPosts\GetAllPageIdsHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L665-L673" hash="12da0548518d76cc8cf9f2c030b186d05c7eb6163f41b24758326611f7e7dfa1"/> <Ev scenario="all-page-ids-read" area="posts-read"/> <Ev scenario="all-page-ids-clean" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

@@ -5,7 +5,13 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Native: `post.php`'s `register_post_status()` is a line of PHP over `SpeedySpec\WpPosts\Native\register_post_status`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L14-L17" hash="ad2104f96a9c6d9b8ff8390b498ab503535b0a0905e77a5300de7b84d96f18ea"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L457-L465" hash="81993b034e7d02595220aa566941f543f2ede9425aeda08096a98ddf0ffd0e0c"/>
+
+It parses `$args` with `wp_parse_args()` and the name with `sanitize_key()` and its filter, resolves the status with phase 2's rules, and stores the object in `$wp_post_statuses` through a PHP helper, so the global keeps PHP's key handling. <Ev scenario="statuses-register" area="posts-read"/> <Ev scenario="count-new-status" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+
+The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
+
+WordPress's own `Tests_Post_Types` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rules
 
@@ -16,4 +22,3 @@ The 14 recorded status scenarios (19 calls) replay as in WordPress 7.2-RC2, and 
 ## Limits
 
 - Recorded from WordPress 7.2-RC2 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/> `_n_noop()` is copied from `l10n.php`.
-- `$args` must be an array. The query-string form `wp_parse_args()` accepts is the adapter's to parse. <Ev source="ss:crates/speedyspec-wp-posts/src/status.rs#L5-L6" hash="7d3288d67d1538167e8f2036d43941adaadbfa7c53231454454a269722ceb084"/>

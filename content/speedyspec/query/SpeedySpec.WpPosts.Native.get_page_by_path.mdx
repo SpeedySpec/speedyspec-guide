@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_page_by_path"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_page_by_path()](/speedyspec/query/get_page_by_path/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L95-L98" hash="8c0d19b889a4fd5a4093e570b8024061ccadb3bae5229aaca68162d576ba1088"/>
+
+It sends the `GetPageByPath` message through the handler bound under `SpeedySpec\WpPosts\GetPageByPathHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L549-L562" hash="84652e3bed6977d8b83665ab90e34afed27643b49c2cbb0d410dcc7dbc593457"/> <Ev scenario="page-path-nested" area="posts-read"/> <Ev scenario="page-path-case" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

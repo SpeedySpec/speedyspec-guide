@@ -3,4 +3,4 @@ symbol: "method:WP_Post_Type::remove_hooks"
 verdict: works-as-wordpress
 ---
 
-Served by WordPress's PHP, as the whole class is until phase 4. In Rust, `unregistration` returns its `remove_action()` call, `future_{$post_type}` at priority 5; phase 4's adapter makes it. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L71-L84" hash="76164318ad249e3434ba2a67a80227ec12caffff758c5ccd831d200f7d5a77b4"/> The recorded `unregister` scenario's removed actions match WordPress 7.2-RC2's. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>
+Served by WordPress's PHP, as the whole class is until phase 4. In Rust, `unregistration` returns its `remove_action()` call, `future_{$post_type}` at priority 5; phase 4's adapter makes it. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L75-L88" hash="76164318ad249e3434ba2a67a80227ec12caffff758c5ccd831d200f7d5a77b4"/> The recorded `unregister` scenario's removed actions match WordPress 7.2-RC2's. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>

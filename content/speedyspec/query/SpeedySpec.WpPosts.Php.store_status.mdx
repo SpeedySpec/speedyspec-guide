@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\store_status"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It stores a status's properties in `$wp_post_statuses` as the object `register_post_status()` returns. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L198-L207" hash="36081309dcaacda256f781f76cf5899bfa72dc1105714ac1382f78a1b4bbc6e7"/> <Ev scenario="statuses-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

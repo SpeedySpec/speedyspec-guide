@@ -1,0 +1,12 @@
+---
+symbol: "function:wp_cache_set_posts_last_changed"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `wp_cache_set_posts_last_changed()` is a line of PHP over `SpeedySpec\WpPosts\Native\wp_cache_set_posts_last_changed`, which dispatches the `WpCacheSetPostsLastChanged` message to the handler bound at `SpeedySpec\WpPosts\WpCacheSetPostsLastChangedHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L175-L178" hash="3d9b21b3a4af209aa9dabd877623420de60bf2c6e450b510564ce03fa427571d"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/cache.rs#L61-L62" hash="ed76ab6013ce7a1ef4f886216d0c786b10a53736d0a7ec67563453e91c6dde32"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/cache.rs#L38-L40" hash="5309b93ed78ba3f13f267ee94e779495f75aa8ff8594ad06bd3489bf82c41967"/>
+
+It is `wp_cache_set_last_changed( 'posts' )`: the `posts` group's `last_changed` set to `microtime()`, and the `wp_cache_set_last_changed` action. <Ev scenario="page-path-cache" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+WordPress's own `Tests_Post_GetPageByPath` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>

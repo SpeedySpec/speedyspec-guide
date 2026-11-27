@@ -5,7 +5,11 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Native: `post.php`'s `_page_traverse_name()` is a line of PHP over `SpeedySpec\WpPosts\Native\_page_traverse_name`, which dispatches the `PageTraverseName` message to the handler bound at `SpeedySpec\WpPosts\PageTraverseNameHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L110-L113" hash="86e3fb2eb4cfb1ae0434ee9677e6158fce9647830751da4f8e142851c899dd0d"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/pings.rs#L141-L145" hash="48d29b28805c3218385ffcaa6097cf54a5faaeff160c297a2132505b5cecabb6"/>
+
+It is the walk `get_page_hierarchy()` uses, now a use case of its own: it fills `$result` (by reference, as in WordPress) with each child's name under `$page_id`, depth first. <Ev scenario="page-hierarchy-tree" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/errors.rs#L133-L153" hash="3cfd8fd6fbab12349a424049127e74cc1b6207fead79ff16158f7548807b49a3"/>
+
+WordPress's own `Tests_Post_GetPageChildren` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rule
 

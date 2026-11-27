@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_lastpostdate"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_lastpostdate()](/speedyspec/query/get_lastpostdate/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L120-L123" hash="9fcbe9395245beaa8f2d015acf4c11a04aa7ec1193a815cc12a5e950841fecb2"/>
+
+It sends the `GetLastPostDate` message through the handler bound under `SpeedySpec\WpPosts\GetLastPostDateHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L725-L731" hash="bd849d74d28d16cfa69712660b67eeabbb31a46d5e49e7f69f18c619759517fa"/> <Ev scenario="last-date-blog" area="posts-read"/> <Ev scenario="last-date-gmt" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
