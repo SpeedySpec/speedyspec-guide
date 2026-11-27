@@ -9,4 +9,4 @@ Native: `post.php`'s `wp_cache_set_posts_last_changed()` is a line of PHP over `
 
 It is `wp_cache_set_last_changed( 'posts' )`: the `posts` group's `last_changed` set to `microtime()`, and the `wp_cache_set_last_changed` action. <Ev scenario="page-path-cache" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
-WordPress's own `Tests_Post_GetPageByPath` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.

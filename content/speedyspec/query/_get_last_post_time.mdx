@@ -9,7 +9,7 @@ Native: `post.php`'s `_get_last_post_time()` is a line of PHP over `SpeedySpec\W
 
 It reads the `timeinfo` entry `lastpost{$field}:{$timezone}`, plus `:` and the `sanitize_key()`ed type when one is given; on a miss, the newest published date among the public post types (`any`) or the one given, in the clock `$timezone` names (lowercased; an unknown one sends no statement and answers false), cached when truthy. <Ev scenario="last-date-blog" area="posts-read"/> <Ev scenario="last-date-gmt" area="posts-read"/> <Ev scenario="last-date-server" area="posts-read"/> <Ev scenario="last-timezone-case" area="posts-read"/> <Ev scenario="last-type-key" area="posts-read"/> <Ev scenario="last-statement" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev test="speedyspec-wp-posts-tests::read::last_post_times_cache_and_compare"/> <Ev test="speedyspec-wp-posts-sql::engines::last_post_time_of_nothing_is_none_on_mysql"/>
 
-WordPress's own `Tests_Post_GetLastPostDate`, `Tests_Post_GetLastPostModified` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+No copied WordPress test calls it directly. WordPress's `Tests_Post_GetLastPostDate` and `Tests_Post_GetLastPostModified` reach it indirectly, through `get_lastpostdate()` and `get_lastpostmodified()`, and those tests pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## Known breaks and open cases
 

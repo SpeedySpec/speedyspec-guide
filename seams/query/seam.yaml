@@ -30,7 +30,8 @@ mysql: true
 # its callers, comments, revisions, WP) is still WordPress's PHP, so the seam is not ported.
 crates: [speedyspec-wp-db, speedyspec-wp-db-contracts, speedyspec-wp-posts-contracts, speedyspec-wp-posts, speedyspec-wp-posts-memory, speedyspec-wp-posts-sql, speedyspec-wp-posts-php, speedyspec-wp-posts-tests, speedyspec-wp-db-php, speedyspec-data, speedyspec-data-query, speedyspec-data-uow, speedyspec-data-translate, speedyspec-data-mysql, speedyspec-data-postgres, speedyspec-data-sqlite, speedyspec-data-memory, speedyspec-data-file, speedyspec-data-redb, speedyspec-data-valkey, speedyspec-data-counter, speedyspec-data-corpus, speedyspec-data-conformance]
 # Symbols whose file belongs to another seam, then SpeedySpec's wpdb API, then its post API: the natives post.php's
-# one-line functions call, the PHP helpers beside them, and the repository twin a PHP object implements.
+# one-line functions call (and post_instance(), WP_Post::get_instance()'s swapped body), the PHP helpers beside them,
+# and the repository and taxonomy twins a PHP object implements.
 symbols:
   - "function:_truncate_post_slug"
   - "class:SpeedySpec\\WpDb\\Connection"
@@ -161,6 +162,7 @@ symbols:
   - "function:SpeedySpec\\WpPosts\\Native\\get_to_ping"
   - "function:SpeedySpec\\WpPosts\\Native\\get_enclosed"
   - "function:SpeedySpec\\WpPosts\\Native\\is_sticky"
+  - "function:SpeedySpec\\WpPosts\\Native\\post_instance"
   - "function:SpeedySpec\\WpPosts\\Php\\add_support"
   - "function:SpeedySpec\\WpPosts\\Php\\assign"
   - "function:SpeedySpec\\WpPosts\\Php\\error"
@@ -197,3 +199,7 @@ symbols:
   - "method:SpeedySpec\\WpPosts\\PostRepository::last_post_time"
   - "method:SpeedySpec\\WpPosts\\PostRepository::pages_by_names"
   - "method:SpeedySpec\\WpPosts\\PostRepository::parent_ids"
+  - "class:SpeedySpec\\WpPosts\\Taxonomy"
+  - "method:SpeedySpec\\WpPosts\\Taxonomy::clean_object_term_cache"
+  - "method:SpeedySpec\\WpPosts\\Taxonomy::post_term_fields"
+  - "method:SpeedySpec\\WpPosts\\Taxonomy::update_object_term_cache"

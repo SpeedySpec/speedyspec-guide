@@ -9,7 +9,7 @@ Native: `post.php`'s `get_lastpostmodified()` is a line of PHP over `SpeedySpec\
 
 A non-false `pre_get_lastpostmodified` answer is returned; otherwise the `modified` time, raised to `get_lastpostdate()`'s answer when that is greater by PHP's `>`, then the `get_lastpostmodified` filter. <Ev scenario="last-modified-blog" area="posts-read"/> <Ev scenario="last-modified-gmt" area="posts-read"/> <Ev scenario="last-modified-server" area="posts-read"/> <Ev scenario="last-filters" area="posts-read"/> <Ev scenario="last-modified-older-than-date" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
-WordPress's own `Tests_Post_GetLastPostModified` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+WordPress's own `Tests_Post_GetLastPostModified` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## Known breaks and open cases
 

@@ -7,11 +7,11 @@ differences:
 
 ## Behaviour
 
-Native: `post.php`'s `update_postmeta_cache()` is a line of PHP over `SpeedySpec\WpPosts\Native\update_postmeta_cache`, which dispatches the `UpdatePostmetaCache` message to the handler bound at `SpeedySpec\WpPosts\UpdatePostmetaCacheHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L155-L158" hash="aa32ca18228f8f195e11d98f33c00fbd77475f20817ebccda5082f54f98eb7ca"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/cache.rs#L410-L411" hash="39ab9ab9db2edc8da8a4791e014c4e378a9b74f593b30825e0b53898a73f0b34"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L856-L880" hash="0d572825626ad9582abc9532c74f6ab8b0ecbc40e967280545afaf00a949db20"/>
+Native: `post.php`'s `update_postmeta_cache()` is a line of PHP over `SpeedySpec\WpPosts\Native\update_postmeta_cache`, which dispatches the `UpdatePostmetaCache` message to the handler bound at `SpeedySpec\WpPosts\UpdatePostmetaCacheHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L155-L158" hash="aa32ca18228f8f195e11d98f33c00fbd77475f20817ebccda5082f54f98eb7ca"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/cache.rs#L416-L417" hash="a0284bab4831cd60d48e12b8b7903ae8bdc44822dc3e70f9f75b46af4f1035bd"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L876-L900" hash="3256214197dc9af9e7ddefbf74d6b8618b929f7fd86e676c24d7c3daf5bff83c"/>
 
 It is the native `update_meta_cache( 'post', $post_ids )`, through the metadata API's `update_cache`. Its ids are read as `update_meta_cache()` reads them: a list through `intval`, or a string with everything but digits and commas removed. <Ev scenario="cache-prime-with-meta" area="posts-read"/> <Ev scenario="cache-prime-statement" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
-WordPress's own `Tests_Post_PrimePostParentIdCaches` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.
 
 ## Differences
 

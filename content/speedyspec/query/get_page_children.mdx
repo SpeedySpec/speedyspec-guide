@@ -5,11 +5,11 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Native: `post.php`'s `get_page_children()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_page_children`, which dispatches the `GetPageChildren` message to the handler bound at `SpeedySpec\WpPosts\GetPageChildrenHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L100-L103" hash="34bff2631026c40b0f95636b1e575780a5460fa3d19bc100603be0782b25e7eb"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L601-L623" hash="eb34d9bdf1d7cc63bf4bf8bb84496fca3f3dff4d70ba8ac2abca9294b1ea156e"/>
+Native: `post.php`'s `get_page_children()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_page_children`, which dispatches the `GetPageChildren` message to the handler bound at `SpeedySpec\WpPosts\GetPageChildrenHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L100-L103" hash="34bff2631026c40b0f95636b1e575780a5460fa3d19bc100603be0782b25e7eb"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L621-L643" hash="79d6c94701fe967cf275adde618c457137838a259ea4ae4c1be3a4158daa94da"/>
 
 It orders the pages it is given with phase 2's `page_children` rule and answers the caller's own `WP_Post` objects in that order, not copies. <Ev scenario="page-children-tree" area="posts-read"/> <Ev scenario="page-children-orphans" area="posts-read"/> <Ev scenario="page-children-empty" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
-WordPress's own `Tests_Post_GetPageChildren` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+WordPress's own `Tests_Post_GetPageChildren` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rule
 

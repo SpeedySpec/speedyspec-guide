@@ -7,11 +7,11 @@ differences:
 
 ## Behaviour
 
-Native: `post.php`'s `update_post_caches()` is a line of PHP over `SpeedySpec\WpPosts\Native\update_post_caches`, which dispatches the `UpdatePostCachesObjects` message to the handler bound at `SpeedySpec\WpPosts\UpdatePostCachesObjectsHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L145-L148" hash="e7e1da73521020b39365efaeee9c1b61eacd8458ca4b819a185f33103823f674"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/cache.rs#L337-L341" hash="5db5691fb3cb74b3b2411ca6cba9a1072eed69e9a87c1faed49228266e514392"/>
+Native: `post.php`'s `update_post_caches()` is a line of PHP over `SpeedySpec\WpPosts\Native\update_post_caches`, which dispatches the `UpdatePostCachesObjects` message to the handler bound at `SpeedySpec\WpPosts\UpdatePostCachesObjectsHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L145-L148" hash="e7e1da73521020b39365efaeee9c1b61eacd8458ca4b819a185f33103823f674"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/cache.rs#L343-L347" hash="526c4de8835b75d604b16801aa8972e9766f86294fad4a24ff1528fc9e30f2c7"/>
 
 It caches the posts with `update_post_cache()`; then, unless the type list is empty, their terms (a falsy type is `any`, and `any` means the posts' own types); then, when asked, their meta with `update_postmeta_cache()`. <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev test="speedyspec-wp-posts-tests::read::update_post_caches_caches_posts_terms_and_meta"/>
 
-WordPress's own `Tests_Post_UpdatePostCache` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.
 
 ## Differences
 

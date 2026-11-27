@@ -9,4 +9,4 @@ Native: `post.php`'s `_count_posts_cache_key()` is a line of PHP over `SpeedySpe
 
 It answers `posts-{$type}`, plus `_readable_{$user_id}` when `$perm` is `readable`, someone is logged in, and they can't read the type's private posts, asking the `Users` port for each. <Ev scenario="count-readable-logged-out" area="posts-read"/> <Ev scenario="count-readable-author" area="posts-read"/> <Ev scenario="count-readable-admin" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
-WordPress's own `Tests_Post_Types` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.

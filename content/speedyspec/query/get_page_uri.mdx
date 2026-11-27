@@ -2,6 +2,7 @@
 symbol: "function:get_page_uri"
 verdict: works-with-differences
 differences:
+  - summary: "Given an object, it reads a copy: WordPress's `get_post()` inside it sanitizes a filterless `stdClass` in place (`filter` set to `raw`, ids cast to int), and here the caller's object is left as it was."
   - summary: "An object a hook callback receives (a `WP_Post`, a `stdClass`) is a copy with the same class and properties, not the object WordPress would pass, so keeping it and changing it later changes nothing."
 ---
 
@@ -11,10 +12,11 @@ Native: `post.php`'s `get_page_uri()` is a line of PHP over `SpeedySpec\WpPosts\
 
 It reads the page with `get_post()` (false when there is none), builds the path of ancestor names with phase 2's `page_uri` rule over the cached reads, and runs the `get_page_uri` filter with `( $uri, $page )`. <Ev scenario="page-uri-nested" area="posts-read"/> <Ev scenario="page-uri-encoded" area="posts-read"/> <Ev scenario="page-uri-loop" area="posts-read"/> <Ev scenario="page-uri-missing" area="posts-read"/> <Ev scenario="page-uri-empty-name" area="posts-read"/> <Ev scenario="page-uri-object" area="posts-read"/> <Ev scenario="page-uri-global" area="posts-read"/> <Ev scenario="page-uri-filter" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
-WordPress's own `Tests_Post_GetPageUri` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+WordPress's own `Tests_Post_GetPageUri` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## Differences
 
+- **An object argument is read as a copy.** The readers beside `get_post()` hand an object argument to the use case as a copy, for one dispatch. WordPress's `get_post()` inside them sanitizes a `stdClass` with no `filter` in place, setting `filter` to `raw` and casting its ids to int; on SpeedySpec the caller's object is left as it was. The answer is the same. Not recorded. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L30-L34" hash="2bc082f37a3aa63398531ebb37534e185fe71501b2fbacd16834877684966948"/>
 - **Objects in hook arguments are copies.** The use cases carry PHP values, and `PhpValueHooks` makes them PHP values on the way into a hook, so a callback gets an equal object of the same class, not the one WordPress would hand it. An object a callback returns crosses back as it is (a `stdClass` as an equal copy). Meta has the same limit. <Ev source="ss:crates/speedyspec-wp-posts-php/src/hooks.rs#L1-L12" hash="7b8ef1e169180452a8fca24ae7ada72bff898f2dbf6d0efc07fc98d66d328069"/> <Ev test="speedyspec-wp-posts-php::errors::main"/>
 
 ## The Rust rule

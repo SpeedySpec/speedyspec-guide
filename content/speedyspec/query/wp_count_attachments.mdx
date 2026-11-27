@@ -11,7 +11,7 @@ Native: `post.php`'s `wp_count_attachments()` is a line of PHP over `SpeedySpec\
 
 It follows WordPress: a `stdClass` from `pre_wp_count_attachments`, with `trash` set to 0 when missing; else the `counts` entry `attachments` (plus `:` and the mime types joined with `-`, `/` as `_`); else one statement grouped by `post_mime_type` with `wp_post_mime_type_where()`'s clause, then `trash`, counts as numeric strings, cached. Then the `wp_count_attachments` filter with `( (object) $counts, $mime_type )`. A string and an array `$mime_type` stay different, as in PHP: they parse and key differently. <Ev scenario="count-attachments-all" area="posts-read"/> <Ev scenario="count-attachments-mime" area="posts-read"/> <Ev scenario="count-attachments-statement" area="posts-read"/> <Ev scenario="count-attachments-filter" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
-WordPress's own `Tests_Post_wpCountAttachments` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+WordPress's own `Tests_Post_wpCountAttachments` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## Differences
 

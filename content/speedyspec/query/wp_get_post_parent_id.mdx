@@ -1,6 +1,8 @@
 ---
 symbol: "function:wp_get_post_parent_id"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "Given an object, it reads a copy: WordPress's `get_post()` inside it sanitizes a filterless `stdClass` in place (`filter` set to `raw`, ids cast to int), and here the caller's object is left as it was."
 ---
 
 ## Behaviour
@@ -9,7 +11,11 @@ Native: `post.php`'s `wp_get_post_parent_id()` is a line of PHP over `SpeedySpec
 
 It reads the post with `get_post()`, the global `$post` for an empty argument, and answers `(int)` `post_parent`: false when there is no post, the int 0 when it has no parent. <Ev scenario="parent-each" area="posts-read"/> <Ev scenario="parent-missing" area="posts-read"/> <Ev scenario="parent-global" area="posts-read"/> <Ev scenario="parent-object" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
-WordPress's own `Tests_Post_wpGetPostParentId`, `Tests_Post_GetPostParent` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+WordPress's own `Tests_Post_wpGetPostParentId` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+
+## Differences
+
+- **An object argument is read as a copy.** The readers beside `get_post()` hand an object argument to the use case as a copy, for one dispatch. WordPress's `get_post()` inside them sanitizes a `stdClass` with no `filter` in place, setting `filter` to `raw` and casting its ids to int; on SpeedySpec the caller's object is left as it was. The answer is the same. Not recorded. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L30-L34" hash="2bc082f37a3aa63398531ebb37534e185fe71501b2fbacd16834877684966948"/>
 
 ## The Rust rule
 

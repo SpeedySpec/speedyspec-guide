@@ -9,7 +9,7 @@ Native: `post.php`'s `get_available_post_mime_types()` is a line of PHP over `Sp
 
 An array from `pre_get_available_post_mime_types` replaces the statement (`SELECT DISTINCT post_mime_type … WHERE post_type = %s`); then the falsy values are dropped and the rest renumbered. <Ev scenario="mime-available" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
-WordPress's own `Tests_Post_GetAvailablePostMimeTypes` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+WordPress's own `Tests_Post_GetAvailablePostMimeTypes` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## Known breaks and open cases
 
@@ -18,3 +18,4 @@ WordPress's own `Tests_Post_GetAvailablePostMimeTypes` tests, copied from 7.2-RC
 ## Limits
 
 - **Not run:** WordPress's `test_should_return_expected_post_mime_types` is left out of the PHPUnit runs, because `create_upload_object()` uploads files, and media isn't loaded. Untested, not different. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/wordpress.rs#L101-L166" hash="a72cd183bb0db176632c0d6eb538a55596678397fb6692875c10c885385f3601"/>
+- `MemoryPostRepository`, the in-memory adapter, builds the mime clause by the same rule, trimming items as PHP's `trim()` does. <Ev source="ss:crates/speedyspec-wp-posts-memory/src/lib.rs#L1-L5" hash="4da557478296c6c525b3d3d1ee27edea888be55d3b76287a4a1fca385c07c808"/>

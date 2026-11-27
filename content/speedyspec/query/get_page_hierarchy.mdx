@@ -5,11 +5,11 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Native: `post.php`'s `get_page_hierarchy()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_page_hierarchy`, which dispatches the `GetPageHierarchy` message to the handler bound at `SpeedySpec\WpPosts\GetPageHierarchyHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L105-L108" hash="b0b23713c3df3caa6fb9d52e595d5036f4f10c440818ed27cc922f4b8ce7d66a"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L625-L646" hash="c0b64a9d56728f731380557dbb9af0df379282de971b3a97da3a0cd7a2007fb8"/>
+Native: `post.php`'s `get_page_hierarchy()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_page_hierarchy`, which dispatches the `GetPageHierarchy` message to the handler bound at `SpeedySpec\WpPosts\GetPageHierarchyHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L105-L108" hash="b0b23713c3df3caa6fb9d52e595d5036f4f10c440818ed27cc922f4b8ce7d66a"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L645-L666" hash="7909599d4bec708b3096ebb9682ab5e43fe46301e1ce34061f36667484c1d46f"/>
 
 It reads each page's `ID`, `post_parent` (`(int)`) and `post_name` from the list it is given, objects or `stdClass`, and answers phase 2's `page_hierarchy` rule: id to name, parents before their children. <Ev scenario="page-hierarchy-tree" area="posts-read"/> <Ev scenario="page-hierarchy-orphans" area="posts-read"/> <Ev scenario="page-hierarchy-empty" area="posts-read"/> <Ev scenario="page-hierarchy-stdclass" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
-WordPress's own `Tests_Post_GetPageChildren` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.
 
 ## The Rust rule
 

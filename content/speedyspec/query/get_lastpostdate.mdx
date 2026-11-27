@@ -9,7 +9,7 @@ Native: `post.php`'s `get_lastpostdate()` is a line of PHP over `SpeedySpec\WpPo
 
 It is `_get_last_post_time( $timezone, 'date', $post_type )`, then the `get_lastpostdate` filter with `( $date, $timezone, $post_type )`, `$timezone` as given. <Ev scenario="last-date-blog" area="posts-read"/> <Ev scenario="last-date-gmt" area="posts-read"/> <Ev scenario="last-date-server" area="posts-read"/> <Ev scenario="last-default" area="posts-read"/> <Ev scenario="last-timezone-case" area="posts-read"/> <Ev scenario="last-type-key" area="posts-read"/> <Ev scenario="ms-count-switch" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
-WordPress's own `Tests_Post_GetLastPostDate` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+WordPress's own `Tests_Post_GetLastPostDate` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## Known breaks and open cases
 

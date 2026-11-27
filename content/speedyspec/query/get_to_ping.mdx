@@ -1,15 +1,21 @@
 ---
 symbol: "function:get_to_ping"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "Given an object, it reads a copy: WordPress's `get_post()` inside it sanitizes a filterless `stdClass` in place (`filter` set to `raw`, ids cast to int), and here the caller's object is left as it was."
 ---
 
 ## Behaviour
 
 Native: `post.php`'s `get_to_ping()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_to_ping`, which dispatches the `GetToPing` message to the handler bound at `SpeedySpec\WpPosts\GetToPingHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L80-L83" hash="f98e953988b1edea3ed4176cce1d4c9229585aa7c128bab643016711e6b8c48d"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/pings.rs#L80-L83" hash="f32adb9bd8c1267fc6f1408fbb9f9fd7caa5968c97e12e7c82c817fad0c5e720"/>
 
-It reads the post, runs its `to_ping` through `sanitize_trackback_urls()` (the `Formatting` port), splits it on whitespace and runs the `get_to_ping` filter. False when there is no post. <Ev test="speedyspec-wp-posts-php::errors::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/errors.rs#L133-L153" hash="3cfd8fd6fbab12349a424049127e74cc1b6207fead79ff16158f7548807b49a3"/>
+It reads the post, runs its `to_ping` through `sanitize_trackback_urls()` (the `Formatting` port), splits it on whitespace and runs the `get_to_ping` filter. False when there is no post. <Ev test="speedyspec-wp-posts-php::errors::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/errors.rs#L149-L169" hash="d7f364bd335a351bc0174e5c05add07e4d3a4f80babccf08a3c916ea37a3712e"/>
 
-WordPress's own `Tests_Post_Pings` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+WordPress's own `Tests_Post_Pings` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+
+## Differences
+
+- **An object argument is read as a copy.** The readers beside `get_post()` hand an object argument to the use case as a copy, for one dispatch. WordPress's `get_post()` inside them sanitizes a `stdClass` with no `filter` in place, setting `filter` to `raw` and casting its ids to int; on SpeedySpec the caller's object is left as it was. The answer is the same. Not recorded. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L30-L34" hash="2bc082f37a3aa63398531ebb37534e185fe71501b2fbacd16834877684966948"/>
 
 ## Limits
 

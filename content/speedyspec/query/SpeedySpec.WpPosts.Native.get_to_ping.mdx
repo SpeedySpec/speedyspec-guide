@@ -5,4 +5,4 @@ verdict: new-in-speedyspec
 
 Used by SpeedySpec's PHP [get_to_ping()](/speedyspec/query/get_to_ping/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L80-L83" hash="f98e953988b1edea3ed4176cce1d4c9229585aa7c128bab643016711e6b8c48d"/>
 
-It sends the `GetToPing` message through the handler bound under `SpeedySpec\WpPosts\GetToPingHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L941-L947" hash="310a923481323ec9cbfe64e0266b583a22326da9dde0376402893b248630106c"/>  <Ev test="speedyspec-wp-posts-php::compat::main"/>
+It sends the `GetToPing` message through the handler bound under `SpeedySpec\WpPosts\GetToPingHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L961-L967" hash="42d866702855393891a952e568b306c637657bef156c1f26c9a2f1b800f1cc4b"/>  <Ev test="speedyspec-wp-posts-php::compat::main"/>

@@ -9,7 +9,7 @@ Native: `post.php`'s `get_all_page_ids()` is a line of PHP over `SpeedySpec\WpPo
 
 It answers the `posts` group's `all_page_ids` entry when it is an array, else `SELECT ID FROM wp_posts WHERE post_type = 'page'`, as `$wpdb->get_col()` returns it (decimal strings), added to the cache with `wp_cache_add()`. <Ev scenario="all-page-ids-read" area="posts-read"/> <Ev scenario="all-page-ids-clean" area="posts-read"/> <Ev scenario="all-page-ids-not-an-array" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
-WordPress's own `Tests_Post_Objects` tests, copied from 7.2-RC2, pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.
 
 ## Known breaks and open cases
 
