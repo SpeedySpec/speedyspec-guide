@@ -8,10 +8,10 @@
   },
   "server": {
     "repo": "https://github.com/SpeedySpec/speedyspec-server.git",
-    "commit": "77f339856455eab9aa0a62ae0ae6721b2e4be0a8"
+    "commit": "05887e84f175a7913f4297e998d20ec7564a2753"
   },
   "platform": {
     "repo": "https://github.com/SpeedySpec/speedyspec-platform.git",
-    "commit": "3c7ccc8f727bbad466a4b2939f0b43e44328bc0b"
+    "commit": "bf2962cea280b47c9cdf9ed3d8f8a77f0a81df65"
   }
 }

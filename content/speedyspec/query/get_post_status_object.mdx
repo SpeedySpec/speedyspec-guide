@@ -15,7 +15,7 @@ WordPress's own `Tests_Post_IsPostStatusViewable` tests, copied from 7.2-RC2, ca
 
 ## The Rust rule
 
-`PostStatuses::status` gives one registered status, a `stdClass` object as `PostStatusObject`. The registry answers it from memory; phase 4's adapter reads `$wp_post_statuses` live. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L294-L303" hash="08b57de5460ff44c7aa7b6742d1e9949a95010fdf8c673d6f866d38037cb112f"/> <Ev source="ss:crates/speedyspec-wp-posts/src/status.rs#L137-L141" hash="27590068f5c93d66143d061797f4763ae9da6cd35ede516cbb897610ea9abc69"/>
+`PostStatuses::status` gives one registered status, a `stdClass` object as `PostStatusObject`. The registry answers it from memory; phase 4's adapter reads `$wp_post_statuses` live. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L296-L305" hash="08b57de5460ff44c7aa7b6742d1e9949a95010fdf8c673d6f866d38037cb112f"/> <Ev source="ss:crates/speedyspec-wp-posts/src/status.rs#L137-L141" hash="27590068f5c93d66143d061797f4763ae9da6cd35ede516cbb897610ea9abc69"/>
 
 The recorded `get-object` scenario replays as in WordPress 7.2-RC2. <Ev test="speedyspec-wp-posts::recorded::status_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts-contracts::values::post_status_to_php_is_stdclass"/>
 
