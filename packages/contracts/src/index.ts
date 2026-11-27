@@ -28,6 +28,11 @@ export interface EvidenceSource {
    * the pin in compat/wordpress.json; null when the area has none.
    */
   compatVersion(area: string): Promise<string | null>;
+  /**
+   * The crates and compat areas that are in speedyspec-platform rather than speedyspec-server, by name, so a link to
+   * their evidence points at the right repository. Empty without a platform checkout.
+   */
+  platformPaths?(): Promise<{ crates: string[]; compat: string[] }>;
   /** An area's compat scenarios and breaks, or null when it has none. */
   /**
    * An area's scenarios and breaks, and, when its results were recorded, the labels of the recorders that fired in

@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
 import { type InstallPage, inReadingOrder, installPage } from './install.ts';
 import { guideRoot } from './root.ts';
-import type { Sources } from './wording.ts';
+import type { PlatformPaths, Sources } from './wording.ts';
 
 export type { CratesFile } from '@speedyspec-guide/app';
 
@@ -60,6 +60,8 @@ export interface GuideData {
   conversion: Record<string, 'runtime' | 'ported'>;
   /** The WordPress release each seam's compat area was recorded against (generated/compat.json). */
   compatAreas: Record<string, string>;
+  /** The crates and compat areas in speedyspec-platform, for evidence links (generated/compat.json). */
+  platformPaths: PlatformPaths;
   wordpressHistory: HistoryFile | null;
   speedyspecHistory: RuntimeHistoryFile | null;
   crates: CratesFile;
@@ -130,6 +132,7 @@ export async function readGuideData(env: Record<string, string | undefined>): Pr
     cycles: await json<Cycles>('cycles', { symbol: [], seam: [], components: [] }),
     conversion: (await json<{ states?: Record<string, 'runtime' | 'ported'> } | null>('conversion', null))?.states ?? {},
     compatAreas: (await json<{ areas?: Record<string, string> } | null>('compat', null))?.areas ?? {},
+    platformPaths: (await json<{ platform?: PlatformPaths } | null>('compat', null))?.platform ?? { crates: [], compat: [] },
     wordpressHistory: await json<HistoryFile | null>('wordpress-history', null),
     speedyspecHistory: await json<RuntimeHistoryFile | null>('speedyspec-history', null),
     crates: await json<CratesFile>('crates', { crates: [] }),

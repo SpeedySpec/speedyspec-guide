@@ -3,8 +3,8 @@
 
 ## The crates
 
-- **`speedyspec-wp-text-diff-contracts`**: the values a diff is asked for and answers with (`DiffOp`, `RowKind`, the table options and row labels), and the ports. <Ev source="ss:crates/speedyspec-wp-text-diff-contracts/src/lib.rs#L1-L13" hash="5e0f27682fd07b53b44b511915b860ad3d28e9272aaacf63254e016ce4447585"/>
-- **`speedyspec-wp-text-diff`**: `wp_text_diff()` in Rust. `TextDiff` diffs lines with a `SequenceDiffer` and renders rows as `WP_Text_Diff_Renderer_Table` does; `HordeSequenceDiffer` is Horde's `Text_Diff_Engine_native`, ported line for line. String work (escaping, word and line splitting, byte counts) runs 16 bytes at a time where the CPU allows, with scalar twins the vector code is tested against. <Ev source="ss:crates/speedyspec-wp-text-diff/src/lib.rs#L1-L14" hash="0543adaa39499cf602d40eaf7c5d5f6fa85a9e9ada5c271054938ef45ae131ee"/> <Ev test="speedyspec-wp-text-diff::recorded::escaping"/> <Ev test="speedyspec-wp-text-diff::recorded::word_splitting"/>
+- **`speedyspec-wp-text-diff-contracts`**: the values a diff is asked for and answers with (`DiffOp`, `RowKind`, the table options and row labels), and the ports. <Ev source="ss:crates/speedyspec-wp-text-diff-contracts/src/lib.rs#L5-L17" hash="5e0f27682fd07b53b44b511915b860ad3d28e9272aaacf63254e016ce4447585"/>
+- **`speedyspec-wp-text-diff`**: `wp_text_diff()` in Rust. `TextDiff` diffs lines with a `SequenceDiffer` and renders rows as `WP_Text_Diff_Renderer_Table` does; `HordeSequenceDiffer` is Horde's `Text_Diff_Engine_native`, ported line for line. String work (escaping, word and line splitting, byte counts) runs 16 bytes at a time where the CPU allows, with scalar twins the vector code is tested against. <Ev source="ss:crates/speedyspec-wp-text-diff/src/lib.rs#L5-L18" hash="0543adaa39499cf602d40eaf7c5d5f6fa85a9e9ada5c271054938ef45ae131ee"/> <Ev test="speedyspec-wp-text-diff-php::recorded::escaping"/> <Ev test="speedyspec-wp-text-diff-php::recorded::word_splitting"/>
 - **`speedyspec-wp-text-diff-php`**: the PHP area. It binds WordPress's implementation, registers the port PHP may replace, and declares `wp_text_diff()`. <Ev source="ss:crates/speedyspec-wp-text-diff-php/src/lib.rs#L1-L16" hash="fa76d3293a2fa9af870fd8f93cc9be0cc717d8801c9f3a947d1767a168c05ec5"/>
 
 ## The contracts
@@ -64,7 +64,7 @@ One query: **render the diff** (`WordPressTextDiffer::diff`). It parses the argu
 
   A replacement's exception reaches the caller unchanged. <Ev test="speedyspec-wp-text-diff-php::php::twin_exception_is_rethrown_unchanged"/>
 - **Replace it from Rust:** bind your own `TextDiffer` with `bind_port` under `TEXT_DIFFER`, or build a `TextDiff` over another `SequenceDiffer`.
-- **What must still pass:** WordPress's diff tests and the recorded cases. <Ev test="speedyspec-wp-text-diff-php::wordpress::wordpress_diff_tests_pass"/> <Ev test="speedyspec-wp-text-diff::recorded::wp_text_diff_cases"/>
+- **What must still pass:** WordPress's diff tests and the recorded cases. <Ev test="speedyspec-wp-text-diff-php::wordpress::wordpress_diff_tests_pass"/> <Ev test="speedyspec-wp-text-diff-php::recorded::wp_text_diff_cases"/>
 
 ## Calling it from Rust
 

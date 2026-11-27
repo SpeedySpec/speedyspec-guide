@@ -1,10 +1,14 @@
 ---
 symbol: "function:sanitize_meta"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "An object in a meta value reaches the hooks as a copy (serialized, then unserialized), not as the object passed."
 ---
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+Native: the `SanitizeMeta` query. It runs `sanitize_{$object_type}_meta_{$meta_key}_for_{$object_subtype}` when a subtype is given and that filter has callbacks, else `sanitize_{$object_type}_meta_{$meta_key}`. <Ev scenario="sanitize-unregistered" area="metadata"/> <Ev scenario="sanitize-registered" area="metadata"/> <Ev scenario="sanitize-by-subtype" area="metadata"/> <Ev scenario="sanitize-filter-fixture" area="metadata"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
 
-Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts. The names of the filters it applies are already `MetaHookNames::sanitize`. <Ev source="ss:crates/speedyspec-wp-meta/src/hook_names.rs#L42-L45" hash="52eeeca55f97ce23a1ba2300ee3cccdb5574205c27990cdb87436e013a98f2d3"/>
+## Differences
+
+- **Objects** reach the sanitize filters as copies, and the function returns the filters' answer as a copy. <Ev source="ss:crates/speedyspec-wp-meta-php/src/codec.rs#L3-L13" hash="9ad5f408eef9d41cda7cf40d1d761ed16a0c161faacd2753523b3e445c4bb0b4"/>

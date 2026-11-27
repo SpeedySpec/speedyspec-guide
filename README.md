@@ -34,7 +34,11 @@ Inputs are pinned in `sources.json`. Checkouts go to `.cache/`. For local runs, 
   branch or fetch), so it must already have the commit. Without it, the guide fetches the commit into its own bare
   repository, `.cache/wordpress-git/`;
 - `GUIDE_WORDPRESS_DIR`: an already exported WordPress `src/` folder, used as is;
-- `GUIDE_SERVER_DIR`: a speedyspec-server checkout.
+- `GUIDE_SERVER_DIR`: a speedyspec-server checkout;
+- `GUIDE_PLATFORM_DIR`: a speedyspec-platform checkout. speedyspec-server takes its shared crates and some compat
+  areas (hooks, the contracts crates) from speedyspec-platform through crates.io, so `ss:` citations, tests and compat
+  areas are looked up in the server first, then in the platform at its pin. Evidence links on the site go to whichever
+  repository holds the crate or area (`generated/compat.json`'s `platform`).
 
 `guide.config.json`: `requireAllAssigned` (fail when a symbol is in no seam) and `stubFiles` (files whose declarations
 never replace a real one, like `wp-admin/includes/noop.php`).
@@ -49,7 +53,8 @@ hook-name pattern); 49 symbols in the Hooks seam; no seam cycles yet, because Ho
 
 `runner/` is a Rust crate, `speedyspec-guide-examples`, that runs example files in the embedded PHP: on WordPress
 (the seam's `wordpress` files loaded first) or on the runtime's native port. It links speedyspec-server's crates and
-static PHP through the symlink `runner/server`:
+static PHP through the symlink `runner/server`, and the speedyspec-platform crates from crates.io at the versions the
+server's workspace names (its `[workspace.dependencies]`, copied into `runner/Cargo.toml`):
 
 ```bash
 GUIDE_PHP_BUILDROOT=<an existing .php-build/buildroot> bun run runner:link   # or build PHP in the pinned checkout
@@ -250,3 +255,19 @@ WordPress pin (`sources.json`, wordpress-develop `1ccce2133e92`) already is.
   7.2-RC2. Claims verified by a scenario now say *verified against WordPress 7.2-RC2*.
 - **Trunk against 7.1.5 is closed:** the three Options differences the guide found are ported, so those pages say
   works as WordPress.
+
+## The meta seam, native (2026-11-26)
+
+speedyspec-server `8ecc1c64` (draft PR #131, with #134 merged in) wires WordPress's metadata API into the runtime, and the guide now pins
+speedyspec-platform too (`fe3bb527`), where the shared crates and the hooks compat area moved.
+
+- **Meta is a ported seam:** 23 of `meta.php`'s 24 functions and `WP_Metadata_Lazyloader` are native; `get_meta_sql()`
+  stays WordPress's PHP until `WP_Meta_Query` is ported. Every function, hook and `$wp_meta_keys` has a SpeedySpec
+  page citing the `compat/metadata` scenarios (101 single site, 5 multisite) and WordPress's meta PHPUnit tests (339
+  and 343). The runtime's own meta API (the natives, the PHP helpers and the repository twins) is listed in the seam.
+- **Differences:** `update_meta_cache()`'s query also selects the meta id; on a single site `site` meta maps to
+  `wp_sitemeta`; objects in meta values reach hooks as copies; `default_{$meta_type}_metadata` gets an `absint()`ed
+  id. Every recorded scenario replays exactly (101 single site, 5 multisite); no break is recorded.
+- **The platform split:** citations into crates that moved resolve in the platform checkout, 15 tests that moved to
+  other crates are re-cited, and the runner takes the platform crates from crates.io and boots `MetaArea` as the
+  worker does.

@@ -1,0 +1,6 @@
+---
+symbol: "filter:update_{$meta_type}_metadata_cache"
+verdict: works-as-wordpress
+---
+
+Run by the native [update_meta_cache()](/speedyspec/meta/update_meta_cache/). A non-null answer is returned, and nothing is queried. <Ev scenario="cache-short-circuit" area="metadata"/> <Ev scenario="cache-several-ids" area="metadata"/>

@@ -3,4 +3,4 @@ symbol: "method:WP_Metadata_Lazyloader::lazyload_term_meta"
 verdict: works-as-wordpress
 ---
 
-Served by WordPress's PHP, as the whole class is until phase 3.
+Deprecated since WordPress 6.3.0, as in WordPress: it reports the deprecation through `_deprecated_function()`, then runs `lazyload_meta_callback()` for terms. <Ev source="ss:crates/speedyspec-wp-meta-php/src/lazyloader.php#L102-L128" hash="43c657c11aa20c8b9e06548f1cd6792af46740632531c4242c7988cdd6ed2ae1"/> WordPress's `test_lazyload_term_meta_is_deprecated_and_primes_term_meta` passes against it. <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>

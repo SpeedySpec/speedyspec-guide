@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpMeta\\Php\\object_subtype"
+verdict: new-in-speedyspec
+---
+
+A helper the native meta functions call in PHP; not for plugins. It answers `get_object_subtype()`'s switch for posts, terms, comments and users with WordPress's functions, before the filter. <Ev source="ss:crates/speedyspec-wp-meta-php/src/meta.php#L137-L162" hash="adb384d696bbc15f88fd585e400a19ea27f9f9b181f932edce21583f70337cec"/> <Ev scenario="subtype-each-type" area="metadata"/>

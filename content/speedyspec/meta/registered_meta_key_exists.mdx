@@ -5,8 +5,4 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
-
-## The Rust rule
-
-`MetaKeyRegistry::exists`, over the registry that is `$wp_meta_keys`. <Ev source="ss:crates/speedyspec-wp-meta/src/registry.rs#L56-L60" hash="026c9f798b99e8dd8227c9a905b1765853077f11e2953ccb64bd9ba61778671b"/> Its calls in the recorded `unregister-clean-up` scenario, with and without a subtype, give WordPress 7.2-RC2's answers. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/> <Ev source="ss:compat/meta/record.php#L301-L318" hash="68c6b7b04804c89a8bb31483ff289063f905076810178ea5b0192cc1e56a461c"/>
+Native, over `$wp_meta_keys` itself: whether `$wp_meta_keys` holds the key for the type and subtype. <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/> <Ev source="ss:crates/speedyspec-wp-meta-php/tests/errors.rs#L102-L113" hash="08503859afbac547e3e2a0f2f2818bbd0efd35ba2228995ff311f1b415aae23e"/>

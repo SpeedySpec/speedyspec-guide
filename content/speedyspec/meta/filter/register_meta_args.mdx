@@ -1,0 +1,6 @@
+---
+symbol: "filter:register_meta_args"
+verdict: works-as-wordpress
+---
+
+Run by the native [register_meta()](/speedyspec/meta/register_meta/) between its two halves, with WordPress's `$defaults`, `$object_type` and `$meta_key`; callbacks keep their identity.  <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>

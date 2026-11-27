@@ -1,7 +1,7 @@
 ---
 ---
 
-The runtime worker doesn't link these crates yet; this page describes their Rust API as it stands. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L14-L56" hash="15469f5e81760359fbc6d9c95f23dbf8b434a97c14f3ee6cd8b46219234e6c7f"/>
+The runtime worker doesn't link these crates yet; this page describes their Rust API as it stands. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L18-L61" hash="f30a76d01669a95f90d7ba43195c7856552e0a664fcadcbe3d9f81a6b7ce769b"/>
 
 ## The crates
 
@@ -10,8 +10,8 @@ The runtime worker doesn't link these crates yet; this page describes their Rust
 - **`speedyspec-wp-i18n-files`** reads `.mo` and `.l10n.php` files (`MoReader`, `L10nPhpReader`, `ByExtension`, which picks by extension as `WP_Translation_File::create()` does) and asks the file system through `StdFileProbe`. <Ev test="speedyspec-wp-i18n-tests::readers::every_fixture_reads_as_wordpress_reads_it"/>
 - **`speedyspec-wp-i18n-memory`** is `MemoryTranslationFileCache`, the per-worker cache of parsed files, keyed by a file's identity so a rewritten file is read again. <Ev test="speedyspec-wp-i18n-tests::cache::rewritten_file_is_reread"/>
 - **`speedyspec-wp-i18n-php`** is the PHP area, `I18nArea`. **`speedyspec-wp-i18n-tests`** holds the integration tests of the domain with its adapters.
-- **`speedyspec-wp-utf8`** is `utf8.php` and `compat-utf8.php` over bytes: `scan_utf8`, `is_valid_utf8`, `scrub_utf8`, `has_noncharacters`, code point counting, and `mb_substr`/`mb_strlen` as WordPress's fallbacks compute them. **`speedyspec-wp-utf8-php`** declares them in PHP (`Utf8Area`). <Ev source="ss:crates/speedyspec-wp-utf8/src/lib.rs#L14-L19" hash="5241c138a6f1a0498295b15272d95942e25f52be50569eab559c26a9d668d417"/>
-- **`speedyspec-wp-token-map`** is `WP_Token_Map` in WordPress's own layout, with the HTML5 named character references as a table built at compile time; **`speedyspec-wp-token-map-php`** declares the class (`TokenMapArea`). <Ev source="ss:crates/speedyspec-wp-token-map/src/lib.rs#L10-L13" hash="3070711f4835e0ab68a76318c7d2395193dd73027363c3646a48e35d35811fa9"/>
+- **`speedyspec-wp-utf8`** is `utf8.php` and `compat-utf8.php` over bytes: `scan_utf8`, `is_valid_utf8`, `scrub_utf8`, `has_noncharacters`, code point counting, and `mb_substr`/`mb_strlen` as WordPress's fallbacks compute them. **`speedyspec-wp-utf8-php`** declares them in PHP (`Utf8Area`). <Ev source="ss:crates/speedyspec-wp-utf8/src/lib.rs#L18-L23" hash="5241c138a6f1a0498295b15272d95942e25f52be50569eab559c26a9d668d417"/>
+- **`speedyspec-wp-token-map`** is `WP_Token_Map` in WordPress's own layout, with the HTML5 named character references as a table built at compile time; **`speedyspec-wp-token-map-php`** declares the class (`TokenMapArea`). <Ev source="ss:crates/speedyspec-wp-token-map/src/lib.rs#L14-L17" hash="3070711f4835e0ab68a76318c7d2395193dd73027363c3646a48e35d35811fa9"/>
 
 ## Use cases
 

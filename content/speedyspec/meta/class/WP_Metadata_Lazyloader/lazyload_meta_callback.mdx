@@ -3,4 +3,4 @@ symbol: "method:WP_Metadata_Lazyloader::lazyload_meta_callback"
 verdict: works-as-wordpress
 ---
 
-Served by WordPress's PHP, as the whole class is until phase 3.
+Returns `$check` unchanged. When the type has queued ids it first loads their meta, with `$object_id` when it isn't queued and isn't 0, then resets the queue. <Ev scenario="lazy-term" area="metadata"/> <Ev scenario="lazy-reset-and-invalid" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::lazy::callback_adds_an_unqueued_object_and_skips_id_zero"/>

@@ -5,7 +5,8 @@ import { evidenceLink } from '../model/wording.ts';
 
 const attrs = Object.fromEntries(Object.entries(Astro.props).map(([k, v]) => [k, String(v)]));
 const citation = parseCitation(attrs);
-const href = evidenceLink(citation, (await loadGuideData()).sources);
+const data = await loadGuideData();
+const href = evidenceLink(citation, data.sources, data.platformPaths);
 const text = citationText(citation);
 ---
 {href ? <a class="ev" href={href}>{text}</a> : <span class="ev">{text}</span>}

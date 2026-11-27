@@ -18,6 +18,7 @@ use speedyspec_wp_hooks_memory::MemoryHookStore;
 use speedyspec_wp_hooks_php::{HOOK_STORE, PhpHookStore, WpHooksArea};
 use speedyspec_wp_media_contracts::{MediaInfo, MediaReader, MediaSource, ProbeLimits, ReadError};
 use speedyspec_wp_media_php::MediaArea;
+use speedyspec_wp_meta_php::MetaArea;
 use speedyspec_wp_password_php::PasswordArea;
 use speedyspec_wp_text_diff_php::TextDiffArea;
 
@@ -121,7 +122,8 @@ fn runtime_areas(legacy: &Rc<RequestHooks>) -> Result<RuntimeAreas, String> {
         .bindings(Vec::new());
     let hook_api = hooks.api();
     let media = media_area(hook_api.clone(), &container);
-    let container_area = media.ports(TextDiffArea::ports(PasswordArea::ports(container_area)));
+    let container_area =
+        MetaArea::ports(media.ports(TextDiffArea::ports(PasswordArea::ports(container_area))));
     let next_wake = NextWake::new();
     let crypto = CryptoArea::new(hook_api.clone(), sodium);
     let password = password_area(hook_api.clone(), &container, sodium);

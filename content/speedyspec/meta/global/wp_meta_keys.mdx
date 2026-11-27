@@ -1,0 +1,6 @@
+---
+symbol: "global:wp_meta_keys"
+verdict: works-as-wordpress
+---
+
+The registered meta keys, `$wp_meta_keys[ $object_type ][ $object_subtype ][ $meta_key ]`, as WordPress keeps them. The native [register_meta()](/speedyspec/meta/register_meta/) and [unregister_meta_key()](/speedyspec/meta/unregister_meta_key/) write the PHP global itself, and the use cases read it live, so code that reads or writes the global sees what WordPress would. <Ev scenario="get-registered-default" area="metadata"/> <Ev scenario="sanitize-by-subtype" area="metadata"/> <Ev test="speedyspec-wp-meta::recorded::register_matches_wordpress"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/> <Ev source="ss:crates/speedyspec-wp-meta-php/tests/errors.rs#L102-L113" hash="08503859afbac547e3e2a0f2f2818bbd0efd35ba2228995ff311f1b415aae23e"/>

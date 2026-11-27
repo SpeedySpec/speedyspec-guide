@@ -5,21 +5,21 @@
 
 Passwords:
 
-- **`speedyspec-wp-password-contracts`**: the ports, one per pluggable function, and what WordPress's own implementations reach outside themselves. Its only dependency is the Hook API's `Value`. <Ev source="ss:crates/speedyspec-wp-password-contracts/src/lib.rs#L1-L21" hash="69532283911e5cb04c1e603961f2a66234e8d4408e7ab9ab3b43d5a9f10773a7"/>
+- **`speedyspec-wp-password-contracts`**: the ports, one per pluggable function, and what WordPress's own implementations reach outside themselves. Its only dependency is the Hook API's `Value`. <Ev source="ss:crates/speedyspec-wp-password-contracts/src/lib.rs#L5-L25" hash="69532283911e5cb04c1e603961f2a66234e8d4408e7ab9ab3b43d5a9f10773a7"/>
 - **`speedyspec-wp-password`**: WordPress's password rules in Rust, independent of the cryptography and of PHP. <Ev source="ss:crates/speedyspec-wp-password/src/lib.rs#L1-L16" hash="c8d00ccec261f253817dfc0b252b6597d93ddf36006ed6de81aeec1acdd86e8e"/>
 - **`speedyspec-wp-password-bcrypt`**: the `Bcrypt` port over the `bcrypt` crate, matching PHP's `crypt()` and `password_verify()` byte for byte (a password stops at its first NUL byte, as crypt_blowfish reads it). <Ev test="speedyspec-wp-password-bcrypt::vectors::hash_matches_php_crypt"/> <Ev test="speedyspec-wp-password-bcrypt::vectors::verifies_php_vectors_all_variants"/>
 - **`speedyspec-wp-password-php`**: the PHP area. It binds the defaults, registers the ports PHP may replace, and declares the global functions. <Ev source="ss:crates/speedyspec-wp-password-php/src/lib.rs#L1-L20" hash="09cceaffba8a6828ae889e8ca2acdee9e8e8a4e7d0c4eaaed7933b0cc00c0eaa"/>
 
 Crypto:
 
-- **`speedyspec-wp-crypto-contracts`**: the crypto ports (keyed BLAKE2b, Ed25519, base64, the library version, the clock, the file hash, translation, the `wp_trusted_keys` filter, raw argon2, random bytes). <Ev source="ss:crates/speedyspec-wp-crypto-contracts/src/lib.rs#L1-L19" hash="cd302d47d5bed67f3e0dc2cccde7a4fc8054ed5b00c8405081b7e45e13cf68d5"/>
+- **`speedyspec-wp-crypto-contracts`**: the crypto ports (keyed BLAKE2b, Ed25519, base64, the library version, the clock, the file hash, translation, the `wp_trusted_keys` filter, raw argon2, random bytes). <Ev source="ss:crates/speedyspec-wp-crypto-contracts/src/lib.rs#L5-L23" hash="cd302d47d5bed67f3e0dc2cccde7a4fc8054ed5b00c8405081b7e45e13cf68d5"/>
 - **`speedyspec-wp-crypto`**: WordPress's rules for those functions: the `$generic$` format, the trusted keys, the signature loop and its messages. <Ev source="ss:crates/speedyspec-wp-crypto/src/lib.rs#L1-L9" hash="73fd61764aa71b8acbf38df119ba537e8edb04d49507d5c26875857a537d9801"/>
 - **`speedyspec-wp-crypto-sodium`**: the crypto ports over libsodium, called from Rust, linking the same `libsodium.a` as the static PHP's ext-sodium. <Ev source="ss:crates/speedyspec-wp-crypto-sodium/src/lib.rs#L1-L5" hash="ec57c46033ed3e9ce17d7639bc6b6f128a073a504aa07bc58508e0d8a4b0554b"/> <Ev test="speedyspec-wp-crypto-sodium::vectors::version_is_pinned"/> <Ev test="speedyspec-wp-crypto-sodium::password_vectors::argon2_matches_php_sodium_crypto_pwhash"/>
 - **`speedyspec-wp-crypto-php`**: the PHP area for the four sodium functions. <Ev source="ss:crates/speedyspec-wp-crypto-php/src/lib.rs#L1-L14" hash="28150493bcb46537807125e460b50267f836a11bc5da3476885155008c2306c2"/>
 
 ## The contracts
 
-Each pluggable function is one port, so each can be replaced alone, as in WordPress. The container key is also the name of the PHP twin interface. <Ev source="ss:crates/speedyspec-wp-password-contracts/src/lib.rs#L26-L37" hash="4bb8935855b3e6e9200a1c3c02845cfb9ad4faba77b41734b3518c567a72fc75"/>
+Each pluggable function is one port, so each can be replaced alone, as in WordPress. The container key is also the name of the PHP twin interface. <Ev source="ss:crates/speedyspec-wp-password-contracts/src/lib.rs#L30-L41" hash="4bb8935855b3e6e9200a1c3c02845cfb9ad4faba77b41734b3518c567a72fc75"/>
 
 | Port | WordPress | Container key |
 |---|---|---|
@@ -30,7 +30,7 @@ Each pluggable function is one port, so each can be replaced alone, as in WordPr
 | `RandomNumber::rand` | `wp_rand()` | `SpeedySpec\WpPassword\RandomNumber` |
 | `PasswordCostLimits::limits` | none: the site's ceiling on hashing costs | `SpeedySpec\WpPassword\PasswordCostLimits` |
 
-The outbound ports the rules use: `PasswordFilters` (the five filters, through the Hook API), `WpHasherGlobal` (a plugin's `$wp_hasher`), `Bcrypt`, `Warnings`, and the crypto contracts' `Argon2` and `RandomBytes`. `PasswordPorts` gathers them. <Ev source="ss:crates/speedyspec-wp-password-contracts/src/lib.rs#L121-L185" hash="e9d378c23677290815428c34bec2f6bf308788bfb712750ac9b2df8cfd2c4a79"/>
+The outbound ports the rules use: `PasswordFilters` (the five filters, through the Hook API), `WpHasherGlobal` (a plugin's `$wp_hasher`), `Bcrypt`, `Warnings`, and the crypto contracts' `Argon2` and `RandomBytes`. `PasswordPorts` gathers them. <Ev source="ss:crates/speedyspec-wp-password-contracts/src/lib.rs#L125-L189" hash="e9d378c23677290815428c34bec2f6bf308788bfb712750ac9b2df8cfd2c4a79"/>
 
 Values are the Hook API's `Value`, because WordPress returns whatever its filters return. Passwords and hashes are bytes, as PHP strings are.
 

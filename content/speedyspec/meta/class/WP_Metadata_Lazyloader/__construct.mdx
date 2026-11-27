@@ -3,4 +3,4 @@ symbol: "method:WP_Metadata_Lazyloader::__construct"
 verdict: works-as-wordpress
 ---
 
-Served by WordPress's PHP, as the whole class is until phase 3.
+Sets up term, comment and blog, each hooked on its `get_{$type}_metadata` filter, as WordPress does, and makes the instance's native loader. <Ev source="ss:crates/speedyspec-wp-meta-php/src/lazyloader.php#L40-L60" hash="e566e756baa83980d6200da2f4a4952958e61c64fac4b6310557608a2b5ac418"/> <Ev scenario="lazy-term" area="metadata"/>

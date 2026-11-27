@@ -5,6 +5,4 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
-
-Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts.
+SpeedySpec's PHP, as WordPress has it: one `WP_Metadata_Lazyloader` per request, kept in a static variable. The class is native; see [WP_Metadata_Lazyloader](/speedyspec/meta/class/WP_Metadata_Lazyloader/). <Ev source="ss:crates/speedyspec-wp-meta-php/src/meta.php#L63-L77" hash="8d4c633bb1a42b94c00407cbfef221ddb777c5518e7112a626b8d199b241e924"/> <Ev scenario="lazy-term" area="metadata"/> <Ev scenario="lazy-comment" area="metadata"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>

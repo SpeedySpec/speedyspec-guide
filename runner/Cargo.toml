@@ -8,7 +8,8 @@ license = "MIT"
 publish = false
 
 # Its own workspace: the speedyspec-server crates below are path dependencies through `server`, a symlink to a
-# pinned checkout (bun run runner:link).
+# pinned checkout (bun run runner:link). The speedyspec-platform crates come from crates.io at the versions the server's
+# workspace names, so the runner and the server's crates share one copy of each.
 [workspace]
 
 # What the server crates inherit, as in speedyspec-server's own Cargo.toml.
@@ -18,25 +19,76 @@ rust-version = "1.99"
 license = "MIT"
 repository = "https://github.com/SpeedySpec/speedyspec-server"
 
+# The speedyspec-platform crates the server crates take from crates.io, copied by hand from speedyspec-server's own
+# Cargo.toml at the pin. Copy the list again whenever the pin moves: cargo fails to resolve the server crates when a
+# version here is older than theirs.
+[workspace.dependencies]
+speedyspec-abilities-contracts = "0.2.0"
+speedyspec-cache = "0.3.0"
+speedyspec-compat = "0.10.0"
+speedyspec-container = "0.2.0"
+speedyspec-container-php = "0.2.0"
+speedyspec-cqrs = "0.2.0"
+speedyspec-data = "0.3.0"
+speedyspec-fastcgi = "0.2.0"
+speedyspec-hooks = "0.2.0"
+speedyspec-hooks-memory = "0.2.0"
+speedyspec-http = "0.2.0"
+speedyspec-native-stage = "0.2.0"
+speedyspec-operation-contracts = "0.2.0"
+speedyspec-php = "0.8.0"
+speedyspec-php-ext = "0.2.0"
+speedyspec-php-port-macros = "0.2.0"
+speedyspec-php-serialize = "0.3.0"
+speedyspec-rest-contracts = "0.2.0"
+speedyspec-routing = "0.2.0"
+speedyspec-runtime-contract = "0.6.0"
+speedyspec-transport-contracts = "0.2.0"
+speedyspec-wp-cron-contracts = "0.5.0"
+speedyspec-wp-crypto-contracts = "0.6.0"
+speedyspec-wp-db-contracts = "0.2.0"
+speedyspec-wp-hooks = "0.2.0"
+speedyspec-wp-hooks-contracts = "0.2.0"
+speedyspec-wp-hooks-memory = "0.2.0"
+speedyspec-wp-hooks-php = "0.2.0"
+speedyspec-wp-html-split = "0.2.0"
+speedyspec-wp-html-syntax = "0.6.0"
+speedyspec-wp-i18n-contracts = "0.2.0"
+speedyspec-wp-kses-contracts = "0.6.0"
+speedyspec-wp-kses-lexical = "0.6.0"
+speedyspec-wp-media-contracts = "0.5.0"
+speedyspec-wp-meta-contracts = "0.3.0"
+speedyspec-wp-object-cache-contracts = "0.2.0"
+speedyspec-wp-password-contracts = "0.4.0"
+speedyspec-wp-posts-contracts = "0.2.0"
+speedyspec-wp-shortcode-contracts = "0.6.0"
+speedyspec-wp-text-contracts = "0.6.0"
+speedyspec-wp-text-diff = "0.3.0"
+speedyspec-wp-text-diff-contracts = "0.3.0"
+speedyspec-wp-theme-json-contracts = "0.2.0"
+speedyspec-wp-token-map = "0.6.0"
+speedyspec-wp-utf8 = "0.6.0"
+speedyspec-xmlrpc-contracts = "0.2.0"
+
 [dependencies]
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-speedyspec-container = { path = "server/crates/speedyspec-container" }
-speedyspec-container-php = { path = "server/crates/speedyspec-container-php" }
-speedyspec-hooks = { path = "server/crates/speedyspec-hooks" }
-speedyspec-hooks-memory = { path = "server/crates/speedyspec-hooks-memory" }
-speedyspec-php = { path = "server/crates/speedyspec-php" }
-speedyspec-php-ext = { path = "server/crates/speedyspec-php-ext" }
-speedyspec-wp-hooks = { path = "server/crates/speedyspec-wp-hooks" }
-speedyspec-wp-hooks-memory = { path = "server/crates/speedyspec-wp-hooks-memory" }
-speedyspec-wp-hooks-php = { path = "server/crates/speedyspec-wp-hooks-php" }
+speedyspec-container.workspace = true
+speedyspec-container-php.workspace = true
+speedyspec-hooks.workspace = true
+speedyspec-hooks-memory.workspace = true
+speedyspec-php.workspace = true
+speedyspec-php-ext.workspace = true
+speedyspec-wp-hooks.workspace = true
+speedyspec-wp-hooks-memory.workspace = true
+speedyspec-wp-hooks-php.workspace = true
 speedyspec-wp-crypto-php = { path = "server/crates/speedyspec-wp-crypto-php" }
 speedyspec-wp-crypto-sodium = { path = "server/crates/speedyspec-wp-crypto-sodium" }
 speedyspec-wp-password-php = { path = "server/crates/speedyspec-wp-password-php" }
 speedyspec-wp-text-diff-php = { path = "server/crates/speedyspec-wp-text-diff-php" }
-speedyspec-wp-media-contracts = { path = "server/crates/speedyspec-wp-media-contracts" }
+speedyspec-wp-media-contracts.workspace = true
 speedyspec-wp-media-php = { path = "server/crates/speedyspec-wp-media-php" }
-speedyspec-wp-cron-contracts = { path = "server/crates/speedyspec-wp-cron-contracts" }
+speedyspec-wp-cron-contracts.workspace = true
 # The database areas (database.rs), booted when DB_NAME is set.
 speedyspec-data-mysql = { path = "server/crates/speedyspec-data-mysql" }
 speedyspec-data-query = { path = "server/crates/speedyspec-data-query" }
@@ -44,6 +96,7 @@ speedyspec-wp-cron-php = { path = "server/crates/speedyspec-wp-cron-php" }
 speedyspec-wp-db = { path = "server/crates/speedyspec-wp-db" }
 speedyspec-wp-db-php = { path = "server/crates/speedyspec-wp-db-php" }
 speedyspec-wp-object-cache-php = { path = "server/crates/speedyspec-wp-object-cache-php" }
+speedyspec-wp-meta-php = { path = "server/crates/speedyspec-wp-meta-php" }
 speedyspec-wp-options-php = { path = "server/crates/speedyspec-wp-options-php" }
 
 [dev-dependencies]

@@ -69,3 +69,24 @@ describe('compatVersion', () => {
     expect(await ev.compatVersion('nope')).toBeNull();
   });
 });
+
+describe('a crate that moved to speedyspec-platform', () => {
+  // The server first, then the platform: a citation stays valid when its crate or compat area moves.
+  const both = new CompatFilesEvidence([join(f, 'server'), join(f, 'platform')], join(f, 'wordpress'));
+  test('tests, source lines and compat areas are found in the platform', async () => {
+    expect(await both.testExists('speedyspec-shared::moved::moved_with_its_crate')).toBe(true);
+    expect(await both.sourceLines('ss', 'crates/speedyspec-shared/src/lib.rs', 2, 2)).toBe('pub fn shared() {}');
+    expect(await both.scenarioExists('shared', 'shared_scenario')).toBe(true);
+    // compat/wordpress.json is the server's: the platform area has no override.
+    expect(await both.compatVersion('shared')).toBe('7.2-RC2');
+  });
+  test('the server still answers first', async () => {
+    expect(await both.testExists('speedyspec-wp-hooks-php::wordpress::replays_the_hooks_fixture')).toBe(true);
+    expect(await both.compatVersion('options')).toBe('7.1.5');
+    expect(await ev.testExists('speedyspec-shared::moved::moved_with_its_crate')).toBe(false);
+  });
+  test('the crates and compat areas only the platform has are listed, for links', async () => {
+    expect(await both.platformPaths()).toEqual({ crates: ['speedyspec-shared'], compat: ['shared'] });
+    expect(await ev.platformPaths()).toEqual({ crates: [], compat: [] });
+  });
+});

@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpMeta\\Native\\get_object_subtype"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_object_subtype()](/speedyspec/meta/get_object_subtype/) to reach the native metadata API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-meta-php/src/meta.php#L8-L11" hash="93de3b4e68a0fe11ddd2a574078fad4ffb350c066e72abfe73a11ec59d4cc57a"/>
+
+It sends the `GetObjectSubtype` message through the handler bound under `SpeedySpec\WpMeta\GetObjectSubtypeHandler`. <Ev scenario="subtype-each-type" area="metadata"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>

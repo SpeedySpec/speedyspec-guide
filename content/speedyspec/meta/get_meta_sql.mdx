@@ -5,6 +5,4 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php` and `WP_Meta_Query`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
-
-It isn't part of the posts and meta port: it builds a `WP_Meta_Query`, whose port comes with `WP_Query`'s, the area after this one.
+**Not yet ported.** WordPress's own `get_meta_sql()` runs on SpeedySpec, so the verdict is WordPress's behaviour by construction, not a port's. SpeedySpec's prepared release keeps it in `meta.php` beside the native functions, because it builds a `WP_Meta_Query`, whose port comes with `WP_Query`'s. <Ev source="ss:crates/speedyspec-wp-meta-php/src/release.rs#L9-L10" hash="7abfe15425f59212735070a8107ed756ba290bc96c8ca900ea0a3d5a8262bb99"/> <Ev test="speedyspec-wp-meta-php::release::strips_exactly_the_ported_functions"/>

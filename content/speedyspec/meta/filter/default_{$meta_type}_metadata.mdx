@@ -1,0 +1,6 @@
+---
+symbol: "filter:default_{$meta_type}_metadata"
+verdict: works-as-wordpress
+---
+
+Run by the native [get_metadata_default()](/speedyspec/meta/get_metadata_default/); the object id it gets is `absint()`ed (see that page). [register_meta()](/speedyspec/meta/register_meta/) hooks [filter_default_metadata()](/speedyspec/meta/filter_default_metadata/) here. <Ev scenario="get-default-filter" area="metadata"/> <Ev scenario="get-registered-default" area="metadata"/> <Ev scenario="get-default-while-installing" area="metadata"/>

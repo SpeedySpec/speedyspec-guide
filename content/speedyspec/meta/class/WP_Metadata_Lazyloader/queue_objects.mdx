@@ -3,4 +3,4 @@ symbol: "method:WP_Metadata_Lazyloader::queue_objects"
 verdict: works-as-wordpress
 ---
 
-Served by WordPress's PHP, as the whole class is until phase 3.
+Native queue, WordPress's order: the callback is hooked, then `metadata_lazyloader_queued_objects` fires with the ids, the type and the loader. An unknown type is a `WP_Error` with the code `invalid_object_type`. A callback's exception reaches the caller. <Ev scenario="lazy-term" area="metadata"/> <Ev scenario="lazy-reset-and-invalid" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::lazy::queue_fires_metadata_lazyloader_queued_objects"/> <Ev test="speedyspec-wp-meta-tests::lazy::unknown_type_is_an_error"/> <Ev source="ss:crates/speedyspec-wp-meta-php/tests/errors.rs#L137-L155" hash="aa7c31419625fd52d5a9a50605fde5c46c2d1a70abbaf9ff2732950e4d4bfffa"/>

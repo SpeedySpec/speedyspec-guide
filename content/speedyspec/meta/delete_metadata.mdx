@@ -1,10 +1,16 @@
 ---
 symbol: "function:delete_metadata"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "On a single site the `site` meta type maps to `wp_sitemeta`, where WordPress has no table for it and the function returns false."
+  - summary: "An object in a meta value reaches the hooks as a copy (serialized, then unserialized), not as the object passed."
 ---
 
 ## Behaviour
 
-Served by WordPress's PHP. The runtime worker links no meta crate, so PHP on SpeedySpec runs WordPress's own `meta.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L20-L55" hash="955f1ccec24cc11da3fa0826db96868561c6e6c3cdc55277b37b80c09b513508"/>
+Native: the `DeleteMetadata` command. It deletes the key's rows, or only those holding `$meta_value`, or with `$delete_all` the key on every object. It sends `meta_value` to the `delete_{$meta_type}_metadata` filter only when it isn't `''`, `null` or `false`, clears each touched object's cache entry, and fires `delete_{$meta_type}_meta` and `deleted_{$meta_type}_meta`, plus `delete_postmeta` and `deleted_postmeta` for posts. <Ev scenario="delete-key-post" area="metadata"/> <Ev scenario="delete-key-thing" area="metadata"/> <Ev scenario="delete-by-value" area="metadata"/> <Ev scenario="delete-all" area="metadata"/> <Ev scenario="delete-all-users" area="metadata"/> <Ev scenario="delete-legacy-postmeta" area="metadata"/> <Ev scenario="delete-short-circuit" area="metadata"/> <Ev scenario="delete-invalid" area="metadata"/> <Ev scenario="delete-slashed" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::delete_all_clears_every_object_cache"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
 
-Its Rust port is phase 3 of the posts and meta port, which waits for the hooks, object cache and db contracts. The `$wpdb` statements it makes are already the `MetaRepository` port's `ids_matching`, `objects_with` and `delete_ids`. <Ev source="ss:crates/speedyspec-wp-meta-contracts/src/ports.rs#L37-L51" hash="72fcc008d6e6235fdd1cebb67b7f89bf8ee0c8257b47aa9d8c86919cc382a124"/>
+## Differences
+
+- **`site` on a single site** reads or writes `wp_sitemeta`, where WordPress has no table and returns false; see [_get_meta_table()](/speedyspec/meta/_get_meta_table/). <Ev source="ss:crates/speedyspec-wp-meta-sql/src/repository.rs#L398-L401" hash="29a136921eb9b816414883ee9065616182ae0208fb47091146cd9f6e5179566a"/>
+- **Objects** in `$meta_value` reach `delete_{$meta_type}_metadata` as copies, and are matched by their serialized form, as WordPress matches them. <Ev source="ss:crates/speedyspec-wp-meta-php/src/codec.rs#L3-L13" hash="9ad5f408eef9d41cda7cf40d1d761ed16a0c161faacd2753523b3e445c4bb0b4"/>

@@ -129,10 +129,12 @@ export async function runStage(stage: Stage, deps: PipelineDeps, opts: { offline
     case 'coverage':
       await store.write('coverage', computeCoverage(await need<Assignment>(store, 'assignment'), await deps.seams.all(), await deps.content.pages()));
       break;
-    case 'evidence':
+    case 'evidence': {
       await store.write('evidence-index', await evidenceIndexes(deps, store));
-      await store.write('compat', { areas: await compatAreas(deps) });
+      const evidence = await deps.evidence();
+      await store.write('compat', { areas: await compatAreas(deps), platform: (await evidence.platformPaths?.()) ?? { crates: [], compat: [] } });
       break;
+    }
     case 'validate': {
       const failures = await runRules(ALL_RULES, {
         inventory: await need<Inventory>(store, 'inventory-wp'),

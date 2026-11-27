@@ -1,0 +1,6 @@
+---
+symbol: "action:update_{$meta_type}_meta"
+verdict: works-as-wordpress
+---
+
+Fired by the native [update_metadata()](/speedyspec/meta/update_metadata/) and [update_metadata_by_mid()](/speedyspec/meta/update_metadata_by_mid/) before each row's update. `update_metadata_by_mid()` passes the value before sanitizing, as WordPress does. <Ev scenario="update-changes-post" area="metadata"/> <Ev scenario="update-prev-value" area="metadata"/> <Ev scenario="mid-post" area="metadata"/> <Ev test="speedyspec-wp-meta-tests::use_cases::update_with_prev_value_fires_for_every_id"/>

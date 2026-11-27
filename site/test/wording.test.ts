@@ -56,6 +56,20 @@ describe('wording', () => {
     expect(evidenceLink({ kind: 'source', base: 'ss', file: 'crates/x/src/a.rs', from: 3, to: 3 }, sources)).toBe('https://github.com/SpeedySpec/speedyspec-server/blob/abc/crates/x/src/a.rs#L3');
     expect(evidenceLink({ kind: 'test', path: 'a::b::c' }, sources)).toBe('https://github.com/SpeedySpec/speedyspec-server/blob/abc/crates/a/tests/b.rs');
   });
+
+  test('evidence in a crate or compat area that moved to speedyspec-platform links to the platform at its pin', () => {
+    const sources = {
+      wordpress: { version: '7.2-RC2', commit: 'ce78d2d6eb' },
+      server: { repo: 'https://github.com/SpeedySpec/speedyspec-server.git', commit: 'abc' },
+      platform: { repo: 'https://github.com/SpeedySpec/speedyspec-platform.git', commit: 'def' },
+    };
+    const moved = { crates: ['x'], compat: ['hooks'] };
+    expect(evidenceLink({ kind: 'source', base: 'ss', file: 'crates/x/src/a.rs', from: 3, to: 3 }, sources, moved)).toBe('https://github.com/SpeedySpec/speedyspec-platform/blob/def/crates/x/src/a.rs#L3');
+    expect(evidenceLink({ kind: 'test', path: 'x::b::c' }, sources, moved)).toBe('https://github.com/SpeedySpec/speedyspec-platform/blob/def/crates/x/tests/b.rs');
+    expect(evidenceLink({ kind: 'scenario', area: 'hooks', name: 'y' }, sources, moved)).toBe('https://github.com/SpeedySpec/speedyspec-platform/blob/def/compat/hooks/scenarios.json');
+    expect(evidenceLink({ kind: 'source', base: 'ss', file: 'compat/hooks/breaks.json', from: 1, to: 1 }, sources, moved)).toBe('https://github.com/SpeedySpec/speedyspec-platform/blob/def/compat/hooks/breaks.json#L1');
+    expect(evidenceLink({ kind: 'source', base: 'ss', file: 'crates/y/src/a.rs', from: 3, to: 3 }, sources, moved)).toBe('https://github.com/SpeedySpec/speedyspec-server/blob/abc/crates/y/src/a.rs#L3');
+  });
 });
 
 describe('notDocumentedText', () => {

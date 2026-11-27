@@ -1,0 +1,1 @@
+{ "area": "shared", "scenarios": [ { "name": "shared_scenario", "steps": [ { "call": "shared" } ] } ] }

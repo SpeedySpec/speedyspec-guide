@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpMeta\\Native\\get_metadata_by_mid"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_metadata_by_mid()](/speedyspec/meta/get_metadata_by_mid/) to reach the native metadata API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-meta-php/src/meta.php#L8-L11" hash="93de3b4e68a0fe11ddd2a574078fad4ffb350c066e72abfe73a11ec59d4cc57a"/>
+
+It sends the `GetMetadataByMid` message through the handler bound under `SpeedySpec\WpMeta\GetMetadataByMidHandler`. <Ev scenario="mid-post" area="metadata"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>

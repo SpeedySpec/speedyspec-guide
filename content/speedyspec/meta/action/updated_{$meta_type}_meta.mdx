@@ -1,0 +1,6 @@
+---
+symbol: "action:updated_{$meta_type}_meta"
+verdict: works-as-wordpress
+---
+
+Fired by the native [update_metadata()](/speedyspec/meta/update_metadata/) and [update_metadata_by_mid()](/speedyspec/meta/update_metadata_by_mid/) after each row's update; not when the value is unchanged. <Ev scenario="update-changes-comment" area="metadata"/> <Ev scenario="update-several-rows" area="metadata"/> <Ev scenario="update-int-for-stored-string" area="metadata"/> <Ev scenario="mid-post" area="metadata"/>

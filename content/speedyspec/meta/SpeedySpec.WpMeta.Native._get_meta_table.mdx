@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpMeta\\Native\\_get_meta_table"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [_get_meta_table()](/speedyspec/meta/_get_meta_table/) to reach the native metadata API; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-meta-php/src/meta.php#L8-L11" hash="93de3b4e68a0fe11ddd2a574078fad4ffb350c066e72abfe73a11ec59d4cc57a"/>
+
+It reads the table from `wpdb`, and from PHP for a table a plugin declares as a dynamic property. <Ev scenario="add-unknown-type" area="metadata"/> <Ev test="speedyspec-wp-meta-php::wordpress::wordpress_meta_runs_pass"/>
