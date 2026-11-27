@@ -258,7 +258,7 @@ WordPress pin (`sources.json`, wordpress-develop `1ccce2133e92`) already is.
 
 ## The meta seam, native (2026-11-26)
 
-speedyspec-server `8ecc1c64` (draft PR #131, with #134 merged in) wires WordPress's metadata API into the runtime, and the guide now pins
+speedyspec-server `43bb14a3` (PR #131) wires WordPress's metadata API into the runtime, and the guide now pins
 speedyspec-platform too (`fe3bb527`), where the shared crates and the hooks compat area moved.
 
 - **Meta is a ported seam:** 23 of `meta.php`'s 24 functions and `WP_Metadata_Lazyloader` are native; `get_meta_sql()`
