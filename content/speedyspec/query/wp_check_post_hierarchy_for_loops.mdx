@@ -17,7 +17,7 @@ The copied WordPress write tests reach it through every `wp_insert_post()` and `
 
 ## Differences
 
-- **A parent or id that is not an int** is read with `(int)` for the loop walk; WordPress's `$override` lookup keys it as an array key, which PHP normalises the same way for integer strings but not for floats or other strings. A negative parent names no post, so it closes no loop. Not recorded. <Ev source="ss:crates/speedyspec-wp-posts/src/write/transition.rs#L227-L229" hash="fdfb9087e504d678e9a64d2be0ccd6be9c83f10e5d559d08b5517c7d817015b1"/>
+- **A parent or id that is not an int** is read with `(int)` for the loop walk; WordPress's `$override` lookup keys it as an array key, which PHP normalises the same way for integer strings and floats (a float key is truncated) but not for other strings (`'7abc'` stays a string key, where `(int)` reads 7). A negative parent names no post, so it closes no loop. Not recorded. <Ev source="ss:crates/speedyspec-wp-posts/src/write/transition.rs#L227-L229" hash="fdfb9087e504d678e9a64d2be0ccd6be9c83f10e5d559d08b5517c7d817015b1"/>
 
 ## The Rust rule
 
