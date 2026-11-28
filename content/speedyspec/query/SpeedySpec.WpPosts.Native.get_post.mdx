@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_post"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_post()](/speedyspec/query/get_post/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L25-L28" hash="0bd128e75cc399f6e1c08d3944948d36f7cbb43d7e2bcf4293923041d22665a6"/>
+
+It sends the `GetPostObject` message through the handler bound under `SpeedySpec\WpPosts\GetPostObjectHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L456-L463" hash="1fe166b521131d2a31481aac14f470e9ec5c5dea592e932e17e838ad520a6a4e"/> <Ev scenario="get-by-id" area="posts-read"/> <Ev scenario="get-by-numeric-string" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

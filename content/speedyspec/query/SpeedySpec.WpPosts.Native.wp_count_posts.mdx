@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\wp_count_posts"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [wp_count_posts()](/speedyspec/query/wp_count_posts/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L60-L63" hash="76311e7a66ff96025aab91520ba53c5cbb888828f02700d4f0079b03bcb25a05"/>
+
+It sends the `WpCountPosts` message through the handler bound under `SpeedySpec\WpPosts\WpCountPostsHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L695-L701" hash="e1632caff40198d4a06441a4e9b73ce4678679d8fe8d107122301e3431483c6f"/> <Ev scenario="count-posts-each" area="posts-read"/> <Ev scenario="count-posts-unknown-type" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

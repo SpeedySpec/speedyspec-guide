@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\update_post_caches"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [update_post_caches()](/speedyspec/query/update_post_caches/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L145-L148" hash="e7e1da73521020b39365efaeee9c1b61eacd8458ca4b819a185f33103823f674"/>
+
+It sends the `UpdatePostCachesObjects` message through the handler bound under `SpeedySpec\WpPosts\UpdatePostCachesObjectsHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L839-L852" hash="7a1c88d695d85843b522127b3f17060e81cab098f9cbd21606aa9581cf0d7b32"/>  <Ev test="speedyspec-wp-posts-php::compat::main"/>

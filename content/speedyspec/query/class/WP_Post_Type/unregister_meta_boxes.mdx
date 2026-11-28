@@ -3,4 +3,4 @@ symbol: "method:WP_Post_Type::unregister_meta_boxes"
 verdict: works-as-wordpress
 ---
 
-Served by WordPress's PHP, as the whole class is until phase 4. In Rust, `unregistration` returns its `remove_action()` call, `add_meta_boxes_{$post_type}` at priority 10, when `register_meta_box_cb` is set; phase 4's adapter makes it. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L71-L84" hash="76164318ad249e3434ba2a67a80227ec12caffff758c5ccd831d200f7d5a77b4"/> <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>
+Served by WordPress's PHP, as the whole class is until phase 4. In Rust, `unregistration` returns its `remove_action()` call, `add_meta_boxes_{$post_type}` at priority 10, when `register_meta_box_cb` is set; phase 4's adapter makes it. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L75-L88" hash="76164318ad249e3434ba2a67a80227ec12caffff758c5ccd831d200f7d5a77b4"/> <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>

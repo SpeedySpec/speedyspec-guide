@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_post_status"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_post_status()](/speedyspec/query/get_post_status/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L45-L48" hash="51738213115c0a41cf9d804b1ab9e564b2396006803328eca1b74120a33e6850"/>
+
+It sends the `GetPostStatus` message through the handler bound under `SpeedySpec\WpPosts\GetPostStatusHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L521-L529" hash="29b45fa58563824e4c6e191ef8d70ff48f3be3f1c67aa177fb98b818a86936de"/> <Ev scenario="status-each" area="posts-read"/> <Ev scenario="status-missing" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

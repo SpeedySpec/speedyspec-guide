@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\store_post_type"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It stores a post type object in `$wp_post_types`, so the global keeps PHP's own key handling. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L180-L187" hash="e036102c04d7400cf2a5e58cc0d31b5ac18d6fa8687707a503f498dbce67658c"/> <Ev scenario="types-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

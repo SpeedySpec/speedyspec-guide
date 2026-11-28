@@ -1,0 +1,24 @@
+---
+symbol: "function:get_post_field"
+verdict: works-with-differences
+differences:
+  - summary: "Given an object, it reads a copy: WordPress's `get_post()` inside it sanitizes a filterless `stdClass` in place (`filter` set to `raw`, ids cast to int), and here the caller's object is left as it was."
+  - summary: "Through the native meta functions, `update_meta_cache()`'s statement selects `meta_id` too, so a `query` filter sees `SELECT meta_id, post_id, meta_key, meta_value …` where WordPress sends `SELECT post_id, meta_key, meta_value …`. The rows, the cache and the query count are the same."
+---
+
+## Behaviour
+
+Native: `post.php`'s `get_post_field()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_post_field`, which dispatches the `GetPostField` message to the handler bound at `SpeedySpec\WpPosts\GetPostFieldHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L35-L38" hash="202d29c0f54abf283355c5303857de977e522b4df770a25dbe3fa35ef5817bd6"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/get.rs#L286-L290" hash="6d6db2045a5f7ffe15c3931faec386dfc6f2bd0955c68c4f0103c338ee7faefb"/>
+
+It reads the post, then the field as `WP_Post` would give it: a property as it is (a present `null` is `''`), else `WP_Post::__isset()` and `__get()`'s branches, `ancestors`, `page_template` (post meta `_wp_page_template`), `post_category` and `tags_input` (through the `Taxonomy` port), then any post meta key (`metadata_exists()`, then the first value). The value goes through `sanitize_post_field()` for `$context`. `''` when there is no post or no such field. <Ev scenario="field-default-context" area="posts-read"/> <Ev scenario="field-raw" area="posts-read"/> <Ev scenario="field-edit" area="posts-read"/> <Ev scenario="field-display" area="posts-read"/> <Ev scenario="field-attribute" area="posts-read"/> <Ev scenario="field-js" area="posts-read"/> <Ev scenario="field-unknown" area="posts-read"/> <Ev scenario="field-missing-field" area="posts-read"/> <Ev scenario="field-missing-post" area="posts-read"/> <Ev scenario="field-magic" area="posts-read"/> <Ev scenario="field-global" area="posts-read"/> <Ev scenario="field-object" area="posts-read"/> <Ev scenario="field-hooks" area="posts-read"/> <Ev scenario="get-zero-dates" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev test="speedyspec-wp-posts-tests::read::field_reads_columns_magic_and_meta"/> <Ev test="speedyspec-wp-posts-tests::read::null_property_is_not_a_meta_lookup"/>
+
+No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.
+
+## Differences
+
+- **An object argument is read as a copy.** The readers beside `get_post()` hand an object argument to the use case as a copy, for one dispatch. WordPress's `get_post()` inside them sanitizes a `stdClass` with no `filter` in place, setting `filter` to `raw` and casting its ids to int; on SpeedySpec the caller's object is left as it was. The answer is the same. Not recorded. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L30-L34" hash="2bc082f37a3aa63398531ebb37534e185fe71501b2fbacd16834877684966948"/>
+- **The meta statement.** This function reads post meta through the native meta functions, whose `update_meta_cache()` statement selects `meta_id` too (`SELECT meta_id, post_id, meta_key, meta_value …`, where WordPress sends `SELECT post_id, meta_key, meta_value …`), because the meta entity carries its id. A plugin that matches the exact text in a `query` filter misses it; the rows, the cache and the query count are WordPress's. It is the meta seam's documented difference, recorded here as a break on the scenarios that watch the statement. <Ev break="cache-prime-statement" step="1" area="posts-read"/> <Ev break="count-readable-statement" step="1" area="posts-read"/> <Ev source="ss:compat/posts-read/breaks.json#L1-L14" hash="c5f076b4794a20681d8b985e4d9fb2e12e1bda0c5f3b95a2ba59b4e080731c8d"/> See [update_meta_cache()](/speedyspec/meta/update_meta_cache/).
+
+## Limits
+
+- **Not run:** WordPress's `test_get_post_category_property` is left out of the PHPUnit runs, because it makes terms with `wp_insert_term()` and `wp_set_post_categories()`; taxonomy isn't ported; WordPress's `test_get_tags_input_property` is left out of the PHPUnit runs, because `wp_set_post_tags()` makes terms whose names default-filters.php's `pre_term_name` filters trim, which aren't loaded. Untested, not different. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/wordpress.rs#L101-L166" hash="a72cd183bb0db176632c0d6eb538a55596678397fb6692875c10c885385f3601"/>

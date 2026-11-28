@@ -124,10 +124,10 @@ dependencies:
   # register_meta()'s native calls WordPress's _doing_it_wrong() and __() when they exist.
   function:_doing_it_wrong:
     state: php
-    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/native.rs#L540-L562", hash: "95f0b8b7c657e76f373e02a1b6aab0d6e2853ce19922b49680117f86b8d6c318" }
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/native.rs#L541-L563", hash: "95f0b8b7c657e76f373e02a1b6aab0d6e2853ce19922b49680117f86b8d6c318" }
   function:absint:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/args.rs#L113-L116", hash: "109e5397e3a7a21dc4fe6baec7bf816494e3b836fe082b196a23036e2b591846" }
+    cite: { source: "ss:crates/speedyspec-wp-meta-php/src/args.rs#L121-L124", hash: "109e5397e3a7a21dc4fe6baec7bf816494e3b836fe082b196a23036e2b591846" }
   # register_meta() adds its filters through the Rust Hook API.
   function:add_filter:
     state: rust
@@ -168,7 +168,7 @@ dependencies:
     cite: { source: "ss:crates/speedyspec-wp-meta-php/src/adapters.rs#L188-L208", hash: "5269178f8747161d1bff8688911295d9f931998cb4775b70692e0c6dfc3d5746" }
   function:maybe_serialize:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-meta/src/api.rs#L237-L240", hash: "dc47a86eacffc778fbdfa31131b59b5126689f5cdfca9114636e21dcc95f1d6d" }
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/api.rs#L247-L250", hash: "dc47a86eacffc778fbdfa31131b59b5126689f5cdfca9114636e21dcc95f1d6d" }
   function:maybe_unserialize:
     state: rust
     cite: { source: "ss:crates/speedyspec-wp-meta/src/by_mid.rs#L89-L90", hash: "f286ecf92a88bfda8722cb0e8e3eeea172e002a5f184d20e0a744113e2153a2f" }
@@ -208,7 +208,7 @@ dependencies:
     cite: { source: "ss:crates/speedyspec-wp-meta-php/src/adapters.rs#L114-L121", hash: "70bfd9094a0d5952da004289c0b76ea787dedf7d1f59b2451ac6fba673479fa5" }
   function:wp_is_numeric_array:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-meta/src/read.rs#L212-L215", hash: "64dee4b36f5cefe5ec11f2e8fdb241c96426650c2a2f8dfcc6b78329a1a6a94c" }
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/read.rs#L215-L218", hash: "64dee4b36f5cefe5ec11f2e8fdb241c96426650c2a2f8dfcc6b78329a1a6a94c" }
   function:wp_parse_args:
     state: rust
     cite: { source: "ss:crates/speedyspec-wp-meta/src/register.rs#L178-L181", hash: "3ab456030e213c51e8f27d137af3ff0f60f169107c3dea49825dfd9c1cb0d3fd" }

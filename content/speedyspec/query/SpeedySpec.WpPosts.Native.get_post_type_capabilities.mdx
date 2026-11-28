@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_post_type_capabilities"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_post_type_capabilities()](/speedyspec/query/get_post_type_capabilities/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L59-L62" hash="2becdf20a234f166d94181e4c3426737d1518ea6914b8ffee9d4a103fd935e6b"/>
+
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L894-L924" hash="8404b126a031dad4440dab6dfcc56545c9dfb8fc65481757808adbd5fb8cc7cd"/> <Ev scenario="types-capabilities" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

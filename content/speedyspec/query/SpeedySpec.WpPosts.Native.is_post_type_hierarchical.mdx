@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\is_post_type_hierarchical"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [is_post_type_hierarchical()](/speedyspec/query/is_post_type_hierarchical/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L29-L32" hash="e7d8025dd75e80446bc7230238c1ae5eff29988028bec94573a16be2bd762891"/>
+
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L727-L733" hash="53062bb8db3a44533a912333da5be92b941cd1a1fdbb812fb8763944461e893c"/> <Ev scenario="types-exists" area="posts-read"/> <Ev scenario="types-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

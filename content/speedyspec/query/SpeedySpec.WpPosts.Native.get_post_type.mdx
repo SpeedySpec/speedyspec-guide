@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_post_type"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_post_type()](/speedyspec/query/get_post_type/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L50-L53" hash="f0d97f3b792ba512bbdea504df9016b6edc9c56ad137271ddcda18127553f4f3"/>
+
+It sends the `GetPostType` message through the handler bound under `SpeedySpec\WpPosts\GetPostTypeHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L531-L537" hash="c7df53260cb96995da5434b289be41e85fe90a2d0d64e5cca93a682517150d1b"/> <Ev scenario="type-each" area="posts-read"/> <Ev scenario="type-global" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

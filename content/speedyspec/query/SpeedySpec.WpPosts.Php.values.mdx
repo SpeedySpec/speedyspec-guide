@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\values"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It gives Rust an array as PHP holds it, which Rust keeps and passes back, so a warm `get_post()` writes each post's 24 values to PHP once per request. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L200-L206" hash="5b98d48b53a7ef48ee4f8eda2aa7707aebfa51fdc0d8cc7546b82cbcd78e4fc5"/> <Ev scenario="get-by-id" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

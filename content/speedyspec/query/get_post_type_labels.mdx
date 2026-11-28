@@ -5,7 +5,13 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Native: `post.php`'s `get_post_type_labels()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_post_type_labels`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L64-L67" hash="cc7f95ae0d6ae183e2caaca76cb58720a31883bc6a97c729700b96daf97c626a"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L840-L859" hash="f18827b8d8b11c60d73870305f1d199eaafa4f882362381e957034256f1027fb"/>
+
+It is phase 2's rule, then the `post_type_labels_{$post_type}` filter with the labels as a `stdClass`, cast back with `(array)`. <Ev scenario="types-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-tests::filters::a_labels_filter_changes_a_label_and_keeps_the_defaults"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+
+The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
+
+WordPress's own `Tests_Post_Types` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rules
 
@@ -15,5 +21,4 @@ All 12 recorded cases replay as in WordPress 7.2-RC2: no labels, a `label` only,
 
 ## Limits
 
-- Recorded with no `post_type_labels_{$post_type}` callback and `__()` returning its text. Phase 4 runs the filter and hands its result to `apply_filtered_labels`.
-- Labels with int keys (`labels => 'Books'` gives key `0`) are renumbered once more than PHP would when a filter's result is merged. No recording covers a filtered merge. <Ev source="ss:crates/speedyspec-wp-posts/src/post_type.rs#L13-L16" hash="6c8fe96425079306290f895bcb3c60cf281d4af16e033a669e3101e6ebe3cbae"/>
+- Labels with int keys (`labels => 'Books'` gives key `0`) are renumbered once more than PHP would when a filter's result is merged. No recording covers a filtered merge. <Ev source="ss:crates/speedyspec-wp-posts/src/post_type.rs#L14-L17" hash="6c8fe96425079306290f895bcb3c60cf281d4af16e033a669e3101e6ebe3cbae"/>

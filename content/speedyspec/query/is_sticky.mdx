@@ -1,0 +1,16 @@
+---
+symbol: "function:is_sticky"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `is_sticky()` is a line of PHP over `SpeedySpec\WpPosts\Native\is_sticky`, which dispatches the `IsSticky` message to the handler bound at `SpeedySpec\WpPosts\IsStickyHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L10-L13" hash="864ac4c8213be5784dcaf85a90f145f6d3ac2b47c4395e5c6e94ba40cd3f26d5"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/pings.rs#L124-L127" hash="0207e5521ee9e70c1e3668b47ece6d691eb679ffb24a3f08c62e4de9534c0e91"/>
+
+It reads `sticky_posts` through the `Options` port, whose PHP adapter calls the native `get_option()`; with no `$post_id` it takes the current post's id. An array that holds the id (compared loosely after `absint()`) is true; then the `is_sticky` filter with `( $is_sticky, $post_id )`. <Ev test="speedyspec-wp-posts-php::errors::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/errors.rs#L149-L169" hash="d7f364bd335a351bc0174e5c05add07e4d3a4f80babccf08a3c916ea37a3712e"/>
+
+No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.
+
+## Limits
+
+- No recorded scenario calls it; the port's own case does.

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\is_post"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It answers `$value instanceof WP_Post` for the native functions. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L225-L231" hash="a086a80746461f3de0ac96f608341fb055c6d9411f3d8bc038130ca42b0af775"/> <Ev scenario="get-by-object" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

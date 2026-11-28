@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\meta_caps_add"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It adds custom-to-core capability pairs to `$post_type_meta_caps`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L247-L259" hash="85a15cbed57ff0248c86f6dc6fd571ba7b09002f3210541d78981ec7a3d1915d"/> <Ev scenario="types-capabilities" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

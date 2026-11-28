@@ -5,15 +5,20 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Native: `post.php`'s `post_type_exists()` is a line of PHP over `SpeedySpec\WpPosts\Native\post_type_exists`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L34-L37" hash="8e35c624f76b727dcec02dd551519716aeb4e6846e8a4f961ddaa040b0b0ad55"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L475-L477" hash="e02a8b45a2cc7880d1238d34b32cee2aac006331f5ad222bf2264132d1648587"/>
+
+It reads the live `$wp_post_types`. <Ev scenario="types-exists" area="posts-read"/> <Ev scenario="types-register" area="posts-read"/> <Ev scenario="types-global-replaced" area="posts-read"/> <Ev scenario="types-unregister" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+
+The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
+
+WordPress's own `Tests_Post_Types` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rule
 
-`post_type_exists` asks the `PostTypes` port: a stored post type is an object, never `empty()`. <Ev source="ss:crates/speedyspec-wp-posts/src/queries.rs#L23-L26" hash="fb7a79440179f391b401e25cec89951cebe0ff31e5c78f8e19638766e8ea18cd"/>
+`post_type_exists` asks the `PostTypes` port: a stored post type is an object, never `empty()`. <Ev source="ss:crates/speedyspec-wp-posts/src/queries.rs#L30-L33" hash="fb7a79440179f391b401e25cec89951cebe0ff31e5c78f8e19638766e8ea18cd"/>
 
 The 8 recorded calls replay as in WordPress 7.2-RC2. <Ev test="speedyspec-wp-posts::recorded::list_scenarios_match_wordpress"/>
 
 ## Limits
 
 - Recorded from WordPress 7.2-RC2 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
-- The name must be a UTF-8 string; the adapter converts other scalars as PHP's array key lookup does.

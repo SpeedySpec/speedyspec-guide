@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\is_sticky"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [is_sticky()](/speedyspec/query/is_sticky/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L10-L13" hash="864ac4c8213be5784dcaf85a90f145f6d3ac2b47c4395e5c6e94ba40cd3f26d5"/>
+
+It sends the `IsSticky` message through the handler bound under `SpeedySpec\WpPosts\IsStickyHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L976-L981" hash="4905fca4c0189169817b18e8b23435e697add6aabb2006a97b02d9594aef4486"/>  <Ev test="speedyspec-wp-posts-php::compat::main"/>

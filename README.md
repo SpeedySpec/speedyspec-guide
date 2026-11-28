@@ -271,3 +271,20 @@ speedyspec-platform too (`fe3bb527`), where the shared crates and the hooks comp
 - **The platform split:** citations into crates that moved resolve in the platform checkout, 15 tests that moved to
   other crates are re-cited, and the runner takes the platform crates from crates.io and boots `MetaArea` as the
   worker does.
+
+## Post reading, native (2026-11-27)
+
+speedyspec-server `05887e84` (the merge of PR #136, phase 4 of the posts and meta port) makes 55 of `post.php`'s
+functions native: the post type and post status registries and post reading. The guide pins speedyspec-platform at
+`bf2962ce`, the release of speedyspec-wp-posts-contracts 0.3.1 (the `Posts` read contract, with `server` time's
+fraction) and speedyspec-php 0.8.1, and the runner boots `PostsArea` as the worker does.
+
+- **Query stays an unported seam** (comments, `WP_Query` and the post writes are WordPress's PHP), but every ported
+  function has a SpeedySpec page with its verdict, citing the `compat/posts-read` scenarios (191 single site, 5
+  multisite, all replaying exactly) and WordPress's post PHPUnit tests (235 and 235). The runtime's own post API (55
+  natives, `post_instance()` (the body the prepared release gives `WP_Post::get_instance()`), 21 PHP helpers, and the
+  `SpeedySpec\WpPosts\PostRepository` and `SpeedySpec\WpPosts\Taxonomy` twins) is listed in the seam.
+- **Differences:** the meta statement selects `meta_id` too; `_prime_post_caches()` and
+  `_prime_post_parent_id_caches()` drop a negative id; the readers beside `get_post()` read an object argument as a
+  copy; objects handed to a reading function's hook callbacks are
+  copies. Open: row order on MySQL 8.4. The `server` time break is gone with posts-contracts 0.3.1.

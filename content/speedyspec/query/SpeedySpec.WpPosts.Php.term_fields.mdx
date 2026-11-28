@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\term_fields"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It is `WP_Post::__get()`'s `post_category` and `tags_input` branch, which the `Taxonomy` port's PHP adapter calls for `get_post_field()`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L244-L256" hash="024f20c9f55981ff1e80bd2b6bda58a756b178f061c711cdd2fa9342dcdb949b"/> <Ev scenario="field-magic" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

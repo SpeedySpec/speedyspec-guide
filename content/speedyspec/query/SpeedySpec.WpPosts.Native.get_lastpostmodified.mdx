@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_lastpostmodified"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_lastpostmodified()](/speedyspec/query/get_lastpostmodified/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L125-L128" hash="313b4e03096dde623e26712dbf6c20b5dbd465066bc02fb54ae94bc79b5313bb"/>
+
+It sends the `GetLastPostModified` message through the handler bound under `SpeedySpec\WpPosts\GetLastPostModifiedHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L753-L759" hash="e6b8cfde0c6ae6b914e70d6c7f036853b57a0eb4077fafde59b6f014b1c4aef4"/> <Ev scenario="last-modified-blog" area="posts-read"/> <Ev scenario="last-modified-gmt" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

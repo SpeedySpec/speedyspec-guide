@@ -5,11 +5,17 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Native: `post.php`'s `get_all_post_type_supports()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_all_post_type_supports`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L84-L87" hash="79dd5bf83d70ad1db8a487258e3c268ef42a06d0a19c23f62cd58e97475cbc77"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L694-L700" hash="256f4152bdcdf84d9855f66b5fb3bb26f10601d207cbbf577b9b3a7bfb53610f"/>
+
+It reads the live `$_wp_post_type_features`. <Ev scenario="types-supports" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+
+The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
+
+WordPress's own `Tests_Post_WP_Post_Type` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rule
 
-`PostTypeRegistry::all_supports` gives a type's features in insertion order, each `true` or its arguments list; a missing type gives none. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L345-L346" hash="26008f26ae3fd3bf73fd03b1682da0f15c3c74f628577587591d435a3755737b"/>
+`PostTypeRegistry::all_supports` gives a type's features in insertion order, each `true` or its arguments list; a missing type gives none. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L368-L369" hash="26008f26ae3fd3bf73fd03b1682da0f15c3c74f628577587591d435a3755737b"/>
 
 Its 3 recorded calls replay as in WordPress 7.2-RC2. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>
 

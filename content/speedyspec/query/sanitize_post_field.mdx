@@ -1,0 +1,12 @@
+---
+symbol: "function:sanitize_post_field"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `sanitize_post_field()` is a line of PHP over `SpeedySpec\WpPosts\Native\sanitize_post_field`, which dispatches the `SanitizePostField` message to the handler bound at `SpeedySpec\WpPosts\SanitizePostFieldHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L20-L23" hash="fdf2713b6939208cfe3326d2f3f534ff6f3f1149b81337301f2b0872f6177998"/> <Ev source="ss:crates/speedyspec-wp-posts/src/sanitize.rs#L107-L121" hash="b10925b6e51a9de38e7bea917e67a591ef914e184c533e132973fa9914c82a4b"/>
+
+It ports WordPress's branches in order: the int fields through `(int)`, `raw` as it is, then for `edit` the `edit_{$field}` and `{$field_no_prefix}_edit_pre` filters and `format_to_edit()`, for `db` `pre_{$field}` and `{$field_no_prefix}_save_pre`, and for display contexts `{$field}`, `esc_attr()` for `attribute` and `esc_js()` for `js`. Any other context word is treated as `display`. The escaping is the `Formatting` port, which calls WordPress's functions. <Ev scenario="sanitize-field-raw" area="posts-read"/> <Ev scenario="sanitize-field-edit" area="posts-read"/> <Ev scenario="sanitize-field-db" area="posts-read"/> <Ev scenario="sanitize-field-display" area="posts-read"/> <Ev scenario="sanitize-field-attribute" area="posts-read"/> <Ev scenario="sanitize-field-js" area="posts-read"/> <Ev scenario="sanitize-field-unknown" area="posts-read"/> <Ev scenario="sanitize-field-default-context" area="posts-read"/> <Ev scenario="sanitize-field-richedit" area="posts-read"/> <Ev scenario="sanitize-field-non-string" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev test="speedyspec-wp-posts-tests::sanitize::sanitize_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts-tests::sanitize::typed_field_runs_the_display_filter"/>
+
+No copied WordPress test calls it directly. WordPress's `Tests_Post_Filtering` reaches it indirectly, through `wp_insert_post()`'s `sanitize_post()`, and those tests pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>

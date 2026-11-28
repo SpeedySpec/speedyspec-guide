@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\loose_equals"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It compares two values with PHP's `==`, as `WP_List_Util::filter()` does, for the live objects the natives hold as markers. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L221-L227" hash="091d8829d8d9aab01ab186935408534d711a04d7ac682fa2be4ef6391d901ba6"/> <Ev scenario="types-core" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_post_status_object"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_post_status_object()](/speedyspec/query/get_post_status_object/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L19-L22" hash="eb80e3a29e5975f9fa40c20d749d5fce49cfe6d81811a4a0749595856a32156d"/>
+
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L471-L473" hash="2f0ba4cb6f26efbe7f48ed1221c739c755dec576105236b65975fd15783c41aa"/> <Ev scenario="statuses-object" area="posts-read"/> <Ev scenario="statuses-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

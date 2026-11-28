@@ -5,16 +5,20 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Native: `post.php`'s `is_post_type_viewable()` is a line of PHP over `SpeedySpec\WpPosts\Native\is_post_type_viewable`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L99-L102" hash="ad501fcc7912975bf0d067edf943401188811575dd59b3c035ca1e8ccc10faad"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L746-L764" hash="55751e1126f4a480e02e4a40affbff4228da1817fe17416adcb0b35446425dcf"/>
+
+It reads the object (or the name's object), runs phase 2's rule, then the `is_post_type_viewable` filter with the live object and its `true ===` check. <Ev test="speedyspec-wp-posts-tests::filters::a_viewable_filter_can_make_a_type_unviewable"/> <Ev test="speedyspec-wp-posts-tests::filters::a_truthy_answer_other_than_true_is_not_viewable"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+
+The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
+
+WordPress's own `Tests_Post_IsPostTypeViewable` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rule
 
-`is_post_type_viewable` is `publicly_queryable || ( _builtin && public )`, by PHP truth, for a `PostType`; `post_type_name_viewable` looks the name up first and is false for a missing type. <Ev source="ss:crates/speedyspec-wp-posts/src/queries.rs#L36-L39" hash="18690468575cfab6e8ec480b4aef9b8308eb9264a545c2c1b3401ba952e1d552"/> <Ev source="ss:crates/speedyspec-wp-posts/src/queries.rs#L50-L55" hash="8009733c8cadc0d9f1f7964c9d55f038db4b6e03ce55a70a573fe11e53f0458b"/>
+`is_post_type_viewable` is `publicly_queryable || ( _builtin && public )`, by PHP truth, for a `PostType`; `post_type_name_viewable` looks the name up first and is false for a missing type. <Ev source="ss:crates/speedyspec-wp-posts/src/queries.rs#L43-L46" hash="18690468575cfab6e8ec480b4aef9b8308eb9264a545c2c1b3401ba952e1d552"/> <Ev source="ss:crates/speedyspec-wp-posts/src/queries.rs#L57-L62" hash="8009733c8cadc0d9f1f7964c9d55f038db4b6e03ce55a70a573fe11e53f0458b"/>
 
 The 8 recorded calls in the `lists` scenario and 32 after `create_initial_post_types()` replay as in WordPress 7.2-RC2. <Ev test="speedyspec-wp-posts::recorded::list_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::recorded::initial_post_types_match_wordpress"/>
 
 ## Limits
 
 - Recorded from WordPress 7.2-RC2 under the recorder's stubs: `__()` and `_x()` return their text, the rewrite functions do nothing, `register_taxonomy_for_object_type()` only notes its call, and `get_object_taxonomies()` returns nothing. <Ev source="ss:compat/posts/record.php#L53-L66" hash="6398e7220fdfb100a72b707de8a1729a005479e3dd92f38f53c6da72f86a0d8d"/>
-- The `is_post_type_viewable` filter and its `true ===` check run only in phase 4; the rule gives the value passed to it.
-- The `is_scalar()` check on a name is the adapter's.

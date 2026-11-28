@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\_count_posts_cache_key"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [_count_posts_cache_key()](/speedyspec/query/_count_posts_cache_key/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L55-L58" hash="50fd0047914070559062a6eb614fb86e5866bbbdc336135dd02f717de96a66e6"/>
+
+It sends the `CountPostsCacheKey` message through the handler bound under `SpeedySpec\WpPosts\CountPostsCacheKeyHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L703-L709" hash="5996b9cacb95f6b2421d27259f41ea001fb653120a7cf035155c590e6b389a19"/> <Ev scenario="count-readable-logged-out" area="posts-read"/> <Ev scenario="count-readable-author" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

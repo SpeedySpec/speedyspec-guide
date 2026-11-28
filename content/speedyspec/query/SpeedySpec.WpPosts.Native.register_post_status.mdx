@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\register_post_status"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [register_post_status()](/speedyspec/query/register_post_status/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L14-L17" hash="ad2104f96a9c6d9b8ff8390b498ab503535b0a0905e77a5300de7b84d96f18ea"/>
+
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L457-L465" hash="81993b034e7d02595220aa566941f543f2ede9425aeda08096a98ddf0ffd0e0c"/> <Ev scenario="statuses-register" area="posts-read"/> <Ev scenario="count-new-status" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

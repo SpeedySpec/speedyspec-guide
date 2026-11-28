@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\assign"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It writes sanitized properties back to the caller's object, as `sanitize_post()` and `update_post_cache()` change it through its handle in WordPress. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L233-L242" hash="2990311ade8e653610a7a4efc1b079618e6acde05d9c06c36801508e47bd4d95"/> <Ev scenario="sanitize-post-wp-post" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

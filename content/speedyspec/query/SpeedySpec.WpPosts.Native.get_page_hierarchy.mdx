@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_page_hierarchy"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_page_hierarchy()](/speedyspec/query/get_page_hierarchy/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L105-L108" hash="b0b23713c3df3caa6fb9d52e595d5036f4f10c440818ed27cc922f4b8ce7d66a"/>
+
+It sends the `GetPageHierarchy` message through the handler bound under `SpeedySpec\WpPosts\GetPageHierarchyHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L645-L666" hash="7909599d4bec708b3096ebb9682ab5e43fe46301e1ce34061f36667484c1d46f"/> <Ev scenario="page-hierarchy-tree" area="posts-read"/> <Ev scenario="page-hierarchy-orphans" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>

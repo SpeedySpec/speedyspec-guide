@@ -1,7 +1,7 @@
 ---
 ---
 
-This seam's only native part is `wpdb`. Posts, comments, `WP_Query` and the rest of the seam aren't ported yet, so this page covers `wpdb`, the data layer under it, and the post type and status rules, which are in Rust but not wired into PHP yet.
+Two parts of this seam are native: `wpdb`, with the data layer under it, and post reading with the post type and post status registries, 55 of `post.php`'s functions. Comments, `WP_Query`, the post writes and the rest of the seam aren't ported yet. This page covers `wpdb` and the data layer, post reading, and the post rules of phases 2a and 2b underneath it.
 
 ## wpdb
 
@@ -44,7 +44,7 @@ Both then run the Rust-only filter `speedyspec_query_statement`, whose callbacks
 - **`PhpWpdbHost`** is the host port over WordPress's PHP functions, with WordPress's own fallbacks when one isn't defined; `MemoryWpdbHost` records every call, for tests and hosts without WordPress. <Ev source="ss:crates/speedyspec-wp-db-php/src/host.rs#L1-L1" hash="e0f7d3820aaf79e8a653c3283924c2f2439ce3222bb7b692329ba385f415f492"/>
 - **Another `new wpdb(...)`** gets its own `NativeWpdb`, with a memory state, on an engine configured once per worker for its credentials. <Ev source="ss:crates/speedyspec-wp-db-php/src/lib.rs#L131-L132" hash="9ac80f8673589f24e3732fc5bbb85e8f00680578ce79b8905bd0d8ede4acf09e"/>
 
-The worker builds the `default` engine from its database settings with the MySQL factory, checks it with `SELECT 1`, then registers `WpDbArea` before the object cache, options and cron areas; options is given its `NativeWpdb`, which its repositories hold as the `Wpdb` port. <Ev source="ss:crates/speedyspec-php-runtime/src/database.rs#L56-L70" hash="8b57e46fb27957a78cb8527c6a4fe6748c5ab4c70de3ef0fa15e05451118a7c4"/>
+The worker builds the `default` engine from its database settings with the MySQL factory, checks it with `SELECT 1`, then registers `WpDbArea` before the object cache, options and cron areas; options is given its `NativeWpdb`, which its repositories hold as the `Wpdb` port. <Ev source="ss:crates/speedyspec-php-runtime/src/database.rs#L57-L71" hash="8b57e46fb27957a78cb8527c6a4fe6748c5ab4c70de3ef0fa15e05451118a7c4"/>
 
 ## The data layer
 
@@ -167,47 +167,240 @@ impl GuideSettings {
 - **What must still pass:** the recorded scenarios (`compat/wp-db/scenarios.json`, replayed on MySQL, SQLite and PostgreSQL by `speedyspec-wp-db-php`'s replay tests) and WordPress's own database tests, except the breaks in `compat/wp-db/breaks.json` and the engine lists `compat/phpunit-sqlite.json` and `compat/phpunit-postgres.json`. <Ev test="speedyspec-wp-db-php::wordpress::wordpress_db_tests_pass"/> <Ev test="speedyspec-wp-db-php::wordpress::documented_breaks_are_listed"/>
 - **Recording a new scenario:** add it to `compat/wp-db/scenarios.json` in speedyspec-server and run `cargo run -p speedyspec-compat -- record wp-db --wordpress 7.2-RC2` (the pin in `compat/wordpress.json`); a difference the port can't match goes in `breaks.json` with its reason.
 
-## Post types and statuses (Rust, not wired yet)
+## Post reading and the registries (native)
 
-Phase 2a of the posts and meta port: WordPress 7.2-RC2's post type and post status rules in Rust, proven against recordings of WordPress. Nothing here is wired into PHP. The runtime worker links neither crate, so PHP on SpeedySpec runs WordPress's own `post.php` and `WP_Post_Type` until phase 4, which waits for the hooks contracts. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Phase 4 of the posts and meta port: `post.php`'s post type and post status registries and its post reading, in Rust and wired into PHP. When the worker has a database it builds `PostsArea` with its database areas, after the meta area and before options, and at the start of every request the area declares 55 of `post.php`'s functions with WordPress's signatures, each a line of PHP over a native function: the 20 registry functions in `post-types.php` and the 35 reading functions in `posts.php`. <Ev source="ss:crates/speedyspec-php-runtime/src/database.rs#L81-L88" hash="8dc4914a491c52582e470f660c4b5dc80ae3ceff311416f5dad62fa363a37f1f"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L1-L14" hash="5ce7febf208c6a642682026aa32033f9e88518587b576389730b4709d841068b"/> The release SpeedySpec prepares drops those functions from WordPress's `post.php`, so nothing is declared twice, and swaps the body of `WP_Post::get_instance()` for the native raw read (`post_instance()`), keeping its signature and int checks, so a direct caller of `WP_Post::get_instance()` and `WP_Post::filter( 'raw' )` go through the same repository and `posts` cache as `get_post()`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/release.rs#L106-L122" hash="d7e3a7f6433cc7c0f046a472d8239cf85bb19de1a8302226580af394be052995"/> <Ev test="speedyspec-wp-posts-php::release::get_instance_body_is_swapped"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/release.rs#L14-L74" hash="2b3494c571a6a44e50d757bea931bec2c8ee3b909e5e1d940b153db3026b04c2"/> <Ev test="speedyspec-wp-posts-php::release::strips_exactly_the_ported_functions"/> <Ev test="speedyspec-wp-posts-php::release::facades_declare_every_ported_function"/>
 
 ### The crates
 
 Each declares `seam = "query"` and its role in `[package.metadata.speedyspec]`.
 
-- **`speedyspec-wp-posts-contracts`** (contracts): the names `PostTypeName` and `PostStatusName`; the values `PostType` (a `WP_Post_Type` object's properties in `get_object_vars()` order) and `PostStatusObject` (a `$wp_post_statuses` entry); `PostTypeError`, with WordPress's codes and English messages; and the ports. It depends only on `speedyspec-php-serialize`. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/lib.rs#L5-L25" hash="1faceffb1882fe4a4d63619b5ea5119838aca8ad97e4110b66293b0650117510"/> <Ev source="ss:crates/speedyspec-wp-posts-contracts/Cargo.toml#L24-L25" hash="bd68775857b28544498022c7ae2d1261aef42fa76f7df170b223e7571c0185ed"/>
-- **`speedyspec-wp-posts`** (implementation): the rules. The name rule, labels, capabilities, `set_props()`'s argument resolution, supports, unregistration, `PostTypeRegistry`, `register_post_status()` and `PostStatusRegistry`, the status label tables, the filtered lists, the exists, hierarchical and viewable predicates, and `create_initial_post_types()`'s data. <Ev source="ss:crates/speedyspec-wp-posts/src/lib.rs#L1-L5" hash="9faa705a703f50825dc4a2f0a55a85772e438cc3b25f67bbeb89fcb026565ce2"/> <Ev source="ss:crates/speedyspec-wp-posts/Cargo.toml#L14-L20" hash="1448794598fab61997a1436a908b7357b52ec9c06ff3fb611bd85fddec855b6c"/>
+- **`speedyspec-wp-posts-contracts`** 0.3.1 (contracts, in speedyspec-platform, from crates.io): phase 2's entity, names and ports, plus the read surface: the `Posts` contract and its argument values (`PostRef`, `Filter`, `PostTypeArg`, `MimeFilter`, `Timezone`, `LastPostField`), `PostRepository`'s read statements, and the `CurrentPost` and `PostQuery` ports. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/lib.rs#L1-L25" hash="c2510ee88522acd6c141e268cf04633eda881599e9580b4d0f1daabc07452cf8"/>
+- **`speedyspec-wp-posts`** (implementation): the read use cases (`PostsApi`), their messages and handlers, the outbound ports they call, `sanitize_post()` and `sanitize_post_field()`, and the filtered registry rules beside phase 2's. <Ev source="ss:crates/speedyspec-wp-posts/src/read/mod.rs#L1-L18" hash="51cde83748465ca031586d42fceff29e5aaee6dca54d8d104a106f44b9c0d950"/>
+- **`speedyspec-wp-posts-sql`** (adapter): `SqlPostRepository`, `wp_posts` through the `Wpdb` port, and `PostMapper`, which maps rows only; the `posts` cache entry is `PostEntry`'s, in the implementation. <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L1-L15" hash="02cf4d46a7902a0e90e131e8bd763989cf66225c4a7982286bc643a1e7d3ba3c"/>
+- **`speedyspec-wp-posts-memory`** (adapter): `wp_posts` in memory, for tests and callers with no database.
+- **`speedyspec-wp-posts-php`** (adapter, unpublished): `PostsArea`, the natives, the facades and the PHP adapters of every outbound port. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L28" hash="a0aa393bf7c0839402a2b61eb94902b6db5a266607774a309953df4137e7ca6b"/>
+- **`speedyspec-wp-posts-tests`** (test, unpublished): the use case tests over the memory adapters, and the 22 recorded `sanitize_post()` scenarios.
 
-PHP's value semantics (`empty()`, `isset()`, `array_merge()`, PHP 8's loose `==`, the `(array)` and `(string)` casts and array key conversion) come from `speedyspec_php_serialize::semantics`, which the meta rules share. Neither posts crate depends on hooks, the object cache, `wpdb`, text, rewrite or meta. <Ev source="ss:crates/speedyspec-php-serialize/src/semantics.rs#L1-L2" hash="2bd29fe8ffecad2dcb946cbfc9be0aa874b4f4849e4afd90b96b7fd010d47488"/>
+The use cases hold the Hook API, the object cache, `wpdb` and the metadata API as their seams' contracts (`Rc<dyn HookApi>`, `Rc<dyn ObjectCache>`, `Rc<dyn Wpdb>` through the repository, `Rc<dyn Metadata>`); the runtime hands in the concrete ones. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L89-L95" hash="f34f091b6c8bd8e1536e883cbee1b81bac7bde69ae3ba6e43759a89069fa4a92"/>
+
+### The Posts contract
+
+`Posts` is reading posts as one trait, a method per `post.php` function: `get`, `field`, `status`, `post_type`, `mime_type`, `ancestors`, `parent_id`, `page_by_path`, `page_uri`, `all_page_ids`, `count_posts`, `count_attachments`, `last_post_date`, `last_post_modified`, `available_mime_types`, `update_cache`, `clean_cache`, `prime_caches` and `prime_parent_caches`. Each runs its function's filters, actions and cache reads. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/read.rs#L172-L176" hash="e925beab6d9bbcf9afc699dab9dc5d818824d835e0d815c8761052a840fd942f"/>
+
+- **`get` returns the raw post.** The other contexts (`display`, `attribute`, `js`) run `{$field}` filters that may return any PHP value, which `Post`'s typed columns can't hold, so sanitizing, and shaping `ARRAY_A` and `ARRAY_N`, is the PHP adapter's. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/read.rs#L177-L184" hash="8739d78a076ff1f9ff0927598f880ac6bdbb52f099c028f256612b1e0fc58e4b"/>
+- **`PostRef`** is an id or the current post: `get_post()`'s empty argument (none, `null`, `0`) is `PostRef::Current`, read through the `CurrentPost` port. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/read.rs#L16" hash="6781c3d619b70b583741578e4772d4bfa289e580f9045a509aa0de898c1d66a2"/>
+- **A string or an array.** `PostTypeArg` and `MimeFilter` keep the difference `get_page_by_path()` and `wp_count_attachments()` make between a string and an array, in the statement, the matching and the cache key. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/read.rs#L73" hash="cb059bac668ee1b36a8dbcdca6e10e246cea693f732b8e3ff62716ec94b7a544"/>
+- **Where a filter may return anything**, the method returns `PhpValue` (`count_posts`, `count_attachments`, the last post dates, `field`); elsewhere the answer is typed. `PostsApi`'s inherent methods, named after the WordPress functions, keep the whole PHP answer everywhere.
+
+### PostsApi and the handler keys
+
+`PostsApi::new( PostsDeps )` builds the use cases from their ports: the Hook API, the request's object cache, `wp_posts`, the metadata API, `$wp_post_types` and `$wp_post_statuses` read live, the current post, formatting, users, taxonomy, the clock, cache invalidation and options. It implements `Posts`. <Ev source="ss:crates/speedyspec-wp-posts/src/read/api.rs#L64-L103" hash="e24f826905aca666e10c85d0ec84c413d489b649a2937a1341ed774d96c3cc94"/>
+
+Every function is a message on the buses, handled by `PostsApi` and bound in the container at `SpeedySpec\WpPosts\<Message>Handler`. <Ev source="ss:crates/speedyspec-wp-posts/src/read/messages.rs#L1-L2" hash="4ca4089da49c93eb12de72cc337175b6ba117001af1be4341481d1be246cd54f"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/messages.rs#L129-L141" hash="abad51affe797cb13ecf58f6ff3b9c8ba25f1ae9e75c72e41f393f7808e8c123"/> <Ev test="speedyspec-wp-posts-tests::read::handlers_answer_through_the_buses"/>
+
+| Kind | Messages |
+|------|----------|
+| Commands | `UpdatePostCache`, `UpdatePostCacheObjects`, `CleanPostCache`, `UpdatePostCaches`, `UpdatePostCachesObjects`, `UpdatePostParentCaches`, `UpdatePostmetaCache`, `PrimePostCaches`, `PrimePostCachesGiven`, `PrimePostParentIdCaches`, `WpCacheSetPostsLastChanged` |
+| Queries | `GetPost`, `GetPostObject`, `GetPostAncestors`, `GetPostField`, `GetPostMimeType`, `GetPostStatus`, `GetPostType`, `SanitizePost`, `SanitizePostField`, `CountPostsCacheKey`, `WpCountPosts`, `WpCountAttachments`, `GetAllPageIds`, `GetPageByPath`, `GetPageChildren`, `GetPageHierarchy`, `GetPageUri`, `GetLastPostDate`, `GetLastPostModified`, `GetLastPostTime`, `WpGetPostParentId`, `GetAvailablePostMimeTypes`, `GetPung`, `GetToPing`, `GetEnclosed`, `IsSticky`, `PageTraverseName` |
+
+The PHP functions reach the use cases through these handlers, each resolved once from the container, so a handler bound in their place takes the call. `get_post()` dispatches `GetPostObject`, which answers the object PHP builds a `WP_Post` from; the typed `GetPost` is for Rust callers, and `get_post()` never reaches it. The `*Objects` and `*Given` messages carry the caller's PHP values where WordPress works on them (`update_post_cache()` sanitizes the caller's objects in place; `_prime_post_caches()` passes its unfiltered ids to the meta and term steps). <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L1-L23" hash="303191da7308801db80d74dd6ec2a0912e2ba90242869ebde20b78c847bb2867"/>
+
+### The registries have no handlers
+
+The 20 registry functions have no messages and no container keys, by ruling. Their storage is PHP's globals, `$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features` and `$post_type_meta_caps`, which plugins read and write directly; the natives read them live through `PhpPostTypes`, `PhpPostStatuses` and `PhpPostTypeSupports`, call phase 2's rules, and write the results back through PHP helpers so the globals keep PHP's key handling. A handler would only wrap the global, and there is nothing to rebind: change a registration with WordPress's hooks (`register_post_type_args` and the rest), which the natives run. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L1-L15" hash="ee1212c32e7354f7ef563fe794bbb8db61221be98893cef285048a057fba6662"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+
+`WP_Post_Type` stays WordPress's class. The object is made without its constructor and given the resolved properties; the steps that belong to unported seams (rewrite rules, meta boxes, the class's hooks, taxonomies) stay its own methods and are called as WordPress calls them. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L17-L21" hash="fa67d9da32ed419f5ca37cccf5eb486576436bd10f454faddf6d2b1747187894"/>
+
+### SqlPostRepository and its statements
+
+`SqlPostRepository` sends `post.php`'s own statements through `wpdb`, byte for byte as the contract documents them, because the `query` filter sees them. Statements WordPress prepares go through `Wpdb::prepare` with its templates; the ones it builds with `sprintf()` or concatenation are built the same way, quoted items through `esc_sql()`, and sent as text. The table is read from `wpdb` on every call, so `switch_to_blog()` is followed. <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L1-L15" hash="02cf4d46a7902a0e90e131e8bd763989cf66225c4a7982286bc643a1e7d3ba3c"/>
+
+| Method | Function | Statement |
+|--------|----------|-----------|
+| `find` | `WP_Post::get_instance()`, swapped for the native `post_instance()` | `SELECT * FROM wp_posts WHERE ID = %d LIMIT 1` |
+| `find_many` | `_prime_post_caches()` | `SELECT wp_posts.* FROM wp_posts WHERE ID IN (…)` |
+| `parent_ids` | `_prime_post_parent_id_caches()` | `SELECT wp_posts.ID, wp_posts.post_parent FROM wp_posts WHERE ID IN (…)` |
+| `pages_by_names` | `get_page_by_path()` | `SELECT ID, post_name, post_parent, post_type … WHERE post_name IN (…) AND post_type IN (…) ORDER BY post_status = 'publish' DESC, …` |
+| `all_page_ids` | `get_all_page_ids()` | `SELECT ID FROM wp_posts WHERE post_type = 'page'` |
+| `count_by_status` | `wp_count_posts()` | `SELECT post_status, COUNT(*) AS num_posts … GROUP BY post_status`, or its `UNION ALL` form for a reader who can't read private posts |
+| `count_attachments` | `wp_count_attachments()` | the `GROUP BY post_mime_type` count, then the trash count, with `wp_post_mime_type_where()`'s clause |
+| `last_post_time` | `_get_last_post_time()` | `SELECT {column} FROM wp_posts WHERE post_status = 'publish' AND post_type IN (…) ORDER BY post_{field}_gmt DESC LIMIT 1` |
+| `available_mime_types` | `get_available_post_mime_types()` | `SELECT DISTINCT post_mime_type FROM wp_posts WHERE post_type = %s` |
+| `insert`, the three slug owners | `wp_insert_post()`, `wp_unique_post_slug()` | phase 2's, not yet called by PHP |
+
+<Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L33-L34" hash="510063fbdf8607c114b2878f1e389c33b2de64d7aff1d8b3efd3b2fb26f7ffe6"/> <Ev test="speedyspec-wp-posts-sql::engines::statements_match_post_php"/>
+
+It passes the contracts' repository suite (posts-contracts 0.3.1) on SQLite and MySQL, and the MySQL-only suite. A failure `$wpdb` hides is `Ok` with the empty answer; a `query` callback's exception comes back as `PostError::Hook`, and the native function rethrows it. <Ev test="speedyspec-wp-posts-sql::engines::suite_on_sqlite"/> <Ev test="speedyspec-wp-posts-sql::engines::suite_on_mysql"/> <Ev test="speedyspec-wp-posts-sql::engines::mysql_suite_on_mysql"/> <Ev test="speedyspec-wp-posts-sql::engines::hook_failure_surfaces"/>
+
+### The adapters and the outbound ports
+
+The use cases call these ports for code that isn't ported yet. Each has a PHP adapter in `speedyspec-wp-posts-php` that calls WordPress's own functions; the Rust adapters come with the seams that own them.
+
+- **`CurrentPost`** (contracts): the global `$post`. `PhpCurrentPost` copies it, or the object a native function was given in its place: `PostRef` can't carry an object, so a native function given one hands it over for its own dispatch only and asks for `PostRef::Current`. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L217-L218" hash="4d80a2a6760f0fce2ba9e5497677e52e41061771c7804ea1b572d4c8ed04d960"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/ports.rs#L65-L78" hash="a5191c98789d9a13ff0ae53de6064d7d82894e98021a28ec1aee2cb2a0d31521"/>
+- **`Users`**: `is_user_logged_in()`, `get_current_user_id()` and `current_user_can()`, which `wp_count_posts()`' `readable` and the cache key ask. `PhpUsers`. <Ev source="ss:crates/speedyspec-wp-posts/src/read/ports.rs#L8-L19" hash="f4eb97194d69e95d074c92edaad25f044e959fb94697a52990977596c9642d35"/>
+- **`Taxonomy`**: `update_object_term_cache()`, `clean_object_term_cache()`, and `WP_Post::__get()`'s `post_category` and `tags_input`. It is a container port at `SpeedySpec\WpPosts\Taxonomy`, resolved on every call (`ResolvedTaxonomy`); `PhpTaxonomy`, which calls WordPress's functions, is the default binding, and PHP may bind an object implementing the [`SpeedySpec\WpPosts\Taxonomy` twin](/speedyspec/query/class/speedyspec.wpposts.taxonomy/). <Ev source="ss:crates/speedyspec-wp-posts/src/read/ports.rs#L21-L44" hash="e7b0cb74dc9f23778d098176e784619635ffb3d91c0644ba2f2b5c523cd9de46"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/ports.rs#L416-L422" hash="0720aecb7012e201027de92ff77c39785b5436408373905573740782c17c1a23"/>
+- **`Formatting`**: `format_to_edit()`, `esc_attr()`, `esc_js()`, `user_can_richedit()` and `sanitize_trackback_urls()`, for `sanitize_post_field()` and `get_to_ping()`. `PhpFormatting`. <Ev source="ss:crates/speedyspec-wp-posts/src/sanitize.rs#L23-L26" hash="1c84f275c5292e1dc28ed81d3613aaa185c327d0745987ef8b541d2dcd8261db"/>
+- **`Options`**: `get_option()`, for `is_sticky()`'s `sticky_posts`; an outbound port, since the posts crates may not depend on the options implementation and there is no options contracts crate. `PhpOptions` calls the native `get_option()`. <Ev source="ss:crates/speedyspec-wp-posts/src/read/ports.rs#L46-L50" hash="3e04eb35d4aee387bf321a9a42a0977d3f98b47808ec7d522f8e6a205030e7ab"/>
+- **`Microtime`**: PHP's `microtime()`, the value `wp_cache_set_last_changed()` stores. `SystemMicrotime` reads the system clock. <Ev source="ss:crates/speedyspec-wp-posts/src/read/ports.rs#L52-L56" hash="fbf1cd85178796b6c0e6c69c092c52a0d1a07c64afe73a7151f727ef75bde401"/>
+- **`CacheInvalidation`**: `$_wp_suspend_cache_invalidation`, which `clean_post_cache()` reads. `PhpCacheInvalidation`. <Ev source="ss:crates/speedyspec-wp-posts/src/read/ports.rs#L58-L62" hash="5600ceb70f0d8f541d05a3052d97b5500c7fa662dd9ac9749ea216a6eddf951a"/>
+
+Two decorators sit at the PHP edge. `PhpValueHooks` makes the use cases' values PHP values on the way into a hook, and refuses every hook while a failure is parked; `PhpValueCache` copies a live PHP object another caller cached (a `WP_Post`, a `stdClass`) so the use cases can read it, and writes nothing while a failure is parked, as WordPress writes nothing after the exception. A port's PHP exception reaches the use case as `PostError::Hook` with the exception as its payload, and the native function rethrows the same object. <Ev source="ss:crates/speedyspec-wp-posts-php/src/hooks.rs#L1-L12" hash="7b8ef1e169180452a8fca24ae7ada72bff898f2dbf6d0efc07fc98d66d328069"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/ports.rs#L270-L274" hash="f0e8b6a5f5d6da238db29f1c64d54b560ce6253195c23391ef1cb1c47614c84b"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/ports.rs#L1-L8" hash="f2f0c10ac25905ab750c10e9fb6ef9fddde5a485d4dc7ccbc6807bd310b5d673"/> <Ev test="speedyspec-wp-posts-php::errors::main"/>
+
+### Replacing the storage
+
+Two ports are in the container: `wp_posts` at `SpeedySpec\WpPosts\PostRepository`, and the taxonomy calls at `SpeedySpec\WpPosts\Taxonomy`. For `wp_posts`: The SQL table is its default binding, and the use cases resolve it on every call (`ResolvedRepository`), so a binding made for the request applies. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L97-L99" hash="e214483830f80045f24728d094809b9a5cee72186fd0e63f5af1ce1b79cc8c77"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/ports.rs#L468-L476" hash="e313c6e308e1d2283dc6e0918125174e20773af77757704987587e1d4457fb11"/>
+
+- **From Rust:** implement `PostRepository`, run the contracts' `post_repository_suite` against it, and bind it at that key.
+- **From PHP:** implement the `SpeedySpec\WpPosts\PostRepository` interface, which the area declares at the start of every request, and bind an object at the same key; see [the class](/speedyspec/query/class/speedyspec.wpposts.postrepository/). The worker registers the port, so the binding reaches Rust. A binding lasts for its request, and a binding that throws reaches the caller as an `Error`; nothing falls back to SQL. <Ev source="ss:crates/speedyspec-php-runtime/src/worker.rs#L313-L315" hash="9e7526323ee937d4d5fbea02bd480a6794d984fdf44117bb128e03017bab8ec8"/> <Ev test="speedyspec-wp-posts-php::replacement::main"/>
+
+The taxonomy port works the same way: implement the `SpeedySpec\WpPosts\Taxonomy` interface and bind it at its key. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/replacement.rs#L79-L98" hash="414ab28aeb08727c65aa8cad5578a1279188145d6e4ed197781ec5743748930b"/>
+
+To change how a single function reads, bind its handler instead: `GetPostObject` for `get_post()` by id, `GetPostStatus` for `get_post_status()`, and so on.
+
+### Performance
+
+A benchmark runs `get_post()` and `get_post_meta()` natively and on WordPress's own PHP, in the same embedded PHP over one MySQL database, timing the loops inside PHP. <Ev source="ss:crates/speedyspec-wp-posts-php/benches/read.rs#L1-L18" hash="d5e4a5cc2f244e75f14fca0c9f669e61e397f8a926c6d3f909e8160fb07d6081"/>
+
+| Case | SpeedySpec | WordPress | Ratio |
+|------|------------|-----------|-------|
+| `get_post( 1 )`, warm cache | 0.94 µs | 0.92 µs | parity, within noise |
+| `get_post( 1 )`, cold (`posts` group flushed) | 83 µs | 91 µs | a tie: MySQL decides it |
+| `get_post_meta( 1, 'k', true )`, warm | 1.22 µs | 0.49 µs | 2.5× WordPress |
+
+A warm `get_post()` lends the cached entry when it is plain and raw (exactly `WP_Post`'s 24 properties, scalars, `filter` `raw`): the use case answers the cache's own handle, PHP writes the entry's values once per request, and each call builds a new `WP_Post` from them, as WordPress's constructor does. The map of written entries is pruned of dropped entries only when it has doubled since the last prune (512 at least), so a loop over many live posts (a sitemap, an export, WP-CLI) stays amortized O(1) per read; a new request forgets what an earlier one left rather than releasing it. <Ev source="ss:crates/speedyspec-wp-posts-php/src/codec.rs#L53-L54" hash="b3377eba9cd617839fc409a5e1ac7753face5294f1ad4da128df7cbd28d7e848"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/codec.rs#L414-L415" hash="b59f9f29ff89558321aa4a984eb85c1dfc3ddff34830be00169eacd14a1c3495"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/get.rs#L258-L260" hash="63e67974ea2a1ea62fb077d86ddf78864370de2f27394af9fa88346d22d19b86"/> <Ev test="speedyspec-wp-posts-tests::read::warm_read_lends_the_cached_entry"/>
+
+`get_post_meta()` is still 2.5× WordPress, about 0.7 µs a call. About 0.4 µs of it is in speedyspec-platform: speedyspec-wp-hooks-php resolves the hook store from the container on every store call, and speedyspec-php allocates the called function's name on every native call. Those are platform follow-ups; the posts and meta crates have no more to give there.
+
+### The evidence
+
+**Verified against WordPress 7.2-RC2.** speedyspec-server's `compat/posts-read` records 196 scenarios from WordPress's own `post.php` on MySQL, 191 on a single site and 5 on multisite, and replays every one through the native functions beside the native meta functions: each step's answer, the hooks it ran with their arguments, and the object cache must match. All 191 and all 5 match. Two steps carry a recorded break, both the meta statement below. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/compat.rs#L1-L5" hash="f7a3f04049efc1dec6e970f2cda5353e9638a8a32e047227d2dfe7841071d1df"/> <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev scenario="get-by-id" area="posts-read"/> <Ev scenario="page-path-statement" area="posts-read"/> <Ev scenario="count-readable-statement" area="posts-read"/> <Ev scenario="cache-prime-statement" area="posts-read"/> <Ev scenario="ms-cache-switch" area="posts-read"/>
+
+The registry scenarios (`types-*` and `statuses-*`, 14) also replay through the natives, and `create_initial_post_types()` leaves the same globals as WordPress's own function, run side by side. <Ev test="speedyspec-wp-posts-php::registry::main"/>
+
+WordPress's own post PHPUnit tests, 20 files copied from 7.2-RC2, run against the port with the pinned PHPUnit: 235 tests pass on a single site and 235 on multisite, with no failures, errors or skips, and none is marked as a documented break. The test bootstrap loads WordPress's own `WP_Query`, which the runtime still serves, so the tests whose fixtures need it run. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/> <Ev test="speedyspec-wp-posts-php::wordpress::documented_breaks_are_listed"/>
+
+Five tests are left out of both runs, because they need code that isn't ported or loaded. They are untested, not different: <Ev source="ss:crates/speedyspec-wp-posts-php/tests/wordpress.rs#L101-L166" hash="a72cd183bb0db176632c0d6eb538a55596678397fb6692875c10c885385f3601"/>
+
+- `test_get_page_uri_without_argument` and `test_query_caches_post_filter`: `go_to()` needs WordPress's whole request (`WP::main()` and the template loader).
+- `test_get_post_category_property`: it makes terms with `wp_insert_term()` and `wp_set_post_categories()`; taxonomy isn't ported.
+- `test_get_tags_input_property`: `wp_set_post_tags()` makes terms whose names default-filters.php's `pre_term_name` filters trim, and those aren't loaded.
+- `test_should_return_expected_post_mime_types`: `create_upload_object()` uploads files, and media isn't loaded.
+
+Exceptions are proven too: a `query` callback's, a hook's, and a port's exception each reach the caller as the same object, and nothing is cached after them. Every native function, nested or not, starts with `wpdb`'s hidden-error stash empty and takes it once its work is done, so an exception a callback caught inside a nested native is not rethrown later by the call around it. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L964-L970" hash="94ee2416a11b70ba549de1fed54e48ed34682f04d3676c026d048e2a401325d3"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/errors.rs#L121-L136" hash="271279ec8fbb85fa868b6224776ebeb504bfeeca032c1154c9ad0aa9c4749a51"/> <Ev test="speedyspec-wp-posts-php::errors::main"/>
+
+### Differences
+
+- **The meta statement.** Reads that prime or check post meta (`_prime_post_caches()`, `update_post_caches()`, `update_post_parent_caches()`, `update_postmeta_cache()`, `get_post_field()` for a meta key, `get_post_status()` for a trashed parent, `get_enclosed()`) run the native meta functions, whose `update_meta_cache()` statement selects `meta_id` too. A `query` filter sees `SELECT meta_id, post_id, meta_key, meta_value …` where WordPress sends `SELECT post_id, meta_key, meta_value …`. It is the meta seam's difference; meta contracts 0.4 may remove it. <Ev break="cache-prime-statement" step="1" area="posts-read"/> <Ev break="count-readable-statement" step="1" area="posts-read"/>
+- **Typed ids.** The Rust contract's id slices (`&[PostId]`) can't hold WordPress's `-1` or `"x"`. In PHP, `_prime_post_caches()` and `_prime_post_parent_id_caches()` run WordPress's `_validate_cache_id()`, which drops `"x"` as WordPress does, then also drop a negative id, which WordPress keeps in its `IN (…)` statement; `update_post_parent_caches()` reads a negative `post_parent` as its absolute value. No row has a negative id, so only the statement text differs. No recorded scenario passes a negative id, so this is a documented difference here, not a `compat/posts-read/breaks.json` entry. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L913-L926" hash="fdf306efa0624233ec56c7d9226f2fc8e19536d61aa2e8d95603ca9dfb59d7c0"/> <Ev scenario="cache-prime-parent-ids" area="posts-read"/>
+- **An object argument is read as a copy.** The readers beside `get_post()` (`get_post_field()`, `get_post_status()`, `get_post_type()`, `clean_post_cache()` and the others) hand an object argument to the use case as a copy: WordPress's `get_post()` inside them sanitizes a `stdClass` with no `filter` in place (`filter` set to `raw`, ids cast to int), and SpeedySpec leaves the caller's object as it was. Not recorded. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L30-L34" hash="2bc082f37a3aa63398531ebb37534e185fe71501b2fbacd16834877684966948"/>
+- **Objects in hook arguments are copies**, as in the meta seam: a `WP_Post` or `stdClass` a reading function hands a callback is an equal copy. The registry functions hand callbacks the live objects. <Ev source="ss:crates/speedyspec-wp-posts-php/src/hooks.rs#L1-L12" hash="7b8ef1e169180452a8fca24ae7ada72bff898f2dbf6d0efc07fc98d66d328069"/>
+
+Each is on the pages of the functions it touches.
+
+### Open cases
+
+- **`server` time** is settled: MySQL's `DATE_ADD()` answers `2024-03-01 20:00:00.000000`, WordPress returns it as it is, and so does SpeedySpec. posts-contracts 0.3.1's suite expects that text, and the SQL repository on another engine and the memory repository append `.000000` to match, so the suite runs with no known break. <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L574-L582" hash="1c3dafab5fe58fd95e13a989f9b270db0df61901cd6678e6c4228279a9a9ca15"/> <Ev test="speedyspec-wp-posts-sql::engines::server_time_keeps_mysql_fraction"/> <Ev test="speedyspec-wp-posts-sql::engines::suite_on_mysql"/> <Ev test="speedyspec-wp-posts-sql::engines::suite_on_sqlite"/>
+- **Row order.** `get_all_page_ids()`, `wp_count_attachments()`' `GROUP BY post_mime_type` and `get_available_post_mime_types()`' `DISTINCT` have no `ORDER BY`, in WordPress as here, so their rows come in the engine's order. The replay matches on MySQL 9.6; the run on CI's MySQL 8.4 is still to come. A mismatch there becomes a documented break with its reason. <Ev scenario="all-page-ids-read" area="posts-read"/> <Ev scenario="count-attachments-all" area="posts-read"/>
+- **SQLite and PostgreSQL.** The repository suite passes on SQLite (after a data-layer fix for a `NUL` byte in a string literal); PostgreSQL's `text` can't hold a `NUL`, so its suite is expected to fail on that post. The worker uses MySQL only. <Ev test="speedyspec-wp-posts-sql::engines::nul_content_round_trips_on_sqlite"/> <Ev test="speedyspec-wp-posts-sql::engines::suite_on_postgres"/>
+
+### Still WordPress's PHP
+
+The other 92 of `post.php`'s 147 functions load beside the natives:
+
+- **The `WP_Query` callers:** `get_posts()`, `get_children()`, `get_pages()`, `wp_get_recent_posts()`, and `wp_insert_post()`'s `wp_add_trashed_suffix_to_post_name_for_trashed_posts()`. Their port comes with `WP_Query`'s; the contracts name the call already, as the `PostQuery` port. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L224-L226" hash="37f9e3cb1cd01447acff03e36df89800c472fdf368a9f0316a5ba5891ebf2cda"/>
+- **The meta wrappers** (`get_post_meta()`, `add_post_meta()` and the rest), which call the native meta functions; `update_post_author_caches()`; and the attachment readers.
+- **Every write:** `wp_insert_post()`, `wp_update_post()`, `wp_delete_post()`, the trash and status transitions. Phase 5 composes them from phase 2's rules.
+- `get_post_statuses()`, `get_page_statuses()`, `_wp_privacy_statuses()`, `get_extended()`, `wp_resolve_post_date()`, `wp_unique_post_slug()` and `wp_check_post_hierarchy_for_loops()`: phase 2's Rust rules exist, but these stay WordPress's until the writes need them.
+
+### Calling it from Rust
+
+A Rust feature reads a post through `Posts`, which `PostsArea::api()` gives: the same use cases PHP's `get_post()` runs, with the `posts` cache group, its filters and the SQL table. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L125-L127" hash="7623dcd547055871adea2d2f370b6cdc1445f00fa547a67f11dfc3867bc9dc74"/>
+
+```rust
+use speedyspec_wp_posts_contracts::{Filter, PostError, PostId, PostRef, Posts};
+
+/// A published post's title, as `get_post( $id )->post_title` reads it, or `None` when there is no such post or it
+/// isn't published.
+fn published_title(posts: &dyn Posts, id: u64) -> Result<Option<Vec<u8>>, PostError> {
+    // Read from the `posts` cache group, else with one `SELECT … WHERE ID = %d LIMIT 1`, cached for the next read.
+    let Some(post) = posts.get(PostRef::Id(PostId(id)), Filter::Raw)? else {
+        return Ok(None);
+    };
+    // `get_post_status()` runs its filter, so a plugin's answer counts, as in PHP.
+    let published = posts
+        .status(PostRef::Id(post.id))?
+        .is_some_and(|status| status.as_str() == "publish");
+    Ok(published.then_some(post.title))
+}
+```
+
+`get` answers the raw post. For another context, sanitize in PHP or call `sanitize_post_field_word()` with the `Formatting` port. To let PHP rebind the read, send the message instead: `GetPost` through the query bus reaches whatever handler is bound at `SpeedySpec\WpPosts\GetPostHandler`.
+
+### Patterns
+
+| Pattern | Where | Evidence |
+|---------|-------|----------|
+| Ports and Adapters | The contracts crate and `speedyspec-wp-posts` hold the ports; the SQL, memory and PHP crates implement them, and the use cases see only the ports. | <Ev source="ss:crates/speedyspec-wp-posts/src/read/api.rs#L1-L7" hash="2620c8da521d059265f83b3c9474e36592606cfaf3b4feda8382106d9f3e1593"/> |
+| Facade | `Posts`, a method per function; and `post.php`'s functions, a line of PHP each over a native. | <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/read.rs#L172-L176" hash="e925beab6d9bbcf9afc699dab9dc5d818824d835e0d815c8761052a840fd942f"/> |
+| Repository | `PostRepository`, one statement per method, so query counts and the `query` filter match WordPress. | <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L1-L4" hash="cf5bd34c37e0b2dbe3f0018f80ca214f46d92cd273af3fcf74ffe7f04046a9a1"/> |
+| Data Mapper | `PostMapper` (a row to the plain `Post`) and `PostEntry` (the `posts` cache entry). | <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L13-L15" hash="4141592544ea1c1e4d0fd50e5e5ecfee6b147d1c78b4f4ebf48a1b9c8937c727"/> |
+| Identity Map | The `posts` cache group, kept as WordPress's `stdClass`; a small map of entries already found plain and raw. | <Ev source="ss:crates/speedyspec-wp-posts/src/read/api.rs#L25-L35" hash="d5527ae87a19772778e3d1dbc6a585a9da110182d724f849e18eabcca7476c06"/> |
+| Command and Query handlers | A message per reading function, bound in the container. | <Ev source="ss:crates/speedyspec-wp-posts/src/read/messages.rs#L129-L141" hash="abad51affe797cb13ecf58f6ff3b9c8ba25f1ae9e75c72e41f393f7808e8c123"/> |
+| Observer | Every filter and action through the `HookApi` port, with the `skip_if_empty` fast path. | <Ev source="ss:crates/speedyspec-wp-posts/src/read/api.rs#L122-L129" hash="00faad298a1738d6fd417e2d746f22dbb89213a8e3705c27df390af367d86253"/> |
+| Registry | `$wp_post_types`, `$wp_post_statuses` and `$_wp_post_type_features`, read live. | <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/> |
+| Adapter | The outbound ports' PHP adapters, until the seams that own users, taxonomy, formatting and options bind Rust ones. | <Ev source="ss:crates/speedyspec-wp-posts-php/src/ports.rs#L1-L8" hash="f2f0c10ac25905ab750c10e9fb6ef9fddde5a485d4dc7ccbc6807bd310b5d673"/> |
+| Decorator | `PhpValueHooks` over the Hook API, `PhpValueCache` over the object cache. | <Ev source="ss:crates/speedyspec-wp-posts-php/src/hooks.rs#L1-L12" hash="7b8ef1e169180452a8fca24ae7ada72bff898f2dbf6d0efc07fc98d66d328069"/> |
+| Strategy | The repository per engine; `PostObject`, which lends a plain entry or answers a built object. | <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L33-L34" hash="510063fbdf8607c114b2878f1e389c33b2de64d7aff1d8b3efd3b2fb26f7ffe6"/> |
+
+### How to change this
+
+- **What must still pass:** the `compat/posts-read` replay, single site and multisite, through the native functions; the registry replay and cases; WordPress's post PHPUnit tests (235 and 235); the error and replacement cases; the release tests; and `post_repository_suite` for every repository. <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/> <Ev test="speedyspec-wp-posts-php::errors::main"/>
+- **Porting another function:** add it to `PORTED_FUNCTIONS` and the facade together; the release tests check the two agree with WordPress's parameters. <Ev test="speedyspec-wp-posts-php::release::strips_exactly_the_ported_functions"/> <Ev test="speedyspec-wp-posts-php::release::facades_declare_every_ported_function"/>
+- **Porting the `WP_Query` callers:** they wait for `WP_Query`. Bind the `PostQuery` port then, and drop the stock `WP_Query` the PHPUnit bootstrap loads.
+- **Binding Rust ports:** when the users, taxonomy, formatting and options seams are wired, bind their Rust adapters in `PostsArea::new` in place of the PHP ones. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L104-L117" hash="b5eb6296db679e38f4806e327724cf13bb06229b0cf9a0f10759189a38e0eb7b"/>
+
+## Post types and statuses: the rules (phase 2a)
+
+Phase 2a of the posts and meta port: WordPress 7.2-RC2's post type and post status rules in Rust, proven against recordings of WordPress. Phase 4 wired them: the native registry functions call these rules over PHP's globals, run the hooks, and apply the results (see above). What follows is the rules themselves.
+
+### The crates
+
+Each declares `seam = "query"` and its role in `[package.metadata.speedyspec]`.
+
+- **`speedyspec-wp-posts-contracts`** (contracts): the names `PostTypeName` and `PostStatusName`; the values `PostType` (a `WP_Post_Type` object's properties in `get_object_vars()` order) and `PostStatusObject` (a `$wp_post_statuses` entry); `PostTypeError`, with WordPress's codes and English messages; and the ports. Since 0.3.0 it also depends on the hooks and object cache contracts, for the read surface's ports. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/lib.rs#L5-L25" hash="df04b1b1ab137aa2e5f5dad9463e3fb02a55b92fbe4df935719c63e3f84f6ecf"/> <Ev source="ss:crates/speedyspec-wp-posts-contracts/Cargo.toml#L24-L27" hash="e8956526b710610e19c2b4ef2d3d09f1259c889ecc2e29d1884031a7cf8e0c3a"/>
+- **`speedyspec-wp-posts`** (implementation): the rules. The name rule, labels, capabilities, `set_props()`'s argument resolution, supports, unregistration, `PostTypeRegistry`, `register_post_status()` and `PostStatusRegistry`, the status label tables, the filtered lists, the exists, hierarchical and viewable predicates, and `create_initial_post_types()`'s data. <Ev source="ss:crates/speedyspec-wp-posts/src/lib.rs#L1-L9" hash="6d8f22594efb1cf795836c38becda313f98570749cf274f7026524a4739a2c71"/> <Ev source="ss:crates/speedyspec-wp-posts/Cargo.toml#L14-L24" hash="0bc15c9144e1449a044fb68c9ea329a17dd884230427e054b7fbe641aabfcd55"/>
+
+PHP's value semantics (`empty()`, `isset()`, `array_merge()`, PHP 8's loose `==`, the `(array)` and `(string)` casts and array key conversion) come from `speedyspec_php_serialize::semantics`, which the meta rules share. The rules themselves depend on no hooks, object cache, `wpdb`, text, rewrite or meta: phase 4's read use cases, in the same crate, reach those through their contracts. <Ev source="ss:crates/speedyspec-php-serialize/src/semantics.rs#L1-L2" hash="2bd29fe8ffecad2dcb946cbfc9be0aa874b4f4849e4afd90b96b7fd010d47488"/>
 
 ### The ports
 
 All are in the contracts crate. Three are outbound, for what `set_props()` reads beyond its arguments; three are read ports over the registries, which phase 4's adapter binds to PHP's globals so they stay authoritative during a PHP request.
 
-- **`Translator`**: `__()` and `_x()` in the `default` domain. `Untranslated` answers WordPress's English. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L85-L89" hash="4e7035382f9e6b1627dfddeda3d62913e22a19562230b1854cb2fd9dbc4a1468"/>
-- **`RewriteContext`**: `is_admin() || get_option( 'permalink_structure' )`, which decides whether `rewrite` arguments are resolved. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L91-L95" hash="ecf223d778c25e3eb9da969f249a26279780d67ee2b15bcdf9a0faa2f351c8a7"/>
-- **`TitleSanitizer`**: `sanitize_title_with_dashes()` for a string `query_var`, the text seam's rule. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L97-L101" hash="d9aaab1fb6fe83dcc3dcc437a62ab2d67450b369ff348247e9295c0951ad03ad"/>
-- **`PostTypes`**, **`PostTypeSupports`** and **`PostStatuses`**: `$wp_post_types`, `$_wp_post_type_features` and `$wp_post_statuses`, read as owned values in registration order. `PostTypeRegistry` and `PostStatusRegistry` are their in-memory adapters. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L103-L128" hash="b11e4402f633c20ebaf23cbe4a2f000cea72fca509e37a59ceac1e95b89de735"/>
+- **`Translator`**: `__()` and `_x()` in the `default` domain. `Untranslated` answers WordPress's English. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L262-L266" hash="4e7035382f9e6b1627dfddeda3d62913e22a19562230b1854cb2fd9dbc4a1468"/>
+- **`RewriteContext`**: `is_admin() || get_option( 'permalink_structure' )`, which decides whether `rewrite` arguments are resolved. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L268-L272" hash="ecf223d778c25e3eb9da969f249a26279780d67ee2b15bcdf9a0faa2f351c8a7"/>
+- **`TitleSanitizer`**: `sanitize_title_with_dashes()` for a string `query_var`, the text seam's rule. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L274-L278" hash="d9aaab1fb6fe83dcc3dcc437a62ab2d67450b369ff348247e9295c0951ad03ad"/>
+- **`PostTypes`**, **`PostTypeSupports`** and **`PostStatuses`**: `$wp_post_types`, `$_wp_post_type_features` and `$wp_post_statuses`, read as owned values in registration order. `PostTypeRegistry` and `PostStatusRegistry` are their in-memory adapters. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L280-L305" hash="b11e4402f633c20ebaf23cbe4a2f000cea72fca509e37a59ceac1e95b89de735"/>
 
 ### Use cases
 
-None yet: `register_post_type()` and the rest become commands and queries in phase 4, with the PHP adapter. Hooks are never called. Each rule returns what WordPress computes with no callback added, split where phase 4 must run a filter, and returns the `add_action()` and `remove_action()` calls to make (`ActionToAdd`, `SupportToAdd`, `ActionToRemove`) and the taxonomies to register. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L1-L13" hash="42b1cdc1ac27679409dee3252c0e7ac9e27e1d3e823b8976814a649170a8285b"/>
+The rules are functions, not commands: the registries have no handlers (see above). The rules call no hook. Each returns what WordPress computes with no callback added, split where the native function runs a filter (phase 4 added the filtered forms beside them), and returns the `add_action()` and `remove_action()` calls to make (`ActionToAdd`, `SupportToAdd`, `ActionToRemove`) and the taxonomies to register. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L1-L14" hash="cd462faff94b1fb77e09c160a3d16a35de68f33552ee8e0a3a6864766e9c7c3f"/>
 
-- `check_post_type_name` and `PostTypeRegistry::register` and `unregister`: `register_post_type()` and `unregister_post_type()`. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L242-L250" hash="b57142023dbe6972237ca930455c55b16b3a56941a123b92bc9ca1b180fb3e99"/>
-- `resolve_post_type`: `new WP_Post_Type()`, after the two `register_post_type_args` filters; `apply_filtered_labels` takes the `post_type_labels_{$post_type}` filter's result. <Ev source="ss:crates/speedyspec-wp-posts/src/post_type.rs#L1-L6" hash="28f351def0346ad166666326bc06bcd8c4f5746e9e7427a99156980fa47a674c"/>
+- `check_post_type_name` and `PostTypeRegistry::register` and `unregister`: `register_post_type()` and `unregister_post_type()`. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L246-L254" hash="b57142023dbe6972237ca930455c55b16b3a56941a123b92bc9ca1b180fb3e99"/>
+- `resolve_post_type`: `new WP_Post_Type()`, after the two `register_post_type_args` filters; `apply_filtered_labels` takes the `post_type_labels_{$post_type}` filter's result. <Ev source="ss:crates/speedyspec-wp-posts/src/post_type.rs#L1-L7" hash="ef835478ab76e7d0a7096814bb2ae3b147848d95c9be9bbf80e98117e6c456a5"/>
 - `post_type_labels`, `custom_object_labels`, `default_labels`, `post_type_capabilities` and `meta_capabilities`: the label and capability functions.
 - `add_supports`, `unregistration`, and the registry's `add_support`, `remove_support` and `all_supports`: the supports functions, pure first so the adapter can apply them to PHP's globals itself.
 - `PostStatusRegistry::register` and `resolve_post_status`; `post_statuses`, `page_statuses` and `privacy_statuses`.
 - `post_types`, `post_type_names`, `post_stati`, `post_status_names` and `post_types_by_support` over `filter_object_list`; `post_type_exists`, `is_post_type_hierarchical`, `is_post_type_viewable` and `is_post_status_viewable`.
-- `create_initial_post_types`: the 16 post types and 12 statuses, in WordPress's order. <Ev source="ss:crates/speedyspec-wp-posts/src/initial.rs#L40-L47" hash="6c4af1bd6b1551bcfff515f9ac46cf94736fcdc89cabdbb16350a6875c633dcb"/>
+- `create_initial_post_types`: the 16 post types and 12 statuses, in WordPress's order. <Ev source="ss:crates/speedyspec-wp-posts/src/initial.rs#L41-L48" hash="6c4af1bd6b1551bcfff515f9ac46cf94736fcdc89cabdbb16350a6875c633dcb"/>
 
-Nothing is bound in the service container yet, and there are no container keys. To replace an implementation today, implement the read ports in Rust over your own storage; the list and predicate rules take them as `&dyn` ports. Replacing one from PHP comes with phase 4's PHP crate.
+Nothing is bound in the service container, and there are no container keys: in PHP the registries are the globals. A Rust caller with storage of its own implements the read ports over it; the list and predicate rules take them as `&dyn` ports.
 
 ### Patterns
 
 - **Registry**: `PostTypeRegistry` and `PostStatusRegistry`. A name registered again keeps its place, as in PHP's arrays. <Ev test="speedyspec-wp-posts::registry::re_register_keeps_position_and_old_features"/>
 - **Strategy**: the read ports, so phase 4's adapter can read PHP's globals live in place of the in-memory registries.
-- **Command**: `create_initial_post_types()`'s table of steps, so its order and data live in one place. <Ev source="ss:crates/speedyspec-wp-posts/src/initial.rs#L1-L7" hash="9e66dcc45d32d5ecdca9442c304f83e64eb156fc36accc24cb67408fd49a7892"/>
+- **Command**: `create_initial_post_types()`'s table of steps, so its order and data live in one place. <Ev source="ss:crates/speedyspec-wp-posts/src/initial.rs#L1-L7" hash="86f0928b0bf09d5a4d037d217764ae5ff3a3b6aa1b643c043066d68fff813a0c"/>
 - **Specification**: the list filter, one presence test per entry shape (`ListItem`) and PHP 8's `==` for the match. <Ev source="ss:crates/speedyspec-wp-posts/src/list.rs#L1-L11" hash="a8043967dee9aed4185800fcbb50c8aed36527d18642411aca550fc252bc0cbf"/>
 - **Value Object**: the names, and `PostType` and `PostStatusObject`, plain values that know nothing of how they are stored. <Ev test="speedyspec-wp-posts-contracts::values::setting_the_name_property_keeps_the_field_in_step"/>
 
@@ -217,11 +410,11 @@ Six rules need care when they change.
 
 **Loose `==` in the lists.** `get_post_types()` and `get_post_stati()` match with PHP 8's `==` after `isset()`: `'public' => 1`, `'1'` and `'yes'` all match `public => true`; a null property never matches, even `'menu_position' => null`; empty arguments return everything whatever the operator; an unknown operator returns nothing. <Ev source="ss:crates/speedyspec-wp-posts/src/list.rs#L114-L121" hash="901c811955f72ed15726eddbc8090a5d2f0892b5373a6a656ec45428806c194c"/> <Ev test="speedyspec-wp-posts::recorded::list_scenarios_match_wordpress"/>
 
-**`supports`.** `false` adds no features and keeps the property `false`; an empty array or null adds `title`, `editor` and `autosave` and keeps the property; a non-empty array adds its features and removes the property; `editor` adds `autosave` unless it is already supported. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L112-L121" hash="2e1efeb6254bf829fa651933f21dd29f234ae8bac003d0ab04114dc70e8a9a6f"/> <Ev test="speedyspec-wp-posts::registry::supports_false_keeps_property_and_adds_nothing"/> <Ev test="speedyspec-wp-posts::registry::supports_empty_adds_defaults_and_keeps_property"/> <Ev test="speedyspec-wp-posts::registry::supports_list_removes_property"/> <Ev test="speedyspec-wp-posts::registry::editor_implies_autosave_unless_present"/>
+**`supports`.** `false` adds no features and keeps the property `false`; an empty array or null adds `title`, `editor` and `autosave` and keeps the property; a non-empty array adds its features and removes the property; `editor` adds `autosave` unless it is already supported. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L116-L125" hash="2e1efeb6254bf829fa651933f21dd29f234ae8bac003d0ab04114dc70e8a9a6f"/> <Ev test="speedyspec-wp-posts::registry::supports_false_keeps_property_and_adds_nothing"/> <Ev test="speedyspec-wp-posts::registry::supports_empty_adds_defaults_and_keeps_property"/> <Ev test="speedyspec-wp-posts::registry::supports_list_removes_property"/> <Ev test="speedyspec-wp-posts::registry::editor_implies_autosave_unless_present"/>
 
 **Registering again.** The new object replaces the old one in its original place; the old features stay, since nothing clears them; meta capabilities accumulate. <Ev test="speedyspec-wp-posts::registry::re_register_keeps_position_and_old_features"/> <Ev test="speedyspec-wp-posts::registry::re_register_accumulates_meta_caps"/>
 
-**Unregistering rebuilds the meta capabilities.** As in WordPress 7.2, `unregister_post_type()` doesn't unset the type's own `$post_type_meta_caps` entries: it empties the map and rebuilds it from every remaining type whose `map_meta_cap` is truthy, in registration order. One custom capability can be owed to several types, so a capability another type still uses survives. `unregistration` takes the registered types and returns the whole rebuilt map, which the adapter assigns. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L169-L179" hash="b265b980a5d751b8baeb322580d4b80abf755cc28086787612f7d83288e495f7"/> <Ev test="speedyspec-wp-posts::registry::unregister_keeps_meta_caps_another_type_still_owes"/> <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>
+**Unregistering rebuilds the meta capabilities.** As in WordPress 7.2, `unregister_post_type()` doesn't unset the type's own `$post_type_meta_caps` entries: it empties the map and rebuilds it from every remaining type whose `map_meta_cap` is truthy, in registration order. One custom capability can be owed to several types, so a capability another type still uses survives. `unregistration` takes the registered types and returns the whole rebuilt map, which the adapter assigns. <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L173-L183" hash="b265b980a5d751b8baeb322580d4b80abf755cc28086787612f7d83288e495f7"/> <Ev test="speedyspec-wp-posts::registry::unregister_keeps_meta_caps_another_type_still_owes"/> <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/>
 
 **Names.** `sanitize_key()` runs before the length check, so `"Book Type!"` registers as `booktype`; `"0"` fails as `empty()`, as do `""` and 21 bytes. Statuses have no length check, so `register_post_status( '' )` stores `''`. An integer-like name (`"123"`) works and is keyed by its string in Rust. <Ev source="ss:crates/speedyspec-wp-posts/src/key.rs#L17-L25" hash="a442803b563e5cbdafec4743b197bb6db1721253fbe47563cfda95bcf9e3b34f"/> <Ev test="speedyspec-wp-posts::registry::integer_like_name_is_a_string_key"/> <Ev test="speedyspec-wp-posts::recorded::status_scenarios_match_wordpress"/>
 
@@ -244,13 +437,13 @@ The recorder stubs what `post.php` calls in files it doesn't load: `__()` and `_
 
 ### Left out
 
-- Every hook: the `register_post_type_args` filters, `post_type_labels_{$post_type}`, `sanitize_key`, the viewable filters and the `registered_post_type` and `unregistered_post_type` actions. Phase 4 runs them.
+- Every hook: the `register_post_type_args` filters, `post_type_labels_{$post_type}`, `sanitize_key`, the viewable filters and the `registered_post_type` and `unregistered_post_type` actions. The native functions run them.
 - Rewrite rules, permastructs and query vars, which belong to the rewrite seam, and the REST controllers, which belong to the REST API.
-- Registering and removing taxonomies: the rules return them; the adapter calls the taxonomy seam. The recorder can't record unregistering's taxonomy removal.
+- Registering and removing taxonomies: the rules return them; the native functions call `WP_Post_Type`'s own methods. The recorder can't record unregistering's taxonomy removal.
 - `wp_parse_args()`' query-string arguments, which the adapter parses.
 - `is_post_type_hierarchical()`'s raw return value, which the adapter reads from the property; the rule answers its truth.
 - `get_post_types_by_support()`'s conversion of feature values to strings, which the adapter does before calling the rule.
-- WordPress's post PHPUnit tests, which run against the port from phase 4.
+- WordPress's post PHPUnit tests, which run against the native functions since phase 4 (see above).
 
 ### Calling it from Rust
 
@@ -312,18 +505,18 @@ fn public_post_types() -> Vec<String> {
 
 - **What must still pass:** the eight replay tests over `compat/posts/cases.json`, and the registry tests.
 - **Recording more cases:** add them to `compat/posts/record.php` in speedyspec-server and run it with the runtime's static PHP against the pinned release, `compat/wordpress.json`'s `wordpress`, as its header says. It stops unless the release's `$wp_version` is that release. <Ev source="ss:compat/posts/record.php#L1-L11" hash="7a2eb15c90202a78a0719223bf2a37bc9bf5b5969bb94fe01ceee63bd4b51853"/>
-- **Carried to phase 4:** the PHP adapter over the read ports; the hooks; `is_post_type_hierarchical()`'s raw property; the string conversion in `get_post_types_by_support()`; unregistering's taxonomy removal; and `wp_parse_args()`' query strings.
+- **Done in phase 4:** the PHP adapter over the read ports; the hooks; `is_post_type_hierarchical()`'s raw property; the string conversion in `get_post_types_by_support()`; unregistering's taxonomy removal; and `wp_parse_args()`' query strings.
 
-## The post entity (Rust, not wired yet)
+## The post entity (phase 2b)
 
-Phase 2b of the posts and meta port: the `Post` entity, its repository and mapper, and the post rules of WordPress 7.2-RC2 that need nothing but posts: dates, slugs, the hierarchy and `get_extended()`. They are proven against recordings of WordPress. Nothing here is wired into PHP either: the runtime worker links no posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4, and phase 5 composes `wp_insert_post()`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Phase 2b of the posts and meta port: the `Post` entity, its repository and mapper, and the post rules of WordPress 7.2-RC2 that need nothing but posts: dates, slugs, the hierarchy and `get_extended()`. They are proven against recordings of WordPress. Phase 4 wired the reading ones (`get_post_ancestors()`, `wp_get_post_parent_id()`, `get_page_uri()`, `get_page_hierarchy()`, `get_page_children()`) under the read use cases; the dates, the slugs, the loop check and `get_extended()` stay WordPress's PHP until phase 5 composes `wp_insert_post()`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/release.rs#L14-L74" hash="2b3494c571a6a44e50d757bea931bec2c8ee3b909e5e1d940b153db3026b04c2"/>
 
 ### The crates
 
-- **`speedyspec-wp-posts-contracts`** (contracts) adds the entity and its values, `PostError`, the new ports and the conformance suites (behind its `conformance` feature). It still depends only on `speedyspec-php-serialize`. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/lib.rs#L5-L25" hash="1faceffb1882fe4a4d63619b5ea5119838aca8ad97e4110b66293b0650117510"/>
+- **`speedyspec-wp-posts-contracts`** (contracts) adds the entity and its values, `PostError`, the new ports and the conformance suites (behind its `conformance` feature). Since 0.3.0 it also depends on the hooks and object cache contracts. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/lib.rs#L5-L25" hash="df04b1b1ab137aa2e5f5dad9463e3fb02a55b92fbe4df935719c63e3f84f6ecf"/>
 - **`speedyspec-wp-posts-memory`** (adapter, new): `MemoryPostRepository`, `wp_posts` in memory, for tests and for callers with no database. <Ev source="ss:crates/speedyspec-wp-posts-memory/Cargo.toml#L1-L12" hash="0969e909e38858549371ce288c15fd6f8864febb1e5d931a008b497bfc0ab5e5"/>
-- **`speedyspec-wp-posts-sql`** (adapter, new): `PostMapper`. There is no SQL repository yet; phase 4 adds it. <Ev source="ss:crates/speedyspec-wp-posts-sql/Cargo.toml#L1-L12" hash="09eafc6f1b26c019c24947b8318a0dc425b48207b5895e196e0db085a0c782de"/>
-- **`speedyspec-wp-posts`** (implementation) adds the date, slug, hierarchy, page tree and `get_extended()` rules, and `Uncached`. <Ev source="ss:crates/speedyspec-wp-posts/src/lib.rs#L1-L5" hash="9faa705a703f50825dc4a2f0a55a85772e438cc3b25f67bbeb89fcb026565ce2"/>
+- **`speedyspec-wp-posts-sql`** (adapter, new): `PostMapper`. Phase 4 added `SqlPostRepository`. <Ev source="ss:crates/speedyspec-wp-posts-sql/Cargo.toml#L1-L12" hash="1d721f96ac9eea9847eecfbd10253f7dcdc759cb61cc552cc163fba3d47f7d77"/>
+- **`speedyspec-wp-posts`** (implementation) adds the date, slug, hierarchy, page tree and `get_extended()` rules, and `Uncached`. <Ev source="ss:crates/speedyspec-wp-posts/src/lib.rs#L1-L9" hash="6d8f22594efb1cf795836c38becda313f98570749cf274f7026524a4739a2c71"/>
 
 `speedyspec-wp-text` gains `wp_truncate_slug()`, in the text seam that owns `formatting.php`; the posts crates reach it only through the `SlugTruncation` port. `speedyspec-php-serialize` gains `to_php_int` (PHP 8's `(int)`) and `bytes_truthy` (PHP truth of a string), which the rules share. <Ev source="ss:crates/speedyspec-php-serialize/src/semantics.rs#L19-L22" hash="10529d8dffe5a8770a000e4501e125c64595fa144f1752719cbe561c2185a604"/> <Ev source="ss:crates/speedyspec-php-serialize/src/semantics.rs#L176-L184" hash="5ce594df9ec95b730dfe30de66e797b91defe6edc732e72aae8acea6f05d2a06"/>
 
@@ -335,49 +528,49 @@ The values are typed: `PostId` (0 is "no post"), `PostDateTime` (`Y-m-d H:i:s`, 
 
 ### The ports
 
-- **`PostRepository`**: `wp_posts`. Each method is one `$wpdb` statement that `post.php` makes, so query counts match WordPress: `find` (`WP_Post::get_instance()`'s `SELECT *`), `insert` (`wp_insert_post()`'s `$wpdb->insert`) and the three slug-owner queries of `wp_unique_post_slug()`, one per branch. A failure `$wpdb` hides is `Ok` with the empty answer; `Err` is only for failures it wouldn't hide. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L1-L45" hash="32cb8cba3d14f360afc07326a89d9106b305ca132e4abdd44df149979bf5f495"/>
-- **`PostReader`**: `get_post()`, through whatever cache the binding keeps. The rules read posts through it exactly where WordPress calls `get_post()`. `Uncached` is phase 2b's binding: it reads through `find`, and a zero ID is `None` with no statement, as `WP_Post::get_instance()` returns false before it queries. Phase 4's binding reads the `posts` cache group first. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L47-L52" hash="d01f51bc5993f12860182616236aeb5dbe6b9f91d62a57535dc59676cfaeeea5"/> <Ev source="ss:crates/speedyspec-wp-posts/src/reader.rs#L5-L19" hash="09da15425c05c61578f330c352c0763b5ac7394e30c22dffec7fbfac1012ace4"/>
-- **`Clock`**: `current_time()`, `get_date_from_gmt()`, `get_gmt_from_date()` and `strtotime()`, so the date rules read no global clock or timezone. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L54-L66" hash="9f8da984cc5bb352957e1e065de47773d9b72150378e76c547b5598862804680"/>
-- **`SlugTruncation`**: the text seam's `wp_truncate_slug()`. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L68-L73" hash="e638b6879f443de0b25da820c3e28f61edde28f9b0d459771c93f171e396c53b"/>
-- **`BadSlugs`**: the three `wp_unique_post_slug_is_bad_*_slug` filters. `NoBadSlugs` answers false, as WordPress does with no callback. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L75-L83" hash="9bcc74d52787ae48e18d0c11445cd1c0aa2c01e9a990979384fc6712ad4cd38c"/>
+- **`PostRepository`**: `wp_posts`. Each method is one `$wpdb` statement that `post.php` makes, so query counts match WordPress: `find` (`WP_Post::get_instance()`'s `SELECT *`), `insert` (`wp_insert_post()`'s `$wpdb->insert`) and the three slug-owner queries of `wp_unique_post_slug()`, one per branch. A failure `$wpdb` hides is `Ok` with the empty answer; `Err` is only for failures it wouldn't hide. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L1-L45" hash="6bf29ad9e98efd1da69d43d70595d4e1b503783e858ebaf2b6d4596c14efb850"/>
+- **`PostReader`**: `get_post()`, through whatever cache the binding keeps. The rules read posts through it exactly where WordPress calls `get_post()`. `Uncached` is phase 2b's binding: it reads through `find`, and a zero ID is `None` with no statement, as `WP_Post::get_instance()` returns false before it queries. Phase 4's binding reads the `posts` cache group first. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L210-L215" hash="d01f51bc5993f12860182616236aeb5dbe6b9f91d62a57535dc59676cfaeeea5"/> <Ev source="ss:crates/speedyspec-wp-posts/src/reader.rs#L5-L19" hash="09da15425c05c61578f330c352c0763b5ac7394e30c22dffec7fbfac1012ace4"/>
+- **`Clock`**: `current_time()`, `get_date_from_gmt()`, `get_gmt_from_date()` and `strtotime()`, so the date rules read no global clock or timezone. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L231-L243" hash="9f8da984cc5bb352957e1e065de47773d9b72150378e76c547b5598862804680"/>
+- **`SlugTruncation`**: the text seam's `wp_truncate_slug()`. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L245-L250" hash="e638b6879f443de0b25da820c3e28f61edde28f9b0d459771c93f171e396c53b"/>
+- **`BadSlugs`**: the three `wp_unique_post_slug_is_bad_*_slug` filters. `NoBadSlugs` answers false, as WordPress does with no callback. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L252-L260" hash="9bcc74d52787ae48e18d0c11445cd1c0aa2c01e9a990979384fc6712ad4cd38c"/>
 
 Why both `PostRepository` and `PostReader`: the repository is the table and its statements; the reader is `get_post()`, which in WordPress sits in front of the object cache. The rules that call `get_post()` take a reader, and the slug rule's owner queries, which WordPress never caches, take the repository. So phase 4 adds the cache by binding another reader, and the statements the rules make stay WordPress's.
 
 ### The mapper
 
-`PostMapper` maps the entity from two sources and back. From a `wp_posts` row as mysqli's text protocol gives it (a `NULL` text column is `""`; a bad number is a `Db` error, as the columns are unsigned and `NOT NULL`), and to `wp_insert_post()`'s column values in its `compact()` order, with `ID` only for an import ID. From the `posts` cache group's `stdClass` or `WP_Post`, read with PHP's `(string)` and `(int)` casts, and back to the `stdClass` that `get_instance()` caches after a miss. <Ev source="ss:crates/speedyspec-wp-posts-sql/src/mapper.rs#L1-L13" hash="925adcc2a12745bd525303576a0c358fe3d49a08ce0b19247a6c9db380976142"/> <Ev source="ss:crates/speedyspec-wp-posts-sql/src/mapper.rs#L147-L169" hash="0f00ceadab299d65d76ef78baa553b7ec82d6f65ec90ede10063ab97591ddbcc"/> <Ev source="ss:crates/speedyspec-wp-posts-sql/src/mapper.rs#L205-L238" hash="5719c66f1fd5be4b0fde56bbefd8fc3cc79f5010ed04f24e7cf3cc4a667746d4"/>
+`PostMapper` maps the entity from two sources and back. From a `wp_posts` row as mysqli's text protocol gives it (a `NULL` text column is `""`; a bad number is a `Db` error, as the columns are unsigned and `NOT NULL`), and to `wp_insert_post()`'s column values in its `compact()` order, with `ID` only for an import ID. Phase 4 moved the cache half, the `posts` cache group's `stdClass` or `WP_Post` read with PHP's `(string)` and `(int)` casts and the `stdClass` that `get_instance()` caches after a miss, to `PostEntry` in `speedyspec-wp-posts`, since the use cases read the cache and may depend on contracts only. <Ev source="ss:crates/speedyspec-wp-posts-sql/src/mapper.rs#L1-L2" hash="326dbbc711ed864ff783d8c9711f8c87092a98b11a98ef5d3d5fb79bc830a568"/> <Ev source="ss:crates/speedyspec-wp-posts-sql/src/mapper.rs#L127-L149" hash="0f00ceadab299d65d76ef78baa553b7ec82d6f65ec90ede10063ab97591ddbcc"/>
 
 ### Use cases
 
-There are still no commands or queries in the container; phase 4 binds them. Each rule is a function over the ports, and each stops where WordPress runs a filter, so phase 4 can place the filter there.
+Each rule is a function over the ports, and each stops where WordPress runs a filter. Phase 4's read use cases call the reading ones and place the filters; the others wait for phase 5.
 
 - `resolve_post_date`: `wp_resolve_post_date()` up to the `wp_checkdate` filter, with `checkdate()` as `gregorian_date_valid`. <Ev source="ss:crates/speedyspec-wp-posts/src/dates.rs#L45-L70" hash="5044e409843fb5b591238772d02355b294074a69b49ab503b521cdc61550603b"/>
 - `insert_post_dates`: `wp_insert_post()`'s date block after the resolved date: the GMT date, the modified dates, and the `publish`/`future` swap. <Ev source="ss:crates/speedyspec-wp-posts/src/dates.rs#L144-L190" hash="3ad110204c1693b5579c530f54aa770936987be00364c285c7194ac7ec244fae"/>
-- `slug_needs_no_check` and `unique_post_slug`: `wp_unique_post_slug()` between `pre_wp_unique_post_slug` and `wp_unique_post_slug`. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L1-L8" hash="c63bf5fc48423f71102420d27eac080134afcd20800ee15d10a2cf6ad3866c4b"/>
+- `slug_needs_no_check` and `unique_post_slug`: `wp_unique_post_slug()` between `pre_wp_unique_post_slug` and `wp_unique_post_slug`. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L1-L8" hash="a18d8233ab1cb362c7b9622ae5713ea90d36f3d73120f9468717e35e29ee1ab7"/>
 - `post_parent_id`, `find_hierarchy_loop`, `check_post_hierarchy_for_loops`, `post_ancestors` and `page_uri`: `wp_get_post_parent_id()`, `wp_find_hierarchy_loop()`, `wp_check_post_hierarchy_for_loops()`, `get_post_ancestors()` and `get_page_uri()` before its filter. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L1-L7" hash="aee55a0732c4666600d48ae5ac05dd91c3a5f7575c15dcc8ca887feac734d67a"/>
 - `page_hierarchy` and `page_children`: `get_page_hierarchy()` and `get_page_children()`, over a list of posts with no reads. <Ev source="ss:crates/speedyspec-wp-posts/src/pages.rs#L1-L7" hash="dd1882ecd0e8a7351d700af6109b877be3813d96457fd5c53315f877b2b8b9e5"/>
 - `extended`: `get_extended()`. <Ev source="ss:crates/speedyspec-wp-posts/src/content.rs#L17-L32" hash="e53ceac46f104fdb687f322a1d53065c0db38728c15df9eec977e7783689d56a"/>
 
-No hook is called. To replace an implementation today, implement `PostRepository` or `PostReader` in Rust and pass it in; the rules take every port as `&dyn`. Replacing one from PHP comes with phase 4's PHP crate.
+The rules call no hook. A Rust caller implements `PostRepository` or `PostReader` and passes it in; the rules take every port as `&dyn`. From PHP, `wp_posts` is replaced through the `SpeedySpec\WpPosts\PostRepository` binding (see above).
 
 ### Patterns
 
-- **Repository**, one statement per method: `PostRepository`, so a replay can compare statement sequences and an adapter can't merge or skip reads WordPress makes. `MemoryPostRepository` and phase 4's SQL repository implement it (**Strategy** per engine). <Ev source="ss:crates/speedyspec-wp-posts-memory/src/lib.rs#L1-L13" hash="cc57656a7e63120dffac0a92cefb38e5b219681d3fad0c0026bd90750978d935"/>
+- **Repository**, one statement per method: `PostRepository`, so a replay can compare statement sequences and an adapter can't merge or skip reads WordPress makes. `MemoryPostRepository` and phase 4's SQL repository implement it (**Strategy** per engine). <Ev source="ss:crates/speedyspec-wp-posts-memory/src/lib.rs#L1-L5" hash="4da557478296c6c525b3d3d1ee27edea888be55d3b76287a4a1fca385c07c808"/>
 - **Data Mapper**: `PostMapper`, so the entity knows nothing of rows or cache entries. <Ev test="speedyspec-wp-posts-sql::mapper::rows_map_to_the_cached_object"/>
 - **Strategy ports**: `Clock`, `SlugTruncation`, `BadSlugs` and `PostReader`, each a place where phase 4 or 5 binds WordPress's PHP or a Rust adapter.
 - **Adapter**: `Uncached`, from repository to reader. <Ev source="ss:crates/speedyspec-wp-posts/src/reader.rs#L5-L19" hash="09da15425c05c61578f330c352c0763b5ac7394e30c22dffec7fbfac1012ace4"/>
 - **Value Object**: `Post`, `PostId`, `PostDateTime`, `PostDate`, `Slug` and the rest.
-- **Conformance suite**: `post_repository_suite` holds the checks every post repository must pass, so the memory and SQL repositories answer alike; `binary_safe_suite` adds the checks only a binary-safe table passes, which a faithful SQL repository over stock `utf8mb4` tables fails by design. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/conformance.rs#L1" hash="e8bd2a14ab77edf93a6ce0a672d36bf1643c4c314f3db11c0c900a09a1719da1"/> <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/conformance.rs#L238-L245" hash="01f8386052222c57692baf735e407edca386e3787f54a886d07663e81543c3e6"/> <Ev test="speedyspec-wp-posts-memory::conformance::memory_repository_passes_the_suite"/> <Ev test="speedyspec-wp-posts-memory::conformance::memory_repository_passes_the_binary_safe_suite"/>
+- **Conformance suite**: `post_repository_suite` holds the checks every post repository must pass, so the memory and SQL repositories answer alike; `binary_safe_suite` adds the checks only a binary-safe table passes, which a faithful SQL repository over stock `utf8mb4` tables fails by design. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/conformance.rs#L1" hash="e8bd2a14ab77edf93a6ce0a672d36bf1643c4c314f3db11c0c900a09a1719da1"/> <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/conformance.rs#L246-L250" hash="56020ba609fadc35cd4e5d957a9734068a13ed59c8088e73ac70f79e5c195b5f"/> <Ev test="speedyspec-wp-posts-memory::conformance::memory_repository_passes_the_suite"/> <Ev test="speedyspec-wp-posts-memory::conformance::memory_repository_passes_the_binary_safe_suite"/>
 
 ### Review focus
 
 **Statements are part of the answer.** Each replay compares the result and the `$wpdb` statements in order, so a rule that reads a post once more or once less than WordPress fails. `get_page_uri()` reads every ancestor, then each one again for its name, because WordPress does. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L157-L171" hash="9580e160ea1319a8723ac2909f28debb657df6f121321ba350f8604abfa13701"/> <Ev test="speedyspec-wp-posts::entity::hierarchy_matches_wordpress"/>
 
-**PHP truth of a slug owner.** The owner queries answer a name, and an owner named `""` or `"0"` is false in PHP, so it never forces a suffix. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L92-L96" hash="225bf09dd80cfbaff5903a3bab161af7184503ad22e76f4ac47e4fbefd7194d6"/> <Ev test="speedyspec-wp-posts::entity::slug_scenarios_match_wordpress"/>
+**PHP truth of a slug owner.** The owner queries answer a name, and an owner named `""` or `"0"` is false in PHP, so it never forces a suffix. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L94-L98" hash="225bf09dd80cfbaff5903a3bab161af7184503ad22e76f4ac47e4fbefd7194d6"/> <Ev test="speedyspec-wp-posts::entity::slug_scenarios_match_wordpress"/>
 
-**PCRE's `$`.** `/^[0-9]+$/` and the pagination pattern match before one final newline, so `"5\n"` counts as a number and `"2\n"` as a page number. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L127-L152" hash="58aa3c6b10b4dc4a44d103c50c03f63afc56c5c969dd7d47a186977912fa2477"/> <Ev test="speedyspec-wp-posts::entity::slug_scenarios_match_wordpress"/>
+**PCRE's `$`.** `/^[0-9]+$/` and the pagination pattern match before one final newline, so `"5\n"` counts as a number and `"2\n"` as a page number. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L129-L154" hash="58aa3c6b10b4dc4a44d103c50c03f63afc56c5c969dd7d47a186977912fa2477"/> <Ev test="speedyspec-wp-posts::entity::slug_scenarios_match_wordpress"/>
 
-**The date-archive test.** In the flat branch, a `post` slug that is a non-zero number conflicts when `%postname%` comes first in the permalink structure, or after `%year%` (below 13) or `%monthnum%` (below 32), unless it is the post's own name. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L159-L192" hash="cf971bc8bac6f407f966b2d60da82db5a4846e13a40362bb831d05fb79739e0b"/>
+**The date-archive test.** In the flat branch, a `post` slug that is a non-zero number conflicts when `%postname%` comes first in the permalink structure, or after `%year%` (below 13) or `%monthnum%` (below 32), unless it is the post's own name. <Ev source="ss:crates/speedyspec-wp-posts/src/slug.rs#L161-L194" hash="cf971bc8bac6f407f966b2d60da82db5a4846e13a40362bb831d05fb79739e0b"/>
 
 **The clock.** `wp_resolve_post_date()` reads now only when both dates are empty. The replay's clock fails if a rule asks for now where WordPress didn't. <Ev test="speedyspec-wp-posts::entity::clock_refuses_now_where_none_was_recorded"/> <Ev test="speedyspec-wp-posts::entity::dates_match_wordpress"/>
 
@@ -398,13 +591,13 @@ The stub compares strings byte for byte, where MySQL's `_ci` collations ignore c
 
 ### Left out, and what phase 5 composes
 
-- Every hook: `wp_checkdate`, `pre_wp_unique_post_slug`, `wp_unique_post_slug`, the `wp_unique_post_slug_is_bad_*` filters (taken through `BadSlugs`), `get_page_uri` and `wp_insert_post_parent`. Phase 4 runs them.
-- The SQL repository, with `wpdb::set_sql_mode`'s mode so zero dates insert and read back, and a decision on collation.
+- Every hook: `wp_checkdate`, `pre_wp_unique_post_slug`, `wp_unique_post_slug`, the `wp_unique_post_slug_is_bad_*` filters (taken through `BadSlugs`), `get_page_uri` and `wp_insert_post_parent`. Phase 4 runs `get_page_uri` and added the filtered slug rule; the others come with phase 5.
+- The SQL repository, which phase 4 added: `wpdb::set_sql_mode`'s mode lets zero dates insert and read back, and `post_name` matches through the table's `_ci` collation, as in WordPress.
 - `get_post(0)`'s fallback to the global `$post`, which changes the flat branch's date-archive test for a new post.
 - Negative `post_parent` values, which WordPress keeps and `PostId` can't hold.
-- WordPress's post PHPUnit tests, which run against the port from phase 4.
+- WordPress's post PHPUnit tests, which run against the native functions since phase 4.
 
-`wp_insert_post()` is not composed yet. Phase 5 runs its steps in WordPress's order: `resolve_post_date`, then `insert_post_dates`, then `check_post_hierarchy_for_loops`, running `wp_update_post( array( 'ID' => $member, 'post_parent' => 0 ) )` for each `break_loop` member, then `slug_needs_no_check`, `pre_wp_unique_post_slug` and `unique_post_slug`, then `import_id`'s `SELECT ID` pre-check (its own repository method), then `PostRepository::insert`. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L17-L23" hash="d3341f8f49b03fc4f54559f256af05ca3dfb4b78891e132351b7a5269d923173"/>
+`wp_insert_post()` is not composed yet. Phase 5 runs its steps in WordPress's order: `resolve_post_date`, then `insert_post_dates`, then `check_post_hierarchy_for_loops`, running `wp_update_post( array( 'ID' => $member, 'post_parent' => 0 ) )` for each `break_loop` member, then `slug_needs_no_check`, `pre_wp_unique_post_slug` and `unique_post_slug`, then `import_id`'s `SELECT ID` pre-check (its own repository method), then `PostRepository::insert`. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L39-L45" hash="d3341f8f49b03fc4f54559f256af05ca3dfb4b78891e132351b7a5269d923173"/>
 
 ### Calling it from Rust
 

@@ -5,11 +5,17 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired yet. The runtime worker links neither posts crate, so PHP on SpeedySpec runs WordPress's own `post.php` until phase 4 of the posts and meta port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Native: `post.php`'s `post_type_supports()` is a line of PHP over `SpeedySpec\WpPosts\Native\post_type_supports`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L89-L92" hash="2a6281012bebb5e167642800b0d5c70b5a1cf5894bdcaf9bdb148b5fa83619c6"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L668-L679" hash="1f9d71a96aa286fc31f0d999f5b6d18de133a665f3276de16bc67e768393f5db"/>
+
+It reads the live `$_wp_post_type_features`. <Ev scenario="types-supports" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+
+The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
+
+WordPress's own `Tests_Post_Types` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rule
 
-`PostTypeSupports::supports` is `isset()` on `$_wp_post_type_features[ $post_type ][ $feature ]`; a stored feature is never null. The registry answers it from memory; phase 4's adapter reads the global live. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L111-L117" hash="bf048c1607f275c0844bce9a454134462a637e6774e1c8b37ae053bb70a16141"/> <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L381-L387" hash="28ef2c3dd1409e3c7b9d4f7f882e71bb3564d35e09a56d0510b092c41c5c1649"/>
+`PostTypeSupports::supports` is `isset()` on `$_wp_post_type_features[ $post_type ][ $feature ]`; a stored feature is never null. The registry answers it from memory; phase 4's adapter reads the global live. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L288-L294" hash="bf048c1607f275c0844bce9a454134462a637e6774e1c8b37ae053bb70a16141"/> <Ev source="ss:crates/speedyspec-wp-posts/src/registry.rs#L404-L410" hash="28ef2c3dd1409e3c7b9d4f7f882e71bb3564d35e09a56d0510b092c41c5c1649"/>
 
 Its 3 recorded calls replay as in WordPress 7.2-RC2, and `add_supports()` asks it for the `editor`-implies-`autosave` rule. <Ev test="speedyspec-wp-posts::recorded::post_type_scenarios_match_wordpress"/> <Ev test="speedyspec-wp-posts::registry::editor_implies_autosave_unless_present"/>
 

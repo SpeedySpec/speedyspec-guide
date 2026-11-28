@@ -3,4 +3,4 @@ symbol: "method:WP_Post_Type::reset_default_labels"
 verdict: works-as-wordpress
 ---
 
-Served by WordPress's PHP, as the whole class is until phase 4. The Rust rules keep no cache of the default labels: `default_labels` builds them on each call, so there is nothing to reset. <Ev source="ss:crates/speedyspec-wp-posts/src/initial.rs#L5-L7" hash="1283b3b91f0418439258868b0101e2a009daec50147985b631ab9d20aec1cb26"/>
+Served by WordPress's PHP, as the whole class is until phase 4. The Rust rules keep no cache of the default labels: `default_labels` builds them on each call, so there is nothing to reset. <Ev source="ss:crates/speedyspec-wp-posts/src/initial.rs#L5-L7" hash="5efdad61cc71c2120a0a19f5a16dae6430652b858bcbb88f123ab8099a029046"/>

@@ -3,6 +3,6 @@ symbol: "filter:random_rewrite_rules"
 verdict: works-as-wordpress
 ---
 
-Served by WordPress's PHP: the runtime worker doesn't link the rewrite port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L60" hash="4e45d1d171d753b4dfe1c47e78d7b37982c3572c9fc8cf407854fed9c53b58e9"/>
+Served by WordPress's PHP: the runtime worker doesn't link the rewrite port. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L61" hash="6f4cc0a8bd36744bf5405190b45effa2b6e7bf0dc07102a16609d3f7a8def695"/>
 
 The port's `rewrite_rules()` runs it over the random content rules, after dropping any regex the top rules already have and before merging them, as WordPress 7.2 does. A callback that removes the `/random/` rule leaves the author rule in place. <Ev source="ss:crates/speedyspec-wp-rewrite/src/generate.rs#L264-L270" hash="8c023fa57cf4e1019a61d0d374f2eb16c3440043219e0485884d6dc1c6e3c25d"/> <Ev source="ss:crates/speedyspec-wp-rewrite-php/tests/php.rs#L182-L195" hash="9bd62082e4c67abb68115368bf9e227e04047167390ece7f363b0e653dde42dd"/>

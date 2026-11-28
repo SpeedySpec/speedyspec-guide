@@ -1,0 +1,18 @@
+---
+symbol: "function:get_post_mime_type"
+verdict: works-with-differences
+differences:
+  - summary: "Given an object, it reads a copy: WordPress's `get_post()` inside it sanitizes a filterless `stdClass` in place (`filter` set to `raw`, ids cast to int), and here the caller's object is left as it was."
+---
+
+## Behaviour
+
+Native: `post.php`'s `get_post_mime_type()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_post_mime_type`, which dispatches the `GetPostMimeType` message to the handler bound at `SpeedySpec\WpPosts\GetPostMimeTypeHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L40-L43" hash="d4bdb9af8ebcbe7e6f62e1de1bef6219c5611c4f466c7515cd3bf96546fd3f9e"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/get.rs#L385-L386" hash="dffb3e43d796a451f92836f6cc7f2e31df2ff092e92f7d088e8d2d8264ae6023"/>
+
+It reads the post and answers its `post_mime_type`, or false when there is none. <Ev scenario="mime-each" area="posts-read"/> <Ev scenario="mime-global" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
+
+No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.
+
+## Differences
+
+- **An object argument is read as a copy.** The readers beside `get_post()` hand an object argument to the use case as a copy, for one dispatch. WordPress's `get_post()` inside them sanitizes a `stdClass` with no `filter` in place, setting `filter` to `raw` and casting its ids to int; on SpeedySpec the caller's object is left as it was. The answer is the same. Not recorded. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L30-L34" hash="2bc082f37a3aa63398531ebb37534e185fe71501b2fbacd16834877684966948"/>

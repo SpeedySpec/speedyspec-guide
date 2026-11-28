@@ -20,6 +20,7 @@ use speedyspec_wp_media_contracts::{MediaInfo, MediaReader, MediaSource, ProbeLi
 use speedyspec_wp_media_php::MediaArea;
 use speedyspec_wp_meta_php::MetaArea;
 use speedyspec_wp_password_php::PasswordArea;
+use speedyspec_wp_posts_php::PostsArea;
 use speedyspec_wp_text_diff_php::TextDiffArea;
 
 use crate::Side;
@@ -122,8 +123,9 @@ fn runtime_areas(legacy: &Rc<RequestHooks>) -> Result<RuntimeAreas, String> {
         .bindings(Vec::new());
     let hook_api = hooks.api();
     let media = media_area(hook_api.clone(), &container);
-    let container_area =
-        MetaArea::ports(media.ports(TextDiffArea::ports(PasswordArea::ports(container_area))));
+    let container_area = PostsArea::ports(MetaArea::ports(
+        media.ports(TextDiffArea::ports(PasswordArea::ports(container_area))),
+    ));
     let next_wake = NextWake::new();
     let crypto = CryptoArea::new(hook_api.clone(), sodium);
     let password = password_area(hook_api.clone(), &container, sodium);

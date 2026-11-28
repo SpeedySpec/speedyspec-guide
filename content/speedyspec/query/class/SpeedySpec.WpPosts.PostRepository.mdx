@@ -1,0 +1,12 @@
+---
+symbol: "class:SpeedySpec\\WpPosts\\PostRepository"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+The PHP twin of the `PostRepository` port: `wp_posts`, with a method per `$wpdb` call `post.php` makes (`find`, `find_many`, `parent_ids`, `pages_by_names`, `all_page_ids`, `count_by_status`, `count_attachments`, `last_post_time`, `available_mime_types`, `insert` and the three slug owners) and `engine`. Values cross as PHP holds them: a post is a row array keyed by column, as `$wpdb->get_row( …, ARRAY_A )` gives it; ids are ints, names and types strings, and nothing is `null`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/twins.rs#L1-L10" hash="4f78e74903ef43775cc01d27db7248ae809568fb7f7f51d24774abb5348b5ec2"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/twins.rs#L26-L59" hash="0ec0bdb24a7f68fb1e1ec3ddd87555a1f1d5abd3f92e1c1f9d6e1a7ce1d7b460"/>
+
+## Override
+
+Bind an object implementing it at `SpeedySpec\WpPosts\PostRepository` in the container. The use cases resolve the port on every call, so the binding applies for its request; a binding that throws, or an object that doesn't implement the interface, is an `Error` from the post function, and nothing falls back to SQL. Each method answers what the matching `$wpdb` call would. <Ev source="ss:crates/speedyspec-wp-posts-php/src/ports.rs#L468-L476" hash="e313c6e308e1d2283dc6e0918125174e20773af77757704987587e1d4457fb11"/> <Ev test="speedyspec-wp-posts-php::replacement::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/replacement.rs#L44-L60" hash="1ca2fc8975e0f919fabd4946ae4574c4f23178f81535b33bb9c6d520a7122102"/>

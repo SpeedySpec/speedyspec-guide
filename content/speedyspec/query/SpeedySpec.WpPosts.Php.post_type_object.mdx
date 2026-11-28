@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\post_type_object"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It makes a `WP_Post_Type` without its constructor and gives it the properties the Rust rules resolved, unsetting a declared property the resolution left out (`supports`). <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L156-L178" hash="75257473048b7f1e90e0d37f83f8f00f3de07afae4cd2672fa29f1a6fe62cd14"/> <Ev scenario="types-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

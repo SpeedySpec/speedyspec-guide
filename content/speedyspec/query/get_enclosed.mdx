@@ -1,0 +1,22 @@
+---
+symbol: "function:get_enclosed"
+verdict: works-with-differences
+differences:
+  - summary: "Through the native meta functions, `update_meta_cache()`'s statement selects `meta_id` too, so a `query` filter sees `SELECT meta_id, post_id, meta_key, meta_value …` where WordPress sends `SELECT post_id, meta_key, meta_value …`. The rows, the cache and the query count are the same."
+---
+
+## Behaviour
+
+Native: `post.php`'s `get_enclosed()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_enclosed`, which dispatches the `GetEnclosed` message to the handler bound at `SpeedySpec\WpPosts\GetEnclosedHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L70-L73" hash="a1a862341c5b3d7b045184e6bccf20a8b7d9868b2d186e56b69f6d821fbe4ffa"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/pings.rs#L92-L95" hash="ed639eb36143e8ba839bd347c62def901a6248589ceb25a2075f9f4a6199f5c7"/>
+
+It reads the post's custom fields (`get_post_custom()`, through the metadata API), takes the first line of each `enclosure` value, and runs the `get_enclosed` filter with `( $pung, $post_id )`. <Ev test="speedyspec-wp-posts-php::errors::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/errors.rs#L149-L169" hash="d7f364bd335a351bc0174e5c05add07e4d3a4f80babccf08a3c916ea37a3712e"/>
+
+No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.
+
+## Differences
+
+- **The meta statement.** This function reads post meta through the native meta functions, whose `update_meta_cache()` statement selects `meta_id` too (`SELECT meta_id, post_id, meta_key, meta_value …`, where WordPress sends `SELECT post_id, meta_key, meta_value …`), because the meta entity carries its id. A plugin that matches the exact text in a `query` filter misses it; the rows, the cache and the query count are WordPress's. It is the meta seam's documented difference, recorded here as a break on the scenarios that watch the statement. <Ev break="cache-prime-statement" step="1" area="posts-read"/> <Ev break="count-readable-statement" step="1" area="posts-read"/> <Ev source="ss:compat/posts-read/breaks.json#L1-L14" hash="c5f076b4794a20681d8b985e4d9fb2e12e1bda0c5f3b95a2ba59b4e080731c8d"/> See [update_meta_cache()](/speedyspec/meta/update_meta_cache/).
+
+## Limits
+
+- No recorded scenario calls it; the port's own case does.

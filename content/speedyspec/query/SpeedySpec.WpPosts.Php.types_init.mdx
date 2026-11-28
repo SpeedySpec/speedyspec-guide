@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\types_init"
+verdict: new-in-speedyspec
+---
+
+A helper the native post functions call in PHP; not for plugins. It makes `$wp_post_types` an array, as `register_post_type()` does first. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L132-L142" hash="b671355cbf765c9e8b44052d871783c05d68fdf250e24c5cb3fc7ee6b5aec186"/> <Ev scenario="types-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

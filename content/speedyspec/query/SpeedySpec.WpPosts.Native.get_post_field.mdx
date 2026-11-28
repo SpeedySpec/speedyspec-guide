@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\get_post_field"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [get_post_field()](/speedyspec/query/get_post_field/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L35-L38" hash="202d29c0f54abf283355c5303857de977e522b4df770a25dbe3fa35ef5817bd6"/>
+
+It sends the `GetPostField` message through the handler bound under `SpeedySpec\WpPosts\GetPostFieldHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L465-L482" hash="4374ffc3aeda327365ded4293205f71014081bb82097e6a5ed538ac711ba0a40"/> <Ev scenario="field-default-context" area="posts-read"/> <Ev scenario="field-raw" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
