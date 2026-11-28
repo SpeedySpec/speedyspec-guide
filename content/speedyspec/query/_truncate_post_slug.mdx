@@ -5,7 +5,7 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust code below is not wired. Phase 4 of the posts and meta port made 55 of `post.php`'s functions native, the registries and post reading, but not this one, which the release keeps in `post.php`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/release.rs#L14-L74" hash="2b3494c571a6a44e50d757bea931bec2c8ee3b909e5e1d940b153db3026b04c2"/>
+Served by WordPress's PHP; the Rust code below is not wired. Phases 4 and 5a of the posts and meta port made 63 of `post.php`'s functions native, the registries, post reading and the first writers, but not this one, which the release keeps in `post.php`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/release.rs#L14-L84" hash="15e4700faff81aa8c9b034cb34c2c038a2bac08fb0de928036549fb69d6ba78d"/>
 
 ## The Rust rule
 
@@ -15,4 +15,4 @@ The rule is the text seam's [wp_truncate_slug](/speedyspec/text/wp_truncate_slug
 
 ## Limits
 
-- No recording calls `_truncate_post_slug()` itself: the proof is `wp_truncate_slug()`'s. WordPress's own `truncatePostSlug` tests are not among the tests speedyspec-server copies.
+- No recording calls `_truncate_post_slug()` itself: the proof is `wp_truncate_slug()`'s. WordPress's own `Tests_Post_TruncatePostSlug`, copied into the post-writing suite, runs against WordPress's own deprecated function, which the release keeps. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>

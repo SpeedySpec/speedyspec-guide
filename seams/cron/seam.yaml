@@ -101,12 +101,13 @@ dependencies:
     state: php
     cite: { source: "ss:crates/speedyspec-wp-cron-php/src/cron.php#L374-L381", hash: "5bea3a6ae1ff21b13e93d7b389ed16e62e99a92740063b59efb2a5194d5d9df6" }
   function:get_option:
-    # The CronStore port's adapter reads the cron option through the Rust OptionsApi.
+    # The CronStore port's adapter reads the cron option through the options contracts (Options, ConditionalOptions),
+    # which the runtime binds to the Rust OptionsApi.
     state: rust
     cite: { source: "ss:crates/speedyspec-wp-cron-options/src/lib.rs#L42-L44", hash: "a161f06f96471c46b4d3e17120b33e0fe0bf8cb876b5c97cd5386e3ba35fe692" }
   function:update_option:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-cron-options/src/lib.rs#L91-L95", hash: "dd0178ed47466a61663a3bdf7f0ecd11d5e49e45d8f0fa93cbde0d1b4a2ebd16" }
+    cite: { source: "ss:crates/speedyspec-wp-cron-options/src/lib.rs#L86-L90", hash: "dd0178ed47466a61663a3bdf7f0ecd11d5e49e45d8f0fa93cbde0d1b4a2ebd16" }
   function:get_transient:
     # The DoingCron port's PHP adapter calls the transient functions, which the options area answers natively.
     state: port

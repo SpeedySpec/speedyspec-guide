@@ -5,17 +5,17 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Native: `post.php`'s `get_post_type_labels()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_post_type_labels`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L64-L67" hash="cc7f95ae0d6ae183e2caaca76cb58720a31883bc6a97c729700b96daf97c626a"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L840-L859" hash="f18827b8d8b11c60d73870305f1d199eaafa4f882362381e957034256f1027fb"/>
+Native: `post.php`'s `get_post_type_labels()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_post_type_labels`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L64-L67" hash="cc7f95ae0d6ae183e2caaca76cb58720a31883bc6a97c729700b96daf97c626a"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L848-L868" hash="363a7da500fdc4fc1d02453b18560681d5a5b1871b1a048d122009f38e18de36"/>
 
 It is phase 2's rule, then the `post_type_labels_{$post_type}` filter with the labels as a `stdClass`, cast back with `(array)`. <Ev scenario="types-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-tests::filters::a_labels_filter_changes_a_label_and_keeps_the_defaults"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
 
-The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
+The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L27-L34" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
 
 WordPress's own `Tests_Post_Types` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
 ## The Rust rules
 
-`post_type_labels` is `get_post_type_labels()` before its `post_type_labels_{$post_type}` filter: `WP_Post_Type::get_default_labels()` through the `Translator` port, `menu_name` added, `_get_custom_object_labels()`, then `template_name` from "Single item: %s". `merge_filtered_labels` is the `array_merge()` after the filter. <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L1-L3" hash="4e54162cefc927e84a6636cff1a0f94810960651d09ae8245f59e65643e9aa33"/> <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L284-L285" hash="771ca04eb0ac24de9a30ce2982baf2ce110db377f985556ff01228f7047b3ce5"/> <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L337-L343" hash="b06c1806a92692488c3d15e6059320bbb586dfada9a57471a25ac86edac446ce"/>
+`post_type_labels` is `get_post_type_labels()` before its `post_type_labels_{$post_type}` filter: `WP_Post_Type::get_default_labels()` through the `Translator` port, `menu_name` added, `_get_custom_object_labels()`, then `template_name` from "Single item: %s". `merge_filtered_labels` is the `array_merge()` after the filter. <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L1-L3" hash="4e54162cefc927e84a6636cff1a0f94810960651d09ae8245f59e65643e9aa33"/> <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L289-L290" hash="178e217e4b918764a56f43833a33ad83d9ff7c2c8e0e7fd49cf27d91b31d19f7"/> <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L345-L351" hash="b06c1806a92692488c3d15e6059320bbb586dfada9a57471a25ac86edac446ce"/>
 
 All 12 recorded cases replay as in WordPress 7.2-RC2: no labels, a `label` only, `name` or `singular_name` alone, a given `template_name`, hierarchical types, `labels` as a string, an extra key, an empty name, a given `name_admin_bar` and a null `singular_name`. <Ev test="speedyspec-wp-posts::recorded::labels_match_wordpress"/>
 

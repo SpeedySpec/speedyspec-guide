@@ -5,7 +5,7 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Native: `post.php`'s `get_page_hierarchy()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_page_hierarchy`, which dispatches the `GetPageHierarchy` message to the handler bound at `SpeedySpec\WpPosts\GetPageHierarchyHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L105-L108" hash="b0b23713c3df3caa6fb9d52e595d5036f4f10c440818ed27cc922f4b8ce7d66a"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L645-L666" hash="7909599d4bec708b3096ebb9682ab5e43fe46301e1ce34061f36667484c1d46f"/>
+Native: `post.php`'s `get_page_hierarchy()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_page_hierarchy`, which dispatches the `GetPageHierarchy` message to the handler bound at `SpeedySpec\WpPosts\GetPageHierarchyHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L105-L108" hash="b0b23713c3df3caa6fb9d52e595d5036f4f10c440818ed27cc922f4b8ce7d66a"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L646-L667" hash="7909599d4bec708b3096ebb9682ab5e43fe46301e1ce34061f36667484c1d46f"/>
 
 It reads each page's `ID`, `post_parent` (`(int)`) and `post_name` from the list it is given, objects or `stdClass`, and answers phase 2's `page_hierarchy` rule: id to name, parents before their children. <Ev scenario="page-hierarchy-tree" area="posts-read"/> <Ev scenario="page-hierarchy-orphans" area="posts-read"/> <Ev scenario="page-hierarchy-empty" area="posts-read"/> <Ev scenario="page-hierarchy-stdclass" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
@@ -13,7 +13,7 @@ No copied WordPress test calls it, so its proof is the recorded scenarios and th
 
 ## The Rust rule
 
-`page_hierarchy` is `get_page_hierarchy()` with `_page_traverse_name()`: the pages below a page, as ID => name, depth first, each parent's children in list order. A repeated ID keeps its first position and takes the later name, as PHP's array assignment does. It reads no posts. <Ev source="ss:crates/speedyspec-wp-posts/src/pages.rs#L43-L52" hash="39516883d04f6824ca1ce8512720e27f04952c6b7671ab94051003123a13d507"/>
+`page_hierarchy` is `get_page_hierarchy()` with `_page_traverse_name()`: the pages below a page, as ID => name, depth first, each parent's children in list order. A repeated ID keeps its first position and takes the later name, as PHP's array assignment does. It reads no posts. <Ev source="ss:crates/speedyspec-wp-posts/src/pages.rs#L46-L55" hash="39516883d04f6824ca1ce8512720e27f04952c6b7671ab94051003123a13d507"/>
 
 The 8 recorded calls over four lists (a tree given out of order, orphans, a repeated ID and an empty list), from several starting pages, replay as in WordPress 7.2-RC2. <Ev test="speedyspec-wp-posts::entity::pages_match_wordpress"/> <Ev source="ss:compat/posts-entity/record.php#L673-L703" hash="5026e57fe2fa7b325dc8a288b27c3ced15287b61b165543066b2ad2a43773558"/>
 

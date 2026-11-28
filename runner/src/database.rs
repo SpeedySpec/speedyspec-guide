@@ -21,6 +21,8 @@ use speedyspec_wp_object_cache_php::ObjectCacheArea;
 use speedyspec_wp_options_php::OptionsArea;
 use speedyspec_wp_posts_php::PostsArea;
 
+use crate::scheduling::CronScheduling;
+
 /// What a worker with a database keeps for its life: the engines, reset at each request end.
 pub struct WorkerDatabase {
     pub registry: Rc<EngineRegistry>,
@@ -84,17 +86,19 @@ pub fn boot_database(
     let cache = ObjectCacheArea::new(container.clone(), None);
     // The meta area takes the contracts only: the Hook API, the object cache and wpdb as `Rc<dyn …>`.
     let meta = MetaArea::new(container.clone(), hook_api.clone(), cache.api(), wpdb.api());
-    // The post registries read PHP's globals live; post reading takes the contracts only, the metadata API among
-    // them.
+    let options = OptionsArea::new(container.clone(), hook_api.clone(), cache.api(), wpdb.api());
+    let cron = CronArea::new(hook_api.clone(), options.api()).with_wake(wake);
+    // The post registries read PHP's globals live; post reading and writing take the contracts only, the metadata API
+    // and the options API among them, and the writers' cron port is the Rust scheduling core.
     let posts = PostsArea::new(
         container.clone(),
         hook_api.clone(),
         cache.api(),
         wpdb.api(),
         meta.api(),
+        options.api(),
+        Rc::new(CronScheduling::new(cron.api())),
     );
-    let options = OptionsArea::new(container.clone(), hook_api.clone(), cache.api(), wpdb.api());
-    let cron = CronArea::new(hook_api.clone(), options.api()).with_wake(wake);
     let database = WorkerDatabase { registry };
     let areas: Vec<Rc<dyn NativeArea>> = vec![
         Rc::new(wpdb),

@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\delete_post_comments"
+verdict: new-in-speedyspec
+---
+
+A helper the default `Comments` adapter calls in PHP; not for plugins. It is `wp_delete_post()`'s comment loop: every comment of the post, newest first, through `wp_delete_comment( $comment_id, true )`. `wp_delete_post()` itself is still WordPress's PHP until phase 5b, so nothing calls it yet. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L130-L142" hash="7b520205548af559f80c17dbaebd2e4ad8570e068e37739b7ad4e9d1e99aae60"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L512-L515" hash="f69a4ffcab3bfa6538cf133c83f1898b3d3f84bc35202bab3f44349776c09b6a"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

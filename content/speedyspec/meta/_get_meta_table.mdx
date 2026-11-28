@@ -11,4 +11,4 @@ Native. It answers `$wpdb->{$type}meta`, or false when the type has no table. Na
 
 ## Differences
 
-- **`site` on a single site** is `wp_sitemeta`, where WordPress's `$wpdb->sitemeta` is unset and the answer is false. So on a single site every meta function given `'site'` reads or writes `wp_sitemeta` where WordPress returns false. The options seam's network code relies on that table name. <Ev source="ss:crates/speedyspec-wp-meta-sql/src/repository.rs#L398-L401" hash="29a136921eb9b816414883ee9065616182ae0208fb47091146cd9f6e5179566a"/>
+- **`site` on a single site** is `wp_sitemeta`, where WordPress's `$wpdb->sitemeta` is unset and the answer is false. So on a single site every meta function given `'site'` reads or writes `wp_sitemeta` where WordPress returns false. The options seam's network code relies on that table name. <Ev source="ss:crates/speedyspec-wp-meta-sql/src/repository.rs#L409-L412" hash="29a136921eb9b816414883ee9065616182ae0208fb47091146cd9f6e5179566a"/>

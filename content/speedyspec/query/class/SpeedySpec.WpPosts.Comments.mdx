@@ -1,0 +1,12 @@
+---
+symbol: "class:SpeedySpec\\WpPosts\\Comments"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+The PHP twin of the `Comments` port: `default_comment_status()` (`get_default_comment_status()`, which `wp_insert_post()` asks for the comment and ping status of a post given none), and the comment trashing, untrashing, deleting and deferred counting the 5b writers will call. Names cross as strings and ids as ints. <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L1-L9" hash="18a1837ade362cdee3ee70f5a992a88b70b3c0addf7414dd5ff20676510e88ef"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L82-L94" hash="dc9704801a33c20c2cae744783812e51de5cd7fb76179e7c46c8bcc38dbb7fb9"/> <Ev scenario="insert-defaults" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>
+
+## Override
+
+Bind an object implementing it at `SpeedySpec\WpPosts\Comments` in the container. The default binding is `PhpComments`, which calls WordPress's own comment functions, until the seam behind it is ported. The use cases resolve the port on every call (`Resolved`, a Proxy), so a binding made for the request applies. A binding that fails, or an object that doesn't implement the interface, is an `Error` from the post function, and nothing falls back to the default. An exception the object throws stops the use case and reaches the caller as the same object; what WordPress wrote before it stays written. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L61-L98" hash="7c49351cfee2f55a7a8acc00d7d2cfa4b4b46556e9a9d48b452e7c9bf6f6d319"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L489-L521" hash="fdd65fca037bcea62c57ce16f9ccdfe052c325e99a6a9737c0dd2859ee168bc6"/> The replacement test binds an object that answers `closed`, and the new post's comment and ping status are `closed`. <Ev test="speedyspec-wp-posts-php::replacement::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/replacement.rs#L146-L195" hash="b0c3ee6585ab2b7ea978e7f406a099a7a943debb198d09ba65ce45f1dda86dd7"/>

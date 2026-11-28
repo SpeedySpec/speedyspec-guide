@@ -1,0 +1,12 @@
+---
+symbol: "class:SpeedySpec\\WpPosts\\Charset"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+The PHP twin of the `Charset` port: `col_charset()`, which is `$wpdb->get_col_charset()` on the table `$wpdb` names (`posts` is `$wpdb->posts`) and answers the charset name or `false`. `wp_insert_post()` asks it for the title, content and excerpt columns, and encodes emoji where the answer is `utf8` or `utf8mb3`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L1-L9" hash="18a1837ade362cdee3ee70f5a992a88b70b3c0addf7414dd5ff20676510e88ef"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L127-L131" hash="7285b2fe0bd87eac678dd209bbc1a45056cce23d75a0288af75cee34cae004f8"/> <Ev scenario="insert-emoji" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>
+
+## Override
+
+Bind an object implementing it at `SpeedySpec\WpPosts\Charset` in the container. The default binding is `PhpCharset`, which asks `$wpdb`, until the seam behind it is ported. The use cases resolve the port on every call (`Resolved`, a Proxy), so a binding made for the request applies. A binding that fails, or an object that doesn't implement the interface, is an `Error` from the post function, and nothing falls back to the default. An exception the object throws stops the use case and reaches the caller as the same object; what WordPress wrote before it stays written. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L61-L98" hash="7c49351cfee2f55a7a8acc00d7d2cfa4b4b46556e9a9d48b452e7c9bf6f6d319"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L607-L618" hash="005efca804ff27752f5a8bd8464d07c616848f0ded84e8f252364a11a1d11cc2"/> The replacement test binds an object that answers `utf8`, and the emoji in the new post's title is stored encoded. <Ev test="speedyspec-wp-posts-php::replacement::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/replacement.rs#L146-L195" hash="b0c3ee6585ab2b7ea978e7f406a099a7a943debb198d09ba65ce45f1dda86dd7"/>

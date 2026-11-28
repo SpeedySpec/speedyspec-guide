@@ -23,15 +23,19 @@ wordpress:
 setup: setup.php
 mysql: true
 # wpdb (class-wpdb.php) is native: speedyspec-wp-db, its port in speedyspec-wp-db-contracts and its PHP facade, over
-# the data layer's engines. Post reading is native too (phase 4 of the posts and meta port): 55 of post.php's
-# functions, the post type and post status registries, get_post() and the readers beside it, the counts and dates,
-# the posts caches and sanitize_post(), through speedyspec-wp-posts-php over the read use cases (speedyspec-wp-posts)
-# and the SQL repository (speedyspec-wp-posts-sql). The rest of the seam (post writes, the meta wrappers, WP_Query and
-# its callers, comments, revisions, WP) is still WordPress's PHP, so the seam is not ported.
+# the data layer's engines. Post reading is native (phase 4 of the posts and meta port): 55 of post.php's functions,
+# the post type and post status registries, get_post() and the readers beside it, the counts and dates, the posts
+# caches and sanitize_post(). So are the first writers (phase 5a): wp_insert_post(), wp_update_post(),
+# wp_transition_post_status(), set_post_type() and the default callbacks _transition_post_status(),
+# _publish_post_hook(), _future_post_hook() and wp_check_post_hierarchy_for_loops(), 63 functions in all, through
+# speedyspec-wp-posts-php over the use cases (speedyspec-wp-posts) and the SQL repository (speedyspec-wp-posts-sql).
+# The rest of the seam (the other writers, the meta wrappers, WP_Query and its callers, comments, revisions, WP) is
+# still WordPress's PHP, so the seam is not ported.
 crates: [speedyspec-wp-db, speedyspec-wp-db-contracts, speedyspec-wp-posts-contracts, speedyspec-wp-posts, speedyspec-wp-posts-memory, speedyspec-wp-posts-sql, speedyspec-wp-posts-php, speedyspec-wp-posts-tests, speedyspec-wp-db-php, speedyspec-data, speedyspec-data-query, speedyspec-data-uow, speedyspec-data-translate, speedyspec-data-mysql, speedyspec-data-postgres, speedyspec-data-sqlite, speedyspec-data-memory, speedyspec-data-file, speedyspec-data-redb, speedyspec-data-valkey, speedyspec-data-counter, speedyspec-data-corpus, speedyspec-data-conformance]
 # Symbols whose file belongs to another seam, then SpeedySpec's wpdb API, then its post API: the natives post.php's
 # one-line functions call (and post_instance(), WP_Post::get_instance()'s swapped body), the PHP helpers beside them,
-# and the repository and taxonomy twins a PHP object implements.
+# and the repository and taxonomy twins a PHP object implements; then phase 5a's writing natives, their PHP helpers,
+# the write methods of those twins, and the twins of the writers' other container ports.
 symbols:
   - "function:_truncate_post_slug"
   - "class:SpeedySpec\\WpDb\\Connection"
@@ -203,3 +207,72 @@ symbols:
   - "method:SpeedySpec\\WpPosts\\Taxonomy::clean_object_term_cache"
   - "method:SpeedySpec\\WpPosts\\Taxonomy::post_term_fields"
   - "method:SpeedySpec\\WpPosts\\Taxonomy::update_object_term_cache"
+  - "function:SpeedySpec\\WpPosts\\Native\\_future_post_hook"
+  - "function:SpeedySpec\\WpPosts\\Native\\_publish_post_hook"
+  - "function:SpeedySpec\\WpPosts\\Native\\_transition_post_status"
+  - "function:SpeedySpec\\WpPosts\\Native\\set_post_type"
+  - "function:SpeedySpec\\WpPosts\\Native\\wp_check_post_hierarchy_for_loops"
+  - "function:SpeedySpec\\WpPosts\\Native\\wp_insert_post"
+  - "function:SpeedySpec\\WpPosts\\Native\\wp_transition_post_status"
+  - "function:SpeedySpec\\WpPosts\\Native\\wp_update_post"
+  - "function:SpeedySpec\\WpPosts\\Php\\assign_terms_cap"
+  - "function:SpeedySpec\\WpPosts\\Php\\col_charset"
+  - "function:SpeedySpec\\WpPosts\\Php\\default_terms"
+  - "function:SpeedySpec\\WpPosts\\Php\\delete_post_comments"
+  - "function:SpeedySpec\\WpPosts\\Php\\page_templates"
+  - "function:SpeedySpec\\WpPosts\\Php\\query"
+  - "function:SpeedySpec\\WpPosts\\Php\\slug_context"
+  - "function:SpeedySpec\\WpPosts\\Php\\wp_error"
+  - "class:SpeedySpec\\WpPosts\\Charset"
+  - "method:SpeedySpec\\WpPosts\\Charset::col_charset"
+  - "class:SpeedySpec\\WpPosts\\Comments"
+  - "method:SpeedySpec\\WpPosts\\Comments::default_comment_status"
+  - "method:SpeedySpec\\WpPosts\\Comments::defer_counting"
+  - "method:SpeedySpec\\WpPosts\\Comments::delete_post_comments"
+  - "method:SpeedySpec\\WpPosts\\Comments::trash_post_comments"
+  - "method:SpeedySpec\\WpPosts\\Comments::untrash_post_comments"
+  - "class:SpeedySpec\\WpPosts\\PostQuery"
+  - "method:SpeedySpec\\WpPosts\\PostQuery::get_posts"
+  - "method:SpeedySpec\\WpPosts\\PostQuery::query"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::auto_drafts_older_than_a_week"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::children_of_type"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::import_id_taken"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::raw_row"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::remove"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::reparent_attachments"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::reparent_children"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::revision_ids"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::update"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::update_guid"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::update_name"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::update_pinged"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::update_post_type"
+  - "method:SpeedySpec\\WpPosts\\PostRepository::update_status"
+  - "class:SpeedySpec\\WpPosts\\Rewrite"
+  - "method:SpeedySpec\\WpPosts\\Rewrite::permalink"
+  - "class:SpeedySpec\\WpPosts\\Scheduling"
+  - "method:SpeedySpec\\WpPosts\\Scheduling::clear_scheduled_hook"
+  - "method:SpeedySpec\\WpPosts\\Scheduling::next_scheduled"
+  - "method:SpeedySpec\\WpPosts\\Scheduling::schedule_single_event"
+  - "method:SpeedySpec\\WpPosts\\Taxonomy::assign_terms_cap"
+  - "method:SpeedySpec\\WpPosts\\Taxonomy::default_terms"
+  - "method:SpeedySpec\\WpPosts\\Taxonomy::delete_object_term_relationships"
+  - "method:SpeedySpec\\WpPosts\\Taxonomy::get_object_terms"
+  - "method:SpeedySpec\\WpPosts\\Taxonomy::get_the_terms"
+  - "method:SpeedySpec\\WpPosts\\Taxonomy::is_object_in_taxonomy"
+  - "method:SpeedySpec\\WpPosts\\Taxonomy::object_taxonomies"
+  - "method:SpeedySpec\\WpPosts\\Taxonomy::set_post_terms"
+  - "class:SpeedySpec\\WpPosts\\Theme"
+  - "method:SpeedySpec\\WpPosts\\Theme::current_theme_supports"
+  - "method:SpeedySpec\\WpPosts\\Theme::page_templates"
+  - "class:SpeedySpec\\WpPosts\\Uploads"
+  - "method:SpeedySpec\\WpPosts\\Uploads::attachment_is"
+  - "method:SpeedySpec\\WpPosts\\Uploads::delete_attachment"
+  - "method:SpeedySpec\\WpPosts\\Uploads::delete_post_thumbnail"
+  - "method:SpeedySpec\\WpPosts\\Uploads::insert_attachment"
+  - "method:SpeedySpec\\WpPosts\\Uploads::set_post_thumbnail"
+  - "method:SpeedySpec\\WpPosts\\Uploads::update_attached_file"
+  - "class:SpeedySpec\\WpPosts\\Users"
+  - "method:SpeedySpec\\WpPosts\\Users::current_user_can"
+  - "method:SpeedySpec\\WpPosts\\Users::get_current_user_id"
+  - "method:SpeedySpec\\WpPosts\\Users::is_user_logged_in"

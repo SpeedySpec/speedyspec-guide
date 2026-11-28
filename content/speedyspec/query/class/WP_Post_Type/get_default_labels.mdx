@@ -3,4 +3,4 @@ symbol: "method:WP_Post_Type::get_default_labels"
 verdict: works-as-wordpress
 ---
 
-Served by WordPress's PHP, as the whole class is until phase 4. Its Rust rule is `default_labels`: the 33 default labels, each a `[non-hierarchical, hierarchical]` pair through the `Translator` port with its context; `None` is null. <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L203-L204" hash="46ee9d21068f881d203122fa6eac4d9b7cff293239f78d6a0875be6f424b904b"/> The 12 recorded label cases cover it through `get_post_type_labels()`. <Ev test="speedyspec-wp-posts::recorded::labels_match_wordpress"/>
+Served by WordPress's PHP, as the whole class is until phase 4. Its Rust rule is `default_labels`: the 33 default labels, each a `[non-hierarchical, hierarchical]` pair through the `Translator` port with its context; `None` is null. <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L203-L206" hash="366a0f37bafadd44e605e6d1d642d61f364e366c9d17d0b497212c97930ff578"/> The 12 recorded label cases cover it through `get_post_type_labels()`. <Ev test="speedyspec-wp-posts::recorded::labels_match_wordpress"/>

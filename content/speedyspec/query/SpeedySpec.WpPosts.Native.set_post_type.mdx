@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\set_post_type"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [set_post_type()](/speedyspec/query/set_post_type/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L10-L13" hash="4b49f115ffac07ccf0bcdd539b42ead9b1a0bd99acf65962d2856d15bdca3647"/>
+
+It sends the `SetPostType` message through the handler bound under `SpeedySpec\WpPosts\SetPostTypeHandler`, after reading its arguments as WordPress does. It answers the rows changed, or `false`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L176-L190" hash="f10f6f6878fdee08299fdc31b58822839e5c14b9fdc5738c341b9895325fea07"/> <Ev scenario="set-type" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

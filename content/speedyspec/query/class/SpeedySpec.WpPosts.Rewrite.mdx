@@ -1,0 +1,12 @@
+---
+symbol: "class:SpeedySpec\\WpPosts\\Rewrite"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+The PHP twin of the `Rewrite` port: `permalink()`, which is `get_permalink( $post_id )` and answers the URL or `false`. `_transition_post_status()` asks it for the GUID of a post published without one, and `wp_insert_post()` for the GUID of a new post. <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L1-L9" hash="18a1837ade362cdee3ee70f5a992a88b70b3c0addf7414dd5ff20676510e88ef"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L96-L100" hash="cdc13e2c775e88aa01f8838dd3c54e65c2e56aa70a48991595fe8b21d4df3c03"/> <Ev scenario="transition-guid-reset" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>
+
+## Override
+
+Bind an object implementing it at `SpeedySpec\WpPosts\Rewrite` in the container. The default binding is `PhpRewrite`, which calls `get_permalink()`, until the seam behind it is ported. The use cases resolve the port on every call (`Resolved`, a Proxy), so a binding made for the request applies. A binding that fails, or an object that doesn't implement the interface, is an `Error` from the post function, and nothing falls back to the default. An exception the object throws stops the use case and reaches the caller as the same object; what WordPress wrote before it stays written. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L61-L98" hash="7c49351cfee2f55a7a8acc00d7d2cfa4b4b46556e9a9d48b452e7c9bf6f6d319"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L523-L533" hash="a75cd41ff008d094bc9c192d9f14b7e73fc6bca2c785a928bc5a73b25826a24e"/> The replacement test binds an object that answers `http://bound.test/<id>`, and the published post's GUID is that URL. Another binds one that throws, and the same exception reaches the caller of `wp_insert_post()` with the row already written. <Ev test="speedyspec-wp-posts-php::replacement::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/replacement.rs#L146-L195" hash="b0c3ee6585ab2b7ea978e7f406a099a7a943debb198d09ba65ce45f1dda86dd7"/>

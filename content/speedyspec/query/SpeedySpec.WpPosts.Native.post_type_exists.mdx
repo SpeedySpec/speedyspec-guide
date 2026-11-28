@@ -5,4 +5,4 @@ verdict: new-in-speedyspec
 
 Used by SpeedySpec's PHP [post_type_exists()](/speedyspec/query/post_type_exists/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L34-L37" hash="8e35c624f76b727dcec02dd551519716aeb4e6846e8a4f961ddaa040b0b0ad55"/>
 
-It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L475-L477" hash="e02a8b45a2cc7880d1238d34b32cee2aac006331f5ad222bf2264132d1648587"/> <Ev scenario="types-exists" area="posts-read"/> <Ev scenario="types-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L483-L485" hash="e02a8b45a2cc7880d1238d34b32cee2aac006331f5ad222bf2264132d1648587"/> <Ev scenario="types-exists" area="posts-read"/> <Ev scenario="types-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

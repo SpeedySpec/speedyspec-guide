@@ -1,0 +1,12 @@
+---
+symbol: "class:SpeedySpec\\WpPosts\\Theme"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+The PHP twin of the `Theme` port: `page_templates()`, which takes the `WP_Post` and the `page_template` to set on it and answers `wp_get_theme()->get_page_templates( $post )` (`wp_insert_post()` checks a page template against it), and `current_theme_supports()` (the `post-thumbnails` check before an attachment's featured image). <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L1-L9" hash="18a1837ade362cdee3ee70f5a992a88b70b3c0addf7414dd5ff20676510e88ef"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L120-L125" hash="76209b493e757b33f4c4127d06727817d52d7ab593589ade1338b36c3121ff21"/> <Ev scenario="insert-page-template" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>
+
+## Override
+
+Bind an object implementing it at `SpeedySpec\WpPosts\Theme` in the container. The default binding is `PhpTheme`, which calls WordPress's own theme functions, until the seam behind it is ported. The use cases resolve the port on every call (`Resolved`, a Proxy), so a binding made for the request applies. A binding that fails, or an object that doesn't implement the interface, is an `Error` from the post function, and nothing falls back to the default. An exception the object throws stops the use case and reaches the caller as the same object; what WordPress wrote before it stays written. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L61-L98" hash="7c49351cfee2f55a7a8acc00d7d2cfa4b4b46556e9a9d48b452e7c9bf6f6d319"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L589-L605" hash="36841070b24c064218076a2141e4512374174a1c265c7a4ee1c0d6f32920c4d1"/>

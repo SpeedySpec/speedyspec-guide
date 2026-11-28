@@ -1,22 +1,33 @@
 ---
 symbol: "function:wp_check_post_hierarchy_for_loops"
-verdict: works-as-wordpress
+verdict: works-with-differences
+differences:
+  - summary: "A parent or post id that is not an int is read with `(int)` for the loop walk, where WordPress's `$override` lookup keys it as an array key; a negative parent names no post, so it closes no loop. Not recorded."
 ---
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust code below is not wired. Phase 4 of the posts and meta port made 55 of `post.php`'s functions native, the registries and post reading, but not this one, which the release keeps in `post.php`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/release.rs#L14-L74" hash="2b3494c571a6a44e50d757bea931bec2c8ee3b909e5e1d940b153db3026b04c2"/>
+Native: `post.php`'s `wp_check_post_hierarchy_for_loops()` is a line of PHP over `SpeedySpec\WpPosts\Native\wp_check_post_hierarchy_for_loops`, which dispatches the `CheckPostHierarchyForLoops` message to the handler bound at `SpeedySpec\WpPosts\CheckPostHierarchyForLoopsHandler`, so a handler PHP binds there takes the call. default-filters.php still adds it to `wp_insert_post_parent` by name, at priority 10 with 2 arguments, and the native [wp_insert_post()](/speedyspec/query/wp_insert_post/) runs that filter before it picks a slug. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L45-L48" hash="0883bd7367cff81e8fd50751ba2809cba664adfb98ab6961a35310b49f407034"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L237-L243" hash="41cee9c88ace47d1164e7cf96e05c5849980d5fc0307f1714d7c0942c545a717"/> <Ev source="ss:crates/speedyspec-wp-posts/src/write/messages.rs#L49-L50" hash="0a8fa49e2b5c59f13b3dff2888108d6172bd96be46b68728183a597cb9707755"/>
+
+It answers as WordPress does: no parent is 0; a new post (empty id) keeps its parent; a post can't be its own parent; a parent that closes a loop through the post is 0. A loop the post isn't on is broken with `wp_update_post( array( 'ID' => $member, 'post_parent' => 0 ) )` for each member, in order, a real call back into the native `wp_update_post()` with all its hooks, and the post keeps its parent. The parent comes back as given wherever WordPress returns it as given. <Ev source="ss:crates/speedyspec-wp-posts/src/write/transition.rs#L222-L264" hash="29af6401e78b5e77b51cb958ae8a2a6286c1d75a1e00b7aeb9dcd23cbfd00b02"/>
+
+**Verified against WordPress 7.2-RC2** by the `compat/posts-write` replay, which compares the rows and every hook of the `wp_update_post()` calls. <Ev scenario="insert-parent-loop-self" area="posts-write"/> <Ev scenario="insert-parent-loop-broken" area="posts-write"/> <Ev scenario="insert-parent-negative" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/> <Ev test="speedyspec-wp-posts-tests::write::loop_is_broken_through_wp_update_post"/> <Ev test="speedyspec-wp-posts-tests::write::default_callbacks_are_removable_by_name"/>
+
+The copied WordPress write tests reach it through every `wp_insert_post()` and `wp_update_post()` and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+
+## Differences
+
+- **A parent or id that is not an int** is read with `(int)` for the loop walk; WordPress's `$override` lookup keys it as an array key, which PHP normalises the same way for integer strings but not for floats or other strings. A negative parent names no post, so it closes no loop. Not recorded. <Ev source="ss:crates/speedyspec-wp-posts/src/write/transition.rs#L227-L229" hash="fdfb9087e504d678e9a64d2be0ccd6be9c83f10e5d559d08b5517c7d817015b1"/>
 
 ## The Rust rule
 
-`check_post_hierarchy_for_loops` is the `wp_insert_post_parent` filter's callback without its writes. No parent stays 0; a new post (ID 0) keeps its parent; a post can't be its own parent. Otherwise it runs `find_hierarchy_loop` from the post with the new parent standing in for its own. No loop keeps the parent; a loop through the post drops the parent to 0; a loop that doesn't contain the post keeps the parent and returns the loop's members as `break_loop`, in `wp_find_hierarchy_loop()`'s order. WordPress detaches each member with `wp_update_post( array( 'ID' => $member, 'post_parent' => 0 ) )`; phase 5 runs those calls. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L92-L134" hash="079a83357a644e70d22a51ebd200f0c4cd585ec44f969508664afb0189bd9c7b"/>
+`check_post_hierarchy_for_loops` is the `wp_insert_post_parent` filter's callback without its writes. No parent stays 0; a new post (ID 0) keeps its parent; a post can't be its own parent. Otherwise it runs `find_hierarchy_loop` from the post with the new parent standing in for its own. No loop keeps the parent; a loop through the post drops the parent to 0; a loop that doesn't contain the post keeps the parent and returns the loop's members as `break_loop`, in `wp_find_hierarchy_loop()`'s order. The native callback above detaches each member with `wp_update_post( array( 'ID' => $member, 'post_parent' => 0 ) )`. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L98-L140" hash="079a83357a644e70d22a51ebd200f0c4cd585ec44f969508664afb0189bd9c7b"/>
 
 The 6 recorded calls replay as in WordPress 7.2-RC2, comparing the result and the posts read, in order. <Ev test="speedyspec-wp-posts::entity::hierarchy_matches_wordpress"/> <Ev source="ss:compat/posts-entity/record.php#L634-L671" hash="6f47b85147282bdf090f33ec9af0e325f028a7ac61bc8eb02647a03f03402cde"/>
 
 ## Limits
 
-- No recorded call meets a loop that leaves the post out, since WordPress would then write to the table. `break_loop` is proven by unit tests only.
-- The `wp_insert_post_parent` filter and the `wp_update_post()` calls are phase 5's, inside `wp_insert_post()`, before the slug step.
-- Negative parents: WordPress keeps `(int) $postarr['post_parent']` as it is, and `PostId` can't hold a negative number. Phase 5 decides how to clamp it.
+- Phase 2's recording never meets a loop that leaves the post out; `compat/posts-write`'s `insert-parent-loop-broken` does, through the native callback.
+- Negative parents: WordPress keeps `(int) $postarr['post_parent']` as it is; the write path carries it as `PostParent`, which holds a negative value or `null`, and the callback returns a negative parent as given, without walking. <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/values.rs#L71-L79" hash="6b04d816a0199f0cb0eff1b8b84d1cce9e8904addd7522921694a82762d93156"/>
 - `Uncached` reads every post through `find`, as WordPress does with no object cache; phase 4's reader reads the `posts` cache group first. <Ev source="ss:crates/speedyspec-wp-posts/src/reader.rs#L5-L19" hash="09da15425c05c61578f330c352c0763b5ac7394e30c22dffec7fbfac1012ace4"/>
 - Recorded from WordPress 7.2-RC2 behind the recorder's stub `$wpdb`, which answers only the statements `PostRepository` mirrors and compares strings byte for byte. MySQL's `_ci` collations ignore case and trailing spaces, so rows that differ only so are not proven; the SQL repository (phase 4) decides. <Ev source="ss:compat/posts-entity/record.php#L133-L137" hash="582625381c482b18c1cd564398a320d093d272f1212981bd5dec09dfd0828f01"/>

@@ -5,4 +5,4 @@ verdict: new-in-speedyspec
 
 Used by SpeedySpec's PHP [get_enclosed()](/speedyspec/query/get_enclosed/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L70-L73" hash="a1a862341c5b3d7b045184e6bccf20a8b7d9868b2d186e56b69f6d821fbe4ffa"/>
 
-It sends the `GetEnclosed` message through the handler bound under `SpeedySpec\WpPosts\GetEnclosedHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L969-L974" hash="8f8d831851c11a56b9886ca80d45e1ef9bbf37e5dc351d29b2d3fc106e299f47"/>  <Ev test="speedyspec-wp-posts-php::compat::main"/>
+It sends the `GetEnclosed` message through the handler bound under `SpeedySpec\WpPosts\GetEnclosedHandler`, after reading its arguments as WordPress does. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L970-L975" hash="8f8d831851c11a56b9886ca80d45e1ef9bbf37e5dc351d29b2d3fc106e299f47"/>  <Ev test="speedyspec-wp-posts-php::compat::main"/>

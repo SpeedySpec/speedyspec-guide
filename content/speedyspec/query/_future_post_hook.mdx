@@ -1,0 +1,20 @@
+---
+symbol: "function:_future_post_hook"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `_future_post_hook()` is a line of PHP over `SpeedySpec\WpPosts\Native\_future_post_hook`, which dispatches the `FuturePostHook` message to the handler bound at `SpeedySpec\WpPosts\FuturePostHookHandler`, so a handler PHP binds there takes the call. `WP_Post_Type::add_hooks()` still adds it to `future_{$post_type}` by name, at priority 5 with 2 arguments. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L35-L38" hash="72e2cec652f729447d3e955f05f5cb953356384e143b6a53f91c671760d355da"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L226-L235" hash="9928e782fc38755dbee99e4d283e18b5944d91256b6bfa5871dfb6b55c5455f8"/> <Ev source="ss:crates/speedyspec-wp-posts/src/write/messages.rs#L47-L48" hash="6340480b4482ff9e8fd9677594d244081ed3fa9d4b0a15a69638dbea42db105b"/>
+
+It reads `$post->ID` and `$post->post_date` from the object, unschedules `publish_future_post` for the post, then schedules it at `strtotime( get_gmt_from_date( $post->post_date ) . ' GMT' )`, or `false` where that fails, which the cron function refuses. The dates go through PHP's own clock functions, and the cron calls through the Scheduling port. <Ev source="ss:crates/speedyspec-wp-posts/src/write/transition.rs#L166-L183" hash="4f611942f9acaa40c5fd1f51b47a7bb2ace06b8b18c3c378e814f1cee8efcbe3"/>
+
+**Verified against WordPress 7.2-RC2** by the `compat/posts-write` replay, which compares cron after each step, single site and multisite. <Ev scenario="insert-date-future" area="posts-write"/> <Ev scenario="future-scheduled-then-published" area="posts-write"/> <Ev scenario="future-back-to-draft" area="posts-write"/> <Ev scenario="ms-switch-future" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/> <Ev test="speedyspec-wp-posts-tests::write::future_post_is_scheduled_through_the_transition"/>
+
+In the worker the Scheduling port's default is the Rust cron core (`CronScheduling`): a runtime test runs the native function twice on a future post and finds `publish_future_post` scheduled once, at the post's time. <Ev test="speedyspec-php-runtime::database::post_writers_schedule_through_the_rust_cron_core"/> <Ev source="ss:crates/speedyspec-php-runtime/src/scheduling.rs#L1-L7" hash="ee6c71937ec252c0bbf47c336ac741182a98512aeaef9f4a7cedd2fb60372ae4"/>
+
+WordPress's own `Tests_Post_wpInsertPost` and `Tests_Post_wpPublishPost` tests schedule future posts and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
+
+## Limits
+
+- The runtime test runs the native function on WordPress stubs, not a whole `wp_insert_post()`, and needs MySQL 8.4 (the options compare-and-swap uses `MD5()`).

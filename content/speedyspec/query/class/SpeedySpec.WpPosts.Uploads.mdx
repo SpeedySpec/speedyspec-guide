@@ -1,0 +1,12 @@
+---
+symbol: "class:SpeedySpec\\WpPosts\\Uploads"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+The PHP twin of the `Uploads` port, the attachment code the post writers hand over to until media is ported: `insert_attachment()` (`wp_insert_attachment()`, where `wp_update_post()` sends an attachment), `update_attached_file()`, `attachment_is()`, `set_post_thumbnail()` and `delete_post_thumbnail()` (`wp_insert_post()`'s attachment file and featured image), and `delete_attachment()` for the 5b writers. A `WP_Error` from `insert_attachment()` comes back to the caller as PHP holds it. <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L1-L9" hash="18a1837ade362cdee3ee70f5a992a88b70b3c0addf7414dd5ff20676510e88ef"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L102-L111" hash="0651293acc67d20b04c616bdf47c73eab2a0394b58389a5610956a7cf013a2dd"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>
+
+## Override
+
+Bind an object implementing it at `SpeedySpec\WpPosts\Uploads` in the container. The default binding is `PhpUploads`, which calls WordPress's own attachment functions, until the seam behind it is ported. The use cases resolve the port on every call (`Resolved`, a Proxy), so a binding made for the request applies. A binding that fails, or an object that doesn't implement the interface, is an `Error` from the post function, and nothing falls back to the default. An exception the object throws stops the use case and reaches the caller as the same object; what WordPress wrote before it stays written. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L61-L98" hash="7c49351cfee2f55a7a8acc00d7d2cfa4b4b46556e9a9d48b452e7c9bf6f6d319"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L535-L574" hash="3a45be753831f5c9435d1345628cde5c9324101e357959337464997e45f2fd8d"/>

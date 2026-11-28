@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\assign_terms_cap"
+verdict: new-in-speedyspec
+---
+
+A helper the default `Taxonomy` adapter calls in PHP; not for plugins. It answers `get_taxonomy( $taxonomy )->cap->assign_terms` as a one-item list, or `null` where `get_taxonomy()` is false, for `wp_insert_post()`'s `tax_input` capability check. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L121-L128" hash="c5002e7dd3ff6b8ab7a6537370a4dbec7a5b2766f074f71d2d12377e7a6617c4"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L445-L451" hash="377ae165b0ea4cec76b6399cec77486ebaae2db3110ed538ae2fa71c3869700a"/> <Ev scenario="insert-tax-input" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

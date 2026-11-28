@@ -5,15 +5,15 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Native: `post.php`'s `_page_traverse_name()` is a line of PHP over `SpeedySpec\WpPosts\Native\_page_traverse_name`, which dispatches the `PageTraverseName` message to the handler bound at `SpeedySpec\WpPosts\PageTraverseNameHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L110-L113" hash="86e3fb2eb4cfb1ae0434ee9677e6158fce9647830751da4f8e142851c899dd0d"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/pings.rs#L141-L145" hash="48d29b28805c3218385ffcaa6097cf54a5faaeff160c297a2132505b5cecabb6"/>
+Native: `post.php`'s `_page_traverse_name()` is a line of PHP over `SpeedySpec\WpPosts\Native\_page_traverse_name`, which dispatches the `PageTraverseName` message to the handler bound at `SpeedySpec\WpPosts\PageTraverseNameHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L110-L113" hash="86e3fb2eb4cfb1ae0434ee9677e6158fce9647830751da4f8e142851c899dd0d"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/pings.rs#L146-L150" hash="48d29b28805c3218385ffcaa6097cf54a5faaeff160c297a2132505b5cecabb6"/>
 
-It is the walk `get_page_hierarchy()` uses, now a use case of its own: it fills `$result` (by reference, as in WordPress) with each child's name under `$page_id`, depth first. <Ev scenario="page-hierarchy-tree" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/errors.rs#L149-L169" hash="d7f364bd335a351bc0174e5c05add07e4d3a4f80babccf08a3c916ea37a3712e"/>
+It is the walk `get_page_hierarchy()` uses, now a use case of its own: it fills `$result` (by reference, as in WordPress) with each child's name under `$page_id`, depth first. <Ev scenario="page-hierarchy-tree" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/errors.rs#L151-L171" hash="d7f364bd335a351bc0174e5c05add07e4d3a4f80babccf08a3c916ea37a3712e"/>
 
 No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.
 
 ## The Rust rule
 
-`_page_traverse_name()` has no Rust function of its own: its recursion is the walk inside `page_hierarchy`, which answers what `get_page_hierarchy()` builds with it. See [get_page_hierarchy](/speedyspec/query/get_page_hierarchy/). <Ev source="ss:crates/speedyspec-wp-posts/src/pages.rs#L23-L52" hash="a3d03f96a96fd963ee542ce8c1adb6797a5e332f9670c0d61189244c47e42be7"/>
+`_page_traverse_name()` has no Rust function of its own: its recursion is the walk inside `page_hierarchy`, which answers what `get_page_hierarchy()` builds with it. See [get_page_hierarchy](/speedyspec/query/get_page_hierarchy/). <Ev source="ss:crates/speedyspec-wp-posts/src/pages.rs#L26-L55" hash="a3d03f96a96fd963ee542ce8c1adb6797a5e332f9670c0d61189244c47e42be7"/>
 
 The 8 recorded `get_page_hierarchy()` calls cover it. <Ev test="speedyspec-wp-posts::entity::pages_match_wordpress"/>
 

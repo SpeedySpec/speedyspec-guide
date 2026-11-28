@@ -1,0 +1,14 @@
+---
+symbol: "function:set_post_type"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `set_post_type()` is a line of PHP over `SpeedySpec\WpPosts\Native\set_post_type`, which dispatches the `SetPostType` message to the handler bound at `SpeedySpec\WpPosts\SetPostTypeHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L10-L13" hash="4b49f115ffac07ccf0bcdd539b42ead9b1a0bd99acf65962d2856d15bdca3647"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L176-L190" hash="f10f6f6878fdee08299fdc31b58822839e5c14b9fdc5738c341b9895325fea07"/> <Ev source="ss:crates/speedyspec-wp-posts/src/write/messages.rs#L42-L43" hash="c8fc608d8633c37725340e4601ee4d5c10e6fa748b4f5a99f2c6b2de9b13d70c"/>
+
+It runs the type through `sanitize_post_field( 'post_type', …, 'db' )`, sends the repository's `$wpdb->update` of `post_type` (`%d` prints the id as it is), then `clean_post_cache( $post_id )`, which reads the global `$post` for 0 and nothing for a negative id. It returns the rows changed, or `false` where `$wpdb` failed. <Ev source="ss:crates/speedyspec-wp-posts/src/write/update.rs#L162-L186" hash="8769839be4650085f1ed6232df0c8c6647c2112eb484220ccfe4cb3f0cb136dd"/>
+
+**Verified against WordPress 7.2-RC2** by the `compat/posts-write` replay, which compares the answer, the hooks, the row and the cache. <Ev scenario="set-type" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/> <Ev test="speedyspec-wp-posts-tests::write::set_post_type_replays"/>
+
+No copied WordPress test calls it, so its proof is the recorded scenario and the tests above.

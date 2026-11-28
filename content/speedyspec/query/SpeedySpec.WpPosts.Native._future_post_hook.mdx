@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\_future_post_hook"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [_future_post_hook()](/speedyspec/query/_future_post_hook/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L35-L38" hash="72e2cec652f729447d3e955f05f5cb953356384e143b6a53f91c671760d355da"/>
+
+It sends the `FuturePostHook` message through the handler bound under `SpeedySpec\WpPosts\FuturePostHookHandler`, after reading its arguments as WordPress does. It reads `$post->ID` and `$post->post_date` from the object, and does nothing for a value that is not an object. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L226-L235" hash="9928e782fc38755dbee99e4d283e18b5944d91256b6bfa5871dfb6b55c5455f8"/> <Ev scenario="insert-date-future" area="posts-write"/> <Ev scenario="ms-switch-future" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

@@ -5,4 +5,4 @@ verdict: new-in-speedyspec
 
 Used by SpeedySpec's PHP [remove_post_type_support()](/speedyspec/query/remove_post_type_support/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L79-L82" hash="5fd14c478f959934db4cc5a2948540998d82442d70d8e44648b456780c9c6bd8"/>
 
-It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L689-L692" hash="90a3d48ad04aac303627638f671e853931b5202364a89086dc4714267f53aab3"/> <Ev scenario="types-supports" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L697-L700" hash="90a3d48ad04aac303627638f671e853931b5202364a89086dc4714267f53aab3"/> <Ev scenario="types-supports" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

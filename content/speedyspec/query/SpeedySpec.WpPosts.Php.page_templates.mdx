@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\page_templates"
+verdict: new-in-speedyspec
+---
+
+A helper the default `Theme` adapter calls in PHP; not for plugins. It sets `$post->page_template` and answers `wp_get_theme()->get_page_templates( $post )`, as `wp_insert_post()` asks before it saves a page template. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L73-L80" hash="90f4df41791e6cf788b7e01ac33e9b147ee1022260922524bea9e09be46505ad"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L589-L597" hash="45873ca4dd9e123c096e0f83946c85d2df29f19b561f9cad512ece4721aeb85d"/> <Ev scenario="insert-page-template" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\wp_insert_post"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [wp_insert_post()](/speedyspec/query/wp_insert_post/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L15-L18" hash="325cb39441445b16af39c36bf64bf848c28b4d7c3b749349c36a477cac4df211"/>
+
+It sends the `WpInsertPost` message through the handler bound under `SpeedySpec\WpPosts\WpInsertPostHandler`, after reading its arguments as WordPress does. `$postarr` crosses as a copy; `$fire_after_hooks` defaults to true. The answer is the id, or the `WP_Error` built as WordPress builds it, its message through `__()`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L131-L138" hash="c2eff2246e7cb9d169958bbdcb1df8c62b1759de82ada922d569d19235e83d2f"/> <Ev scenario="insert-defaults" area="posts-write"/> <Ev scenario="ms-insert-blog-one" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

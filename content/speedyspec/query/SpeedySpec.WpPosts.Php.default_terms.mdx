@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\default_terms"
+verdict: new-in-speedyspec
+---
+
+A helper the default `Taxonomy` adapter calls in PHP; not for plugins. It lists, in order, the taxonomies of `get_object_taxonomies( $post_type, 'object' )` that have a `default_term`, which `wp_insert_post()` assigns to a post given none. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L107-L119" hash="1b8e248413e2a2e4c7b2f1d375223bbfa5d8935c31da46f20489d27d49ad6dda"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L440-L443" hash="82aff53b5c1fd1632c92c8af859fc94bbfbf1792d3867a4f5781bcaa1da7dbea"/> <Ev scenario="insert-defaults" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

@@ -288,3 +288,23 @@ fraction) and speedyspec-php 0.8.1, and the runner boots `PostsArea` as the work
   `_prime_post_parent_id_caches()` drop a negative id; the readers beside `get_post()` read an object argument as a
   copy; objects handed to a reading function's hook callbacks are
   copies. Open: row order on MySQL 8.4. The `server` time break is gone with posts-contracts 0.3.1.
+
+## Post writing, native (2026-11-28)
+
+speedyspec-server `3fbedbef` (the squash merge of PR #144, phase 5a of the posts and meta port) makes 8 more of
+`post.php`'s functions native, 63 in all: `wp_insert_post()`, `wp_update_post()`, `wp_transition_post_status()`,
+`set_post_type()` and the default callbacks `_transition_post_status()`, `_publish_post_hook()`, `_future_post_hook()`
+and `wp_check_post_hierarchy_for_loops()`. The guide pins speedyspec-platform at `f9af57c4`, the release of
+speedyspec-wp-posts-contracts 0.4.0 (the `PostWrites` surface), speedyspec-wp-meta-contracts 0.4.0 (WordPress's own
+cache-priming statement) and speedyspec-compat 0.11.0, beside speedyspec-wp-options-contracts 0.1.0. The runner boots
+`PostsArea` with the options API and the Rust cron core as the worker does (`runner/src/scheduling.rs`).
+
+- **Query stays an unported seam**, but every 5a function has a SpeedySpec page with its verdict, citing the
+  `compat/posts-write` scenarios (73 single site, 4 multisite, all replaying exactly) and WordPress's copied
+  post-writing PHPUnit tests (213 and 213). The architecture page documents the write surface (`PostWrites`,
+  `PostRow` and `RowValue`, `WriteOutcome`, `PostObject`), the handler keys, `wp_insert_post()`'s composed steps
+  (Template Method), the default callbacks and the nine container ports. The natives, their PHP helpers and the port
+  twins are listed in the seam.
+- **Differences:** a non-integer `wp_insert_post_parent` answer is cast to int; an update whose filtered `$data` is
+  not an array reports an empty `last_error`; a translation exception during `create_initial_post_types()` registers
+  no type. The meta statement difference is gone with meta-contracts 0.4.0, so `compat/posts-read` records no break.

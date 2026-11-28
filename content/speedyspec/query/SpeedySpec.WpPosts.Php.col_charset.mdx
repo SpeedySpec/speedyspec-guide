@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\col_charset"
+verdict: new-in-speedyspec
+---
+
+A helper the default `Charset` adapter calls in PHP; not for plugins. It answers `$wpdb->get_col_charset( $wpdb->$table, $column )`, or `false` for `false` or a `WP_Error`, for `wp_insert_post()`'s emoji check. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L82-L90" hash="f5ed64b1eec2e1d5aeb2b27381bdbd59060edae31de0bbd33ee87602eda3472f"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L607-L618" hash="005efca804ff27752f5a8bd8464d07c616848f0ded84e8f252364a11a1d11cc2"/> <Ev scenario="insert-emoji" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

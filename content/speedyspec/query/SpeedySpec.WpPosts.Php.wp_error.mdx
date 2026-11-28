@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\wp_error"
+verdict: new-in-speedyspec
+---
+
+A helper the native writing functions call in PHP; not for plugins. It builds the `WP_Error` `wp_insert_post()` and `wp_update_post()` return, `new WP_Error( $code, $message, $data )`, with the message already through `__()`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L57-L63" hash="aa12250ad16f7173ed961dda1c1b78527b6d48fafa39ec580c950b02d0df63fb"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L99-L107" hash="8771866b01d9ad11bf73ae29645ca3d796270d51594362aee244a46bed5fd8d1"/> <Ev scenario="insert-empty-content" area="posts-write"/> <Ev scenario="update-missing" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

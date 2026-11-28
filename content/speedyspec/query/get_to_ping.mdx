@@ -9,7 +9,7 @@ differences:
 
 Native: `post.php`'s `get_to_ping()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_to_ping`, which dispatches the `GetToPing` message to the handler bound at `SpeedySpec\WpPosts\GetToPingHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L80-L83" hash="f98e953988b1edea3ed4176cce1d4c9229585aa7c128bab643016711e6b8c48d"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/pings.rs#L80-L83" hash="f32adb9bd8c1267fc6f1408fbb9f9fd7caa5968c97e12e7c82c817fad0c5e720"/>
 
-It reads the post, runs its `to_ping` through `sanitize_trackback_urls()` (the `Formatting` port), splits it on whitespace and runs the `get_to_ping` filter. False when there is no post. <Ev test="speedyspec-wp-posts-php::errors::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/errors.rs#L149-L169" hash="d7f364bd335a351bc0174e5c05add07e4d3a4f80babccf08a3c916ea37a3712e"/>
+It reads the post, runs its `to_ping` through `sanitize_trackback_urls()` (the `Formatting` port), splits it on whitespace and runs the `get_to_ping` filter. False when there is no post. <Ev test="speedyspec-wp-posts-php::errors::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/errors.rs#L151-L171" hash="d7f364bd335a351bc0174e5c05add07e4d3a4f80babccf08a3c916ea37a3712e"/>
 
 WordPress's own `Tests_Post_Pings` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 
