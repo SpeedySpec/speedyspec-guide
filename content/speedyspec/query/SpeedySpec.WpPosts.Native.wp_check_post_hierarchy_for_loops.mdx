@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\wp_check_post_hierarchy_for_loops"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [wp_check_post_hierarchy_for_loops()](/speedyspec/query/wp_check_post_hierarchy_for_loops/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L45-L48" hash="0883bd7367cff81e8fd50751ba2809cba664adfb98ab6961a35310b49f407034"/>
+
+It sends the `CheckPostHierarchyForLoops` message through the handler bound under `SpeedySpec\WpPosts\CheckPostHierarchyForLoopsHandler`, after reading its arguments as WordPress does. Both arguments cross as PHP holds them, and the parent comes back as given wherever WordPress returns it as given. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L237-L243" hash="41cee9c88ace47d1164e7cf96e05c5849980d5fc0307f1714d7c0942c545a717"/> <Ev scenario="insert-parent-loop-broken" area="posts-write"/> <Ev scenario="insert-parent-loop-self" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

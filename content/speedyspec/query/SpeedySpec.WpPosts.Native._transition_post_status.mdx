@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\_transition_post_status"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [_transition_post_status()](/speedyspec/query/_transition_post_status/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L30-L33" hash="82f178e4f34226b6cbbdf066230f80d1d982cd022a8eba2383c054a0784feb10"/>
+
+It sends the `TransitionPostStatusDefault` message through the handler bound under `SpeedySpec\WpPosts\TransitionPostStatusDefaultHandler`, after reading its arguments as WordPress does. It reads `$post->ID` and `$post->post_type` from the object as it holds them now, and does nothing for a value that is not an object. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L192-L218" hash="6db5328c7cc16e1f33320dbfc3b3a9fb20dd48ad4c0fed40d442a8fbf6f1c699"/> <Ev scenario="transition-guid-reset" area="posts-write"/> <Ev scenario="transition-from-publish" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

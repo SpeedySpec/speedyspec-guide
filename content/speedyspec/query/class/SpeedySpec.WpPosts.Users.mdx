@@ -1,0 +1,12 @@
+---
+symbol: "class:SpeedySpec\\WpPosts\\Users"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+The PHP twin of the `Users` port, the user functions the post functions call until the users seam is ported: `is_user_logged_in()`, `get_current_user_id()` and `current_user_can()`, given the capability, then its arguments as a list. The reads ask it for `wp_count_posts()`'s `readable` count; `wp_insert_post()` asks it for the default author and the `tax_input` and `pending`-slug capability checks. Values cross as PHP holds them: a bool, an int, a bool. <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L1-L9" hash="18a1837ade362cdee3ee70f5a992a88b70b3c0addf7414dd5ff20676510e88ef"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L27-L34" hash="1a0c1f351ce781a524017614089ded5723b1e1ac63c03e754c07287ea6811c88"/> <Ev scenario="insert-defaults" area="posts-write"/> <Ev scenario="insert-tax-input" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>
+
+## Override
+
+Bind an object implementing it at `SpeedySpec\WpPosts\Users` in the container. The default binding is PhpUsers, which calls WordPress's own functions, until the seam behind it is ported. The use cases resolve the port on every call (`Resolved`, a Proxy), so a binding made for the request applies. A binding that fails, or an object that doesn't implement the interface, is an `Error` from the post function, and nothing falls back to the default. An exception the object throws stops the use case and reaches the caller as the same object; what WordPress wrote before it stays written. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L61-L98" hash="7c49351cfee2f55a7a8acc00d7d2cfa4b4b46556e9a9d48b452e7c9bf6f6d319"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L371-L395" hash="0ae6848eb56b21c87046c6afb254e3e7d38a5f61fb27a3166744ab28e9625f64"/> The replacement test binds an object whose `get_current_user_id()` answers 7, and the post `wp_insert_post()` writes has author 7. <Ev test="speedyspec-wp-posts-php::replacement::main"/> <Ev source="ss:crates/speedyspec-wp-posts-php/tests/replacement.rs#L196-L231" hash="9d3759b30c2f714ef4c9cd1e2ddd98180a5c61c6d01ba56a59ff6edc370278be"/>

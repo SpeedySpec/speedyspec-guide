@@ -100,6 +100,7 @@ symbols:
   - "method:SpeedySpec\\WpMeta\\MetaRepository::engine"
   - "method:SpeedySpec\\WpMeta\\MetaRepository::for_objects"
   - "method:SpeedySpec\\WpMeta\\MetaRepository::ids_for"
+  - "method:SpeedySpec\\WpMeta\\MetaRepository::ids_of_object"
   - "method:SpeedySpec\\WpMeta\\MetaRepository::ids_matching"
   - "method:SpeedySpec\\WpMeta\\MetaRepository::objects_with"
   - "method:SpeedySpec\\WpMeta\\MetaRepository::update_by_key"
@@ -134,10 +135,10 @@ dependencies:
     cite: { source: "ss:crates/speedyspec-wp-meta-php/src/register.rs#L62-L76", hash: "e68679c6dc824d8080b4e3551b496df93061062ae3c27c75262f1e6d7b2ebc3f" }
   function:apply_filters:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-meta/src/api.rs#L58-L66", hash: "c771e09225e9f5f3659fcc214866493b38c7c70b70c1b58283f6dd234aaf0c06" }
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/api.rs#L56-L64", hash: "c771e09225e9f5f3659fcc214866493b38c7c70b70c1b58283f6dd234aaf0c06" }
   function:do_action:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-meta/src/api.rs#L68-L79", hash: "e6d12a828a447ed84abc956fe8d7ff52e8a96b1092d18dc0cf89693edae1b84e" }
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/api.rs#L66-L77", hash: "e6d12a828a447ed84abc956fe8d7ff52e8a96b1092d18dc0cf89693edae1b84e" }
   # The ObjectSubtypes port's PHP adapter answers get_object_subtype()'s switch with WordPress's functions.
   function:get_comment:
     state: port
@@ -168,7 +169,7 @@ dependencies:
     cite: { source: "ss:crates/speedyspec-wp-meta-php/src/adapters.rs#L188-L208", hash: "5269178f8747161d1bff8688911295d9f931998cb4775b70692e0c6dfc3d5746" }
   function:maybe_serialize:
     state: rust
-    cite: { source: "ss:crates/speedyspec-wp-meta/src/api.rs#L247-L250", hash: "dc47a86eacffc778fbdfa31131b59b5126689f5cdfca9114636e21dcc95f1d6d" }
+    cite: { source: "ss:crates/speedyspec-wp-meta/src/api.rs#L245-L248", hash: "dc47a86eacffc778fbdfa31131b59b5126689f5cdfca9114636e21dcc95f1d6d" }
   function:maybe_unserialize:
     state: rust
     cite: { source: "ss:crates/speedyspec-wp-meta/src/by_mid.rs#L89-L90", hash: "f286ecf92a88bfda8722cb0e8e3eeea172e002a5f184d20e0a744113e2153a2f" }

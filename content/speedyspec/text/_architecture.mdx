@@ -3,7 +3,7 @@
 
 ## The crates
 
-kses and formatting are two ports that share one Hook API. Neither is linked into the runtime worker yet. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L61" hash="6f4cc0a8bd36744bf5405190b45effa2b6e7bf0dc07102a16609d3f7a8def695"/>
+kses and formatting are two ports that share one Hook API. Neither is linked into the runtime worker yet. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L64" hash="231bae58e9343bfaeb1437942e3e9abec83d74f26950e69cd975383ea827e678"/>
 
 - **`speedyspec-wp-kses-contracts`**: the plain types kses works with (`AllowedHtml`, attribute rules, `Protocols`, `Context`) and the ports, with no implementation. All text is bytes, because kses's regexes run without `/u`. <Ev source="ss:crates/speedyspec-wp-kses-contracts/src/lib.rs#L5-L9" hash="ca1a1eac72b64af9e3e0cc4e2e3c80086b48dc8d40993b04b1ec17b32a57ad1c"/>
 - **`speedyspec-wp-kses-lexical`**: kses.php's pure string functions (entities, protocols, attribute parsing), one byte matcher per kses regex.

@@ -5,17 +5,17 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Native: `post.php`'s `_get_custom_object_labels()` is a line of PHP over `SpeedySpec\WpPosts\Native\_get_custom_object_labels`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L69-L72" hash="4f73e34c0c8f2d495313f0359891e473616dfc332ca6b6c3f96ae43e1b1a39cd"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L861-L885" hash="514e244dfcd7c7ecd442a4010b07a79aab8ca2314244611d1aa8963b81715e31"/>
+Native: `post.php`'s `_get_custom_object_labels()` is a line of PHP over `SpeedySpec\WpPosts\Native\_get_custom_object_labels`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L69-L72" hash="4f73e34c0c8f2d495313f0359891e473616dfc332ca6b6c3f96ae43e1b1a39cd"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L870-L894" hash="514e244dfcd7c7ecd442a4010b07a79aab8ca2314244611d1aa8963b81715e31"/>
 
-It is phase 2's rule; it matches WordPress's own function called directly. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/registry.rs#L376-L381" hash="be5bbcd09e051e214e62641f006c6d1f85b86321472543b87eab5508524abd49"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+It is phase 2's rule; it matches WordPress's own function called directly. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/registry.rs#L382-L387" hash="be5bbcd09e051e214e62641f006c6d1f85b86321472543b87eab5508524abd49"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
 
-The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
+The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L27-L34" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
 
 No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.
 
 ## The Rust rule
 
-`custom_object_labels` fills the given labels in WordPress's order (`name` from `label`, `singular_name` from `name`, `name_admin_bar`, then `menu_name`, `all_items` and `archives`, each from the one before), then merges them over the defaults for the object's hierarchy. It returns both, because `get_post_type_labels()` reads the given ones again for `template_name`. <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L224-L238" hash="efe06a38df33a0d2ab62d141a41f2142a2566ffa0b9817184275945234f370c1"/>
+`custom_object_labels` fills the given labels in WordPress's order (`name` from `label`, `singular_name` from `name`, `name_admin_bar`, then `menu_name`, `all_items` and `archives`, each from the one before), then merges them over the defaults for the object's hierarchy. It returns both, because `get_post_type_labels()` reads the given ones again for `template_name`. <Ev source="ss:crates/speedyspec-wp-posts/src/labels.rs#L229-L243" hash="efe06a38df33a0d2ab62d141a41f2142a2566ffa0b9817184275945234f370c1"/>
 
 The 12 recorded label cases cover it through `get_post_type_labels()`. <Ev test="speedyspec-wp-posts::recorded::labels_match_wordpress"/>
 

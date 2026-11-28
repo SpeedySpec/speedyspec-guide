@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\wp_update_post"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [wp_update_post()](/speedyspec/query/wp_update_post/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L20-L23" hash="534e8eaf0f8aae2b13155e093ecd1b03902cf1eabcaa68561ce8a43fe6f3be1a"/>
+
+It sends the `WpUpdatePost` message through the handler bound under `SpeedySpec\WpPosts\WpUpdatePostHandler`, after reading its arguments as WordPress does. A missing `$postarr` is an empty array, as WordPress's default is. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L140-L151" hash="22d1136dc9fb889333a0ad8c0958f94e4662832cb1d9362d09f26a1a368ea9d9"/> <Ev scenario="update-partial" area="posts-write"/> <Ev scenario="update-missing" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

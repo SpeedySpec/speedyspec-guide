@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\query"
+verdict: new-in-speedyspec
+---
+
+A helper the default `PostQuery` adapter calls in PHP; not for plugins. It runs `( new WP_Query() )->query( $args )` for the port's `query()`, until `WP_Query` is ported. No 5a use case calls `query()`: `wp_insert_post()`'s trashed-slug step calls the port's `get_posts()`, which the adapter sends to WordPress's own `get_posts()`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L65-L71" hash="bfb8480f302332c1f9583ccbd7e018dbb7a167e1e1286782ca130813bc8d2f71"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L576-L587" hash="21734240d6e7dcfe1334cf0be409aba43a6a086df2d9b28a18e2aaed34f10499"/> <Ev scenario="insert-slug-trashed-suffix" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

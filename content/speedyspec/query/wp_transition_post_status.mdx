@@ -1,0 +1,18 @@
+---
+symbol: "function:wp_transition_post_status"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `wp_transition_post_status()` is a line of PHP over `SpeedySpec\WpPosts\Native\wp_transition_post_status`, which dispatches the `WpTransitionPostStatus` message to the handler bound at `SpeedySpec\WpPosts\WpTransitionPostStatusHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L25-L28" hash="e35fe061a8665954620e76237aa5ba2c14fcb5685bc4625907f631e63e6349e4"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L153-L174" hash="07c9449f443a31b13879befb7db07317ccfe98e89499adfaf11dc3b585f459d8"/> <Ev source="ss:crates/speedyspec-wp-posts/src/write/messages.rs#L40-L41" hash="6f037c67eb93c0f0715910d9ee041c69009cc26f8516c7dc9b80b0d514bc1e57"/>
+
+It fires `transition_post_status`, then `{$old_status}_to_{$new_status}` when the new status is registered and the old one is too (or is `new`), then `{$new_status}_{$post->post_type}` when the new status and the post type are registered. The three hooks receive the caller's own `$post` object, so a callback's change to it is what the next hook, and the caller, sees. `$post->post_type` is read once the first action has run, and `$post->ID` and `$post->post_type` again for the last hook, as PHP reads the object at those points. <Ev source="ss:crates/speedyspec-wp-posts/src/write/transition.rs#L46-L89" hash="b7e0626d6d8f8edf97a713eb30eecc57fa6a60ee5e59f08643da86d459b727c6"/>
+
+The default callbacks WordPress hangs on these hooks are native too: [_transition_post_status()](/speedyspec/query/_transition_post_status/) on `transition_post_status` and [_publish_post_hook()](/speedyspec/query/_publish_post_hook/) on `publish_post`.
+
+**Verified against WordPress 7.2-RC2** by the `compat/posts-write` replay: a transition from each status (`new`, `auto-draft`, `draft`, `pending`, `private`, `publish`, `future`, `trash`), a page, and a post type registered by the scenario, each comparing the hooks fired with their arguments, the rows and cron. <Ev scenario="transition-from-new" area="posts-write"/> <Ev scenario="transition-from-auto-draft" area="posts-write"/> <Ev scenario="transition-from-draft" area="posts-write"/> <Ev scenario="transition-from-pending" area="posts-write"/> <Ev scenario="transition-from-private" area="posts-write"/> <Ev scenario="transition-from-publish" area="posts-write"/> <Ev scenario="transition-from-future" area="posts-write"/> <Ev scenario="transition-from-trash" area="posts-write"/> <Ev scenario="transition-page-from-draft" area="posts-write"/> <Ev scenario="transition-memo-from-draft" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/> <Ev test="speedyspec-wp-posts-tests::write::transitions_replay"/>
+
+An exception from a `transition_post_status` callback inside `wp_insert_post()` leaves the row, its terms and its `meta_input` written, as WordPress writes them before the transition, and `save_post` never runs. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/errors.rs#L311-L330" hash="2b7d0c2af463538d268bc7c1e42f9336df1df769e471ac554ed065bb11b418a8"/> <Ev test="speedyspec-wp-posts-php::errors::main"/>
+
+WordPress's own `Tests_Taxonomy_UpdateTermCountOnTransitionPostStatus` tests call it through `wp_update_post()`, and every copied write test reaches it through the factory's `wp_insert_post()`; they pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>

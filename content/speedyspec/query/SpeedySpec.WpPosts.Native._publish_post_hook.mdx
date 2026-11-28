@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\_publish_post_hook"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [_publish_post_hook()](/speedyspec/query/_publish_post_hook/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L40-L43" hash="083521b3d3a0954338eac70e4b4156c2c6e500cfd00c74fea0179ff2b1c8d04f"/>
+
+It sends the `PublishPostHook` message through the handler bound under `SpeedySpec\WpPosts\PublishPostHookHandler`, after reading its arguments as WordPress does. `$post_id` is read with `(int)`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L220-L224" hash="dfcc774cee1355eec4e45df8b4296ee18c63b0f8e76ccec01b00c9e615942da3"/> <Ev scenario="publish-draft" area="posts-write"/> <Ev scenario="ping-to-ping" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

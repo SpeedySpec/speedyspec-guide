@@ -25,7 +25,7 @@ repository = "https://github.com/SpeedySpec/speedyspec-server"
 [workspace.dependencies]
 speedyspec-abilities-contracts = "0.2.0"
 speedyspec-cache = "0.3.0"
-speedyspec-compat = "0.10.0"
+speedyspec-compat = "0.11.0"
 speedyspec-container = "0.2.0"
 speedyspec-container-php = "0.2.0"
 speedyspec-cqrs = "0.2.0"
@@ -57,10 +57,11 @@ speedyspec-wp-i18n-contracts = "0.2.0"
 speedyspec-wp-kses-contracts = "0.6.0"
 speedyspec-wp-kses-lexical = "0.6.0"
 speedyspec-wp-media-contracts = "0.5.0"
-speedyspec-wp-meta-contracts = "0.3.0"
+speedyspec-wp-meta-contracts = "0.4.0"
 speedyspec-wp-object-cache-contracts = "0.2.0"
+speedyspec-wp-options-contracts = "0.1.0"
 speedyspec-wp-password-contracts = "0.4.0"
-speedyspec-wp-posts-contracts = "0.3.1"
+speedyspec-wp-posts-contracts = "0.4.0"
 speedyspec-wp-shortcode-contracts = "0.6.0"
 speedyspec-wp-text-contracts = "0.6.0"
 speedyspec-wp-text-diff = "0.3.0"
@@ -93,6 +94,10 @@ speedyspec-wp-cron-contracts.workspace = true
 speedyspec-data-mysql = { path = "server/crates/speedyspec-data-mysql" }
 speedyspec-data-query = { path = "server/crates/speedyspec-data-query" }
 speedyspec-wp-cron-php = { path = "server/crates/speedyspec-wp-cron-php" }
+# The post writers' cron port over the Rust cron core (scheduling.rs), as the worker binds it.
+speedyspec-wp-cron = { path = "server/crates/speedyspec-wp-cron" }
+speedyspec-wp-posts = { path = "server/crates/speedyspec-wp-posts" }
+speedyspec-wp-hooks-contracts.workspace = true
 speedyspec-wp-db = { path = "server/crates/speedyspec-wp-db" }
 speedyspec-wp-db-php = { path = "server/crates/speedyspec-wp-db-php" }
 speedyspec-wp-object-cache-php = { path = "server/crates/speedyspec-wp-object-cache-php" }

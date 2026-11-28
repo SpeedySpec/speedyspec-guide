@@ -1,0 +1,16 @@
+---
+symbol: "function:_publish_post_hook"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `_publish_post_hook()` is a line of PHP over `SpeedySpec\WpPosts\Native\_publish_post_hook`, which dispatches the `PublishPostHook` message to the handler bound at `SpeedySpec\WpPosts\PublishPostHookHandler`, so a handler PHP binds there takes the call. default-filters.php still adds it to `publish_post` by name, at priority 5 with 1 argument. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L40-L43" hash="083521b3d3a0954338eac70e4b4156c2c6e500cfd00c74fea0179ff2b1c8d04f"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L220-L224" hash="dfcc774cee1355eec4e45df8b4296ee18c63b0f8e76ccec01b00c9e615942da3"/> <Ev source="ss:crates/speedyspec-wp-posts/src/write/messages.rs#L46" hash="cc836b04e0e97516767c7fcc44416b8ef02ca8f04f9b1389651d72adb1aceae8"/>
+
+In an XML-RPC request (`XMLRPC_REQUEST` defined) it fires `xmlrpc_publish_post`; while importing (`WP_IMPORTING`) it does nothing more. Otherwise it adds `_pingme` when the `default_pingback_flag` option is on, `_encloseme`, and `_trackbackme` for a post with URLs to ping (`get_to_ping()`), then schedules `do_pings` now unless it is already scheduled. The cron calls go through the Scheduling port, whose default in the worker is the Rust cron core. <Ev source="ss:crates/speedyspec-wp-posts/src/write/transition.rs#L185-L220" hash="193a228d15017a00c2868f4df69449ed0524e7a15ed95750ec18244711d161aa"/>
+
+**Verified against WordPress 7.2-RC2** by the `compat/posts-write` replay, which compares the meta rows and cron it leaves. <Ev scenario="publish-draft" area="posts-write"/> <Ev scenario="ping-to-ping" area="posts-write"/> <Ev scenario="insert-hook-order" area="posts-write"/> <Ev scenario="transition-from-draft" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/> <Ev test="speedyspec-wp-posts-tests::write::default_callbacks_are_removable_by_name"/>
+
+The replacement test binds a Scheduling object in PHP and sees `do_pings` scheduled through it. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/replacement.rs#L146-L195" hash="b0c3ee6585ab2b7ea978e7f406a099a7a943debb198d09ba65ce45f1dda86dd7"/> <Ev test="speedyspec-wp-posts-php::replacement::main"/>
+
+WordPress's own `Tests_Post` and `Tests_Post_wpPublishPost` tests publish posts and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>

@@ -19,6 +19,6 @@ WordPress's own `Tests_Post_wpGetPostParentId` tests, copied from 7.2-RC2, call 
 
 ## The Rust rule
 
-`post_parent_id` reads the post through the `PostReader` port and answers its `post_parent` (0 for none), or `None` (false) for a missing post. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L12-L15" hash="55ea644740999194bba792e11750ccd63aa2ebbf6b648bc76bb013e97235b13d"/>
+`post_parent_id` reads the post through the `PostReader` port and answers its `post_parent` (0 for none), or `None` (false) for a missing post. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L18-L21" hash="3dc1eff6ef1dbb8991030ae0d83451df92eb232bfc5f372eefa95c1c90ad960e"/>
 
 The 3 recorded calls (a parent, none, a missing post) replay as in WordPress 7.2-RC2, comparing the result and the posts read. <Ev test="speedyspec-wp-posts::entity::hierarchy_matches_wordpress"/> <Ev source="ss:compat/posts-entity/record.php#L634-L671" hash="6f47b85147282bdf090f33ec9af0e325f028a7ac61bc8eb02647a03f03402cde"/>

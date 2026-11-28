@@ -5,11 +5,11 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired. Phase 4 of the posts and meta port made `post.php`'s reading native, but only `post.php`'s functions: PHP on SpeedySpec still runs WordPress's own `functions.php`, which holds this one. <Ev source="ss:crates/speedyspec-wp-posts-php/src/release.rs#L14-L74" hash="2b3494c571a6a44e50d757bea931bec2c8ee3b909e5e1d940b153db3026b04c2"/>
+Served by WordPress's PHP when PHP calls it: the posts and meta port makes only `post.php`'s functions native, and PHP on SpeedySpec still runs WordPress's own `functions.php`, which holds this one. The native [wp_check_post_hierarchy_for_loops()](/speedyspec/query/wp_check_post_hierarchy_for_loops/) (phase 5a) runs the Rust rules below for post parents in its place, and the `compat/posts-write` loop scenarios replay exactly through it. <Ev scenario="insert-parent-loop-self" area="posts-write"/> <Ev scenario="insert-parent-loop-broken" area="posts-write"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/release.rs#L14-L84" hash="15e4700faff81aa8c9b034cb34c2c038a2bac08fb0de928036549fb69d6ba78d"/>
 
 ## The Rust rule
 
-The tortoise and hare is private in Rust, inside `find_hierarchy_loop`. It reads parents in PHP's order (the tortoise, then the hare's two steps), ends at a parent of 0 or a missing post, and answers some member of a loop when the tortoise is lapped. Collecting members, it records each ID at its first position, as PHP's `$return[ $id ] = true` does. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L36-L72" hash="a1587e7ff9edeb16b611df204523c57a8d1ade5bf4fa93f73765dad9730adbb5"/>
+The tortoise and hare is private in Rust, inside `find_hierarchy_loop`. It reads parents in PHP's order (the tortoise, then the hare's two steps), ends at a parent of 0 or a missing post, and answers some member of a loop when the tortoise is lapped. Collecting members, it records each ID at its first position, as PHP's `$return[ $id ] = true` does. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L42-L78" hash="a1587e7ff9edeb16b611df204523c57a8d1ade5bf4fa93f73765dad9730adbb5"/>
 
 No recording calls it directly; the 4 recorded `wp_find_hierarchy_loop()` calls and the 6 `wp_check_post_hierarchy_for_loops()` calls go through it, with their reads compared in order. <Ev test="speedyspec-wp-posts::entity::hierarchy_matches_wordpress"/>
 

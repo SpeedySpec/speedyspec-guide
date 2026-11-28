@@ -1,7 +1,7 @@
 ---
 ---
 
-Ported in Rust, not yet in the runtime. speedyspec-server has a Rust port of kses and of most of `formatting.php`, with PHP areas that declare WordPress's functions over it, but the runtime worker links neither crate, so PHP code on SpeedySpec still calls WordPress's own `kses.php` and `formatting.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L61" hash="6f4cc0a8bd36744bf5405190b45effa2b6e7bf0dc07102a16609d3f7a8def695"/> Everything below is what the port's own tests prove, not what the runtime serves today.
+Ported in Rust, not yet in the runtime. speedyspec-server has a Rust port of kses and of most of `formatting.php`, with PHP areas that declare WordPress's functions over it, but the runtime worker links neither crate, so PHP code on SpeedySpec still calls WordPress's own `kses.php` and `formatting.php`. <Ev source="ss:crates/speedyspec-php-runtime/Cargo.toml#L24-L64" hash="231bae58e9343bfaeb1437942e3e9abec83d74f26950e69cd975383ea827e678"/> Everything below is what the port's own tests prove, not what the runtime serves today.
 
 ## What the port covers
 

@@ -19,6 +19,6 @@ WordPress's own `Tests_Post_Objects` tests, copied from 7.2-RC2, call it and pas
 
 ## The Rust rule
 
-`post_ancestors` takes the post already read and lists its parent, grandparent and so on. It stops at a post with no parent, a missing post, the post itself or an ancestor already listed, as WordPress's loop does, so a cycle in the table ends the walk. It reads each ancestor once through the `PostReader` port. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L136-L155" hash="ad950b6e41b5ba638e3d703de449d4d82240ac6380a813c1362ef5e5fd983f0b"/>
+`post_ancestors` takes the post already read and lists its parent, grandparent and so on. It stops at a post with no parent, a missing post, the post itself or an ancestor already listed, as WordPress's loop does, so a cycle in the table ends the walk. It reads each ancestor once through the `PostReader` port. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L142-L160" hash="d8f54fb0ce57b1c07edaaf63ec399d8c751d8a21e5f552f0a6af276d65638a75"/>
 
 The 4 recorded calls replay as in WordPress 7.2-RC2: a chain of four, a top-level page, a page that is its own parent and a page under a two-page cycle, comparing the IDs and the posts read. <Ev test="speedyspec-wp-posts::entity::hierarchy_matches_wordpress"/> <Ev source="ss:compat/posts-entity/record.php#L634-L671" hash="6f47b85147282bdf090f33ec9af0e325f028a7ac61bc8eb02647a03f03402cde"/>

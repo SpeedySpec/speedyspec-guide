@@ -11,6 +11,7 @@ use speedyspec_php::Php;
 mod database;
 mod manifest;
 mod request_hooks;
+mod scheduling;
 mod sides;
 mod wake;
 

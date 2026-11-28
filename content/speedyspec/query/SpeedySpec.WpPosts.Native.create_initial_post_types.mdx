@@ -5,4 +5,4 @@ verdict: new-in-speedyspec
 
 Used by SpeedySpec's PHP [create_initial_post_types()](/speedyspec/query/create_initial_post_types/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L9-L12" hash="b1dab8c3ab380b69cf838edb43dfa8fcd34b624f795ee975b5a7dd09587180e7"/>
 
-It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L926-L962" hash="c9aa546fc8a36c83b1aad97c082112670869f5dd3fc68c43cfcbd5f7764503e2"/> <Ev test="speedyspec-wp-posts-php::registry::main"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
+It works on PHP's globals directly and calls the Rust registry rules; the registries have no handler to rebind. <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L935-L972" hash="0068ac0c3c1b1aa73b95f7e18ee7977ff1f0336d13030c3ca36787dda3d59214"/> <Ev test="speedyspec-wp-posts-php::registry::main"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>

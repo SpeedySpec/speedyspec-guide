@@ -7,16 +7,14 @@ differences:
 
 ## Behaviour
 
-Native: `post.php`'s `wp_count_posts()` is a line of PHP over `SpeedySpec\WpPosts\Native\wp_count_posts`, which dispatches the `WpCountPosts` message to the handler bound at `SpeedySpec\WpPosts\WpCountPostsHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L60-L63" hash="76311e7a66ff96025aab91520ba53c5cbb888828f02700d4f0079b03bcb25a05"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/counts.rs#L114-L123" hash="3a24eaeea161de91c0213f6821f9180565448729782bafbb61ae5132fd7f4d17"/> <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L475" hash="939ea1981ac2a053bc9977289cdf1ee84199629b9414b67f5cba3a2786167534"/>
+Native: `post.php`'s `wp_count_posts()` is a line of PHP over `SpeedySpec\WpPosts\Native\wp_count_posts`, which dispatches the `WpCountPosts` message to the handler bound at `SpeedySpec\WpPosts\WpCountPostsHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L60-L63" hash="76311e7a66ff96025aab91520ba53c5cbb888828f02700d4f0079b03bcb25a05"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/counts.rs#L114-L123" hash="3a24eaeea161de91c0213f6821f9180565448729782bafbb61ae5132fd7f4d17"/> <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L535" hash="939ea1981ac2a053bc9977289cdf1ee84199629b9414b67f5cba3a2786167534"/>
 
 It follows WordPress: an unregistered type gives an empty `stdClass`; a `stdClass` from `pre_wp_count_posts`, or a cached `counts` entry, is used with any missing status set to 0; otherwise one `GROUP BY post_status` statement, with the reader's own private posts for `readable`. Every registered status comes first, in `get_post_stati()` order, counts as numeric strings as `$wpdb` returns them; the object is cached, then the `wp_count_posts` filter runs with `( $counts, $type, $perm )`. <Ev scenario="count-posts-each" area="posts-read"/> <Ev scenario="count-posts-unknown-type" area="posts-read"/> <Ev scenario="count-posts-cache" area="posts-read"/> <Ev scenario="count-readable-logged-out" area="posts-read"/> <Ev scenario="count-readable-author" area="posts-read"/> <Ev scenario="count-readable-admin" area="posts-read"/> <Ev scenario="count-filter" area="posts-read"/> <Ev scenario="count-pre-filter" area="posts-read"/> <Ev scenario="count-new-status" area="posts-read"/> <Ev scenario="ms-count-switch" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/> <Ev test="speedyspec-wp-posts-tests::read::count_posts_readable_adds_private_for_author"/> <Ev test="speedyspec-wp-posts-tests::read::count_posts_filter_runs_last"/>
+
+The `count-readable-statement` scenario logs the author in first, which reads user meta through the native meta functions; every step of it, the user meta statement included, matches WordPress. <Ev scenario="count-readable-statement" area="posts-read"/>
 
 No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.
 
 ## Differences
 
 - **Objects in hook arguments are copies.** The use cases carry PHP values, and `PhpValueHooks` makes them PHP values on the way into a hook, so a callback gets an equal object of the same class, not the one WordPress would hand it. An object a callback returns crosses back as it is (a `stdClass` as an equal copy). Meta has the same limit. <Ev source="ss:crates/speedyspec-wp-posts-php/src/hooks.rs#L1-L12" hash="7b8ef1e169180452a8fca24ae7ada72bff898f2dbf6d0efc07fc98d66d328069"/> <Ev test="speedyspec-wp-posts-php::errors::main"/>
-
-## Limits
-
-- The `count-readable-statement` scenario carries a recorded break on its first step, which logs the author in: that step reads user meta through the native meta functions, whose statement selects `umeta_id` too. `wp_count_posts()`'s own statement, in the next step, matches. <Ev break="count-readable-statement" step="1" area="posts-read"/>

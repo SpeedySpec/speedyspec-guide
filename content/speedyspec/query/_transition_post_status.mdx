@@ -1,0 +1,23 @@
+---
+symbol: "function:_transition_post_status"
+verdict: works-as-wordpress
+---
+
+## Behaviour
+
+Native: `post.php`'s `_transition_post_status()` is a line of PHP over `SpeedySpec\WpPosts\Native\_transition_post_status`, which dispatches the `TransitionPostStatusDefault` message to the handler bound at `SpeedySpec\WpPosts\TransitionPostStatusDefaultHandler`, so a handler PHP binds there takes the call. default-filters.php still adds it to `transition_post_status` by name, at priority 5 with 3 arguments, so `remove_action( 'transition_post_status', '_transition_post_status', 5 )` removes it as in WordPress. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L30-L33" hash="82f178e4f34226b6cbbdf066230f80d1d982cd022a8eba2383c054a0784feb10"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L192-L218" hash="6db5328c7cc16e1f33320dbfc3b3a9fb20dd48ad4c0fed40d442a8fbf6f1c699"/> <Ev source="ss:crates/speedyspec-wp-posts/src/write/messages.rs#L44-L45" hash="e7470cd21c5b5f10d097c1afa9f04626948b2238b57df3fa4c26356b48f1b9d5"/>
+
+It reads `$post->ID` and `$post->post_type` from the object as it holds them now, then:
+
+- **first published** (old status not `publish`, new `publish`): a post with no GUID, as `get_the_guid()` and its filter answer, takes its permalink (the Rewrite port), then the deprecated `private_to_published` action fires;
+- **either status `publish`:** the `lastpostmodified` and `lastpostdate` entries of the `timeinfo` group are deleted for every time zone;
+- **a status change:** the type's two `counts` entries are deleted;
+- **always:** `publish_future_post` is unscheduled for the post (the cron port).
+
+<Ev source="ss:crates/speedyspec-wp-posts/src/write/transition.rs#L115-L164" hash="f8753d83d5ba896c00e864c25e95a3f129fd0820724df3543d652839e8c0bf1a"/>
+
+**Verified against WordPress 7.2-RC2** by the `compat/posts-write` replay, which compares the cache deletes, the GUID written and cron after each transition, single site and multisite. <Ev scenario="transition-guid-reset" area="posts-write"/> <Ev scenario="transition-from-new" area="posts-write"/> <Ev scenario="transition-from-draft" area="posts-write"/> <Ev scenario="transition-from-publish" area="posts-write"/> <Ev scenario="transition-from-future" area="posts-write"/> <Ev scenario="publish-draft" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/> <Ev test="speedyspec-wp-posts-tests::write::transition_to_publish_resets_an_empty_guid"/> <Ev test="speedyspec-wp-posts-tests::write::guid_of_id_zero_reads_the_global_post"/> <Ev test="speedyspec-wp-posts-tests::write::default_callbacks_are_removable_by_name"/>
+
+A Rewrite or Scheduling object PHP binds in the container is what it calls: the replacement test binds both and sees the GUID and the unscheduling go through them. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/replacement.rs#L146-L195" hash="b0c3ee6585ab2b7ea978e7f406a099a7a943debb198d09ba65ce45f1dda86dd7"/> <Ev test="speedyspec-wp-posts-php::replacement::main"/>
+
+Every copied WordPress write test that publishes a post reaches it through `wp_insert_post()`, on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>

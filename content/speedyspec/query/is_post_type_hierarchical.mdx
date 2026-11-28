@@ -5,11 +5,11 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Native: `post.php`'s `is_post_type_hierarchical()` is a line of PHP over `SpeedySpec\WpPosts\Native\is_post_type_hierarchical`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L29-L32" hash="e7d8025dd75e80446bc7230238c1ae5eff29988028bec94573a16be2bd762891"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L727-L733" hash="53062bb8db3a44533a912333da5be92b941cd1a1fdbb812fb8763944461e893c"/>
+Native: `post.php`'s `is_post_type_hierarchical()` is a line of PHP over `SpeedySpec\WpPosts\Native\is_post_type_hierarchical`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-types.php#L29-L32" hash="e7d8025dd75e80446bc7230238c1ae5eff29988028bec94573a16be2bd762891"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/registry.rs#L735-L741" hash="53062bb8db3a44533a912333da5be92b941cd1a1fdbb812fb8763944461e893c"/>
 
 It reads the post type from the live `$wp_post_types` and answers the property as it is, not a bool, as WordPress does. <Ev scenario="types-exists" area="posts-read"/> <Ev scenario="types-register" area="posts-read"/> <Ev scenario="types-mutated-after-register" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::registry::main"/>
 
-The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L16-L23" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
+The registries have no handler in the container: they are PHP's globals (`$wp_post_types`, `$wp_post_statuses`, `$_wp_post_type_features`), read and written live, so a handler would only wrap the global and there is nothing to rebind. Change a registration with WordPress's own hooks. <Ev source="ss:crates/speedyspec-wp-posts-php/src/lib.rs#L27-L34" hash="cee2b8bc56cdb2f3c4038d6df9b3cd87ec0268ee2f97be22e1d5ff45d3187848"/>
 
 WordPress's own `Tests_Post_Types` tests, copied from 7.2-RC2, call it and pass against the port on a single site and on multisite. <Ev test="speedyspec-wp-posts-php::wordpress::wordpress_posts_runs_pass"/>
 

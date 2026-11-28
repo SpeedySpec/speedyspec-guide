@@ -1,0 +1,8 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Native\\wp_transition_post_status"
+verdict: new-in-speedyspec
+---
+
+Used by SpeedySpec's PHP [wp_transition_post_status()](/speedyspec/query/wp_transition_post_status/) to reach the native post functions; not for plugins. Call the WordPress function instead. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L25-L28" hash="e35fe061a8665954620e76237aa5ba2c14fcb5685bc4625907f631e63e6349e4"/>
+
+It sends the `WpTransitionPostStatus` message through the handler bound under `SpeedySpec\WpPosts\WpTransitionPostStatusHandler`, after reading its arguments as WordPress does. `$post` stays the caller's own object: it is the handle the three hooks receive. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write.rs#L153-L174" hash="07c9449f443a31b13879befb7db07317ccfe98e89499adfaf11dc3b585f459d8"/> <Ev scenario="transition-from-draft" area="posts-write"/> <Ev scenario="transition-from-new" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>

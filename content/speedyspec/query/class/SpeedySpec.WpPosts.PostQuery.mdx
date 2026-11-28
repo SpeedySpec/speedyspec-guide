@@ -1,0 +1,12 @@
+---
+symbol: "class:SpeedySpec\\WpPosts\\PostQuery"
+verdict: new-in-speedyspec
+---
+
+## Behaviour
+
+The PHP twin of the `PostQuery` port, `WP_Query` until it is ported: `query()` (`( new WP_Query() )->query( $args )`) and `get_posts()`. `wp_insert_post()`'s trashed-slug step calls `get_posts()` to find a trashed post holding the wanted slug. The arguments cross as a PHP array, and the posts come back as PHP holds them. <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L1-L9" hash="18a1837ade362cdee3ee70f5a992a88b70b3c0addf7414dd5ff20676510e88ef"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L113-L118" hash="8d04772082c70b5df3d0452a7aa3695cb97c903500050ff98bb5b7e5b27b413e"/> <Ev scenario="insert-slug-trashed-suffix" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>
+
+## Override
+
+Bind an object implementing it at `SpeedySpec\WpPosts\PostQuery` in the container. The default binding is `PhpPostQuery`, which runs WordPress's own `WP_Query` and `get_posts()`, until the seam behind it is ported. The use cases resolve the port on every call (`Resolved`, a Proxy), so a binding made for the request applies. A binding that fails, or an object that doesn't implement the interface, is an `Error` from the post function, and nothing falls back to the default. An exception the object throws stops the use case and reaches the caller as the same object; what WordPress wrote before it stays written. <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L61-L98" hash="7c49351cfee2f55a7a8acc00d7d2cfa4b4b46556e9a9d48b452e7c9bf6f6d319"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L576-L587" hash="21734240d6e7dcfe1334cf0be409aba43a6a086df2d9b28a18e2aaed34f10499"/>

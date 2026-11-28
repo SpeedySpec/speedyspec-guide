@@ -5,7 +5,7 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Native: `post.php`'s `get_page_children()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_page_children`, which dispatches the `GetPageChildren` message to the handler bound at `SpeedySpec\WpPosts\GetPageChildrenHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L100-L103" hash="34bff2631026c40b0f95636b1e575780a5460fa3d19bc100603be0782b25e7eb"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L621-L643" hash="79d6c94701fe967cf275adde618c457137838a259ea4ae4c1be3a4158daa94da"/>
+Native: `post.php`'s `get_page_children()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_page_children`, which dispatches the `GetPageChildren` message to the handler bound at `SpeedySpec\WpPosts\GetPageChildrenHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L100-L103" hash="34bff2631026c40b0f95636b1e575780a5460fa3d19bc100603be0782b25e7eb"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L622-L644" hash="79d6c94701fe967cf275adde618c457137838a259ea4ae4c1be3a4158daa94da"/>
 
 It orders the pages it is given with phase 2's `page_children` rule and answers the caller's own `WP_Post` objects in that order, not copies. <Ev scenario="page-children-tree" area="posts-read"/> <Ev scenario="page-children-orphans" area="posts-read"/> <Ev scenario="page-children-empty" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
@@ -13,7 +13,7 @@ WordPress's own `Tests_Post_GetPageChildren` tests, copied from 7.2-RC2, call it
 
 ## The Rust rule
 
-`page_children` is `get_page_children()`: the pages below a page, depth first, each parent's children in list order, a repeated ID listed each time it is reached. It reads no posts. <Ev source="ss:crates/speedyspec-wp-posts/src/pages.rs#L54-L60" hash="aaf07d84e68968a941c55e1b6446179092b36c3a70a149ea3c38f2978d016e60"/>
+`page_children` is `get_page_children()`: the pages below a page, depth first, each parent's children in list order, a repeated ID listed each time it is reached. It reads no posts. <Ev source="ss:crates/speedyspec-wp-posts/src/pages.rs#L57-L63" hash="aaf07d84e68968a941c55e1b6446179092b36c3a70a149ea3c38f2978d016e60"/>
 
 The 8 recorded calls over four lists (a tree given out of order, orphans, a repeated ID and an empty list) replay as in WordPress 7.2-RC2, comparing whole posts in order. <Ev test="speedyspec-wp-posts::entity::pages_match_wordpress"/> <Ev source="ss:compat/posts-entity/record.php#L673-L703" hash="5026e57fe2fa7b325dc8a288b27c3ced15287b61b165543066b2ad2a43773558"/>
 

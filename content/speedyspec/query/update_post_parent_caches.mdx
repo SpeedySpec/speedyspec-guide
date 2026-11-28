@@ -2,7 +2,6 @@
 symbol: "function:update_post_parent_caches"
 verdict: works-with-differences
 differences:
-  - summary: "Through the native meta functions, `update_meta_cache()`'s statement selects `meta_id` too, so a `query` filter sees `SELECT meta_id, post_id, meta_key, meta_value …` where WordPress sends `SELECT post_id, meta_key, meta_value …`. The rows, the cache and the query count are the same."
   - summary: "A negative `post_parent` is read as its absolute value before the parents are primed, where WordPress's `absint()` comes later. No recorded scenario has one."
 ---
 
@@ -14,7 +13,8 @@ It plucks each post's `post_parent`, drops zeros and duplicates, and primes thos
 
 No copied WordPress test calls it, so its proof is the recorded scenarios and the tests above.
 
+The `update_meta_cache()` statement it triggers is WordPress's own text, `SELECT post_id, meta_key, meta_value …`, which the `cache-prime-statement` scenario checks. <Ev scenario="cache-prime-statement" area="posts-read"/>
+
 ## Differences
 
-- **The meta statement.** This function reads post meta through the native meta functions, whose `update_meta_cache()` statement selects `meta_id` too (`SELECT meta_id, post_id, meta_key, meta_value …`, where WordPress sends `SELECT post_id, meta_key, meta_value …`), because the meta entity carries its id. A plugin that matches the exact text in a `query` filter misses it; the rows, the cache and the query count are WordPress's. It is the meta seam's documented difference, recorded here as a break on the scenarios that watch the statement. <Ev break="cache-prime-statement" step="1" area="posts-read"/> <Ev break="count-readable-statement" step="1" area="posts-read"/> <Ev source="ss:compat/posts-read/breaks.json#L1-L14" hash="c5f076b4794a20681d8b985e4d9fb2e12e1bda0c5f3b95a2ba59b4e080731c8d"/> See [update_meta_cache()](/speedyspec/meta/update_meta_cache/).
-- **A negative parent.** The use case takes `Post` entities, whose parent is a `PostId`, so the PHP function reads a negative `post_parent` as its absolute value. WordPress keeps it until `_prime_post_caches()`. No recorded scenario or WordPress test has one. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L854-L874" hash="13532cdc20f8ca18b20432337ac04d9413d87b592835d0fd958372fbca5df876"/>
+- **A negative parent.** The use case takes `Post` entities, whose parent is a `PostId`, so the PHP function reads a negative `post_parent` as its absolute value. WordPress keeps it until `_prime_post_caches()`. No recorded scenario or WordPress test has one. <Ev source="ss:crates/speedyspec-wp-posts-php/src/read.rs#L855-L875" hash="bfdb06739eefe8603ec8daeed76ee1ba17aa99ea384ffd9a7014f797c8a2c8b5"/>

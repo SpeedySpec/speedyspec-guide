@@ -3,4 +3,4 @@ symbol: "method:WP_Post_Type::__construct"
 verdict: works-as-wordpress
 ---
 
-Served by WordPress's PHP, as the whole class is until phase 4. Its Rust rule is `resolve_post_type`: the declared properties with their defaults, then `set_props()`. <Ev source="ss:crates/speedyspec-wp-posts/src/post_type.rs#L175-L181" hash="0ce9d9ce35bc63bff6b04994a9fd1de06b04d81eaf145715b720db5688038a2a"/> All 27 recorded `new WP_Post_Type()` objects match WordPress 7.2-RC2's, property by property. <Ev test="speedyspec-wp-posts::recorded::set_props_matches_wordpress"/>
+Served by WordPress's PHP, as the whole class is until phase 4. Its Rust rule is `resolve_post_type`: the declared properties with their defaults, then `set_props()`. <Ev source="ss:crates/speedyspec-wp-posts/src/post_type.rs#L175-L182" hash="7d8c49550c28cc7da993fd3d3070b2395bcf5a048b691ee8f228d1c90f332900"/> All 27 recorded `new WP_Post_Type()` objects match WordPress 7.2-RC2's, property by property. <Ev test="speedyspec-wp-posts::recorded::set_props_matches_wordpress"/>

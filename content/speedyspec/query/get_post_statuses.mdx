@@ -5,11 +5,11 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust code below is not wired. Phase 4 of the posts and meta port made 55 of `post.php`'s functions native, the registries and post reading, but not this one, which the release keeps in `post.php`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/release.rs#L14-L74" hash="2b3494c571a6a44e50d757bea931bec2c8ee3b909e5e1d940b153db3026b04c2"/>
+Served by WordPress's PHP; the Rust code below is not wired. Phases 4 and 5a of the posts and meta port made 63 of `post.php`'s functions native, the registries, post reading and the first writers, but not this one, which the release keeps in `post.php`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/release.rs#L14-L84" hash="15e4700faff81aa8c9b034cb34c2c038a2bac08fb0de928036549fb69d6ba78d"/>
 
 ## The Rust rule
 
-`post_statuses` gives the `draft`, `pending`, `private` and `publish` labels, each label through the `Translator` port. <Ev source="ss:crates/speedyspec-wp-posts/src/status.rs#L148-L157" hash="d849d880fe2212f94c8d742dbb66963a99604edd71140f4801f7d6a7dc23fbec"/>
+`post_statuses` gives the `draft`, `pending`, `private` and `publish` labels, each label through the `Translator` port. <Ev source="ss:crates/speedyspec-wp-posts/src/status.rs#L150-L159" hash="43cddac7d636af7ffda59d20faa1c40d5fc1c06a92c32ad16af4ee886e7f7dee"/>
 
 The recorded table matches WordPress 7.2-RC2's, in order. <Ev test="speedyspec-wp-posts::recorded::status_label_tables_match_wordpress"/>
 

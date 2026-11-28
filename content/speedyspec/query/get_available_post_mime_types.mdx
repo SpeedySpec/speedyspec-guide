@@ -5,7 +5,7 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Native: `post.php`'s `get_available_post_mime_types()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_available_post_mime_types`, which dispatches the `GetAvailablePostMimeTypes` message to the handler bound at `SpeedySpec\WpPosts\GetAvailablePostMimeTypesHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L180-L183" hash="1be774f7b2f7259995fb0f9415351ef2cfd32415bcf75dbe1829d205666099b6"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/counts.rs#L349-L352" hash="4fc25ea730c19873c517c9b9343a1b924534582f4ed7548e3968c3945fcf3697"/> <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L586" hash="e8cafd687f60e19c65dcce776af07a88e4251afccb467bfaa5449329e49d52f7"/>
+Native: `post.php`'s `get_available_post_mime_types()` is a line of PHP over `SpeedySpec\WpPosts\Native\get_available_post_mime_types`, which dispatches the `GetAvailablePostMimeTypes` message to the handler bound at `SpeedySpec\WpPosts\GetAvailablePostMimeTypesHandler`, so a handler PHP binds there takes the call. <Ev source="ss:crates/speedyspec-wp-posts-php/src/posts.php#L180-L183" hash="1be774f7b2f7259995fb0f9415351ef2cfd32415bcf75dbe1829d205666099b6"/> <Ev source="ss:crates/speedyspec-wp-posts/src/read/counts.rs#L349-L352" hash="4fc25ea730c19873c517c9b9343a1b924534582f4ed7548e3968c3945fcf3697"/> <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L646" hash="e8cafd687f60e19c65dcce776af07a88e4251afccb467bfaa5449329e49d52f7"/>
 
 An array from `pre_get_available_post_mime_types` replaces the statement (`SELECT DISTINCT post_mime_type … WHERE post_type = %s`); then the falsy values are dropped and the rest renumbered. <Ev scenario="mime-available" area="posts-read"/> <Ev test="speedyspec-wp-posts-php::compat::main"/>
 
@@ -13,9 +13,9 @@ WordPress's own `Tests_Post_GetAvailablePostMimeTypes` tests, copied from 7.2-RC
 
 ## Known breaks and open cases
 
-- **Row order.** The statement has no `ORDER BY`, as in WordPress, so its rows come in the engine's order. The replay matches on MySQL 9.6; the run on CI's MySQL 8.4 is still to come (the server's CI last ran before the post functions were wired). If the order differs there, it becomes a documented break with its reason. <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L1-L15" hash="02cf4d46a7902a0e90e131e8bd763989cf66225c4a7982286bc643a1e7d3ba3c"/>
+- **Row order.** The statement has no `ORDER BY`, as in WordPress, so its rows come in the engine's order. The replay matches on MySQL 9.6; the run on CI's MySQL 8.4 is still to come (the server's CI last ran before the post functions were wired). If the order differs there, it becomes a documented break with its reason. <Ev source="ss:crates/speedyspec-wp-posts-sql/src/repository.rs#L1-L16" hash="ff9c64ed2f2c4011e7324efb32148de8ff5e5b20c51e80502221471bde5ad2a5"/>
 
 ## Limits
 
-- **Not run:** WordPress's `test_should_return_expected_post_mime_types` is left out of the PHPUnit runs, because `create_upload_object()` uploads files, and media isn't loaded. Untested, not different. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/wordpress.rs#L101-L166" hash="a72cd183bb0db176632c0d6eb538a55596678397fb6692875c10c885385f3601"/>
+- **Not run:** WordPress's `test_should_return_expected_post_mime_types` is left out of the PHPUnit runs, because `create_upload_object()` uploads files, and media isn't loaded. Untested, not different. <Ev source="ss:crates/speedyspec-wp-posts-php/tests/wordpress.rs#L117-L130" hash="92092cc2d4ed9a318be0dc7dae809abdb10df48fb8fe8b2a91cbdc3770a67e5f"/>
 - `MemoryPostRepository`, the in-memory adapter, builds the mime clause by the same rule, trimming items as PHP's `trim()` does. <Ev source="ss:crates/speedyspec-wp-posts-memory/src/lib.rs#L1-L5" hash="4da557478296c6c525b3d3d1ee27edea888be55d3b76287a4a1fca385c07c808"/>

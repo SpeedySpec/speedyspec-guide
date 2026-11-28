@@ -5,11 +5,11 @@ verdict: works-as-wordpress
 
 ## Behaviour
 
-Served by WordPress's PHP; the Rust rules below are not wired. Phase 4 of the posts and meta port made `post.php`'s reading native, but only `post.php`'s functions: PHP on SpeedySpec still runs WordPress's own `functions.php`, which holds this one. <Ev source="ss:crates/speedyspec-wp-posts-php/src/release.rs#L14-L74" hash="2b3494c571a6a44e50d757bea931bec2c8ee3b909e5e1d940b153db3026b04c2"/>
+Served by WordPress's PHP when PHP calls it: the posts and meta port makes only `post.php`'s functions native, and PHP on SpeedySpec still runs WordPress's own `functions.php`, which holds this one. The native [wp_check_post_hierarchy_for_loops()](/speedyspec/query/wp_check_post_hierarchy_for_loops/) (phase 5a) runs the Rust rules below for post parents in its place, and the `compat/posts-write` loop scenarios replay exactly through it. <Ev scenario="insert-parent-loop-self" area="posts-write"/> <Ev scenario="insert-parent-loop-broken" area="posts-write"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/release.rs#L14-L84" hash="15e4700faff81aa8c9b034cb34c2c038a2bac08fb0de928036549fb69d6ba78d"/>
 
 ## The Rust rule
 
-`find_hierarchy_loop` is `wp_find_hierarchy_loop( 'wp_get_post_parent_id', $start, $start_parent )`: the members of the loop reached from `start`, in WordPress's key order, or none. `start_parent` stands in for `start`'s own parent, as WordPress's override array does. It runs the tortoise and hare twice, as WordPress does: once to find a member, then from that member to collect the loop. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L74-L90" hash="cc4539fc71beb6b3afa3e260f56acf9dc812baded4ef64c16b0e5b02fa3e7fbe"/>
+`find_hierarchy_loop` is `wp_find_hierarchy_loop( 'wp_get_post_parent_id', $start, $start_parent )`: the members of the loop reached from `start`, in WordPress's key order, or none. `start_parent` stands in for `start`'s own parent, as WordPress's override array does. It runs the tortoise and hare twice, as WordPress does: once to find a member, then from that member to collect the loop. <Ev source="ss:crates/speedyspec-wp-posts/src/hierarchy.rs#L80-L96" hash="cc4539fc71beb6b3afa3e260f56acf9dc812baded4ef64c16b0e5b02fa3e7fbe"/>
 
 The 4 recorded calls replay as in WordPress 7.2-RC2, comparing the members and the posts read: an override that ends the chain (no loop), an override that closes a loop through the start, a missing start whose override leads into a loop of two other pages, and a page under that loop. <Ev test="speedyspec-wp-posts::entity::hierarchy_matches_wordpress"/> <Ev source="ss:compat/posts-entity/record.php#L634-L671" hash="6f47b85147282bdf090f33ec9af0e325f028a7ac61bc8eb02647a03f03402cde"/>
 

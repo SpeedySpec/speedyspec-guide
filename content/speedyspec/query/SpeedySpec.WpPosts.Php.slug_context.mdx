@@ -1,0 +1,6 @@
+---
+symbol: "function:SpeedySpec\\WpPosts\\Php\\slug_context"
+verdict: new-in-speedyspec
+---
+
+A helper the slug settings adapter calls in PHP; not for plugins. It answers what `wp_unique_post_slug()` reads: `$wp_rewrite->feeds` (an empty list when it isn't an array), `$wp_rewrite->pagination_base` and `get_option( 'permalink_structure' )`. <Ev source="ss:crates/speedyspec-wp-posts-php/src/post-writes.php#L92-L105" hash="f9e849967b4fea3a86edc964242ec09a43eade6eb44e7a6c5d8934a66251413b"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L742-L775" hash="5087d38c586f630fbefc5af2d72857bb6858540af9783296a9a342374d65986a"/> <Ev scenario="insert-slug-unique" area="posts-write"/> <Ev scenario="insert-slug-hierarchical" area="posts-write"/> <Ev test="speedyspec-wp-posts-php::compat_write::main"/>
