@@ -399,7 +399,7 @@ The natives resolve each handler once from the container, so a handler PHP binds
 
 ### wp_insert_post()'s composed steps
 
-`wp_insert_post()` is a Template Method: `Insert::run` calls nine steps in WordPress's order, and each step is a pure function over phase 2's rules or a call through a port. <Ev source="ss:crates/speedyspec-wp-posts/src/write/insert.rs#L1-L23" hash="f3b8467c868478a356e930dc2bfc54ddf78091d746f048932284479f32998a22"/> <Ev source="ss:crates/speedyspec-wp-posts/src/write/insert.rs#L255-L272" hash="8fd1a5bafe3ec808d81968eb7f4cd20acc980737400d0532cd55e7c840a839c3"/>
+`wp_insert_post()` is a Composed Method: `Insert::run` calls nine private steps in WordPress's order, and each step is a pure function over phase 2's rules or a call through a port. No step is overridden. The variation lives in the ports, which PHP or Rust can bind, and in the handler binding, which replaces the whole use case. <Ev source="ss:crates/speedyspec-wp-posts/src/write/insert.rs#L1-L23" hash="f3b8467c868478a356e930dc2bfc54ddf78091d746f048932284479f32998a22"/> <Ev source="ss:crates/speedyspec-wp-posts/src/write/insert.rs#L255-L272" hash="8fd1a5bafe3ec808d81968eb7f4cd20acc980737400d0532cd55e7c840a839c3"/>
 
 1. **`parse`**: the defaults, `wp_parse_args()`, `sanitize_post( 'db' )`, and the update case.
 2. **`check_content`**: `wp_insert_post_empty_content`.
@@ -409,7 +409,7 @@ The natives resolve each handler once from the container, so a handler PHP binds
 6. **`data`**: `$data`, the emoji check, `wp_insert_post_data` and `wp_unslash()`, mapped to a `PostRow` (Data Mapper).
 7. **`write`**: `pre_post_update` and the repository's `update`, or the `import_id` check, `pre_post_insert` and `insert`.
 8. **`after_write`**: the slug of a post written without one, terms, `meta_input`, the GUID, an attachment's file, the featured image and `clean_post_cache()`.
-9. **`finish`**: `get_post()`, the page template, the transition, `edit_post`, `post_updated`, the `save_post` family and `wp_after_insert_post`, which share one object.
+9. **`finish`**: `get_post()`, the page template, the transition, `edit_post`, `post_updated`, the `save_post` family and `wp_after_insert_post`, which share one object. The `$post_after` that `post_updated` and `attachment_updated` receive is a fresh `get_post()` instead.
 
 There is no Unit of Work: `wp_insert_post()` writes as it goes, so each statement is sent where WordPress sends it, and what was written before a failure stays written, as in WordPress. Every repository write runs through `written()`, which checks `wpdb`'s side channel for a `query` callback's exception raised during that write and stops the use case there, as WordPress would have thrown. <Ev source="ss:crates/speedyspec-wp-posts/src/write/api.rs#L1-L9" hash="1c54c82ea79275c0e0ce308f7a8dca962a75bfafd708e7efcaa24e92eecca689"/> <Ev source="ss:crates/speedyspec-wp-posts/src/write/api.rs#L235-L241" hash="5d37193fa46dd2ee5963f3997947f43a7bc137041e74b5986a16c7794e5b47fa"/> <Ev test="speedyspec-wp-posts-tests::write::hidden_query_failure_stops_the_insert"/> <Ev test="speedyspec-wp-posts-tests::write::a_stale_hook_error_does_not_fail_a_write"/>
 
@@ -446,7 +446,7 @@ The writers reach every unported seam through a port. Nine are container ports, 
 
 Cron's default is the Rust adapter over the cron area's scheduling core, which the runtime builds and passes in, so the posts crates depend on the cron contracts only. <Ev source="ss:crates/speedyspec-php-runtime/src/scheduling.rs#L1-L7" hash="ee6c71937ec252c0bbf47c336ac741182a98512aeaef9f4a7cedd2fb60372ae4"/> <Ev test="speedyspec-php-runtime::database::post_writers_schedule_through_the_rust_cron_core"/>
 
-The rest are plain adapters at the PHP edge: `PhpClock` (`current_time()`, `get_date_from_gmt()` and the rest, PHP's own, so dates follow PHP's clock and the site's time zone), `PhpSlugTruncation` (`wp_truncate_slug()`), `PhpWriteFormatting` (`sanitize_title()`, `wp_encode_emoji()`), `PhpPostObjects` (the live `WP_Post` the hooks share), `PhpSlugSettings` (`$wp_rewrite` and `permalink_structure`) and `PhpRuntime` (`defined()`, `_doing_it_wrong()`). The write use cases call no `Revisions` port: WordPress's own `post_updated` and `wp_after_insert_post` callbacks write the revisions. <Ev source="ss:crates/speedyspec-wp-posts/src/write/ports.rs#L1-L7" hash="ac8d70a8952e0266261aea883d9221f4485fb366f11080a9fe64d94fe6c5f16d"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L696-L698" hash="c9faa51f0bf9e79e927f71328b68af88d6866393a7c994563a9c9c48c11be7e0"/>
+The rest are plain adapters at the PHP edge: `PhpClock` (`current_time()`, `get_date_from_gmt()` and the rest, PHP's own, so dates follow PHP's clock and the site's time zone), `PhpPostTypeSupports` (`$_wp_post_type_features`, read live), `PhpTranslator` (`__()` and `_x()`), `PhpSlugTruncation` (`wp_truncate_slug()`), `PhpWriteFormatting` (`sanitize_title()`, `wp_encode_emoji()`), `PhpPostObjects` (the live `WP_Post` the hooks share), `PhpSlugSettings` (`$wp_rewrite` and `permalink_structure`) and `PhpRuntime` (`defined()`, `_doing_it_wrong()`). The write use cases call no `Revisions` port: WordPress's own `post_updated` and `wp_after_insert_post` callbacks write the revisions. <Ev source="ss:crates/speedyspec-wp-posts/src/write/ports.rs#L1-L7" hash="ac8d70a8952e0266261aea883d9221f4485fb366f11080a9fe64d94fe6c5f16d"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L696-L698" hash="c9faa51f0bf9e79e927f71328b68af88d6866393a7c994563a9c9c48c11be7e0"/>
 
 ### The SQL repository's writes
 
@@ -488,8 +488,9 @@ use speedyspec_php_serialize::{PhpKey, PhpValue};
 use speedyspec_wp_posts::PostWritesApi;
 use speedyspec_wp_posts_contracts::{PostError, PostId};
 
-/// A draft with `title`, as `wp_insert_post( array( 'post_title' => $title ), true )` makes it: its id, or `None`
-/// when WordPress answers a `WP_Error` (a callback refused it as empty, or the database rejected the row).
+/// A draft with `title`, as `wp_insert_post( array( 'post_title' => $title, 'post_status' => 'draft' ), true )`
+/// makes it: its id, or `None` when WordPress answers a `WP_Error` (a callback refused it as empty, or the database
+/// rejected the row).
 fn create_draft(writes: &PostWritesApi, title: &str) -> Result<Option<PostId>, PostError> {
     let postarr = PhpValue::Array(vec![
         (PhpKey::Str(b"post_title".to_vec()), PhpValue::Str(title.as_bytes().to_vec())),
@@ -507,14 +508,13 @@ To let PHP rebind the write, send `WpInsertPost` through the command bus instead
 | Pattern | Where | Evidence |
 |---------|-------|----------|
 | Command/CQRS | `PostWrites` apart from the `Posts` queries; a message per writer, bound in the container. | <Ev source="ss:crates/speedyspec-wp-posts/src/write/messages.rs#L58-L63" hash="1c46e4f7ac887326038f661af6e390660f608e3a21e709a028660393cbeebc04"/> |
-| Template Method | `Insert::run`, `wp_insert_post()`'s nine steps in WordPress's order. | <Ev source="ss:crates/speedyspec-wp-posts/src/write/insert.rs#L255-L272" hash="8fd1a5bafe3ec808d81968eb7f4cd20acc980737400d0532cd55e7c840a839c3"/> |
-| Observer | Every filter and action through the Hook API; the four default callbacks registered as WordPress registers them. | <Ev source="ss:crates/speedyspec-wp-posts/src/write/transition.rs#L1-L13" hash="320b6beb8ca05c95c0b3f6053362046c795fdeb79e172bad7d095bcbf5d0fb38"/> |
-| Repository | `PostRepository`'s writes, one `$wpdb` call each. | <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L37-L41" hash="72917b3dc7ad34977414fd03995b5a08dae86fb2e619e5f7ddcacea3e0eca1dc"/> |
+| Composed Method | `Insert::run`, `wp_insert_post()`'s nine private steps in WordPress's order; the ports and the handler binding vary it. | <Ev source="ss:crates/speedyspec-wp-posts/src/write/insert.rs#L255-L272" hash="8fd1a5bafe3ec808d81968eb7f4cd20acc980737400d0532cd55e7c840a839c3"/> |
+| Observer | Every filter and action through the Hook API; the four default callbacks registered as WordPress registers them. | <Ev source="ss:crates/speedyspec-wp-posts/src/write/transition.rs#L1-L13" hash="320b6beb8ca05c95c0b3f6053362046c795fdeb79e172bad7d095bcbf5d0fb38"/> <Ev source="ss:crates/speedyspec-wp-posts/src/write/transition.rs#L327-L331" hash="9f987fb9561b21b03c6b9270699d62627947d4c72611d93556f9219d5133b714"/> |
+| Repository | `PostRepository`'s writes, one `$wpdb` call each. | <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L43-L44" hash="ae0bf7554eb2a17c5513690d0401998788fa100440e07752b8c7bf394318f175"/> <Ev source="ss:crates/speedyspec-wp-posts-contracts/src/ports.rs#L240-L241" hash="8e5e4a5ed058fc9dffcfa7e3bc62cf14ab946e1d78807eff9f775a333a8f51b1"/> |
 | Data Mapper | `row_from_data` (`$data` to the `PostRow`) and `PostMapper::row_values` (the row to `wpdb`'s values). | <Ev source="ss:crates/speedyspec-wp-posts/src/write/insert.rs#L130-L134" hash="ce7ac918a3315191beda0a92fd87df90266c046dd69dfde2b9df974e20648330"/> |
 | Proxy | `Resolved`, which resolves a container port on every call. | <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L61-L63" hash="a8adc10e4975759e59e867e4daecb9b14c10bd648e48f355212e7418417716b5"/> |
-| Adapter | The PHP adapters of the unported seams; `CronScheduling` over the cron core. | <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L1-L4" hash="0c43232ece67f81d210c00d9f0cb417a8ebd0e29b82c6f2162415a09ba3ce268"/> |
-| Bridge | `PhpBound`, one adapter for every port's PHP twin. | <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L1-L9" hash="18a1837ade362cdee3ee70f5a992a88b70b3c0addf7414dd5ff20676510e88ef"/> |
-| Strategy | The slug branch (hierarchical or flat); the binding PHP chooses for a port. | <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L16-L17" hash="1c557c08e1cb717aa57740ba6ffaacfb886b26b77ec8c0cad52a674671eb943c"/> |
+| Adapter | The PHP adapters of the unported seams; `CronScheduling` over the cron core; `PhpBound`, one adapter type for every port's PHP twin. | <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L1-L4" hash="0c43232ece67f81d210c00d9f0cb417a8ebd0e29b82c6f2162415a09ba3ce268"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/port_twins.rs#L1-L9" hash="18a1837ade362cdee3ee70f5a992a88b70b3c0addf7414dd5ff20676510e88ef"/> |
+| Strategy | The slug branch (hierarchical or flat); the binding PHP chooses for a port. | <Ev source="ss:crates/speedyspec-wp-posts/src/write/insert.rs#L13" hash="70fda185b23304b2d269e7c6d6cedd516eca7c86435e6c4c3eede34371fd0349"/> <Ev source="ss:crates/speedyspec-wp-posts-php/src/write_ports.rs#L16-L17" hash="1c557c08e1cb717aa57740ba6ffaacfb886b26b77ec8c0cad52a674671eb943c"/> |
 
 ### How to change this
 
